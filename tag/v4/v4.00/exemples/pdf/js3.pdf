@@ -1,0 +1,126 @@
+2 J
+%PDF-1.7
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/MediaBox [0 0 595.28 841.89]
+/Resources 2 0 R
+/Contents 4 0 R>>
+endobj
+4 0 obj
+<</Filter /FlateDecode /Length 204>>
+stream
+xœ­‘Á
+Â0†ï}Šÿ¨ 3“éUPaAìM<×iÅMíºùÌó)ŠèAPÄCÓæÏßäƒPĞqFˆ„–+¾R>SÈ€ˆ°#…îDBçPÆJĞ/ŸnRˆP>¥‡ûs¿èöznî)£@Æˆ‡ƒ€P)–-eJÔ Ñµ^¬=zôÚ+¨„Gbşí}vFwÙÁåzorSxT…AÍIå˜¬vÚzÔ‡ªÄÅ;ÃJ®‹´1+[Bg™]oƒï …8½+ÏÛ’¸G|Ÿ
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [
+3 0 R
+]
+/Count 1
+>>
+endobj
+5 0 obj
+<</Type /OCG /Name (print)
+/Usage <</Print <</PrintState /ON>> /View <</ViewState /OFF>>>>>>
+endobj
+6 0 obj
+<</Type /OCG /Name (view)
+/Usage <</Print <</PrintState /OFF>> /View <</ViewState /ON>>>>>>
+endobj
+7 0 obj
+<</Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Name /F1
+/Encoding /WinAnsiEncoding
+>>
+endobj
+8 0 obj
+<</Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica-Bold
+/Name /F2
+/Encoding /WinAnsiEncoding
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 7 0 R
+/F2 8 0 R
+>>
+/XObject <<
+>>
+/Properties <</OC1 5 0 R /OC2 6 0 R>>
+/ExtGState <<
+>>
+>>
+endobj
+9 0 obj
+<<
+/Names [
+(EmbeddedJS) 10 0 R
+]
+>>
+endobj
+10 0 obj
+<<
+/S /JavaScript
+/JS (\r
+var rep = app.response\('Donnez votre nom'\);\r
+app.alert\('Vous vous appelez '+rep\);\r
+)
+>>
+endobj
+11 0 obj
+<<
+/Creator (HTML2PDF - TCPDF)
+/Producer (TCPDF 4.8.038 \(http://www.tcpdf.org\))
+/CreationDate (D:20100316154028+00'00')
+/ModDate (D:20100316154028+00'00')
+>>
+endobj
+12 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /SinglePage
+/PageMode /UseNone
+/Names <<
+/JavaScript 9 0 R
+>>
+/ViewerPreferences<<
+/Direction /L2R
+>>
+/OCProperties <</OCGs [5 0 R 6 0 R] /D <</ON [5 0 R] /OFF [6 0 R] /AS [<</Event /Print /OCGs [5 0 R 6 0 R] /Category [/Print]>> <</Event /View /OCGs [5 0 R 6 0 R] /Category [/View]>>]>>>>
+>>
+endobj
+xref
+0 13
+0000000000 65535 f 
+0000000395 00000 n 
+0000000885 00000 n 
+0000000013 00000 n 
+0000000121 00000 n 
+0000000453 00000 n 
+0000000561 00000 n 
+0000000668 00000 n 
+0000000774 00000 n 
+0000001054 00000 n 
+0000001106 00000 n 
+0000001242 00000 n 
+0000001418 00000 n 
+trailer
+<<
+/Size 13
+/Root 12 0 R
+/Info 11 0 R
+>>
+startxref
+1801
+%%EOF

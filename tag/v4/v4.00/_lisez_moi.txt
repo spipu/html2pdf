@@ -1,0 +1,251 @@
+*******************************************************
+** Ce programme est distribué sous la licence LGPL,  **
+** reportez-vous au fichier _LGPL.txt ou à           **
+** http://www.gnu.org/licenses/lgpl.html             **
+** pour en savoir plus.                              **
+**                                                   **
+**  Copyright 2000-2010 par Laurent Minguet          **
+*******************************************************
+*******************************
+* HTML2PDF v4.00 - 17/03/2010 *
+*******************************
+
+Utilisation :
+------------
+ - necessite au minimum PHP5
+ 
+ - regardez les exemples fournis pour voir le fonctionnement.
+
+ - il est TRES IMPORTANT de fournir du HTML 4.01 valide au convertisseur,
+   mais seulement ce que contient le <body>
+
+ - pour les borders : il est conseillé qu'ils soient au format "solid 1mm #000000"
+
+ - pour les paddings : ils ne sont applicables qu'aux balises table, th, td, div, li
+
+ - Une fonte par défaut peut être précisée,au cas ou la fonte demandée n'existe pas ou si aucune fonte n'est indiquée :
+     $html2pdf->setDefaultFont('Arial');
+
+ - la possibilité de protégé vos PDF est présente, CF Exemple 7.
+
+ - Certains tests peuvent être activés (true) ou de désactivés(false) :
+     * méthode setTestIsImage : tester que les images doivent existent bien
+     * méthode setTestTdInOnePage : tester que le contenu des TDs rentre sur une seule page
+        
+ - Un mode DEBUG permettant de connaitre les ressources utilisées lors de la construction du PDF est présente.
+   Il est activable en rajoutant la commande suivante juste après le constructeur (cf exemple 0):
+      $htmlpdf->setModeDebug();
+     
+ - Certaines balises spécifiques ont été introduites :
+     * <page></page>  (CF Exemple 7) :
+      permet de définir le format, l'orientation, les marges left, right, top et bottom, l'image
+      et la couleur de fond d'une page, sa taille et position, le footer.
+      Il est egalement possible de garder les header et footer des pages précédentes,
+      grace à l'attribue pageset="old" (CF Exemple 3 et 4)
+ 
+     * <page_header></page_header> (CF Exemple 3)
+     
+     * <page_footer></page_footer> (CF Exemple 3)
+     
+     * <nobreak></nobreak> :
+         permet de forcer l'affichage d'une partie sur une même page.
+         Si cette partie ne rentre pas dans le reste de la page, un saut de page est
+         effectué avant.
+ 
+    * <barcode></barcode>  (CF Exemples 0 et 9) :
+         permet d'inserer des barcodes dans les pdfs, CF Exemples 0 et 9
+         Les types de codebar possible sont ceux de TCPDF
+         
+     * <qrcode></qrcode> (CF Exemple 13) :
+         permet d'inserer un codebar à 2 dimensions de type QRcode
+         voici un exemple d'utilisation :
+           <qrcode value="votre message ici" size="1mm" ec="M" style="color: black; background-color: white"></qrcode>
+         seul le parametre "value" est obligatoire
+         les différentes valeurs de type de correction sont L, M, Q, H
+         (QR Code is registered trademark of DENSO WAVE INCORPORATED | http://www.denso-wave.com/qrcode/)
+
+     * <bookmark></bookmark>  (CF Exemples 7 et About) :
+         permet d'inserer des bookmark dans les pdfs, CF Exemple 7 et About.
+         Il est egalement possible de créer un index automatiquement en fin de
+         document, CF exemple About.
+         
+     * propriété css "rotate" :
+         valeurs possibles : 0, 90, 180, 270
+         applicable uniquement sur les divs (cf exemple 8)
+         
+Modification :
+-------------
+ 4.00 : HTML2PDF est maintenant écrit en PHP5 et basé sur TCPDF (=> unicode, utf8, ...)
+ 		utilisation de TCPDF pour les formulaires et les barcodes
+ 3.29 : modification des barcodes. ATTENTION : bar_w et bar_h n'existent plus !
+        correction sur la gestion de page_footer
+        correction sur la gestion des html entities
+        correction sur le positionnement des textes
+        correction sur le positionnement des tableaux
+ 		nombreuses corrections sur les positionnements, les couleurs, ...
+        amélioration de la partie SVG (alpha, balise G, ...)
+        amélioration sur createIndex
+        harmonisation des noms des méthodes
+        correction sur la gestion des textes
+ 3.28 : ajout de la gestion de la balise label
+        correction pour compatibilité PHP4
+ 3.27 : correction sur page_header et page_footer
+        ajout de la possibilité de pouvoir mettre l'index automatique dans la page que l'on veut
+        correction sur la gestion du canal alpha pour les PNGs
+        correction sur la gestion des border-radius (cf exemple radius) conforme au CSS3
+        correction sur la gestion du background-color
+        correction sur la gestion de thead, tfoot, et tbody
+        ajout du dessin verctoriel (cf exemples draw, tigre, sapin)
+        ajout de la propriété label="none/label" pour la balise <barcode>
+        nombreux petits correctifs
+ 3.26 : correction pour support des images générés en CGI
+        ajout de la gestion du canal alpha pour les PNGs (nécessite GD2)
+        ajout de la méthode setDefaultFont permettant de spécifier une fonte par défaut
+        ajout de la propriété format pour la balise <page> (cf exemple 4)
+        amélioration de la gestion des couleurs css RGB (cf exemple 2)
+        ajout de la gestion des couleurs css CMYK (cf exemple 2)
+        ajout de la propriété css overflow:hidden pour la balise <div> (cf exemple 2)
+        correction sur page_header et page_footer
+        ajout de la possibilité de pouvoir directement convertir le résultat d'une vraie page HTML
+        nombreux petits correctifs sur les styles
+ 3.25 : correctif sur le calcul des tableaux dans le page_footer
+        correctif sur l'interprétation des espaces entre certaines balises
+        correction sur la gestion des balises H1, H2, H3, H4, H5, H6
+        correction sur la gestion de la balise table
+        support des balises xhtml du type <span />
+        ajout des balises COL (cf exemple 5), DEL, INS, et QRCODE (cf exemple 13)
+        ajout de la propriété css text-transform
+        ajout de la propriété css rotate (uniquement sur les DIV, cf exemple 8)
+        ne plus rendre obligatoire l'existence d'une image (nouvelle méthode setTestIsImage)
+        ajout d'un mode DEBUG - les anciennes fonction d'analyse des ressources ont été supprimées
+        ajout de la méthode setEncoding
+        ajout de la langue danoise DA (merci à  Daniel K.)
+ 3.24 : correction sur le calcul de la largeur des divs
+        modification pour compatibilité avec la localisation PHP
+        modification pour compatibilité avec PHP 5.3.0
+ 3.23 : correction sur le calcul des DIVs
+        correction sur l'interpretation de certains styles CSS
+        correction de la fonction de creation d'index automatique CreateIndex
+        ATTENTION : la methode d'appel de CreateIndex a changé. Regardez l'exemple About !!!!
+ 3.22a: redistribution de HTML2PDF sous la licence LGPL !!! (au lieu de GPL)
+ 3.22 : correction sur le background-color
+        refonte totale de la gestion de text-align. les valeurs center et right marchent maintenant meme en cas de contenu riche
+ 3.21 : ajout de la propriété css FLOAT pour la balise IMG
+        correction sur la gestion des TFOOT
+        correction sur le positionnement des images
+ 3.20 : ajout de la gestion des margins pour la balise DIV
+        ajout de la gestion de la propriete css LINE-HEIGHT
+        correction sur l'interpretation de la valeur de certains styles CSS (background-image, background-position, ...)
+        correction sur la reconnaissance des balises thead et tfoot
+        correction sur la balise select
+        correction sur les fichiers de langue (merci à Sinan)
+ 3.19 : optimisation du parseur HTML - merci à Jezelinside
+        ajout de la balise TFOOT
+        amélioration de la gestion des tableaux : les contenus des balises THEAD et TFOOT sont maintenant répétés sur chaque page.
+        ajout de la balise spécifique BOOKMARK afin de créer des "marques-page"
+        possibilité de rajouter un index automatique en fin de fichier
+        ajout de la langue turque TR (merci à Hidayet)
+        amélioration de la méthode Output. Elle est maintenant également utilisable comme celle de FPDF
+ 3.18 : correction sur les sauts de page automatique pour les balises TABLE, UL, OL
+        correction sur l'interpretation des styles pour la balise HR
+        correction sur l'interpretation du style border-collapse pour la balise TABLE
+        prise en compte de margin:auto pour les tables et les divs
+        les commentaires dans les CSS sont acceptés
+ 3.17 : ajout de la gestion des balises INPUT (text, radio, checkbox, button, hidden, ...), SELECT, OPTION, TEXTAREA (cf exemple 14)
+        ajout de la possibilité de mettre des scripts dans le pdf, via $html2pdf->pdf->IncludeJS(...); (cf exemples JS)
+        correction sur le saut de page automatique pour les images
+        correction sur les sauts de lignes automatiques pour certaines balises (UL, P, ...)
+        ajout de la langue NL (merci à Roland)
+ 3.16 : ajout de la gestion de list-style: none (cf exemple 13)
+        correction dans la gestion des fontes ajoutées à fpdf (via la méthode AddFont)
+        nombreuses corrections sur le calcul des largeurs des éléments table, div, hr, td, th
+        ajout de l'exemple about.php
+        (pour info, les PDF générés à partir des exemples sont maintenant dans le répertoire /exemples/pdf/, et sont supprimables)
+ 3.15 : correction sur l'identification des styles en cas de valeurs multiples dans la propriete class
+        prise en compte de border-radius pour la limite des backgrounds (color et image)
+        ajout des proprietes CSS border-top-*, border-right-*, border-bottom-*, border-left-*
+        ajout de la propriété CSS list-style-image (cf exemple 12)
+        pour la balise table, ajout de l'interprétation de align="center" et align="right" (cf exemple 1)
+        correction dans le positionnement des images
+        correction de quelques bugs
+        ajout d'une fonction d'analyse des ressources HTML2PDFgetTimerDebug (cf début du fichier html2pdf.class.php)        
+ 3.14 : ajout d'une langue (pt : Brazilian Portuguese language) et amelioration de la methode vueHTML (merci à Rodrigo)
+        correction du positionnement du contenu des DIVs. gestion des proprietes valign et align
+        ajout de la propriete CSS border-collapse (cf exemple 0)
+        ajout de la propriete CSS border-radius (cf exemple 1)
+        correction de quelques bugs
+ 3.13 : reecriture de la balise hr, avec prise en compte des styles (cf exemple 0)
+        ajout de la propriete backcolor pour la balise page (cf exemple 9)
+        ajout des proprietes backleft et backright pour la balise page afin de pouvoir changer les marges des pages (cf exemple 8)
+        nombreuses corrections sur les balises et les styles
+ 3.12 : ajout des balises ol, ul, li (cf exemple 12)
+        correction sur le calcul de la taille des td en cas de colspan et rowspan
+        ajout de la méthode setTestTdInOnePage afin de pouvoir desactiver le test sur la taille des TD (cf exemple 11)
+        correction de quelques bugs
+ 3.11 : ajout des balises div, p, pre, s
+        gestion des styles CSS position (relative, absolute), left, top, right, bottom  (cf exemple 10)
+        meilleur gestion des border : border-style, border-color, border-width  (cf exemple 10)
+        possibilité d'indiquer les marges par défault, via le constructeur (cf exemple 2)
+ 3.10a: correction pour compatibilité php4 / php5
+ 3.10 : ajout des liens internes (cf exemple 7)
+        gestion complete des background : image, repeat, position, color (cf exemple 1)
+        gestion de underline, overline, linethrough (cf exemple 2)
+        correction de quelques bugs
+ 3.09 : mise à jour vers fpdf version 1.6, ajout de barcode, correction de l'affichage de certains caractères spéciaux
+        correction du calcul de la hauteur de ligne de la balise br
+        detection en cas de contenu trop grand dans un TD
+        amélioration de la balise page (ajout de l'attribue pageset, avec les valeurs new et old)
+        ajout de FPDF_PROTECTION, accesible via $pdf->pdf->SetProtection(...)
+ 3.08 : version opérationnelle de page_header, ajout de page_footer, correction des borders des tableaux
+ 3.07 : correction de l'interpretation de cellspacing, amélioration de la balise page_header
+ 3.06 : première gestion de la balise page_header, correction des dimensions des tableaux
+ 3.05 : ajout de la propriété vertical-align, ajout de la gestion des fichiers de langue
+ 3.04 : correction du saut de page automatique pour les tableaux. Ajout de propriétés à la balise PAGE
+ 3.03 : correction de bugs au niveau de la gestion des images PHP par FPDF, meilleure gestion des erreurs
+ 3.02 : ajout de la gestion des noms des couleurs, correction de la gestion des images générées par php, correction de quelques bugs
+ 3.01 : correction de quelques bugs, ajout d'une protection pour les balises non existantes
+ 3.00 : refont totale du calcul des tableaux. Prise en compte des colspan et rowspan
+ 2.85 : ajout de la propriété cellspacing, nouvelle gestion des padding des tableaux (identique à l'html)
+ 2.80 : ajout des types de border dotted et dasheds
+ 2.75 : ajout des top, left, right, bottom pour padding et border
+ 2.70 : correction de la balise HR, ajout de la propriété padding pour les table, th, td
+        correction des dimensions, les unités px, mm, in, pt sont enfin réellement reproduites, correction de font-size, border, ...
+        ajout d'une propriété à la balise page : footer
+        correction dans l'affichage et le calcul des tables
+ 2.55 : vérification de la validité du code (ouverture / fermeture) - ajout des unités mm, in, pt
+ 2.50 : correction de nobreak, des marges, ajout de nombreuses balises
+ 2.40 : refonte totale de l'identification des styles CSS. Les héritages marchent.
+ 2.39 : corrections diverses, ajout de certaines propriétés (bgcolor, ...)
+ 2.38 : meilleur identification des propriétés border et color
+ 2.37 : nombreuses corrections : balise A, couleur de fond, retour à la ligne, gestion des images dans un texte, ...
+ 2.36 : ajout des balises STRONG, EM
+ 2.35 : amélioration de la gestion des feuilles de style
+ 2.31 : correction de quelques bugs
+ 2.30 : première version opérationnel des feuilles de style
+ 2.25 : ajout de la balise LINK pour le type text/css
+ 2.20 : premier jet de la gestion des feuilles de style, ajout de la balise STYLE
+ 2.15 : n'interprète plus l'HTML en commentaire <!-- -->
+ 2.10 : ajout des balises H1 -> H6
+ 2.01 : correction de quelques bugs
+ 2.00 : première version diffusée
+
+Aide et Support :
+----------------
+ pour toutes questions et rapport de bug, merci d'utiliser exclusivement le lien de support ci-dessous.
+ Je ne répondrais à aucune question en dehors, afin que tout le monde puisse profiter des réponses.
+
+Informations :
+-------------
+ Programmation en PHP5
+
+ Programmeur :	Spipu
+      email   : webmaster@html2pdf.fr
+      site    : http://html2pdf.fr/
+      wiki    : http://html2pdf.fr/fr/wiki
+      support : http://html2pdf.fr/fr/forum
+		
+Remerciement :
+-------------
+ * Olivier PLATHEY pour sa librairie Fpdf (http://www.fpdf.org/)
+ * yAronet pour l'hebergement du forum de support
+ * toutes les personnes qui m'ont aidé à développer cet librairie, et à traduire les différents textes
