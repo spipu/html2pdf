@@ -1,79 +1,75 @@
 *******************************************************
-** Ce programme est distribuÈ sous la licence LGPL,  **
-** reportez-vous au fichier _LGPL.txt ou ‡           **
+** Ce programme est distribu√© sous la licence LGPL,  **
+** reportez-vous au fichier _LGPL.txt ou √†           **
 ** http://www.gnu.org/licenses/lgpl.html             **
 ** pour en savoir plus.                              **
 **                                                   **
 **  Copyright 2000-2010 par Laurent Minguet          **
 *******************************************************
 *******************************
-* HTML2PDF v4.01 - 07/05/2010 *
+* HTML2PDF v4.02 - 01/04/2011 *
 *******************************
 
 Utilisation :
 ------------
- - necessite au minimum PHP5
- 
- - regardez les exemples fournis pour voir le fonctionnement.
+ - n√©cessite au minimum PHP5
+
+ - regardez les exemples fournis, et lisez le wiki pour comprendre le fonctionnement.
 
  - il est TRES IMPORTANT de fournir du HTML 4.01 valide au convertisseur,
    mais seulement ce que contient le <body>
 
- - pour les borders : il est conseillÈ qu'ils soient au format "solid 1mm #000000"
+ - pour les borders : il est conseill√© qu'ils soient au format "solid 1mm #000000"
 
  - pour les paddings : ils ne sont applicables qu'aux balises table, th, td, div, li
 
- - Une fonte par dÈfaut peut Ítre prÈcisÈe,au cas ou la fonte demandÈe n'existe pas ou si aucune fonte n'est indiquÈe :
+ - Une fonte par d√©faut peut √™tre pr√©cis√©e,au cas ou la fonte demand√©e n'existe pas ou si aucune fonte n'est indiqu√©e :
      $html2pdf->setDefaultFont('Arial');
 
- - la possibilitÈ de protÈgÈ vos PDF est prÈsente, CF Exemple 7.
+ - la possibilit√© de prot√©ger vos PDF est pr√©sente, CF Exemple 7.
 
- - Certains tests peuvent Ítre activÈs (true) ou de dÈsactivÈs(false) :
-     * mÈthode setTestIsImage      : tester que les images doivent existent bien
-     * mÈthode setTestTdInOnePage  : tester que le contenu des TDs rentre sur une seule page
-     * mÈthode setTestIsDeprecated : tester que les anciennes proprietes des balises spÈcifiques ne sont plus presentes
-        
- - Un mode DEBUG permettant de connaitre les ressources utilisÈes lors de la construction du PDF est prÈsente.
-   Il est activable en rajoutant la commande suivante juste aprËs le constructeur (cf exemple 0):
+ - Certains tests peuvent √™tre activ√©s (true) ou de d√©sactiv√©s(false) :
+     * m√©thode setTestIsImage      : tester que les images existent bien
+     * m√©thode setTestTdInOnePage  : tester que le contenu des TDs rentre sur une seule page
+     * m√©thode setTestIsDeprecated : tester que les anciennes propri√©tes des balises sp√©cifiques ne sont plus pr√©sentes
+
+ - Un mode DEBUG permettant de connaitre les ressources utilis√©es lors de la construction du PDF est pr√©sent.
+   Il est activable en rajoutant la commande suivante juste apr√®s le constructeur (cf exemple 0):
       $htmlpdf->setModeDebug();
-     
- - Certaines balises spÈcifiques ont ÈtÈ introduites :
-     * <page></page>  (CF Exemple 7) :
-      permet de dÈfinir le format, l'orientation, les marges left, right, top et bottom, l'image
-      et la couleur de fond d'une page, sa taille et position, le footer.
-      Il est egalement possible de garder les header et footer des pages prÈcÈdentes,
-      grace ‡ l'attribue pageset="old" (CF Exemple 3 et 4)
+
+ - Certaines balises sp√©cifiques ont √©t√© introduites :
+     * <page></page>  (CF Exemple 7 & wiki)
+         permet de d√©finir le format, l'orientation, les marges left, right, top et bottom, l'image
+         et la couleur de fond d'une page, sa taille et position, le footer.
+         Il est √©galement possible de garder les header et footer des pages pr√©c√©dentes,
+         gr√¢ce √† l'attribue pageset="old" (CF Exemple 3 & 4 & wiki)
  
-     * <page_header></page_header> (CF Exemple 3)
-     
-     * <page_footer></page_footer> (CF Exemple 3)
-     
-     * <nobreak></nobreak> :
-         permet de forcer l'affichage d'une partie sur une mÍme page.
+     * <page_header></page_header> (CF Exemple 3 & wiki)
+
+     * <page_footer></page_footer> (CF Exemple 3 & wiki)
+
+     * <nobreak></nobreak> (cf wiki)
+         permet de forcer l'affichage d'une partie sur une m√™me page.
          Si cette partie ne rentre pas dans le reste de la page, un saut de page est
-         effectuÈ avant.
+         effectu√© avant.
  
-    * <barcode></barcode>  (CF Exemples 0 et 9) :
-         permet d'inserer des barcodes dans les pdfs, CF Exemples 0 et 9
+    * <barcode></barcode>  (CF Exemples 0 et 9 & wiki)
+         permet d'ins√©rer des barcodes dans les pdfs, CF Exemples 0 et 9
          Les types de codebar possible sont ceux de TCPDF
          
-     * <qrcode></qrcode> (CF Exemple 13) :
-         permet d'inserer un codebar ‡ 2 dimensions de type QRcode
-         voici un exemple d'utilisation :
-           <qrcode value="votre message ici" size="1mm" ec="M" style="color: black; background-color: white"></qrcode>
-         seul le parametre "value" est obligatoire
-         les diffÈrentes valeurs de type de correction sont L, M, Q, H
+     * <qrcode></qrcode> (CF Exemple 13 & wiki)
+         permet d'ins√©rer un codebar √† 2 dimensions de type QRcode
          (QR Code is registered trademark of DENSO WAVE INCORPORATED | http://www.denso-wave.com/qrcode/)
 
-     * <bookmark></bookmark>  (CF Exemples 7 et About) :
-         permet d'inserer des bookmark dans les pdfs, CF Exemple 7 et About.
-         Il est egalement possible de crÈer un index automatiquement en fin de
-         document, CF exemple About.
+     * <bookmark></bookmark>  (CF Exemples 7 & About & wiki)
+         permet d'ins√©rer des bookmarks dans les pdfs, CF Exemple 7 et About.
+         Il est √©galement possible de cr√©er un index automatiquement en fin de
+         document (cf wiki)
 
-     * propriÈtÈ css "rotate" :
+     * propri√©t√© css "rotate" :
          valeurs possibles : 0, 90, 180, 270
          applicable uniquement sur les divs (cf exemple 8)
-                 
+
 change log :
 -----------
  regardez le fichier _changelog.txt
@@ -81,19 +77,19 @@ change log :
 Aide et Support :
 ----------------
  pour toutes questions et rapport de bug, merci d'utiliser exclusivement le lien de support ci-dessous.
- Je ne rÈpondrais ‡ aucune question en dehors, afin que tout le monde puisse profiter des rÈponses.
+ Je ne r√©pondrai √† aucune question en dehors, afin que tout le monde puisse profiter des r√©ponses.
 
 Informations :
 -------------
- Programmeur :	Spipu
+ Programmeur : Spipu
       email   : webmaster@html2pdf.fr
       site    : http://html2pdf.fr/
       wiki    : http://html2pdf.fr/fr/wiki
       support : http://html2pdf.fr/fr/forum
-		
+
 Remerciement :
 -------------
- * Olivier Plathey pour avoir conÁu FPDF
- * Nicola Asuni pour les modifications qu'il a acceptÈ d'apporter ‡ TCPDF
- * yAronet pour l'hebergement du forum de support
- * toutes les personnes qui m'ont aidÈ ‡ dÈvelopper cet librairie, et ‡ traduire les diffÈrents textes
+ * Olivier Plathey pour avoir con√ßu FPDF
+ * Nicola Asuni pour les modifications qu'il a accept√© d'apporter √† TCPDF
+ * yAronet pour l'h√©bergement du forum de support
+ * toutes les personnes qui m'ont aid√© √† d√©velopper cette librairie, et √† traduire les diff√©rents textes
