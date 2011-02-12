@@ -5838,7 +5838,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 exit;
             }
 
-            $file = dirname(__FILE__).'/langues/'.strtolower($langue).'.csv';
+            $file = dirname(__FILE__).'/locale/'.strtolower($langue).'.csv';
             if (!is_file($file)) {
                 echo 'ERROR : language code <b>'.$langue.'</b> unknown.<br>';
                 echo 'You can create the translation file <b>'.$file.'</b> and send it to me in order to integrate it into a future version.';
