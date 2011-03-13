@@ -19,80 +19,80 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
     class HTML2PDF
     {
-        public    $pdf                  = null;        // objet PDF
-        public    $style                = null;        // objet de style
-        public    $parsing              = null;        // objet de parsing
+        public    $pdf               = null;        // objet PDF
+        public    $style             = null;        // objet de style
+        public    $parsing           = null;        // objet de parsing
 
-        protected $langue            = 'fr';        // langue des messages
-        protected $sens              = 'P';         // sens d'affichage Portrait ou Landscape
-        protected $format            = 'A4';        // format de la page : A4, A3, ...
-        protected $encoding          = '';          // charset encoding
-        protected $unicode           = true;        // means that the input text is unicode (default = true)
+        protected $_langue           = 'fr';        // langue des messages
+        protected $_sens             = 'P';         // sens d'affichage Portrait ou Landscape
+        protected $_format           = 'A4';        // format de la page : A4, A3, ...
+        protected $_encoding         = '';          // charset encoding
+        protected $_unicode          = true;        // means that the input text is unicode (default = true)
 
-        protected $background        = array();     // informations sur le background
-        protected $testTDin1page     = true;        // activer le test de TD ne devant pas depasser une page
-        protected $testIsImage       = true;        // test si les images existes ou non
-        protected $testIsDeprecated  = false;       // test si certaines fonctions sont deprecated
-        protected $isSubPart         = false;       // indique que le convertisseur courant est un sous html
+        protected $_background       = array();     // informations sur le background
+        protected $_testTdInOnepage  = true;        // activer le test de TD ne devant pas depasser une page
+        protected $_testIsImage      = true;        // test si les images existes ou non
+        protected $_testIsDeprecated = false;       // test si certaines fonctions sont deprecated
 
-        protected $parsePos          = 0;           // position du parsing
-        protected $tempPos           = 0;           // position temporaire pour multi tableau
-        protected $page              = 0;           // numero de la page courante
+        protected $_parsePos         = 0;           // position du parsing
+        protected $_tempPos          = 0;           // position temporaire pour multi tableau
+        protected $_page             = 0;           // numero de la page courante
 
-        protected $subHtml           = null;        // sous html
-        protected $subPart           = false;       // indicateur de sous html
+        protected $_subHtml          = null;        // sous html
+        protected $_subPart          = false;       // indicateur de sous html
+        protected $_subHEADER        = array();     // tableau des sous commandes pour faire l'HEADER
+        protected $_subFOOTER        = array();     // tableau des sous commandes pour faire le FOOTER
+        protected $_subSTATES        = array();     // tableau de sauvegarde de certains parametres
 
-        protected $maxX              = 0;           // zone maxi X
-        protected $maxY              = 0;           // zone maxi Y
-        protected $maxE              = 0;           // nomre d'elements dans la zone
-        protected $maxH              = 0;           // plus grande hauteur dans la ligne, pour saut de ligne a corriger
-        protected $maxSave           = array();     // tableau de sauvegarde des maximaux
-        protected $currentH          = 0;           // hauteur de la ligne courante
+        protected $_isSubPart        = false;       // indique que le convertisseur courant est un sous html
+        protected $_isInThead        = false;       // indique si on est dans un thead
+        protected $_isInTfoot        = false;       // indique si on est dans un tfoot
+        protected $_isInOverflow     = false;       // indique si on est dans une div overflow
+        protected $_isInFooter       = false;       // indique si on est dans un footer ou non
+        protected $_isInDraw         = null;        // indique si on est en mode dessin
+        protected $_isAfterFloat     = false;       // indique si on est apres un float
+        protected $_isInForm         = false;       // indique si on est dans un formulaire. Contient dans ce cas l� l'action de celui-ci
+        protected $_isInLink         = '';          // indique si on est a l'interieur d'un lien
+        protected $_isForOneLine     = false;       // indique si on est dans un sous HTML ne servant qu'a calculer la taille de la prochaine ligne
 
-        protected $firstPage         = true;        // premier page
+        protected $_maxX             = 0;           // zone maxi X
+        protected $_maxY             = 0;           // zone maxi Y
+        protected $_maxE             = 0;           // nomre d'elements dans la zone
+        protected $_maxH             = 0;           // plus grande hauteur dans la ligne, pour saut de ligne a corriger
+        protected $_maxSave          = array();     // tableau de sauvegarde des maximaux
+        protected $_currentH         = 0;           // hauteur de la ligne courante
 
-        protected $defaultLeft       = 0;           // marges par default de la page
-        protected $defaultTop        = 0;
-        protected $defaultRight      = 0;
-        protected $defaultBottom     = 0;
+        protected $_defaultLeft      = 0;           // marges par default de la page
+        protected $_defaultTop       = 0;
+        protected $_defaultRight     = 0;
+        protected $_defaultBottom    = 0;
 
-        protected $margeLeft         = 0;           //marges reelles de la page
-        protected $margeTop          = 0;
-        protected $margeRight        = 0;
-        protected $margeBottom       = 0;
-        protected $marges            = array();     // tableau de sauvegarde des differents etats des marges de la page courante
+        protected $_margeLeft        = 0;           //marges reelles de la page
+        protected $_margeTop         = 0;
+        protected $_margeRight       = 0;
+        protected $_margeBottom      = 0;
+        protected $_marges           = array();     // tableau de sauvegarde des differents etats des marges de la page courante
+        protected $_pageMarges       = array();     // marges specifiques dues aux floats
 
-        protected $inLink            = '';          // indique si on est a l'interieur d'un lien
-        protected $lstAncre          = array();     // liste des ancres detectees ou creees
-        protected $subHEADER         = array();     // tableau des sous commandes pour faire l'HEADER
-        protected $subFOOTER         = array();     // tableau des sous commandes pour faire le FOOTER
-        protected $subSTATES         = array();     // tableau de sauvegarde de certains parametres
-        protected $defLIST           = array();     // tableau de sauvegarde de l'etat des UL et OL
+        protected $_firstPage        = true;        // premier page
+        protected $_defList          = array();     // tableau de sauvegarde de l'etat des UL et OL
 
-        protected $lstChamps         = array();     // liste des champs
-        protected $lstSelect         = array();     // options du select en cours
-        protected $previousCall      = null;        // dernier appel
-        protected $pageMarges        = array();     // marges specifiques dues aux floats
-        protected $isInThead         = false;       // indique si on est dans un thead
-        protected $isInTfoot         = false;       // indique si on est dans un tfoot
-        protected $isInOverflow      = false;       // indique si on est dans une div overflow
-        protected $isInFooter        = false;       // indique si on est dans un footer ou non
-        protected $isInDraw          = null;        // indique si on est en mode dessin
-        protected $isAfterFloat      = false;       // indique si on est apres un float
-        protected $forOneLine        = false;       // indique si on est dans un sous HTML ne servant qu'a calculer la taille de la prochaine ligne
-        protected $isInForm          = false;       // indique si on est dans un formulaire. Contient dans ce cas l� l'action de celui-ci
+        protected $_lstAncre         = array();     // liste des ancres detectees ou creees
+        protected $_lstChamps        = array();     // liste des champs
+        protected $_lstSelect        = array();     // options du select en cours
+        protected $_previousCall     = null;        // dernier appel
 
-        protected $debugActif        = false;       // indique si on est en mode debug
-        protected $debugOkUsage      = false;       // indique l'existance de la fonction memory_get_usage
-        protected $debugOkPeak       = false;       // indique l'existance de la fonction memory_get_peak_usage
-        protected $debugLevel        = 0;           // niveau du debug
-        protected $debugStartTime    = 0;           //
-        protected $debugLastTime     = 0;           //
-        protected $defaultFont       = null;        // fonte par defaut si la fonte demandee n'existe pas
+        protected $_debugActif       = false;       // indique si on est en mode debug
+        protected $_debugOkUsage     = false;       // indique l'existance de la fonction memory_get_usage
+        protected $_debugOkPeak      = false;       // indique l'existance de la fonction memory_get_peak_usage
+        protected $_debugLevel       = 0;           // niveau du debug
+        protected $_debugStartTime   = 0;           //
+        protected $_debugLastTime    = 0;           //
+        protected $_defaultFont      = null;        // fonte par defaut si la fonte demandee n'existe pas
 
-        static protected $_subobj        = null;        // sous objet HTML2PDF prepare en cas de besoin
-        static protected $_tables        = array();     // tableau global necessaire a la gestion des tables imbriquees
-        static protected $_textes        = array();     // tableau comprennant le fichier de langue
+        static protected $_subobj    = null;        // sous objet HTML2PDF prepare en cas de besoin
+        static protected $_tables    = array();     // tableau global necessaire a la gestion des tables imbriquees
+        static protected $_textes    = array();     // tableau comprennant le fichier de langue
 
         /**
          * Constructeur
@@ -108,17 +108,17 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         public function __construct($sens = 'P', $format = 'A4', $langue='fr', $unicode=true, $encoding='UTF-8', $marges = array(5, 5, 5, 8))
         {
             // sauvegarde des param�tres
-            $this->page         = 0;
-            $this->sens            = $sens;
-            $this->format        = $format;
-            $this->unicode        = $unicode;
-            $this->encoding        = $encoding;
+            $this->_page         = 0;
+            $this->_sens            = $sens;
+            $this->_format        = $format;
+            $this->_unicode        = $unicode;
+            $this->_encoding        = $encoding;
 
-            $this->firstPage    = true;
-            $this->langue        = strtolower($langue);
+            $this->_firstPage    = true;
+            $this->_langue        = strtolower($langue);
 
             // chargement du fichier de langue
-            HTML2PDF::textLOAD($this->langue);
+            HTML2PDF::textLOAD($this->_langue);
 
             // cr�ation de l' objet PDF
             $this->pdf = new MyPDF($sens, 'mm', $format, $unicode, $encoding);
@@ -126,7 +126,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             // initialisation des styles
             $this->style = new styleHTML($this->pdf);
             $this->style->FontSet();
-            $this->defLIST = array();
+            $this->_defList = array();
 
             // initialisations diverses
             $this->setTestTdInOnePage(true);
@@ -135,18 +135,18 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $this->setDefaultFont(null);
 
             // initialisation du parsing
-            $this->parsing = new parsingHTML($this->encoding);
-            $this->subHtml = null;
-            $this->subPart    = false;
+            $this->parsing = new parsingHTML($this->_encoding);
+            $this->_subHtml = null;
+            $this->_subPart    = false;
 
             // initialisation des marges
             if (!is_array($marges)) $marges = array($marges, $marges, $marges, $marges);
             $this->setDefaultMargins($marges[0], $marges[1], $marges[2], $marges[3]);
             $this->setMargins();
-            $this->marges = array();
+            $this->_marges = array();
 
             // initialisation des champs de formulaire
-            $this->lstChamps = array();
+            $this->_lstChamps = array();
         }
 
         /**
@@ -168,11 +168,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         {
             list($usec, $sec) = explode(' ', microtime());
 
-            $this->debugActif = true;
-            $this->debugOkUsage = function_exists('memory_get_usage');
-            $this->debugOkPeak = function_exists('memory_get_peak_usage');
-            $this->debugStartTime        = (float)$sec + (float)$usec;
-            $this->debugLastTime        = (float)$sec + (float)$usec;
+            $this->_debugActif = true;
+            $this->_debugOkUsage = function_exists('memory_get_usage');
+            $this->_debugOkPeak = function_exists('memory_get_peak_usage');
+            $this->_debugStartTime        = (float)$sec + (float)$usec;
+            $this->_debugLastTime        = (float)$sec + (float)$usec;
 
             $this->DEBUG_stepline('step', 'time', 'delta', 'memory', 'peak');
             $this->DEBUG_add('Init debug');
@@ -188,23 +188,23 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function DEBUG_add($nom, $level=null)
         {
             list($usec, $sec) = explode(' ', microtime());
-            if ($level===true) $this->debugLevel++;
+            if ($level===true) $this->_debugLevel++;
 
-            $nom   = str_repeat('  ', $this->debugLevel). $nom.($level===true ? ' Begin' : ($level===false ? ' End' : ''));
+            $nom   = str_repeat('  ', $this->_debugLevel). $nom.($level===true ? ' Begin' : ($level===false ? ' End' : ''));
             $time  = (float)$sec + (float)$usec;
-            $usage = ($this->debugOkUsage ? memory_get_usage() : 0);
-            $peak  = ($this->debugOkPeak ? memory_get_peak_usage() : 0);
+            $usage = ($this->_debugOkUsage ? memory_get_usage() : 0);
+            $peak  = ($this->_debugOkPeak ? memory_get_peak_usage() : 0);
 
             $this->DEBUG_stepline(
                 $nom,
-                number_format(($time - $this->debugStartTime)*1000, 1, '.', ' ').' ms',
-                number_format(($time - $this->debugLastTime)*1000, 1, '.', ' ').' ms',
+                number_format(($time - $this->_debugStartTime)*1000, 1, '.', ' ').' ms',
+                number_format(($time - $this->_debugLastTime)*1000, 1, '.', ' ').' ms',
                 number_format($usage/1024, 1, '.', ' ').' Ko',
                 number_format($peak/1024, 1, '.', ' ').' Ko'
             );
 
-            $this->debugLastTime = $time;
-            if ($level===false) $this->debugLevel--;
+            $this->_debugLastTime = $time;
+            if ($level===false) $this->_debugLevel--;
             return true;
         }
 
@@ -237,8 +237,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         public function setTestTdInOnePage($mode = true)
         {
-            $old = $this->testTDin1page;
-            $this->testTDin1page = $mode ? true : false;
+            $old = $this->_testTdInOnepage;
+            $this->_testTdInOnepage = $mode ? true : false;
             return $old;
         }
 
@@ -250,8 +250,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         public function setTestIsImage($mode = true)
         {
-            $old = $this->testIsImage;
-            $this->testIsImage = $mode ? true : false;
+            $old = $this->_testIsImage;
+            $this->_testIsImage = $mode ? true : false;
             return $old;
         }
 
@@ -263,8 +263,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         public function setTestIsDeprecated($mode = true)
         {
-            $old = $this->testIsDeprecated;
-            $this->testIsDeprecated = $mode ? true : false;
+            $old = $this->_testIsDeprecated;
+            $this->_testIsDeprecated = $mode ? true : false;
             return $old;
         }
 
@@ -276,8 +276,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         public function setDefaultFont($default = null)
         {
-            $old = $this->defaultFont;
-            $this->defaultFont = $default;
+            $old = $this->_defaultFont;
+            $this->_defaultFont = $default;
             $this->style->setDefaultFont($default);
             return $old;
         }
@@ -296,10 +296,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             if ($right===null)    $right = $left;
             if ($bottom===null)    $bottom = 8;
 
-            $this->defaultLeft        = $this->style->ConvertToMM($left.'mm');
-            $this->defaultTop        = $this->style->ConvertToMM($top.'mm');
-            $this->defaultRight        = $this->style->ConvertToMM($right.'mm');
-            $this->defaultBottom    = $this->style->ConvertToMM($bottom.'mm');
+            $this->_defaultLeft        = $this->style->ConvertToMM($left.'mm');
+            $this->_defaultTop        = $this->style->ConvertToMM($top.'mm');
+            $this->_defaultRight        = $this->style->ConvertToMM($right.'mm');
+            $this->_defaultBottom    = $this->style->ConvertToMM($bottom.'mm');
         }
 
         /**
@@ -309,17 +309,17 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function setMargins()
         {
-            $this->margeLeft    = $this->defaultLeft    + (isset($this->background['left'])        ? $this->background['left']        : 0);
-            $this->margeRight    = $this->defaultRight    + (isset($this->background['right'])    ? $this->background['right']    : 0);
-            $this->margeTop        = $this->defaultTop     + (isset($this->background['top'])        ? $this->background['top']        : 0);
-            $this->margeBottom    = $this->defaultBottom    + (isset($this->background['bottom'])    ? $this->background['bottom']    : 0);
+            $this->_margeLeft    = $this->_defaultLeft    + (isset($this->_background['left'])        ? $this->_background['left']        : 0);
+            $this->_margeRight    = $this->_defaultRight    + (isset($this->_background['right'])    ? $this->_background['right']    : 0);
+            $this->_margeTop        = $this->_defaultTop     + (isset($this->_background['top'])        ? $this->_background['top']        : 0);
+            $this->_margeBottom    = $this->_defaultBottom    + (isset($this->_background['bottom'])    ? $this->_background['bottom']    : 0);
 
-            $this->pdf->SetMargins($this->margeLeft, $this->margeTop, $this->margeRight);
+            $this->pdf->SetMargins($this->_margeLeft, $this->_margeTop, $this->_margeRight);
             $this->pdf->setcMargin(0);
-            $this->pdf->SetAutoPageBreak(false, $this->margeBottom);
+            $this->pdf->SetAutoPageBreak(false, $this->_margeBottom);
 
-            $this->pageMarges = array();
-            $this->pageMarges[floor($this->margeTop*100)] = array($this->margeLeft, $this->pdf->getW()-$this->margeRight);
+            $this->_pageMarges = array();
+            $this->_pageMarges[floor($this->_margeTop*100)] = array($this->_margeLeft, $this->pdf->getW()-$this->_margeRight);
         }
 
         /**
@@ -333,7 +333,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $y = floor($y*100);
             $x = array($this->pdf->getlMargin(), $this->pdf->getW()-$this->pdf->getrMargin());
 
-            foreach ($this->pageMarges as $mY => $mX)
+            foreach ($this->_pageMarges as $mY => $mX)
                 if ($mY<=$y) $x = $mX;
 
             return $x;
@@ -359,19 +359,19 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $y1 = floor($y1*100);
             $y2 = floor($y2*100);
 
-            foreach ($this->pageMarges as $mY => $mX) {
+            foreach ($this->_pageMarges as $mY => $mX) {
                 if ($mY<$y1) continue;
                 if ($mY>$y2) break;
-                if ($float=='left' && $this->pageMarges[$mY][0]<$x2) unset($this->pageMarges[$mY]);
-                if ($float=='right' && $this->pageMarges[$mY][1]>$x1) unset($this->pageMarges[$mY]);
+                if ($float=='left' && $this->_pageMarges[$mY][0]<$x2) unset($this->_pageMarges[$mY]);
+                if ($float=='right' && $this->_pageMarges[$mY][1]>$x1) unset($this->_pageMarges[$mY]);
             }
 
-            $this->pageMarges[$y1] = $old1;
-            $this->pageMarges[$y2] = $old2;
+            $this->_pageMarges[$y1] = $old1;
+            $this->_pageMarges[$y2] = $old2;
 
-            ksort($this->pageMarges);
+            ksort($this->_pageMarges);
 
-            $this->isAfterFloat = true;
+            $this->_isAfterFloat = true;
         }
 
         /**
@@ -384,11 +384,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function saveMargin($ml, $mt, $mr)
         {
-            $this->marges[] = array('l' => $this->pdf->getlMargin(), 't' => $this->pdf->gettMargin(), 'r' => $this->pdf->getrMargin(), 'page' => $this->pageMarges);
+            $this->_marges[] = array('l' => $this->pdf->getlMargin(), 't' => $this->pdf->gettMargin(), 'r' => $this->pdf->getrMargin(), 'page' => $this->_pageMarges);
             $this->pdf->SetMargins($ml, $mt, $mr);
 
-            $this->pageMarges = array();
-            $this->pageMarges[floor($mt*100)] = array($ml, $this->pdf->getW()-$mr);
+            $this->_pageMarges = array();
+            $this->_pageMarges[floor($mt*100)] = array($ml, $this->pdf->getW()-$mr);
         }
 
         /**
@@ -398,21 +398,21 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function loadMargin()
         {
-            $old = array_pop($this->marges);
+            $old = array_pop($this->_marges);
             if ($old) {
                 $ml = $old['l'];
                 $mt = $old['t'];
                 $mr = $old['r'];
                 $mP = $old['page'];
             } else {
-                $ml = $this->margeLeft;
+                $ml = $this->_margeLeft;
                 $mt = 0;
-                $mr = $this->margeRight;
+                $mr = $this->_margeRight;
                 $mP = array($mt => array($ml, $this->pdf->getW()-$mr));
             }
 
             $this->pdf->SetMargins($ml, $mt, $mr);
-            $this->pageMarges = $mP;
+            $this->_pageMarges = $mP;
         }
 
         /**
@@ -435,7 +435,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function saveMax()
         {
-            $this->maxSave[] = array($this->maxX, $this->maxY, $this->maxH, $this->maxE);
+            $this->_maxSave[] = array($this->_maxX, $this->_maxY, $this->_maxH, $this->_maxE);
         }
 
         /**
@@ -445,18 +445,18 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function loadMax()
         {
-            $old = array_pop($this->maxSave);
+            $old = array_pop($this->_maxSave);
 
             if ($old) {
-                $this->maxX = $old[0];
-                $this->maxY = $old[1];
-                $this->maxH = $old[2];
-                $this->maxE = $old[3];
+                $this->_maxX = $old[0];
+                $this->_maxY = $old[1];
+                $this->_maxH = $old[2];
+                $this->_maxE = $old[3];
             } else {
-                $this->maxX = 0;
-                $this->maxY = 0;
-                $this->maxH = 0;
-                $this->maxE = 0;
+                $this->_maxX = 0;
+                $this->_maxY = 0;
+                $this->_maxH = 0;
+                $this->_maxE = 0;
             }
         }
 
@@ -467,16 +467,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function setPageHeader()
         {
-            if (!count($this->subHEADER)) return false;
+            if (!count($this->_subHEADER)) return false;
 
-            $oldParsePos = $this->parsePos;
+            $oldParsePos = $this->_parsePos;
             $oldParseCode = $this->parsing->code;
 
-            $this->parsePos = 0;
-            $this->parsing->code = $this->subHEADER;
+            $this->_parsePos = 0;
+            $this->parsing->code = $this->_subHEADER;
             $this->makeHTMLcode();
 
-            $this->parsePos =     $oldParsePos;
+            $this->_parsePos =     $oldParsePos;
             $this->parsing->code = $oldParseCode;
         }
 
@@ -487,18 +487,18 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function setPageFooter()
         {
-            if (!count($this->subFOOTER)) return false;
+            if (!count($this->_subFOOTER)) return false;
 
-            $oldParsePos = $this->parsePos;
+            $oldParsePos = $this->_parsePos;
             $oldParseCode = $this->parsing->code;
 
-            $this->parsePos = 0;
-            $this->parsing->code = $this->subFOOTER;
-            $this->isInFooter = true;
+            $this->_parsePos = 0;
+            $this->parsing->code = $this->_subFOOTER;
+            $this->_isInFooter = true;
             $this->makeHTMLcode();
-            $this->isInFooter = false;
+            $this->_isInFooter = false;
 
-            $this->parsePos =     $oldParsePos;
+            $this->_parsePos =     $oldParsePos;
             $this->parsing->code = $oldParseCode;
         }
 
@@ -527,28 +527,28 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         public function setNewPage($format = null, $orientation = '', $background = null, $curr = null)
         {
-            $this->firstPage = false;
+            $this->_firstPage = false;
 
-            $this->format = $format ? $format : $this->format;
-            $this->sens = $orientation ? $orientation : $this->sens;
-            $this->background = $background!==null ? $background : $this->background;
-            $this->maxY = 0;
-            $this->maxX = 0;
-            $this->maxH = 0;
+            $this->_format = $format ? $format : $this->_format;
+            $this->_sens = $orientation ? $orientation : $this->_sens;
+            $this->_background = $background!==null ? $background : $this->_background;
+            $this->_maxY = 0;
+            $this->_maxX = 0;
+            $this->_maxH = 0;
 
-            $this->pdf->SetMargins($this->defaultLeft, $this->defaultTop, $this->defaultRight);
-            $this->pdf->AddPage($this->sens, $this->format);
-            $this->page++;
+            $this->pdf->SetMargins($this->_defaultLeft, $this->_defaultTop, $this->_defaultRight);
+            $this->pdf->AddPage($this->_sens, $this->_format);
+            $this->_page++;
 
-            if (!$this->subPart && !$this->isSubPart) {
-                if (is_array($this->background)) {
-                    if (isset($this->background['color']) && $this->background['color']) {
-                        $this->pdf->setFillColorArray($this->background['color']);
+            if (!$this->_subPart && !$this->_isSubPart) {
+                if (is_array($this->_background)) {
+                    if (isset($this->_background['color']) && $this->_background['color']) {
+                        $this->pdf->setFillColorArray($this->_background['color']);
                         $this->pdf->Rect(0, 0, $this->pdf->getW(), $this->pdf->getH(), 'F');
                     }
 
-                    if (isset($this->background['img']) && $this->background['img'])
-                        $this->pdf->Image($this->background['img'], $this->background['posX'], $this->background['posY'], $this->background['width']);
+                    if (isset($this->_background['img']) && $this->_background['img'])
+                        $this->pdf->Image($this->_background['img'], $this->_background['posX'], $this->_background['posY'], $this->_background['width']);
                 }
 
                 $this->setPageHeader();
@@ -556,10 +556,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             }
 
             $this->setMargins();
-            $this->pdf->setY($this->margeTop);
+            $this->pdf->setY($this->_margeTop);
 
             $this->setNewPositionForNewLine($curr);
-            $this->maxH = 0;
+            $this->_maxH = 0;
         }
 
         /**
@@ -573,9 +573,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             list($lx, $rx) = $this->getMargins($this->pdf->getY());
             $this->pdf->setX($lx);
             $wMax = $rx-$lx;
-            $this->currentH = 0;
+            $this->_currentH = 0;
 
-            if ($this->subPart || $this->isSubPart || $this->forOneLine) {
+            if ($this->_subPart || $this->_isSubPart || $this->_isForOneLine) {
 //                $this->pdf->setWordSpacing(0);
                 return null;
             }
@@ -592,28 +592,28 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $sub = null;
             $this->createSubHTML($sub);
             $sub->saveMargin(0, 0, $sub->pdf->getW()-$wMax);
-            $sub->forOneLine = true;
-            $sub->parsePos = $this->parsePos;
+            $sub->_isForOneLine = true;
+            $sub->_parsePos = $this->_parsePos;
             $sub->parsing->code = $this->parsing->code;
 
-            if ($curr!==null && $sub->parsing->code[$this->parsePos]['name']=='write') {
-                $txt = $sub->parsing->code[$this->parsePos]['param']['txt'];
-                $txt = str_replace('[[page_cu]]', $sub->page, $txt);
-                $sub->parsing->code[$this->parsePos]['param']['txt'] = substr($txt, $curr);
+            if ($curr!==null && $sub->parsing->code[$this->_parsePos]['name']=='write') {
+                $txt = $sub->parsing->code[$this->_parsePos]['param']['txt'];
+                $txt = str_replace('[[page_cu]]', $sub->_page, $txt);
+                $sub->parsing->code[$this->_parsePos]['param']['txt'] = substr($txt, $curr);
             } else
-                $sub->parsePos++;
+                $sub->_parsePos++;
 
             // pour chaque element identifi� par le parsing
             $res = null;
-            for ($sub->parsePos; $sub->parsePos<count($sub->parsing->code); $sub->parsePos++) {
-                $todo = $sub->parsing->code[$sub->parsePos];
+            for ($sub->_parsePos; $sub->_parsePos<count($sub->parsing->code); $sub->_parsePos++) {
+                $todo = $sub->parsing->code[$sub->_parsePos];
                 $res = $sub->loadAction($todo);
                 if (!$res) break;
             }
 
-            $w = $sub->maxX; // largeur maximale
-            $h = $sub->maxH; // hauteur maximale
-            $e = ($res===null ? $sub->maxE : 0); // nombre d'�l�ments maximal
+            $w = $sub->_maxX; // largeur maximale
+            $h = $sub->_maxH; // hauteur maximale
+            $e = ($res===null ? $sub->_maxE : 0); // nombre d'�l�ments maximal
             $this->destroySubHTML($sub);
 
             if ($this->style->value['text-align']=='center')
@@ -623,7 +623,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             else
                 $this->pdf->setX($lx);
 
-            $this->currentH = $h;
+            $this->_currentH = $h;
 /*
             if ($this->style->value['text-align']=='justify' && $e>1)
                 $this->pdf->setWordSpacing(($wMax-$w)/($e-1));
@@ -653,7 +653,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             // nettoyage
             HTML2PDF::$_tables = array();
 
-            if ($this->debugActif) {
+            if ($this->_debugActif) {
                 $this->DEBUG_add('Before output');
                 $this->pdf->Close();
                 exit;
@@ -688,20 +688,20 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $pdf = null;
 
             HTML2PDF::$_subobj = new HTML2PDF(
-                                        $this->sens,
-                                        $this->format,
-                                        $this->langue,
-                                        $this->unicode,
-                                        $this->encoding,
-                                        array($this->defaultLeft,$this->defaultTop,$this->defaultRight,$this->defaultBottom)
+                                        $this->_sens,
+                                        $this->_format,
+                                        $this->_langue,
+                                        $this->_unicode,
+                                        $this->_encoding,
+                                        array($this->_defaultLeft,$this->_defaultTop,$this->_defaultRight,$this->_defaultBottom)
                                     );
 
             // initialisation
             HTML2PDF::$_subobj->setIsSubPart();
-            HTML2PDF::$_subobj->setTestTdInOnePage($this->testTDin1page);
-            HTML2PDF::$_subobj->setTestIsImage($this->testIsImage);
-            HTML2PDF::$_subobj->setTestIsDeprecated($this->testIsDeprecated);
-            HTML2PDF::$_subobj->setDefaultFont($this->defaultFont);
+            HTML2PDF::$_subobj->setTestTdInOnePage($this->_testTdInOnepage);
+            HTML2PDF::$_subobj->setTestIsImage($this->_testIsImage);
+            HTML2PDF::$_subobj->setTestIsDeprecated($this->_testIsDeprecated);
+            HTML2PDF::$_subobj->setDefaultFont($this->_defaultFont);
             HTML2PDF::$_subobj->style->css            = &$this->style->css;
             HTML2PDF::$_subobj->style->cssKeys        = &$this->style->cssKeys;
             HTML2PDF::$_subobj->pdf->cloneFontFrom($this->pdf);
@@ -739,7 +739,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $marge+= $this->style->value['border']['l']['width'] + $this->style->value['border']['r']['width'];
                 $marge = $this->pdf->getW() - $this->style->value['width'] + $marge;
             } else
-                $marge = $this->margeLeft+$this->margeRight;
+                $marge = $this->_margeLeft+$this->_margeRight;
 
             // we have to call the method, because of a bug in php 5.1.6
             HTML2PDF::$_subobj->pdf->getPage();
@@ -749,8 +749,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $subHtml->style->table            = $this->style->table;
             $subHtml->style->value            = $this->style->value;
             $subHtml->style->setOnlyLeft();
-            $subHtml->setNewPage($this->format, $this->sens);
-            $subHtml->initSubHtml($marge, $this->page, $this->defLIST);
+            $subHtml->setNewPage($this->_format, $this->_sens);
+            $subHtml->initSubHtml($marge, $this->_page, $this->_defList);
         }
 
         /**
@@ -761,16 +761,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         public function initSubHtml($marge, $page, $defLIST)
         {
             $this->saveMargin(0, 0, $marge);
-            $this->defLIST = $defLIST;
+            $this->_defList = $defLIST;
 
-            $this->page = $page;
+            $this->_page = $page;
             $this->pdf->setXY(0, 0);
             $this->style->FontSet();
         }
 
         public function setIsSubPart()
         {
-            $this->isSubPart = true;
+            $this->_isSubPart = true;
         }
 
         /**
@@ -829,7 +829,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function listeAddLi()
         {
-            $this->defLIST[count($this->defLIST)-1]['nb']++;
+            $this->_defList[count($this->_defList)-1]['nb']++;
         }
 
         protected function listeGetWidth()
@@ -848,9 +848,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function listeGetLi()
         {
-            $im = $this->defLIST[count($this->defLIST)-1]['img'];
-            $st = $this->defLIST[count($this->defLIST)-1]['style'];
-            $nb = $this->defLIST[count($this->defLIST)-1]['nb'];
+            $im = $this->_defList[count($this->_defList)-1]['img'];
+            $st = $this->_defList[count($this->_defList)-1]['style'];
+            $nb = $this->_defList[count($this->_defList)-1]['nb'];
             $up = (substr($st, 0, 6)=='upper-');
 
             if ($im) return array(false, false, $im);
@@ -916,7 +916,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 if ($type=='ul')    $style = 'disc';
                 else                $style = 'decimal';
             }
-            $this->defLIST[count($this->defLIST)] = array('style' => $style, 'nb' => 0, 'img' => $img);
+            $this->_defList[count($this->_defList)] = array('style' => $style, 'nb' => 0, 'img' => $img);
         }
 
         /**
@@ -926,9 +926,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function listeDelLevel()
         {
-            if (count($this->defLIST)) {
-                unset($this->defLIST[count($this->defLIST)-1]);
-                $this->defLIST = array_values($this->defLIST);
+            if (count($this->_defList)) {
+                unset($this->_defList[count($this->_defList)-1]);
+                $this->_defList = array_values($this->_defList);
             }
         }
 
@@ -1005,25 +1005,25 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function makeHTMLcode()
         {
             // pour chaque element identifi� par le parsing
-            for ($this->parsePos=0; $this->parsePos<count($this->parsing->code); $this->parsePos++) {
+            for ($this->_parsePos=0; $this->_parsePos<count($this->parsing->code); $this->_parsePos++) {
                 // r�cup�ration de l'�l�ment
-                $todo = $this->parsing->code[$this->parsePos];
+                $todo = $this->parsing->code[$this->_parsePos];
 
                 // si c'est une ouverture de tableau
                 if (in_array($todo['name'], array('table', 'ul', 'ol')) && !$todo['close']) {
                     // on va cr�er un sous HTML, et on va travailler sur une position temporaire
                     $tagOpen = $todo['name'];
 
-                    $this->subPart = true;
-                    $this->tempPos = $this->parsePos;
+                    $this->_subPart = true;
+                    $this->_tempPos = $this->_parsePos;
 
                     // pour tous les �l�ments jusqu'� la fermeture de la table afin de pr�parer les dimensions
-                    while (isset($this->parsing->code[$this->tempPos]) && !($this->parsing->code[$this->tempPos]['name']==$tagOpen && $this->parsing->code[$this->tempPos]['close'])) {
-                        $this->loadAction($this->parsing->code[$this->tempPos]);
-                        $this->tempPos++;
+                    while (isset($this->parsing->code[$this->_tempPos]) && !($this->parsing->code[$this->_tempPos]['name']==$tagOpen && $this->parsing->code[$this->_tempPos]['close'])) {
+                        $this->loadAction($this->parsing->code[$this->_tempPos]);
+                        $this->_tempPos++;
                     }
-                    if (isset($this->parsing->code[$this->tempPos]))     $this->loadAction($this->parsing->code[$this->tempPos]);
-                    $this->subPart = false;
+                    if (isset($this->parsing->code[$this->_tempPos]))     $this->loadAction($this->parsing->code[$this->_tempPos]);
+                    $this->_subPart = false;
                 }
 
                 // chargement de l'action correspondant � l'�l�ment
@@ -1056,7 +1056,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 <html>
     <head>
         <title>'.HTML2PDF::textGET('vue04').' HTML</title>
-        <meta http-equiv="Content-Type" content="text/html; charset='.$this->encoding.'" >
+        <meta http-equiv="Content-Type" content="text/html; charset='.$this->_encoding.'" >
     </head>
     <body style="padding: 10px; font-size: 10pt;font-family:    Verdana;">
 '.$content.'
@@ -1080,14 +1080,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $param    = $row['param'];
 
             // si aucune page n'est cr��, on la cr��
-            if ($fnc!='o_PAGE' && $this->firstPage) {
+            if ($fnc!='o_PAGE' && $this->_firstPage) {
                 $this->setNewPage();
             }
 
             // lancement de l'action
             if (is_callable(array(&$this, $fnc))) {
                 $res = $this->{$fnc}($param);
-                $this->previousCall = $fnc;
+                $this->_previousCall = $fnc;
                 return $res;
             } else
                 throw new HTML2PDF_exception(1, strtoupper($row['name']), $this->parsing->getHtmlErrorCode($row['html_pos']));
@@ -1102,15 +1102,15 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_PAGE($param)
         {
-            if ($this->forOneLine) return false;
-            if ($this->debugActif) $this->DEBUG_add('PAGE n�'.($this->page+1), true);
+            if ($this->_isForOneLine) return false;
+            if ($this->_debugActif) $this->DEBUG_add('PAGE n�'.($this->_page+1), true);
 
             $newPageSet= (!isset($param['pageset']) || $param['pageset']!='old');
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
             if ($newPageSet) {
-                $this->subHEADER = array();
-                $this->subFOOTER = array();
+                $this->_subHEADER = array();
+                $this->_subFOOTER = array();
 
                 // identification de l'orientation demand�e
                 $orientation = '';
@@ -1235,14 +1235,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_PAGE($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             $this->style->load();
             $this->style->FontSet();
 
-            if ($this->debugActif) $this->DEBUG_add('PAGE n�'.$this->page, false);
+            if ($this->_debugActif) $this->DEBUG_add('PAGE n�'.$this->_page, false);
 
             return true;
         }
@@ -1250,13 +1250,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
         protected function o_PAGE_HEADER($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->subHEADER = array();
-            for ($this->parsePos; $this->parsePos<count($this->parsing->code); $this->parsePos++) {
-                $todo = $this->parsing->code[$this->parsePos];
+            $this->_subHEADER = array();
+            for ($this->_parsePos; $this->_parsePos<count($this->parsing->code); $this->_parsePos++) {
+                $todo = $this->parsing->code[$this->_parsePos];
                 if ($todo['name']=='page_header') $todo['name']='page_header_sub';
-                $this->subHEADER[] = $todo;
+                $this->_subHEADER[] = $todo;
                 if (strtolower($todo['name'])=='page_header_sub' && $todo['close']) break;
             }
 
@@ -1267,13 +1267,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
         protected function o_PAGE_FOOTER($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->subFOOTER = array();
-            for ($this->parsePos; $this->parsePos<count($this->parsing->code); $this->parsePos++) {
-                $todo = $this->parsing->code[$this->parsePos];
+            $this->_subFOOTER = array();
+            for ($this->_parsePos; $this->_parsePos<count($this->parsing->code); $this->_parsePos++) {
+                $todo = $this->parsing->code[$this->_parsePos];
                 if ($todo['name']=='page_footer') $todo['name']='page_footer_sub';
-                $this->subFOOTER[] = $todo;
+                $this->_subFOOTER[] = $todo;
                 if (strtolower($todo['name'])=='page_footer_sub' && $todo['close']) break;
             }
 
@@ -1284,33 +1284,33 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
         protected function o_PAGE_HEADER_SUB($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             // sauvegarde de l'�tat
-            $this->subSTATES = array();
-            $this->subSTATES['x']    = $this->pdf->getX();
-            $this->subSTATES['y']    = $this->pdf->getY();
-            $this->subSTATES['s']    = $this->style->value;
-            $this->subSTATES['t']    = $this->style->table;
-            $this->subSTATES['ml']    = $this->margeLeft;
-            $this->subSTATES['mr']    = $this->margeRight;
-            $this->subSTATES['mt']    = $this->margeTop;
-            $this->subSTATES['mb']    = $this->margeBottom;
-            $this->subSTATES['mp']    = $this->pageMarges;
+            $this->_subSTATES = array();
+            $this->_subSTATES['x']    = $this->pdf->getX();
+            $this->_subSTATES['y']    = $this->pdf->getY();
+            $this->_subSTATES['s']    = $this->style->value;
+            $this->_subSTATES['t']    = $this->style->table;
+            $this->_subSTATES['ml']    = $this->_margeLeft;
+            $this->_subSTATES['mr']    = $this->_margeRight;
+            $this->_subSTATES['mt']    = $this->_margeTop;
+            $this->_subSTATES['mb']    = $this->_margeBottom;
+            $this->_subSTATES['mp']    = $this->_pageMarges;
 
             // nouvel etat pour le footer
-            $this->pageMarges = array();
-            $this->margeLeft    = $this->defaultLeft;
-            $this->margeRight    = $this->defaultRight;
-            $this->margeTop        = $this->defaultTop;
-            $this->margeBottom    = $this->defaultBottom;
-            $this->pdf->SetMargins($this->margeLeft, $this->margeTop, $this->margeRight);
-            $this->pdf->SetAutoPageBreak(false, $this->margeBottom);
-            $this->pdf->setXY($this->defaultLeft, $this->defaultTop);
+            $this->_pageMarges = array();
+            $this->_margeLeft    = $this->_defaultLeft;
+            $this->_margeRight    = $this->_defaultRight;
+            $this->_margeTop        = $this->_defaultTop;
+            $this->_margeBottom    = $this->_defaultBottom;
+            $this->pdf->SetMargins($this->_margeLeft, $this->_margeTop, $this->_margeRight);
+            $this->pdf->SetAutoPageBreak(false, $this->_margeBottom);
+            $this->pdf->setXY($this->_defaultLeft, $this->_defaultTop);
 
             $this->style->initStyle();
             $this->style->resetStyle();
-            $this->style->value['width']    = $this->pdf->getW() - $this->defaultLeft - $this->defaultRight;
+            $this->style->value['width']    = $this->pdf->getW() - $this->_defaultLeft - $this->_defaultRight;
             $this->style->table                = array();
 
             $this->style->save();
@@ -1323,58 +1323,58 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
         protected function c_PAGE_HEADER_SUB($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->load();
 
             // retablissement de l'etat
-            $this->style->value                = $this->subSTATES['s'];
-            $this->style->table                = $this->subSTATES['t'];
-            $this->pageMarges                = $this->subSTATES['mp'];
-            $this->margeLeft                = $this->subSTATES['ml'];
-            $this->margeRight                = $this->subSTATES['mr'];
-            $this->margeTop                    = $this->subSTATES['mt'];
-            $this->margeBottom                = $this->subSTATES['mb'];
-            $this->pdf->SetMargins($this->margeLeft, $this->margeTop, $this->margeRight);
-            $this->pdf->setbMargin($this->margeBottom);
-            $this->pdf->SetAutoPageBreak(false, $this->margeBottom);
-            $this->pdf->setXY($this->subSTATES['x'], $this->subSTATES['y']);
+            $this->style->value                = $this->_subSTATES['s'];
+            $this->style->table                = $this->_subSTATES['t'];
+            $this->_pageMarges                = $this->_subSTATES['mp'];
+            $this->_margeLeft                = $this->_subSTATES['ml'];
+            $this->_margeRight                = $this->_subSTATES['mr'];
+            $this->_margeTop                    = $this->_subSTATES['mt'];
+            $this->_margeBottom                = $this->_subSTATES['mb'];
+            $this->pdf->SetMargins($this->_margeLeft, $this->_margeTop, $this->_margeRight);
+            $this->pdf->setbMargin($this->_margeBottom);
+            $this->pdf->SetAutoPageBreak(false, $this->_margeBottom);
+            $this->pdf->setXY($this->_subSTATES['x'], $this->_subSTATES['y']);
 
             $this->style->FontSet();
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             return true;
         }
 
         protected function o_PAGE_FOOTER_SUB($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->subSTATES = array();
-            $this->subSTATES['x']    = $this->pdf->getX();
-            $this->subSTATES['y']    = $this->pdf->getY();
-            $this->subSTATES['s']    = $this->style->value;
-            $this->subSTATES['t']    = $this->style->table;
-            $this->subSTATES['ml']    = $this->margeLeft;
-            $this->subSTATES['mr']    = $this->margeRight;
-            $this->subSTATES['mt']    = $this->margeTop;
-            $this->subSTATES['mb']    = $this->margeBottom;
-            $this->subSTATES['mp']    = $this->pageMarges;
+            $this->_subSTATES = array();
+            $this->_subSTATES['x']    = $this->pdf->getX();
+            $this->_subSTATES['y']    = $this->pdf->getY();
+            $this->_subSTATES['s']    = $this->style->value;
+            $this->_subSTATES['t']    = $this->style->table;
+            $this->_subSTATES['ml']    = $this->_margeLeft;
+            $this->_subSTATES['mr']    = $this->_margeRight;
+            $this->_subSTATES['mt']    = $this->_margeTop;
+            $this->_subSTATES['mb']    = $this->_margeBottom;
+            $this->_subSTATES['mp']    = $this->_pageMarges;
 
             // nouvel etat pour le footer
-            $this->pageMarges = array();
-            $this->margeLeft    = $this->defaultLeft;
-            $this->margeRight    = $this->defaultRight;
-            $this->margeTop        = $this->defaultTop;
-            $this->margeBottom    = $this->defaultBottom;
-            $this->pdf->SetMargins($this->margeLeft, $this->margeTop, $this->margeRight);
-            $this->pdf->SetAutoPageBreak(false, $this->margeBottom);
-            $this->pdf->setXY($this->defaultLeft, $this->defaultTop);
+            $this->_pageMarges = array();
+            $this->_margeLeft    = $this->_defaultLeft;
+            $this->_margeRight    = $this->_defaultRight;
+            $this->_margeTop        = $this->_defaultTop;
+            $this->_margeBottom    = $this->_defaultBottom;
+            $this->pdf->SetMargins($this->_margeLeft, $this->_margeTop, $this->_margeRight);
+            $this->pdf->SetAutoPageBreak(false, $this->_margeBottom);
+            $this->pdf->setXY($this->_defaultLeft, $this->_defaultTop);
 
 
             $this->style->initStyle();
             $this->style->resetStyle();
-            $this->style->value['width']    = $this->pdf->getW() - $this->defaultLeft - $this->defaultRight;
+            $this->style->value['width']    = $this->pdf->getW() - $this->_defaultLeft - $this->_defaultRight;
             $this->style->table                = array();
 
             // on en cr�� un sous HTML que l'on transforme en PDF
@@ -1382,9 +1382,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             // on extrait tout ce qui est contenu dans le FOOTER
             $sub = null;
             $this->CreateSubHTML($sub);
-            $sub->parsing->code = $this->parsing->getLevel($this->parsePos);
+            $sub->parsing->code = $this->parsing->getLevel($this->_parsePos);
             $sub->MakeHTMLcode();
-            $this->pdf->setY($this->pdf->getH() - $sub->maxY - $this->defaultBottom - 0.01);
+            $this->pdf->setY($this->pdf->getH() - $sub->_maxY - $this->_defaultBottom - 0.01);
             $this->destroySubHTML($sub);
 
             $this->style->save();
@@ -1398,23 +1398,23 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
         protected function c_PAGE_FOOTER_SUB($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->load();
 
-            $this->style->value                = $this->subSTATES['s'];
-            $this->style->table                = $this->subSTATES['t'];
-            $this->pageMarges                 = $this->subSTATES['mp'];
-            $this->margeLeft                = $this->subSTATES['ml'];
-            $this->margeRight                = $this->subSTATES['mr'];
-            $this->margeTop                    = $this->subSTATES['mt'];
-            $this->margeBottom                = $this->subSTATES['mb'];
-            $this->pdf->SetMargins($this->margeLeft, $this->margeTop, $this->margeRight);
-            $this->pdf->SetAutoPageBreak(false, $this->margeBottom);
-            $this->pdf->setXY($this->subSTATES['x'], $this->subSTATES['y']);
+            $this->style->value                = $this->_subSTATES['s'];
+            $this->style->table                = $this->_subSTATES['t'];
+            $this->_pageMarges                 = $this->_subSTATES['mp'];
+            $this->_margeLeft                = $this->_subSTATES['ml'];
+            $this->_margeRight                = $this->_subSTATES['mr'];
+            $this->_margeTop                    = $this->_subSTATES['mt'];
+            $this->_margeBottom                = $this->_subSTATES['mb'];
+            $this->pdf->SetMargins($this->_margeLeft, $this->_margeTop, $this->_margeRight);
+            $this->pdf->SetAutoPageBreak(false, $this->_margeBottom);
+            $this->pdf->setXY($this->_subSTATES['x'], $this->_subSTATES['y']);
 
             $this->style->FontSet();
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             return true;
         }
@@ -1428,22 +1428,22 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_NOBREAK($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             // on en cr�� un sous HTML que l'on transforme en PDF
             // pour analyse les dimensions
             // et voir si ca rentre
             $sub = null;
             $this->CreateSubHTML($sub);
-            $sub->parsing->code = $this->parsing->getLevel($this->parsePos);
+            $sub->parsing->code = $this->parsing->getLevel($this->_parsePos);
             $sub->MakeHTMLcode();
 
             $y = $this->pdf->getY();
             if (
-                $sub->maxY < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) &&
-                $y + $sub->maxY>=($this->pdf->getH() - $this->pdf->getbMargin())
+                $sub->_maxY < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) &&
+                $y + $sub->_maxY>=($this->pdf->getH() - $this->pdf->getbMargin())
             ) {
                 $this->setNewPage();
             }
@@ -1462,9 +1462,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_NOBREAK($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             return true;
         }
@@ -1478,8 +1478,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_DIV($param, $other = 'div')
         {
-            if ($this->forOneLine) return false;
-            if ($this->debugActif) $this->DEBUG_add(strtoupper($other), true);
+            if ($this->_isForOneLine) return false;
+            if ($this->_debugActif) $this->DEBUG_add(strtoupper($other), true);
 
             $this->style->save();
             $this->style->analyse($other, $param);
@@ -1502,7 +1502,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $marge['b'] = $this->style->value['border']['b']['width'] + $this->style->value['padding']['b']+0.03;
 
             // on extrait tout ce qui est contenu dans la DIV
-            $level = $this->parsing->getLevel($this->parsePos);
+            $level = $this->parsing->getLevel($this->_parsePos);
 
             // on en cr�� un sous HTML que l'on transforme en PDF
             // pour analyse les dimensions
@@ -1512,8 +1512,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $this->CreateSubHTML($sub);
                 $sub->parsing->code = $level;
                 $sub->MakeHTMLcode();
-                $w = $sub->maxX;
-                $h = $sub->maxY;
+                $w = $sub->_maxX;
+                $h = $sub->_maxY;
                 $this->destroySubHTML($sub);
             }
             $wReel = $w;
@@ -1528,11 +1528,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $overW = max($w, $this->style->value['width']);
                 $overH = max($h, $this->style->value['height']);
                 $overflow = true;
-                $this->style->value['old_maxX'] = $this->maxX;
-                $this->style->value['old_maxY'] = $this->maxY;
-                $this->style->value['old_maxH'] = $this->maxH;
-                $this->style->value['old_overflow'] = $this->isInOverflow;
-                $this->isInOverflow = true;
+                $this->style->value['old_maxX'] = $this->_maxX;
+                $this->style->value['old_maxY'] = $this->_maxY;
+                $this->style->value['old_maxH'] = $this->_maxH;
+                $this->style->value['old_overflow'] = $this->_isInOverflow;
+                $this->_isInOverflow = true;
             } else {
                 $overW = null;
                 $overH = null;
@@ -1588,7 +1588,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 if (
                         ($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
                         ($this->pdf->getY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
-                        !$this->isInOverflow
+                        !$this->_isInOverflow
                     )
                     $this->setNewPage();
 
@@ -1614,10 +1614,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
                 $this->style->setPosition();
                 $this->saveMax();
-                $this->maxX = 0;
-                $this->maxY = 0;
-                $this->maxH = 0;
-                $this->maxE = 0;
+                $this->_maxX = 0;
+                $this->_maxY = 0;
+                $this->_maxH = 0;
+                $this->_maxE = 0;
             }
 
             if ($this->style->value['rotate']) {
@@ -1650,7 +1650,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             // positionnement en fonction des alignements
             $xCorr = 0;
             $yCorr = 0;
-            if (!$this->subPart && !$this->isSubPart) {
+            if (!$this->_subPart && !$this->_isSubPart) {
                 switch($this->style->value['text-align'])
                 {
                     case 'right':
@@ -1725,7 +1725,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $this->style->analyse('fieldset', $param);
 
             // get height of LEGEND element and make fieldset corrections
-            for ($tempPos = $this->parsePos + 1; $tempPos<count($this->parsing->code); $tempPos++) {
+            for ($tempPos = $this->_parsePos + 1; $tempPos<count($this->parsing->code); $tempPos++) {
                 $todo = $this->parsing->code[$tempPos];
                 if ($todo['name'] == 'fieldset') break;
                 if ($todo['name'] == 'legend' && !$todo['close']) {
@@ -1737,15 +1737,15 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
                     // pour chaque element identifi� par le parsing
                     $res = null;
-                    for ($sub->parsePos = 0; $sub->parsePos<count($sub->parsing->code); $sub->parsePos++) {
-                        $todo = $sub->parsing->code[$sub->parsePos];
+                    for ($sub->_parsePos = 0; $sub->_parsePos<count($sub->parsing->code); $sub->_parsePos++) {
+                        $todo = $sub->parsing->code[$sub->_parsePos];
                         $sub->loadAction($todo);
 
                         if ($todo['name'] == 'legend' && $todo['close'])
                             break;
                     }
 
-                    $legendH = $sub->maxY;
+                    $legendH = $sub->_maxY;
                     $this->destroySubHTML($sub);
 
                     $move = $this->style->value['padding']['t'] + $this->style->value['border']['t']['width'] + 0.03;
@@ -1772,13 +1772,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_DIV($param, $other='div')
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             if ($this->style->value['overflow']=='hidden') {
-                $this->maxX = $this->style->value['old_maxX'];
-                $this->maxY = $this->style->value['old_maxY'];
-                $this->maxH = $this->style->value['old_maxH'];
-                $this->isInOverflow = $this->style->value['old_overflow'];
+                $this->_maxX = $this->style->value['old_maxX'];
+                $this->_maxY = $this->style->value['old_maxY'];
+                $this->_maxH = $this->style->value['old_maxH'];
+                $this->_isInOverflow = $this->style->value['old_overflow'];
                 $this->pdf->clippingPathStop();
             }
 
@@ -1816,9 +1816,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $this->pdf->setXY($x+$w, $y);
 
                 // position MAX
-                $this->maxX = max($this->maxX, $x+$w);
-                $this->maxY = max($this->maxY, $y+$h);
-                 $this->maxH = max($this->maxH, $h);
+                $this->_maxX = max($this->_maxX, $x+$w);
+                $this->_maxY = max($this->_maxY, $y+$h);
+                 $this->_maxH = max($this->_maxH, $h);
             } else {
                 // position
                 $this->pdf->setXY($this->style->value['xc'], $this->style->value['yc']);
@@ -1833,7 +1833,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $this->loadMargin();
 
             if ($block) $this->o_BR(array());
-            if ($this->debugActif) $this->DEBUG_add(strtoupper($other), false);
+            if ($this->_debugActif) $this->DEBUG_add(strtoupper($other), false);
 
             return true;
         }
@@ -1869,7 +1869,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             if (!isset($param['label']))    $param['label']    = 'label';
             if (!isset($param['style']['color'])) $param['style']['color'] = '#000000';
 
-            if ($this->testIsDeprecated && (isset($param['bar_h']) || isset($param['bar_w'])))
+            if ($this->_testIsDeprecated && (isset($param['bar_h']) || isset($param['bar_w'])))
                 throw new HTML2PDF_exception(9, array('BARCODE', 'bar_h, bar_w'));
 
             $param['type'] = strtoupper($param['type']);
@@ -1889,10 +1889,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $infos = $this->pdf->myBarcode($param['value'], $param['type'], $x, $y, $w, $h, $txt, $c);
 
             // position maximale globale
-            $this->maxX = max($this->maxX, $x+$infos[0]);
-            $this->maxY = max($this->maxY, $y+$infos[1]);
-            $this->maxH = max($this->maxH, $infos[1]);
-            $this->maxE++;
+            $this->_maxX = max($this->_maxX, $x+$infos[0]);
+            $this->_maxY = max($this->_maxY, $y+$infos[1]);
+            $this->_maxH = max($this->_maxH, $infos[1]);
+            $this->_maxE++;
 
             $this->pdf->setXY($x+$infos[0], $y);
 
@@ -1925,10 +1925,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_QRCODE($param)
         {
-            if ($this->testIsDeprecated && (isset($param['size']) || isset($param['noborder'])))
+            if ($this->_testIsDeprecated && (isset($param['size']) || isset($param['noborder'])))
                 throw new HTML2PDF_exception(9, array('QRCODE', 'size, noborder'));
 
-            if ($this->debugActif) $this->DEBUG_add('QRCODE', true);
+            if ($this->_debugActif) $this->DEBUG_add('QRCODE', true);
 
             if (!isset($param['value']))                        $param['value']    = '';
             if (!isset($param['ec']))                            $param['ec']    = 'H';
@@ -1968,14 +1968,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $style['padding'] = 0;
             }
 
-            if (!$this->subPart && !$this->isSubPart) {
+            if (!$this->_subPart && !$this->_isSubPart) {
                 $this->pdf->write2DBarcode($param['value'], 'QRCODE,'.$param['ec'], $x, $y, $size, $size, $style);
             }
 
             // position maximale globale
-            $this->maxX = max($this->maxX, $x+$size);
-            $this->maxY = max($this->maxY, $y+$size);
-             $this->maxH = max($this->maxH, $size);
+            $this->_maxX = max($this->_maxX, $x+$size);
+            $this->_maxY = max($this->_maxY, $y+$size);
+             $this->_maxH = max($this->_maxH, $size);
 
              $this->pdf->setX($x+$size);
 
@@ -1994,7 +1994,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_QRCODE($param)
         {
-            if ($this->debugActif) $this->DEBUG_add('QRCODE', false);
+            if ($this->_debugActif) $this->DEBUG_add('QRCODE', false);
             // completement inutile
             return true;
         }
@@ -2033,10 +2033,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
         function getElementY($h)
         {
-            if ($this->subPart || $this->isSubPart || !$this->currentH || $this->currentH<$h)
+            if ($this->_subPart || $this->_isSubPart || !$this->_currentH || $this->_currentH<$h)
                 return 0;
 
-            return ($this->currentH-$h)*0.8;
+            return ($this->_currentH-$h)*0.8;
         }
 
         /**
@@ -2055,12 +2055,12 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             // r�cup�ration du texte � �crire, et conversion
             $txt = $param['txt'];
 
-            if ($this->isAfterFloat) {
+            if ($this->_isAfterFloat) {
                 $txt = ltrim($txt);
-                $this->isAfterFloat = false;
+                $this->_isAfterFloat = false;
             }
 
-            $txt = str_replace('[[page_cu]]', $this->page, $txt);
+            $txt = str_replace('[[page_cu]]', $this->_page, $txt);
 
             if ($this->style->value['text-transform']!='none') {
                 if ($this->style->value['text-transform']=='capitalize')
@@ -2144,10 +2144,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 */
                 if (strlen($str[0])) {
                     $this->pdf->setXY($this->pdf->getX(), $y+$dh+$dy);
-                    $this->pdf->Cell($wc, $h, $str[0], 0, 0, $align, $fill, $this->inLink);
+                    $this->pdf->Cell($wc, $h, $str[0], 0, 0, $align, $fill, $this->_isInLink);
                     $this->pdf->setXY($this->pdf->getX(), $y);
                 }
-                $this->maxH = max($this->maxH, $lh);
+                $this->_maxH = max($this->_maxH, $lh);
 
                 // d�termination de la largeur max
                 $maxX = max($maxX, $this->pdf->getX());
@@ -2161,9 +2161,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 // si il reste du text � afficher
                 if (count($words)) {
                     if ($add) $w-= $space;
-                    if ($this->forOneLine) {
-                        $this->maxE+= $i+1;
-                        $this->maxX = max($this->maxX, $maxX);
+                    if ($this->_isForOneLine) {
+                        $this->_maxE+= $i+1;
+                        $this->_maxX = max($this->_maxX, $maxX);
                         return null;
                     }
 
@@ -2176,7 +2176,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
                     // si la prochaine ligne ne rentre pas dans la page => nouvelle page
                     if ($y + $h>=$this->pdf->getH() - $this->pdf->getbMargin()) {
-                        if (!$this->isInOverflow && !$this->isInFooter) {
+                        if (!$this->_isInOverflow && !$this->_isInFooter) {
                             $this->setNewPage(null, '', null, $currPos);
                             $y = $this->pdf->getY();
                             $x = $this->pdf->getX();
@@ -2207,10 +2207,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 }
 */
                 $this->pdf->setXY($this->pdf->getX(), $y+$dh+$dy);
-                $this->pdf->Cell(($align=='L' ? $w : $this->style->value['width']), $h, $txt, 0, 0, $align, $fill, $this->inLink);
+                $this->pdf->Cell(($align=='L' ? $w : $this->style->value['width']), $h, $txt, 0, 0, $align, $fill, $this->_isInLink);
                 $this->pdf->setXY($this->pdf->getX(), $y);
-                $this->maxH = max($this->maxH, $lh);
-                $this->maxE+= count($words);
+                $this->_maxH = max($this->_maxH, $lh);
+                $this->_maxE+= count($words);
             }
 
             // d�termination des positions MAX
@@ -2218,8 +2218,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $maxY = $this->pdf->getY()+$h;
 
             // position maximale globale
-            $this->maxX = max($this->maxX, $maxX);
-            $this->maxY = max($this->maxY, $maxY);
+            $this->_maxX = max($this->_maxX, $maxX);
+            $this->_maxY = max($this->_maxY, $maxY);
 
             return true;
         }
@@ -2236,7 +2236,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $infos=@GetImageSize($src);
 
             if (count($infos)<2) {
-                if ($this->testIsImage)
+                if ($this->_testIsImage)
                     throw new HTML2PDF_exception(6, $src);
 
                 $src = null;
@@ -2265,7 +2265,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
             // detection du float
             $float = $this->style->getFloat();
-            if ($float && $this->maxH)
+            if ($float && $this->_maxH)
                 if (!$this->o_BR(array()))
                     return false;
 
@@ -2274,10 +2274,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $y = $this->pdf->getY();
 
             // si l'image ne rentre pas dans la ligne => nouvelle ligne
-            if (!$float && ($x + $w>$this->pdf->getW() - $this->pdf->getrMargin()) && $this->maxH) {
-                if ($this->forOneLine) return null;
+            if (!$float && ($x + $w>$this->pdf->getW() - $this->pdf->getrMargin()) && $this->_maxH) {
+                if ($this->_isForOneLine) return null;
 
-                $hnl = max($this->maxH, $this->style->getLineHeight());
+                $hnl = max($this->_maxH, $this->style->getLineHeight());
                 $this->setNewLine($hnl);
                 $x = $this->pdf->getX();
                 $y = $this->pdf->getY();
@@ -2286,7 +2286,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             // si l'image ne rentre pas dans la page => nouvelle page
             if (
                 ($y + $h>$this->pdf->getH() - $this->pdf->getbMargin()) &&
-                !$this->isInOverflow
+                !$this->_isInOverflow
             ) {
                 $this->setNewPage();
                 $x = $this->pdf->getX();
@@ -2323,8 +2323,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             }
 
             // affichage de l'image, et positionnement � la suite
-            if (!$this->subPart && !$this->isSubPart) {
-                if ($src) $this->pdf->Image($src, $x, $y, $w, $h, '', $this->inLink);
+            if (!$this->_subPart && !$this->_isSubPart) {
+                if ($src) $this->pdf->Image($src, $x, $y, $w, $h, '', $this->_isInLink);
                 else {
                     $this->pdf->setFillColorArray(array(240, 220, 220));
                     $this->pdf->Rect($x, $y, $w, $h, 'F');
@@ -2337,16 +2337,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $h+= $this->style->value['margin']['t'] + $this->style->value['margin']['b'];
 
             if ($float=='left') {
-                $this->maxX = max($this->maxX, $x+$w);
-                $this->maxY = max($this->maxY, $y+$h);
+                $this->_maxX = max($this->_maxX, $x+$w);
+                $this->_maxY = max($this->_maxY, $y+$h);
 
                 $this->addMargins($float, $x, $y, $x+$w, $y+$h);
 
                 list($lx, $rx) = $this->getMargins($yc);
                 $this->pdf->setXY($lx, $yc);
             } else if ($float=='right') {
-//                $this->maxX = max($this->maxX, $x+$w);
-                $this->maxY = max($this->maxY, $y+$h);
+//                $this->_maxX = max($this->_maxX, $x+$w);
+                $this->_maxY = max($this->_maxY, $y+$h);
 
                 $this->addMargins($float, $x, $y, $x+$w, $y+$h);
 
@@ -2354,9 +2354,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $this->pdf->setXY($lx, $yc);
             } else {
                 $this->pdf->setX($x+$w);
-                $this->maxX = max($this->maxX, $x+$w);
-                $this->maxY = max($this->maxY, $y+$h);
-                 $this->maxH = max($this->maxH, $h);
+                $this->_maxX = max($this->_maxX, $x+$w);
+                $this->_maxY = max($this->_maxY, $y+$h);
+                 $this->_maxH = max($this->_maxH, $h);
             }
             return true;
         }
@@ -2376,7 +2376,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function drawRectangle($x, $y, $w, $h, $border, $padding, $margin, $background)
         {
-            if ($this->subPart || $this->isSubPart) return false;
+            if ($this->_subPart || $this->_isSubPart) return false;
             if ($h===null) return false;
 
             $x+= $margin;
@@ -2468,7 +2468,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $imageInfos=@GetImageSize($iName);
 
                 if (count($imageInfos)<2) {
-                    if ($this->testIsImage)
+                    if ($this->_testIsImage)
                         throw new HTML2PDF_exception(6, $iName);
                 } else {
                     // r�cup�ration des dimensions dans l'unit� du PDF
@@ -2861,16 +2861,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_BR($param, $curr = null)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $h = max($this->maxH, $this->style->getLineHeight());
+            $h = max($this->_maxH, $this->style->getLineHeight());
 
             // si la ligne est vide, la position maximale n'a pas �t� mise � jour => on la met � jour
-            if ($this->maxH==0) $this->maxY = max($this->maxY, $this->pdf->getY()+$h);
+            if ($this->_maxH==0) $this->_maxY = max($this->_maxY, $this->pdf->getY()+$h);
 
             $this->makeBR($h, $curr);
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             return true;
         }
@@ -2879,7 +2879,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         {
             // si le saut de ligne rentre => on le prend en compte, sinon nouvelle page
             if ($h) {
-                if (($this->pdf->getY()+$h<$this->pdf->getH() - $this->pdf->getbMargin()) || $this->isInOverflow || $this->isInFooter)
+                if (($this->pdf->getY()+$h<$this->pdf->getH() - $this->pdf->getbMargin()) || $this->_isInOverflow || $this->_isInFooter)
                     $this->setNewLine($h, $curr);
                 else
                     $this->setNewPage(null, '', null, $curr);
@@ -2887,7 +2887,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $this->setNewPositionForNewLine($curr);
             }
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
         }
 
         /**
@@ -2899,11 +2899,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_HR($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
             $oldAlign = $this->style->value['text-align'];
             $this->style->value['text-align'] = 'left';
 
-            if ($this->maxH) $this->o_BR($param);
+            if ($this->_maxH) $this->o_BR($param);
 
             $fontSize = $this->style->value['font-size'];
             $this->style->value['font-size']=$fontSize*0.5; $this->o_BR($param);
@@ -2923,7 +2923,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             if ($h<=0)    $h = $this->style->value['border']['t']['width']+$this->style->value['border']['b']['width'];
 
             $this->drawRectangle($this->pdf->getX(), $this->pdf->getY(), $this->style->value['width'], $h, $this->style->value['border'], 0, 0, $this->style->value['background']);
-            $this->maxH = $h;
+            $this->_maxH = $h;
 
             $this->style->load();
             $this->style->FontSet();
@@ -3136,23 +3136,23 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_A($param)
         {
-            $this->inLink = str_replace('&amp;', '&', isset($param['href']) ? $param['href'] : '');
+            $this->_isInLink = str_replace('&amp;', '&', isset($param['href']) ? $param['href'] : '');
 
             if (isset($param['name'])) {
                 $nom =     $param['name'];
-                if (!isset($this->lstAncre[$nom])) $this->lstAncre[$nom] = array($this->pdf->AddLink(), false);
+                if (!isset($this->_lstAncre[$nom])) $this->_lstAncre[$nom] = array($this->pdf->AddLink(), false);
 
-                if (!$this->lstAncre[$nom][1]) {
-                    $this->lstAncre[$nom][1] = true;
-                    $this->pdf->SetLink($this->lstAncre[$nom][0], -1, -1);
+                if (!$this->_lstAncre[$nom][1]) {
+                    $this->_lstAncre[$nom][1] = true;
+                    $this->pdf->SetLink($this->_lstAncre[$nom][0], -1, -1);
                 }
             }
 
-            if (preg_match('/^#([^#]+)$/isU', $this->inLink, $match)) {
+            if (preg_match('/^#([^#]+)$/isU', $this->_isInLink, $match)) {
                 $nom = $match[1];
-                if (!isset($this->lstAncre[$nom])) $this->lstAncre[$nom] = array($this->pdf->AddLink(), false);
+                if (!isset($this->_lstAncre[$nom])) $this->_lstAncre[$nom] = array($this->pdf->AddLink(), false);
 
-                $this->inLink = $this->lstAncre[$nom][0];
+                $this->_isInLink = $this->_lstAncre[$nom][0];
             }
 
             $this->style->save();
@@ -3174,7 +3174,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_A($param)
         {
-            $this->inLink    = '';
+            $this->_isInLink    = '';
             $this->style->load();
             $this->style->FontSet();
 
@@ -3190,9 +3190,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_H1($param, $other = 'h1')
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            if ($this->maxH) $this->o_BR(array());
+            if ($this->_maxH) $this->o_BR(array());
             $this->style->save();
             $this->style->value['font-bold'] = true;
 
@@ -3241,18 +3241,18 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_H1($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             // hauteur du H1
-            $this->maxH+= $this->style->value['margin']['b'];
-            $h = max($this->maxH, $this->style->getLineHeight());
+            $this->_maxH+= $this->style->value['margin']['b'];
+            $h = max($this->_maxH, $this->style->getLineHeight());
 
             $this->style->load();
             $this->style->FontSet();
 
             // saut de ligne et initialisation de la hauteur
             $this->makeBR($h);
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             return true;
         }
@@ -3337,10 +3337,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_P($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            if (!in_array($this->previousCall, array('c_P', 'c_UL'))) {
-                if ($this->maxH) $this->o_BR(array());
+            if (!in_array($this->_previousCall, array('c_P', 'c_UL'))) {
+                if ($this->_maxH) $this->o_BR(array());
             }
 
             $this->style->save();
@@ -3358,9 +3358,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
             if ($this->style->value['text-indent']>0) {
                 $y = $this->pdf->getY()+$this->style->value['margin']['t']+$this->style->value['padding']['t'];
-                $this->pageMarges[floor($y*100)] = array($mL+$this->style->value['text-indent'], $this->pdf->getW()-$mR);
+                $this->_pageMarges[floor($y*100)] = array($mL+$this->style->value['text-indent'], $this->pdf->getW()-$mR);
                 $y+= $this->style->getLineHeight()*0.1;
-                $this->pageMarges[floor($y*100)] = array($mL, $this->pdf->getW()-$mR);
+                $this->_pageMarges[floor($y*100)] = array($mL, $this->pdf->getW()-$mR);
             }
             $this->makeBR($this->style->value['margin']['t']+$this->style->value['padding']['t']);
             return true;
@@ -3375,9 +3375,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_P($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            if ($this->maxH) $this->o_BR(array());
+            if ($this->_maxH) $this->o_BR(array());
             $this->loadMargin();
             $h = $this->style->value['margin']['b']+$this->style->value['padding']['b'];
 
@@ -3397,7 +3397,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_PRE($param, $other = 'pre')
         {
-            if ($other=='pre' && $this->maxH) $this->o_BR(array());
+            if ($other=='pre' && $this->_maxH) $this->o_BR(array());
 
             $this->style->save();
             $this->style->value['font-family']    = 'courier';
@@ -3424,7 +3424,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function c_PRE($param, $other = 'pre')
         {
             if ($other=='pre') {
-                if ($this->forOneLine) return false;
+                if ($this->_isForOneLine) return false;
 
                 $this->c_DIV($param);
                 $this->o_BR(array());
@@ -3582,11 +3582,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_UL($param, $other = 'ul')
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            if (!in_array($this->previousCall, array('c_P', 'c_UL'))) {
-                if ($this->maxH) $this->o_BR(array());
-                if (!count($this->defLIST)) $this->o_BR(array());
+            if (!in_array($this->_previousCall, array('c_P', 'c_UL'))) {
+                if ($this->_maxH) $this->o_BR(array());
+                if (!count($this->_defList)) $this->o_BR(array());
             }
 
             if (!isset($param['style']['width'])) $param['allwidth'] = true;
@@ -3614,7 +3614,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_UL($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             // fin du tableau
             $this->c_TABLE($param);
@@ -3622,8 +3622,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             // enlever un niveau de liste
             $this->listeDelLevel();
 
-            if (!$this->subPart) {
-                if (!count($this->defLIST)) $this->o_BR(array());
+            if (!$this->_subPart) {
+                if (!count($this->_defList)) $this->o_BR(array());
             }
 
             return true;
@@ -3642,7 +3642,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_LI($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             // ajouter une puce au niveau actuel
             $this->listeAddLi();
@@ -3681,9 +3681,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             }
 
             // si on est dans un sub_html => preparation, sinon affichage classique
-            if ($this->subPart) {
+            if ($this->_subPart) {
                 // TD pour la puce
-                $tmpPos = $this->tempPos;
+                $tmpPos = $this->_tempPos;
                 $tmpLst1 = $this->parsing->code[$tmpPos+1];
                 $tmpLst2 = $this->parsing->code[$tmpPos+2];
                 $this->parsing->code[$tmpPos+1] = array();
@@ -3696,7 +3696,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $this->parsing->code[$tmpPos+2]['close']    = 1;
                 $this->o_TD($paramPUCE, 'li_sub');
                 $this->c_TD($param);
-                $this->tempPos = $tmpPos;
+                $this->_tempPos = $tmpPos;
                 $this->parsing->code[$tmpPos+1] = $tmpLst1;
                 $this->parsing->code[$tmpPos+2] = $tmpLst2;
             } else {
@@ -3725,7 +3725,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_LI($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             // fin du contenu
             $this->c_TD($param);
@@ -3745,7 +3745,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_TBODY($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->save();
             $this->style->analyse('tbody', $param);
@@ -3764,7 +3764,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_TBODY($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->load();
             $this->style->FontSet();
@@ -3781,7 +3781,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_THEAD($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->save();
             $this->style->analyse('thead', $param);
@@ -3789,18 +3789,18 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $this->style->FontSet();
 
             // si on est en mode sub_html : sauvegarde du num�ro du TR
-            if ($this->subPart) {
+            if ($this->_subPart) {
                 HTML2PDF::$_tables[$param['num']]['thead']['tr'][0] = HTML2PDF::$_tables[$param['num']]['tr_curr'];
                 HTML2PDF::$_tables[$param['num']]['thead']['code'] = array();
-                for ($pos=$this->tempPos; $pos<count($this->parsing->code); $pos++) {
+                for ($pos=$this->_tempPos; $pos<count($this->parsing->code); $pos++) {
                     $todo = $this->parsing->code[$pos];
                     if (strtolower($todo['name'])=='thead') $todo['name'] = 'thead_sub';
                     HTML2PDF::$_tables[$param['num']]['thead']['code'][] = $todo;
                     if (strtolower($todo['name'])=='thead_sub' && $todo['close']) break;
                 }
             } else {
-                $level = $this->parsing->getLevel($this->parsePos);
-                $this->parsePos+= count($level);
+                $level = $this->parsing->getLevel($this->_parsePos);
+                $this->_parsePos+= count($level);
                 HTML2PDF::$_tables[$param['num']]['tr_curr']+= count(HTML2PDF::$_tables[$param['num']]['thead']['tr']);
             }
 
@@ -3816,13 +3816,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_THEAD($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->load();
             $this->style->FontSet();
 
             // si on est en mode sub_html : sauvegarde du num�ro du TR
-            if ($this->subPart) {
+            if ($this->_subPart) {
                 $min = HTML2PDF::$_tables[$param['num']]['thead']['tr'][0];
                 $max = HTML2PDF::$_tables[$param['num']]['tr_curr']-1;
                 HTML2PDF::$_tables[$param['num']]['thead']['tr'] = range($min, $max);
@@ -3840,7 +3840,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_TFOOT($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->save();
             $this->style->analyse('tfoot', $param);
@@ -3848,18 +3848,18 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $this->style->FontSet();
 
             // si on est en mode sub_html : sauvegarde du num�ro du TR
-            if ($this->subPart) {
+            if ($this->_subPart) {
                 HTML2PDF::$_tables[$param['num']]['tfoot']['tr'][0] = HTML2PDF::$_tables[$param['num']]['tr_curr'];
                 HTML2PDF::$_tables[$param['num']]['tfoot']['code'] = array();
-                for ($pos=$this->tempPos; $pos<count($this->parsing->code); $pos++) {
+                for ($pos=$this->_tempPos; $pos<count($this->parsing->code); $pos++) {
                     $todo = $this->parsing->code[$pos];
                     if (strtolower($todo['name'])=='tfoot') $todo['name'] = 'tfoot_sub';
                     HTML2PDF::$_tables[$param['num']]['tfoot']['code'][] = $todo;
                     if (strtolower($todo['name'])=='tfoot_sub' && $todo['close']) break;
                 }
             } else {
-                $level = $this->parsing->getLevel($this->parsePos);
-                $this->parsePos+= count($level);
+                $level = $this->parsing->getLevel($this->_parsePos);
+                $this->_parsePos+= count($level);
                 HTML2PDF::$_tables[$param['num']]['tr_curr']+= count(HTML2PDF::$_tables[$param['num']]['tfoot']['tr']);
             }
 
@@ -3875,13 +3875,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_TFOOT($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->load();
             $this->style->FontSet();
 
             // si on est en mode sub_html : sauvegarde du num�ro du TR
-            if ($this->subPart) {
+            if ($this->_subPart) {
                 $min = HTML2PDF::$_tables[$param['num']]['tfoot']['tr'][0];
                 $max = HTML2PDF::$_tables[$param['num']]['tr_curr']-1;
                 HTML2PDF::$_tables[$param['num']]['tfoot']['tr'] = range($min, $max);
@@ -3899,7 +3899,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_THEAD_SUB($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->save();
             $this->style->analyse('thead', $param);
@@ -3918,7 +3918,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_THEAD_SUB($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->load();
             $this->style->FontSet();
@@ -3935,7 +3935,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_TFOOT_SUB($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->save();
             $this->style->analyse('tfoot', $param);
@@ -3954,7 +3954,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_TFOOT_SUB($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->style->load();
             $this->style->FontSet();
@@ -3985,7 +3985,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 )
             );
 
-            $this->isInForm = isset($param['action']) ? $param['action'] : '';
+            $this->_isInForm = isset($param['action']) ? $param['action'] : '';
 
             return true;
         }
@@ -3999,7 +3999,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_FORM($param)
         {
-            $this->isInForm = false;
+            $this->_isInForm = false;
             $this->style->load();
             $this->style->FontSet();
 
@@ -4015,18 +4015,18 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_TABLE($param, $other = 'table')
         {
-            if ($this->maxH) {
-                if ($this->forOneLine) return false;
+            if ($this->_maxH) {
+                if ($this->_isForOneLine) return false;
                 $this->o_BR(array());
             }
 
-            if ($this->forOneLine) {
-                $this->maxE++;
-                $this->maxX = $this->pdf->getW() - $this->pdf->getlMargin() - $this->pdf->getrMargin();
+            if ($this->_isForOneLine) {
+                $this->_maxE++;
+                $this->_maxX = $this->pdf->getW() - $this->pdf->getlMargin() - $this->pdf->getrMargin();
                 return false;
             }
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             $alignObject = isset($param['align']) ? strtolower($param['align']) : 'left';
             if (isset($param['align'])) unset($param['align']);
@@ -4057,8 +4057,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             }
 
             // si on est en mode sub_html : initialisation des dimensions et autres
-            if ($this->subPart) {
-                if ($this->debugActif) $this->DEBUG_add('Table n�'.$param['num'], true);
+            if ($this->_subPart) {
+                if ($this->_debugActif) $this->DEBUG_add('Table n�'.$param['num'], true);
                 HTML2PDF::$_tables[$param['num']] = array();
                 HTML2PDF::$_tables[$param['num']]['border']        = isset($param['border']) ? $this->style->readBorder($param['border']) : null; // border sp�cifique si border precis� en param�tre
                 HTML2PDF::$_tables[$param['num']]['cellpadding']    = $this->style->ConvertToMM(isset($param['cellpadding']) ? $param['cellpadding'] : '1px'); // cellpadding du tableau
@@ -4130,16 +4130,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_TABLE($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             // restauration du style
             $this->style->load();
             $this->style->FontSet();
 
             // si on est en mode sub_html : initialisation des dimensions et autres
-            if ($this->subPart) {
+            if ($this->_subPart) {
                 // ajustement de la taille des cases
                 $this->calculTailleCases(HTML2PDF::$_tables[$param['num']]['cases'], HTML2PDF::$_tables[$param['num']]['corr']);
 
@@ -4209,7 +4209,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                         if ($height==$h0) $height = null;
                         HTML2PDF::$_tables[$param['num']]['height'][] = $height;
                         $height = $h0;
-                        $y = $this->margeTop;
+                        $y = $this->_margeTop;
                     }
                     $height+= $th;
                 }
@@ -4219,16 +4219,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 if (count(HTML2PDF::$_tables[$param['num']]['tfoot']['code'])) {
                     $tmpTR = HTML2PDF::$_tables[$param['num']]['tr_curr'];
                     $tmpTD = HTML2PDF::$_tables[$param['num']]['td_curr'];
-                    $oldParsePos = $this->parsePos;
+                    $oldParsePos = $this->_parsePos;
                     $oldParseCode = $this->parsing->code;
 
                     HTML2PDF::$_tables[$param['num']]['tr_curr'] = HTML2PDF::$_tables[$param['num']]['tfoot']['tr'][0];
                     HTML2PDF::$_tables[$param['num']]['td_curr'] = 0;
-                    $this->parsePos = 0;
+                    $this->_parsePos = 0;
                     $this->parsing->code = HTML2PDF::$_tables[$param['num']]['tfoot']['code'];
                     $this->makeHTMLcode();
 
-                    $this->parsePos =     $oldParsePos;
+                    $this->_parsePos =     $oldParsePos;
                     $this->parsing->code = $oldParseCode;
                     HTML2PDF::$_tables[$param['num']]['tr_curr'] = $tmpTR;
                     HTML2PDF::$_tables[$param['num']]['td_curr'] = $tmpTD;
@@ -4237,15 +4237,15 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 // determination des coordonn�es de sortie du tableau
                 $x = HTML2PDF::$_tables[$param['num']]['curr_x'] + HTML2PDF::$_tables[$param['num']]['width'];
                 if (count(HTML2PDF::$_tables[$param['num']]['height'])>1)
-                    $y = $this->margeTop+HTML2PDF::$_tables[$param['num']]['height'][count(HTML2PDF::$_tables[$param['num']]['height'])-1];
+                    $y = $this->_margeTop+HTML2PDF::$_tables[$param['num']]['height'][count(HTML2PDF::$_tables[$param['num']]['height'])-1];
                 else if (count(HTML2PDF::$_tables[$param['num']]['height'])==1)
                     $y = HTML2PDF::$_tables[$param['num']]['curr_y']+HTML2PDF::$_tables[$param['num']]['height'][count(HTML2PDF::$_tables[$param['num']]['height'])-1];
                 else
                     $y = HTML2PDF::$_tables[$param['num']]['curr_y'];
 
                 // taille du tableau
-                $this->maxX = max($this->maxX, $x);
-                $this->maxY = max($this->maxY, $y);
+                $this->_maxX = max($this->_maxX, $x);
+                $this->_maxY = max($this->_maxY, $y);
 
 
                 // nouvelle position apres le tableau
@@ -4254,7 +4254,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 // restauration des marges
                 $this->loadMargin();
 
-                if ($this->debugActif) $this->DEBUG_add('Table n�'.$param['num'], false);
+                if ($this->_debugActif) $this->DEBUG_add('Table n�'.$param['num'], false);
             }
 
             return true;
@@ -4284,9 +4284,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_TR($param, $other = 'tr')
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             // analyse du style
             $this->style->save();
@@ -4299,7 +4299,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             HTML2PDF::$_tables[$param['num']]['td_curr']= 0;
 
             // si on est pas dans un sub_html
-            if (!$this->subPart) {
+            if (!$this->_subPart) {
                 // Y courant apres la ligne
                 $ty=null;
                 for ($ii=0; $ii<count(HTML2PDF::$_tables[$param['num']]['cases'][HTML2PDF::$_tables[$param['num']]['tr_curr']-1]); $ii++)
@@ -4308,22 +4308,22 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $hfoot = HTML2PDF::$_tables[$param['num']]['tfoot']['height'];
 
                 // si la ligne ne rentre pas dans la page => nouvelle page
-                if (!$this->isInTfoot && HTML2PDF::$_tables[$param['num']]['td_y'] + HTML2PDF::$_tables[$param['num']]['marge']['b'] + $ty +$hfoot> $this->pdf->getH() - $this->pdf->getbMargin()) {
+                if (!$this->_isInTfoot && HTML2PDF::$_tables[$param['num']]['td_y'] + HTML2PDF::$_tables[$param['num']]['marge']['b'] + $ty +$hfoot> $this->pdf->getH() - $this->pdf->getbMargin()) {
                     if (count(HTML2PDF::$_tables[$param['num']]['tfoot']['code'])) {
                         $tmpTR = HTML2PDF::$_tables[$param['num']]['tr_curr'];
                         $tmpTD = HTML2PDF::$_tables[$param['num']]['td_curr'];
-                        $oldParsePos = $this->parsePos;
+                        $oldParsePos = $this->_parsePos;
                         $oldParseCode = $this->parsing->code;
 
                         HTML2PDF::$_tables[$param['num']]['tr_curr'] = HTML2PDF::$_tables[$param['num']]['tfoot']['tr'][0];
                         HTML2PDF::$_tables[$param['num']]['td_curr'] = 0;
-                        $this->parsePos = 0;
+                        $this->_parsePos = 0;
                         $this->parsing->code = HTML2PDF::$_tables[$param['num']]['tfoot']['code'];
-                        $this->isInTfoot = true;
+                        $this->_isInTfoot = true;
                         $this->makeHTMLcode();
-                        $this->isInTfoot = false;
+                        $this->_isInTfoot = false;
 
-                        $this->parsePos =     $oldParsePos;
+                        $this->_parsePos =     $oldParsePos;
                         $this->parsing->code = $oldParseCode;
                         HTML2PDF::$_tables[$param['num']]['tr_curr'] = $tmpTR;
                         HTML2PDF::$_tables[$param['num']]['td_curr'] = $tmpTD;
@@ -4361,18 +4361,18 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                     HTML2PDF::$_tables[$param['num']]['new_page'] = false;
                     $tmpTR = HTML2PDF::$_tables[$param['num']]['tr_curr'];
                     $tmpTD = HTML2PDF::$_tables[$param['num']]['td_curr'];
-                    $oldParsePos = $this->parsePos;
+                    $oldParsePos = $this->_parsePos;
                     $oldParseCode = $this->parsing->code;
 
                     HTML2PDF::$_tables[$param['num']]['tr_curr'] = HTML2PDF::$_tables[$param['num']]['thead']['tr'][0];
                     HTML2PDF::$_tables[$param['num']]['td_curr'] = 0;
-                    $this->parsePos = 0;
+                    $this->_parsePos = 0;
                     $this->parsing->code = HTML2PDF::$_tables[$param['num']]['thead']['code'];
-                    $this->isInThead = true;
+                    $this->_isInThead = true;
                     $this->makeHTMLcode();
-                    $this->isInThead = false;
+                    $this->_isInThead = false;
 
-                    $this->parsePos =     $oldParsePos;
+                    $this->_parsePos =     $oldParsePos;
                     $this->parsing->code = $oldParseCode;
                     HTML2PDF::$_tables[$param['num']]['tr_curr'] = $tmpTR;
                     HTML2PDF::$_tables[$param['num']]['td_curr'] = $tmpTD;
@@ -4400,16 +4400,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_TR($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             // restauration du style
             $this->style->load();
             $this->style->FontSet();
 
             // si on est pas dans un sub_html
-            if (!$this->subPart) {
+            if (!$this->_subPart) {
                 // Y courant apres la ligne
                 $ty=null;
                 for ($ii=0; $ii<count(HTML2PDF::$_tables[$param['num']]['cases'][HTML2PDF::$_tables[$param['num']]['tr_curr']-1]); $ii++) {
@@ -4438,9 +4438,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_TD($param, $other = 'td')
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             $param['cellpadding'] = HTML2PDF::$_tables[$param['num']]['cellpadding'].'mm';
             $param['cellspacing'] = HTML2PDF::$_tables[$param['num']]['cellspacing'].'mm';
@@ -4542,10 +4542,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
             // si on est en collapse : modification du style
             if ($collapse) {
-                if (!$this->subPart) {
+                if (!$this->_subPart) {
                     if (
                         (HTML2PDF::$_tables[$param['num']]['tr_curr']>1 && !HTML2PDF::$_tables[$param['num']]['new_page']) ||
-                        (!$this->isInThead && count(HTML2PDF::$_tables[$param['num']]['thead']['code']))
+                        (!$this->_isInThead && count(HTML2PDF::$_tables[$param['num']]['thead']['code']))
                     ) {
                         $this->style->value['border']['t'] = $this->style->readBorder('none');
                     }
@@ -4564,7 +4564,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $marge['l'] = $this->style->value['padding']['l']+0.5*HTML2PDF::$_tables[$param['num']]['cellspacing']+$this->style->value['border']['l']['width'];
 
             // si on est dans un sub_html
-            if ($this->subPart) {
+            if ($this->_subPart) {
                 // on se positionne dans le tableau
                 HTML2PDF::$_tables[$param['num']]['td_curr']++;
                 HTML2PDF::$_tables[$param['num']]['cases'][$y][$x] = array();
@@ -4591,11 +4591,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 // on en cr�� un sous HTML que l'on transforme en PDF
                 // pour analyse les dimensions
                 // et les r�cup�rer dans le tableau global.
-                $level = $this->parsing->getLevel($this->tempPos);
-                $this->CreateSubHTML($this->subHtml);
-                $this->subHtml->parsing->code = $level;
-                $this->subHtml->MakeHTMLcode();
-                $this->tempPos+= count($level);
+                $level = $this->parsing->getLevel($this->_tempPos);
+                $this->CreateSubHTML($this->_subHtml);
+                $this->_subHtml->parsing->code = $level;
+                $this->_subHtml->MakeHTMLcode();
+                $this->_tempPos+= count($level);
             } else {
                 // on se positionne dans le tableau
                 HTML2PDF::$_tables[$param['num']]['td_curr']++;
@@ -4658,9 +4658,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_TD($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
 
             // r�cup�ration de la marge
             $marge = array();
@@ -4674,13 +4674,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $marge['l']+= 0.001;
 
             // si on est dans un sub_html
-            if ($this->subPart) {
-                if ($this->testTDin1page && $this->subHtml->pdf->getPage()>1)
+            if ($this->_subPart) {
+                if ($this->_testTdInOnepage && $this->_subHtml->pdf->getPage()>1)
                     throw new HTML2PDF_exception(7);
 
                 // dimentions de cette case
-                $w0 = $this->subHtml->maxX + $marge['l'] + $marge['r'];
-                $h0 = $this->subHtml->maxY + $marge['t'] + $marge['b'];
+                $w0 = $this->_subHtml->_maxX + $marge['l'] + $marge['r'];
+                $h0 = $this->_subHtml->_maxY + $marge['t'] + $marge['b'];
 
                 // dimensions impos�es par le style
                 $w2 = $this->style->value['width'] + $marge['l'] + $marge['r'];
@@ -4694,7 +4694,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 HTML2PDF::$_tables[$param['num']]['cases'][HTML2PDF::$_tables[$param['num']]['tr_curr']-1][HTML2PDF::$_tables[$param['num']]['td_curr']-1]['real_h'] = $h0;
 
                 // suppresion du sous_html
-                $this->destroySubHTML($this->subHtml);
+                $this->destroySubHTML($this->_subHtml);
             } else {
                 $this->loadMargin();
                 //positionnement
@@ -4843,9 +4843,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_TH($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
             // identique � TD mais en gras
             if (!isset($param['style']['font-weight'])) $param['style']['font-weight'] = 'bold';
             $this->o_TD($param, 'th');
@@ -4862,9 +4862,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_TH($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
-            $this->maxH = 0;
+            $this->_maxH = 0;
             // identique � TD
             $this->c_TD($param);
 
@@ -4908,7 +4908,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             // restauration du style
             $this->style->load();
             $this->style->FontSet();
-            $this->maxE++;
+            $this->_maxE++;
 
             return true;
         }
@@ -4923,27 +4923,27 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function o_SELECT($param)
         {
             // preparation du champs
-            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->lstChamps)+1);
+            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstChamps)+1);
 
             $param['name'] = strtolower($param['name']);
 
-            if (isset($this->lstChamps[$param['name']]))
-                $this->lstChamps[$param['name']]++;
+            if (isset($this->_lstChamps[$param['name']]))
+                $this->_lstChamps[$param['name']]++;
             else
-                $this->lstChamps[$param['name']] = 1;
+                $this->_lstChamps[$param['name']] = 1;
 
             $this->style->save();
             $this->style->analyse('select', $param);
             $this->style->setPosition();
             $this->style->FontSet();
 
-            $this->lstSelect = array();
-            $this->lstSelect['name']    = $param['name'];
-            $this->lstSelect['multi']    = isset($param['multiple']) ? true : false;
-            $this->lstSelect['size']    = isset($param['size']) ? $param['size'] : 1;
-            $this->lstSelect['options']    = array();
+            $this->_lstSelect = array();
+            $this->_lstSelect['name']    = $param['name'];
+            $this->_lstSelect['multi']    = isset($param['multiple']) ? true : false;
+            $this->_lstSelect['size']    = isset($param['size']) ? $param['size'] : 1;
+            $this->_lstSelect['options']    = array();
 
-            if ($this->lstSelect['multi'] && $this->lstSelect['size']<3) $this->lstSelect['size'] = 3;
+            if ($this->_lstSelect['multi'] && $this->_lstSelect['size']<3) $this->_lstSelect['size'] = 3;
 
             return true;
         }
@@ -4958,11 +4958,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function o_OPTION($param)
         {
             // on extrait tout ce qui est contenu dans l'option
-            $level = $this->parsing->getLevel($this->parsePos);
-            $this->parsePos+= count($level);
-            $value = isset($param['value']) ? $param['value'] : 'auto_opt_'.(count($this->lstSelect)+1);
+            $level = $this->parsing->getLevel($this->_parsePos);
+            $this->_parsePos+= count($level);
+            $value = isset($param['value']) ? $param['value'] : 'auto_opt_'.(count($this->_lstSelect)+1);
 
-            $this->lstSelect['options'][$value] = isset($level[0]['param']['txt']) ? $level[0]['param']['txt'] : '';
+            $this->_lstSelect['options'][$value] = isset($level[0]['param']['txt']) ? $level[0]['param']['txt'] : '';
 
             return true;
         }
@@ -4994,24 +4994,24 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $f = 1.08*$this->style->value['font-size'];
 
             $w = $this->style->value['width']; if (!$w) $w = 50;
-            $h = ($f*1.07*$this->lstSelect['size'] + 1);
+            $h = ($f*1.07*$this->_lstSelect['size'] + 1);
             $opts = array();
-            if ($this->lstSelect['multi']) $opts['multipleSelection'] = 'true';
+            if ($this->_lstSelect['multi']) $opts['multipleSelection'] = 'true';
 
-            if ($this->lstSelect['size']>1)
-                $this->pdf->ListBox($this->lstSelect['name'], $w, $h, $this->lstSelect['options'], $opts);
+            if ($this->_lstSelect['size']>1)
+                $this->pdf->ListBox($this->_lstSelect['name'], $w, $h, $this->_lstSelect['options'], $opts);
             else
-                $this->pdf->ComboBox($this->lstSelect['name'], $w, $h, $this->lstSelect['options']);
+                $this->pdf->ComboBox($this->_lstSelect['name'], $w, $h, $this->_lstSelect['options']);
 
-            $this->maxX = max($this->maxX, $x+$w);
-            $this->maxY = max($this->maxY, $y+$h);
-             $this->maxH = max($this->maxH, $h);
+            $this->_maxX = max($this->_maxX, $x+$w);
+            $this->_maxY = max($this->_maxY, $y+$h);
+             $this->_maxH = max($this->_maxH, $h);
             $this->pdf->setX($x+$w);
 
             $this->style->load();
             $this->style->FontSet();
 
-            $this->lstSelect = array();
+            $this->_lstSelect = array();
 
             return true;
         }
@@ -5026,14 +5026,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function o_TEXTAREA($param)
         {
             // preparation du champs
-            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->lstChamps)+1);
+            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstChamps)+1);
 
             $param['name'] = strtolower($param['name']);
 
-            if (isset($this->lstChamps[$param['name']]))
-                $this->lstChamps[$param['name']]++;
+            if (isset($this->_lstChamps[$param['name']]))
+                $this->_lstChamps[$param['name']]++;
             else
-                $this->lstChamps[$param['name']] = 1;
+                $this->_lstChamps[$param['name']] = 1;
 
             $this->style->save();
             $this->style->analyse('textarea', $param);
@@ -5047,8 +5047,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $fy = 1.08*$this->style->value['font-size'];
 
             // on extrait tout ce qui est contenu dans le textarea
-            $level = $this->parsing->getLevel($this->parsePos);
-            $this->parsePos+= count($level);
+            $level = $this->parsing->getLevel($this->_parsePos);
+            $this->_parsePos+= count($level);
 
             $w = $fx*(isset($param['cols']) ? $param['cols'] : 22)+1;
             $h = $fy*1.07*(isset($param['rows']) ? $param['rows'] : 3)+3;
@@ -5062,9 +5062,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
             $this->pdf->TextField($param['name'], $w, $h, $prop, array(), $x, $y);
 
-            $this->maxX = max($this->maxX, $x+$w);
-            $this->maxY = max($this->maxY, $y+$h);
-             $this->maxH = max($this->maxH, $h);
+            $this->_maxX = max($this->_maxX, $x+$w);
+            $this->_maxY = max($this->_maxY, $y+$h);
+             $this->_maxH = max($this->_maxH, $h);
             $this->pdf->setX($x+$w);
 
             return true;
@@ -5095,7 +5095,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function o_INPUT($param)
         {
             // preparation du champs
-            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->lstChamps)+1);
+            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstChamps)+1);
             if (!isset($param['value']))    $param['value']    = '';
             if (!isset($param['type']))        $param['type']    = 'text';
 
@@ -5104,10 +5104,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
             if (!in_array($param['type'], array('text', 'checkbox', 'radio', 'hidden', 'submit', 'reset', 'button'))) $param['type'] = 'text';
 
-            if (isset($this->lstChamps[$param['name']]))
-                $this->lstChamps[$param['name']]++;
+            if (isset($this->_lstChamps[$param['name']]))
+                $this->_lstChamps[$param['name']]++;
             else
-                $this->lstChamps[$param['name']] = 1;
+                $this->_lstChamps[$param['name']] = 1;
 
             $this->style->save();
             $this->style->analyse('input', $param);
@@ -5156,7 +5156,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 case 'submit':
                     $w = $this->style->value['width'];    if (!$w) $w = 40;
                     $h = $this->style->value['height'];    if (!$h) $h = $f*1.3;
-                    $action = array('S'=>'SubmitForm', 'F'=>$this->isInForm, 'Flags'=>array('ExportFormat'));
+                    $action = array('S'=>'SubmitForm', 'F'=>$this->_isInForm, 'Flags'=>array('ExportFormat'));
                     $this->pdf->Button($name, $w, $h, $param['value'], $action, array(), array(), $x, $y);
                     break;
 
@@ -5180,9 +5180,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                     break;
             }
 
-            $this->maxX = max($this->maxX, $x+$w);
-            $this->maxY = max($this->maxY, $y+$h);
-             $this->maxH = max($this->maxH, $h);
+            $this->_maxX = max($this->_maxX, $x+$w);
+            $this->_maxY = max($this->_maxY, $y+$h);
+             $this->_maxH = max($this->_maxH, $h);
             $this->pdf->setX($x+$w);
 
             $this->style->load();
@@ -5200,8 +5200,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_DRAW($param)
         {
-            if ($this->forOneLine) return false;
-            if ($this->debugActif) $this->DEBUG_add('DRAW', true);
+            if ($this->_isForOneLine) return false;
+            if ($this->_debugActif) $this->DEBUG_add('DRAW', true);
 
             $this->style->save();
             $this->style->analyse('draw', $param);
@@ -5212,9 +5212,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
             $overW = $this->style->value['width'];
             $overH = $this->style->value['height'];
-            $this->style->value['old_maxX'] = $this->maxX;
-            $this->style->value['old_maxY'] = $this->maxY;
-            $this->style->value['old_maxH'] = $this->maxH;
+            $this->style->value['old_maxX'] = $this->_maxX;
+            $this->style->value['old_maxY'] = $this->_maxY;
+            $this->style->value['old_maxH'] = $this->_maxH;
 
             $w = $this->style->value['width'];
             $h = $this->style->value['height'];
@@ -5229,7 +5229,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 if (
                         ($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
                         ($this->pdf->getY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
-                        !$this->isInOverflow
+                        !$this->_isInOverflow
                     )
                     $this->setNewPage();
 
@@ -5255,10 +5255,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
                 $this->style->setPosition();
                 $this->saveMax();
-                $this->maxX = 0;
-                $this->maxY = 0;
-                $this->maxH = 0;
-                $this->maxE = 0;
+                $this->_maxX = 0;
+                $this->_maxY = 0;
+                $this->_maxH = 0;
+                $this->_maxE = 0;
             }
 
             // initialisation du style des bordures de la div
@@ -5300,7 +5300,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $this->saveMargin($mL, 0, $mR);
             $this->pdf->setXY($x, $y);
 
-            $this->isInDraw = array(
+            $this->_isInDraw = array(
                 'x' => $x,
                 'y' => $y,
                 'w' => $overW,
@@ -5320,15 +5320,15 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function c_DRAW($param)
         {
-            if ($this->forOneLine) return false;
+            if ($this->_isForOneLine) return false;
 
             $this->pdf->SetAlpha(1.);
             $this->pdf->undoTransform();
             $this->pdf->clippingPathStop();
 
-            $this->maxX = $this->style->value['old_maxX'];
-            $this->maxY = $this->style->value['old_maxY'];
-            $this->maxH = $this->style->value['old_maxH'];
+            $this->_maxX = $this->style->value['old_maxX'];
+            $this->_maxY = $this->style->value['old_maxY'];
+            $this->_maxH = $this->style->value['old_maxH'];
 
             $marge = array();
             $marge['l'] = $this->style->value['border']['l']['width'];
@@ -5346,9 +5346,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $this->pdf->setXY($x+$w, $y);
 
                 // position MAX
-                $this->maxX = max($this->maxX, $x+$w);
-                $this->maxY = max($this->maxY, $y+$h);
-                $this->maxH = max($this->maxH, $h);
+                $this->_maxX = max($this->_maxX, $x+$w);
+                $this->_maxY = max($this->_maxY, $y+$h);
+                $this->_maxH = max($this->_maxH, $h);
             } else {
                 // position
                 $this->pdf->setXY($this->style->value['xc'], $this->style->value['yc']);
@@ -5363,9 +5363,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $this->loadMargin();
 
             if ($block) $this->o_BR(array());
-            if ($this->debugActif) $this->DEBUG_add('DRAW', false);
+            if ($this->_debugActif) $this->DEBUG_add('DRAW', false);
 
-            $this->isInDraw = null;
+            $this->_isInDraw = null;
 
             return true;
         }
@@ -5379,17 +5379,17 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_LINE($param)
         {
-            if (!$this->isInDraw) throw new HTML2PDF_exception(8, 'LINE');
+            if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'LINE');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->style->save();
             $styles = $this->style->getSvgStyle('path', $param);
             $styles['fill'] = null;
             $style = $this->pdf->svgSetStyle($styles);
 
-            $x1 = isset($param['x1']) ? $this->style->ConvertToMM($param['x1'], $this->isInDraw['w']) : 0.;
-            $y1 = isset($param['y1']) ? $this->style->ConvertToMM($param['y1'], $this->isInDraw['h']) : 0.;
-            $x2 = isset($param['x2']) ? $this->style->ConvertToMM($param['x2'], $this->isInDraw['w']) : 0.;
-            $y2 = isset($param['y2']) ? $this->style->ConvertToMM($param['y2'], $this->isInDraw['h']) : 0.;
+            $x1 = isset($param['x1']) ? $this->style->ConvertToMM($param['x1'], $this->_isInDraw['w']) : 0.;
+            $y1 = isset($param['y1']) ? $this->style->ConvertToMM($param['y1'], $this->_isInDraw['h']) : 0.;
+            $x2 = isset($param['x2']) ? $this->style->ConvertToMM($param['x2'], $this->_isInDraw['w']) : 0.;
+            $y2 = isset($param['y2']) ? $this->style->ConvertToMM($param['y2'], $this->_isInDraw['h']) : 0.;
             $this->pdf->svgLine($x1, $y1, $x2, $y2);
 
             $this->pdf->undoTransform();
@@ -5405,16 +5405,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_RECT($param)
         {
-            if (!$this->isInDraw) throw new HTML2PDF_exception(8, 'RECT');
+            if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'RECT');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->style->save();
              $styles = $this->style->getSvgStyle('path', $param);
             $style = $this->pdf->svgSetStyle($styles);
 
-            $x = isset($param['x']) ? $this->style->ConvertToMM($param['x'], $this->isInDraw['w']) : 0.;
-            $y = isset($param['y']) ? $this->style->ConvertToMM($param['y'], $this->isInDraw['h']) : 0.;
-            $w = isset($param['w']) ? $this->style->ConvertToMM($param['w'], $this->isInDraw['w']) : 0.;
-            $h = isset($param['h']) ? $this->style->ConvertToMM($param['h'], $this->isInDraw['h']) : 0.;
+            $x = isset($param['x']) ? $this->style->ConvertToMM($param['x'], $this->_isInDraw['w']) : 0.;
+            $y = isset($param['y']) ? $this->style->ConvertToMM($param['y'], $this->_isInDraw['h']) : 0.;
+            $w = isset($param['w']) ? $this->style->ConvertToMM($param['w'], $this->_isInDraw['w']) : 0.;
+            $h = isset($param['h']) ? $this->style->ConvertToMM($param['h'], $this->_isInDraw['h']) : 0.;
 
             $this->pdf->svgRect($x, $y, $w, $h, $style);
 
@@ -5431,15 +5431,15 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_CIRCLE($param)
         {
-            if (!$this->isInDraw) throw new HTML2PDF_exception(8, 'CIRCLE');
+            if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'CIRCLE');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->style->save();
              $styles = $this->style->getSvgStyle('path', $param);
             $style = $this->pdf->svgSetStyle($styles);
 
-            $cx = isset($param['cx']) ? $this->style->ConvertToMM($param['cx'], $this->isInDraw['w']) : 0.;
-            $cy = isset($param['cy']) ? $this->style->ConvertToMM($param['cy'], $this->isInDraw['h']) : 0.;
-            $r = isset($param['r']) ? $this->style->ConvertToMM($param['r'], $this->isInDraw['w']) : 0.;
+            $cx = isset($param['cx']) ? $this->style->ConvertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
+            $cy = isset($param['cy']) ? $this->style->ConvertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
+            $r = isset($param['r']) ? $this->style->ConvertToMM($param['r'], $this->_isInDraw['w']) : 0.;
             $this->pdf->svgEllipse($cx, $cy, $r, $r, $style);
 
             $this->pdf->undoTransform();
@@ -5455,16 +5455,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_ELLIPSE($param)
         {
-            if (!$this->isInDraw) throw new HTML2PDF_exception(8, 'ELLIPSE');
+            if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'ELLIPSE');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->style->save();
              $styles = $this->style->getSvgStyle('path', $param);
             $style = $this->pdf->svgSetStyle($styles);
 
-            $cx = isset($param['cx']) ? $this->style->ConvertToMM($param['cx'], $this->isInDraw['w']) : 0.;
-            $cy = isset($param['cy']) ? $this->style->ConvertToMM($param['cy'], $this->isInDraw['h']) : 0.;
-            $rx = isset($param['ry']) ? $this->style->ConvertToMM($param['rx'], $this->isInDraw['w']) : 0.;
-            $ry = isset($param['rx']) ? $this->style->ConvertToMM($param['ry'], $this->isInDraw['h']) : 0.;
+            $cx = isset($param['cx']) ? $this->style->ConvertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
+            $cy = isset($param['cy']) ? $this->style->ConvertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
+            $rx = isset($param['ry']) ? $this->style->ConvertToMM($param['rx'], $this->_isInDraw['w']) : 0.;
+            $ry = isset($param['rx']) ? $this->style->ConvertToMM($param['ry'], $this->_isInDraw['h']) : 0.;
             $this->pdf->svgEllipse($cx, $cy, $rx, $ry, $style);
 
             $this->pdf->undoTransform();
@@ -5481,7 +5481,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_POLYLINE($param)
         {
-            if (!$this->isInDraw) throw new HTML2PDF_exception(8, 'POLYGON');
+            if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'POLYGON');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->style->save();
              $styles = $this->style->getSvgStyle('path', $param);
@@ -5503,8 +5503,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $actions = array();
                 for ($k=0; $k<count($path); $k+=2) {
                     $actions[] = array(($k ? 'L' : 'M') ,
-                                        $this->style->ConvertToMM($path[$k+0], $this->isInDraw['w']),
-                                        $this->style->ConvertToMM($path[$k+1], $this->isInDraw['h']));
+                                        $this->style->ConvertToMM($path[$k+0], $this->_isInDraw['w']),
+                                        $this->style->ConvertToMM($path[$k+1], $this->_isInDraw['h']));
                 }
 
                 // on trace
@@ -5524,7 +5524,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_POLYGON($param)
         {
-            if (!$this->isInDraw) throw new HTML2PDF_exception(8, 'POLYGON');
+            if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'POLYGON');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->style->save();
              $styles = $this->style->getSvgStyle('path', $param);
@@ -5546,8 +5546,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 $actions = array();
                 for ($k=0; $k<count($path); $k+=2) {
                     $actions[] = array(($k ? 'L' : 'M') ,
-                                        $this->style->ConvertToMM($path[$k+0], $this->isInDraw['w']),
-                                        $this->style->ConvertToMM($path[$k+1], $this->isInDraw['h']));
+                                        $this->style->ConvertToMM($path[$k+0], $this->_isInDraw['w']),
+                                        $this->style->ConvertToMM($path[$k+1], $this->_isInDraw['h']));
                 }
                 $actions[] = array('z');
                 // on trace
@@ -5567,7 +5567,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_PATH($param)
         {
-            if (!$this->isInDraw) throw new HTML2PDF_exception(8, 'PATH');
+            if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'PATH');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->style->save();
              $styles = $this->style->getSvgStyle('path', $param);
@@ -5600,33 +5600,33 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                     {
                         case 'C':
                         case 'c':
-                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->isInDraw['w']);    // x1
-                            $action[] = $this->style->ConvertToMM($path[$k+2], $this->isInDraw['h']);    // y1
-                            $action[] = $this->style->ConvertToMM($path[$k+3], $this->isInDraw['w']);    // x2
-                            $action[] = $this->style->ConvertToMM($path[$k+4], $this->isInDraw['h']);    // y2
-                            $action[] = $this->style->ConvertToMM($path[$k+5], $this->isInDraw['w']);    // x
-                            $action[] = $this->style->ConvertToMM($path[$k+6], $this->isInDraw['h']);    // y
+                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->_isInDraw['w']);    // x1
+                            $action[] = $this->style->ConvertToMM($path[$k+2], $this->_isInDraw['h']);    // y1
+                            $action[] = $this->style->ConvertToMM($path[$k+3], $this->_isInDraw['w']);    // x2
+                            $action[] = $this->style->ConvertToMM($path[$k+4], $this->_isInDraw['h']);    // y2
+                            $action[] = $this->style->ConvertToMM($path[$k+5], $this->_isInDraw['w']);    // x
+                            $action[] = $this->style->ConvertToMM($path[$k+6], $this->_isInDraw['h']);    // y
                             break;
 
                         case 'Q':
                         case 'S':
                         case 'q':
                         case 's':
-                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->isInDraw['w']);    // x2
-                            $action[] = $this->style->ConvertToMM($path[$k+2], $this->isInDraw['h']);    // y2
-                            $action[] = $this->style->ConvertToMM($path[$k+3], $this->isInDraw['w']);    // x
-                            $action[] = $this->style->ConvertToMM($path[$k+4], $this->isInDraw['h']);    // y
+                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->_isInDraw['w']);    // x2
+                            $action[] = $this->style->ConvertToMM($path[$k+2], $this->_isInDraw['h']);    // y2
+                            $action[] = $this->style->ConvertToMM($path[$k+3], $this->_isInDraw['w']);    // x
+                            $action[] = $this->style->ConvertToMM($path[$k+4], $this->_isInDraw['h']);    // y
                             break;
 
                         case 'A':
                         case 'a':
-                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->isInDraw['w']);    // rx
-                            $action[] = $this->style->ConvertToMM($path[$k+2], $this->isInDraw['h']);    // ry
+                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->_isInDraw['w']);    // rx
+                            $action[] = $this->style->ConvertToMM($path[$k+2], $this->_isInDraw['h']);    // ry
                             $action[] = 1.*$path[$k+3];                                                    // angle de deviation de l'axe X
                             $action[] = ($path[$k+4]=='1') ? 1 : 0;                                        // large-arc-flag
                             $action[] = ($path[$k+5]=='1') ? 1 : 0;                                     // sweep-flag
-                            $action[] = $this->style->ConvertToMM($path[$k+6], $this->isInDraw['w']);    // x
-                            $action[] = $this->style->ConvertToMM($path[$k+7], $this->isInDraw['h']);    // y
+                            $action[] = $this->style->ConvertToMM($path[$k+6], $this->_isInDraw['w']);    // x
+                            $action[] = $this->style->ConvertToMM($path[$k+7], $this->_isInDraw['h']);    // y
                             break;
 
                         case 'M':
@@ -5635,18 +5635,18 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                         case 'm':
                         case 'l':
                         case 't':
-                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->isInDraw['w']);    // x
-                            $action[] = $this->style->ConvertToMM($path[$k+2], $this->isInDraw['h']);    // y
+                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->_isInDraw['w']);    // x
+                            $action[] = $this->style->ConvertToMM($path[$k+2], $this->_isInDraw['h']);    // y
                             break;
 
                         case 'H':
                         case 'h':
-                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->isInDraw['w']);    // x
+                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->_isInDraw['w']);    // x
                             break;
 
                         case 'V':
                         case 'v':
-                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->isInDraw['h']);    // y
+                            $action[] = $this->style->ConvertToMM($path[$k+1], $this->_isInDraw['h']);    // y
                             break;
 
                         case 'z':
@@ -5674,7 +5674,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         */
         protected function o_G($param)
         {
-            if (!$this->isInDraw) throw new HTML2PDF_exception(8, 'LINE');
+            if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'LINE');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->style->save();
              $styles = $this->style->getSvgStyle('path', $param);
@@ -5715,15 +5715,15 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                         break;
 
                     case 'translate':
-                        if (!isset($val[0])) $val[0] = 0.; else $val[0] = $this->style->ConvertToMM($val[0], $this->isInDraw['w']);
-                        if (!isset($val[1])) $val[1] = 0.; else $val[1] = $this->style->ConvertToMM($val[1], $this->isInDraw['h']);
+                        if (!isset($val[0])) $val[0] = 0.; else $val[0] = $this->style->ConvertToMM($val[0], $this->_isInDraw['w']);
+                        if (!isset($val[1])) $val[1] = 0.; else $val[1] = $this->style->ConvertToMM($val[1], $this->_isInDraw['h']);
                         $actions[] = array(1,0,0,1,$val[0],$val[1]);
                         break;
 
                     case 'rotate':
                         if (!isset($val[0])) $val[0] = 0.; else $val[0] = $val[0]*M_PI/180.;
-                        if (!isset($val[1])) $val[1] = 0.; else $val[1] = $this->style->ConvertToMM($val[1], $this->isInDraw['w']);
-                        if (!isset($val[2])) $val[2] = 0.; else $val[2] = $this->style->ConvertToMM($val[2], $this->isInDraw['h']);
+                        if (!isset($val[1])) $val[1] = 0.; else $val[1] = $this->style->ConvertToMM($val[1], $this->_isInDraw['w']);
+                        if (!isset($val[2])) $val[2] = 0.; else $val[2] = $this->style->ConvertToMM($val[2], $this->_isInDraw['h']);
                         if ($val[1] || $val[2]) $actions[] = array(1,0,0,1,-$val[1],-$val[2]);
                         $actions[] = array(cos($val[0]),sin($val[0]),-sin($val[0]),cos($val[0]),0,0);
                         if ($val[1] || $val[2]) $actions[] = array(1,0,0,1,$val[1],$val[2]);
@@ -5743,8 +5743,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                         if (!isset($val[1])) $val[1] = 0.; else $val[1] = $val[1]*1.;
                         if (!isset($val[2])) $val[2] = 0.; else $val[2] = $val[2]*1.;
                         if (!isset($val[3])) $val[3] = 0.; else $val[3] = $val[3]*1.;
-                        if (!isset($val[4])) $val[4] = 0.; else $val[4] = $this->style->ConvertToMM($val[4], $this->isInDraw['w']);
-                        if (!isset($val[5])) $val[5] = 0.; else $val[5] = $this->style->ConvertToMM($val[5], $this->isInDraw['h']);
+                        if (!isset($val[4])) $val[4] = 0.; else $val[4] = $this->style->ConvertToMM($val[4], $this->_isInDraw['w']);
+                        if (!isset($val[5])) $val[5] = 0.; else $val[5] = $this->style->ConvertToMM($val[5], $this->_isInDraw['h']);
                         $actions[] =$val;
                         break;
                 }
@@ -5777,7 +5777,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
                 if (!$correct) {
                     $res[$k] = $this->style->ConvertToMM($v);
                 } else {
-                    $res[$k] = $this->style->ConvertToMM($v, ($k%2) ? $this->isInDraw['h'] : $this->isInDraw['w']);
+                    $res[$k] = $this->style->ConvertToMM($v, ($k%2) ? $this->_isInDraw['h'] : $this->_isInDraw['w']);
                 }
             }
             return $res;
@@ -5813,8 +5813,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             if ($page) {
                 $oldPage = $this->pdf->getPage();
                 $this->pdf->setPage($page);
-                $this->pdf->setXY($this->margeLeft, $this->margeTop);
-                $this->maxH = 0;
+                $this->pdf->setXY($this->_margeLeft, $this->_margeTop);
+                $this->_maxH = 0;
                 $page++;
                 return $oldPage;
             } else {
