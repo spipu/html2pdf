@@ -4,7 +4,7 @@
 ** http://www.gnu.org/licenses/lgpl.html             **
 ** pour en savoir plus.                              **
 **                                                   **
-**  Copyright 2000-2010 par Laurent Minguet          **
+**  Copyright 2008-2011 par Laurent Minguet          **
 *******************************************************
 *******************************
 * HTML2PDF v4.02 - 01/04/2011 *
