@@ -3,7 +3,7 @@
 ** for more information see file _LGPL.txt or          **
 ** http://www.gnu.org/licenses/lgpl.html               **
 **                                                     **
-**  Copyright 2000-2010 by Laurent Minguet             **
+**  Copyright 2008-2011 by Laurent Minguet             **
 *********************************************************
 *******************************
 * HTML2PDF v4.02 - 2011-04-01 *
