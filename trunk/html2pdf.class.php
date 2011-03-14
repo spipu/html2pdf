@@ -13,109 +13,124 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
 define('__CLASS_HTML2PDF__', '4.02');
 
-require_once(dirname(__FILE__).'/_mypdf/mypdf.class.php');    // classe mypdf
-require_once(dirname(__FILE__).'/_mypdf/parsingHTML.class.php');    // classe de parsing HTML
-require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe de gestion des styles
+require_once(dirname(__FILE__).'/_mypdf/mypdf.class.php');
+require_once(dirname(__FILE__).'/_mypdf/parsingHTML.class.php');
+require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
     class HTML2PDF
     {
-        public    $pdf               = null;        // objet PDF
-        public    $style             = null;        // objet de style
-        public    $parsing           = null;        // objet de parsing
+        /**
+         * MyPDF object, extends from TCPDF
+         * @var MyPDF
+         */
+        public $pdf = null;
 
-        protected $_langue           = 'fr';        // langue des messages
-        protected $_sens             = 'P';         // sens d'affichage Portrait ou Landscape
-        protected $_format           = 'A4';        // format de la page : A4, A3, ...
+        /**
+         * CSS parsing
+         * @var styleHTML
+         */
+        public $style = null;
+
+        /**
+         * HTML parsing
+         * @var parsingHTML
+         */
+        public $parsing = null;
+
+        protected $_langue           = 'fr';        // locale of the messages
+        protected $_orientation      = 'P';         // page orientation : Portrait ou Landscape
+        protected $_format           = 'A4';        // page format : A4, A3, ...
         protected $_encoding         = '';          // charset encoding
         protected $_unicode          = true;        // means that the input text is unicode (default = true)
 
-        protected $_background       = array();     // informations sur le background
-        protected $_testTdInOnepage  = true;        // activer le test de TD ne devant pas depasser une page
-        protected $_testIsImage      = true;        // test si les images existes ou non
-        protected $_testIsDeprecated = false;       // test si certaines fonctions sont deprecated
+        protected $_testTdInOnepage  = true;        // test de TD ne devant pas depasser une page
+        protected $_testIsImage      = true;        // test if the images exist or not
+        protected $_testIsDeprecated = false;       // test the deprecated functions
 
-        protected $_parsePos         = 0;           // position du parsing
-        protected $_tempPos          = 0;           // position temporaire pour multi tableau
-        protected $_page             = 0;           // numero de la page courante
+        protected $_parsePos         = 0;           // position in the parsing
+        protected $_tempPos          = 0;           // temporary position for complex table
+        protected $_page             = 0;           // current page number
 
-        protected $_subHtml          = null;        // sous html
-        protected $_subPart          = false;       // indicateur de sous html
-        protected $_subHEADER        = array();     // tableau des sous commandes pour faire l'HEADER
-        protected $_subFOOTER        = array();     // tableau des sous commandes pour faire le FOOTER
-        protected $_subSTATES        = array();     // tableau de sauvegarde de certains parametres
+        protected $_subHtml          = null;        // sub html
+        protected $_subPart          = false;       // sub HTML2PDF
+        protected $_subHEADER        = array();     // sub action to make the header
+        protected $_subFOOTER        = array();     // sub action to make the footer
+        protected $_subSTATES        = array();     // array to save some parameters
 
-        protected $_isSubPart        = false;       // indique que le convertisseur courant est un sous html
-        protected $_isInThead        = false;       // indique si on est dans un thead
-        protected $_isInTfoot        = false;       // indique si on est dans un tfoot
-        protected $_isInOverflow     = false;       // indique si on est dans une div overflow
-        protected $_isInFooter       = false;       // indique si on est dans un footer ou non
-        protected $_isInDraw         = null;        // indique si on est en mode dessin
-        protected $_isAfterFloat     = false;       // indique si on est apres un float
-        protected $_isInForm         = false;       // indique si on est dans un formulaire. Contient dans ce cas l� l'action de celui-ci
-        protected $_isInLink         = '';          // indique si on est a l'interieur d'un lien
-        protected $_isForOneLine     = false;       // indique si on est dans un sous HTML ne servant qu'a calculer la taille de la prochaine ligne
+        protected $_isSubPart        = false;       // flag : in a sub html2pdf
+        protected $_isInThead        = false;       // flag : in a thead
+        protected $_isInTfoot        = false;       // flag : in a tfoot
+        protected $_isInOverflow     = false;       // flag : in a overflow
+        protected $_isInFooter       = false;       // flag : in a footer
+        protected $_isInDraw         = null;        // flag : in a draw (svg)
+        protected $_isAfterFloat     = false;       // flag : is just after a float
+        protected $_isInForm         = false;       // flag : is in a float. false / action of the form
+        protected $_isInLink         = '';          // flag : is in a link. empty / href of the link
+        protected $_isForOneLine     = false;       // flag : in a specific sub html2pdf to have the height of the next line
 
-        protected $_maxX             = 0;           // zone maxi X
-        protected $_maxY             = 0;           // zone maxi Y
-        protected $_maxE             = 0;           // nomre d'elements dans la zone
-        protected $_maxH             = 0;           // plus grande hauteur dans la ligne, pour saut de ligne a corriger
-        protected $_maxSave          = array();     // tableau de sauvegarde des maximaux
-        protected $_currentH         = 0;           // hauteur de la ligne courante
+        protected $_maxX             = 0;           // maximum X of the current zone
+        protected $_maxY             = 0;           // maximum Y of the current zone
+        protected $_maxE             = 0;           // number of elements in the current zone
+        protected $_maxH             = 0;           // maximum height of the line in the current zone
+        protected $_maxSave          = array();     // save the maximums of the current zone
+        protected $_currentH         = 0;           // height of the current line
 
-        protected $_defaultLeft      = 0;           // marges par default de la page
+        protected $_defaultLeft      = 0;           // default marges of the page
         protected $_defaultTop       = 0;
         protected $_defaultRight     = 0;
         protected $_defaultBottom    = 0;
+        protected $_defaultFont      = null;        // default font to use, is the asked font does not exist
 
-        protected $_margeLeft        = 0;           //marges reelles de la page
+        protected $_margeLeft        = 0;           // current marges of the page
         protected $_margeTop         = 0;
         protected $_margeRight       = 0;
         protected $_margeBottom      = 0;
-        protected $_marges           = array();     // tableau de sauvegarde des differents etats des marges de la page courante
-        protected $_pageMarges       = array();     // marges specifiques dues aux floats
+        protected $_marges           = array();     // save the different marges of the current page
+        protected $_pageMarges       = array();     // float marges of the current page
+        protected $_background       = array();     // background informations
 
-        protected $_firstPage        = true;        // premier page
-        protected $_defList          = array();     // tableau de sauvegarde de l'etat des UL et OL
 
-        protected $_lstAncre         = array();     // liste des ancres detectees ou creees
-        protected $_lstChamps        = array();     // liste des champs
-        protected $_lstSelect        = array();     // options du select en cours
-        protected $_previousCall     = null;        // dernier appel
+        protected $_firstPage        = true;        // flag : first page
+        protected $_defList          = array();     // table to save the stats of the tags UL and OL
 
-        protected $_debugActif       = false;       // indique si on est en mode debug
-        protected $_debugOkUsage     = false;       // indique l'existance de la fonction memory_get_usage
-        protected $_debugOkPeak      = false;       // indique l'existance de la fonction memory_get_peak_usage
-        protected $_debugLevel       = 0;           // niveau du debug
-        protected $_debugStartTime   = 0;           //
-        protected $_debugLastTime    = 0;           //
-        protected $_defaultFont      = null;        // fonte par defaut si la fonte demandee n'existe pas
+        protected $_lstAnchor        = array();     // list of the anchors
+        protected $_lstField         = array();     // list of the fields
+        protected $_lstSelect        = array();     // list of the options of the current select
+        protected $_previousCall     = null;        // last action called
 
-        static protected $_subobj    = null;        // sous objet HTML2PDF prepare en cas de besoin
-        static protected $_tables    = array();     // tableau global necessaire a la gestion des tables imbriquees
-        static protected $_textes    = array();     // tableau comprennant le fichier de langue
+        protected $_debugActif       = false;       // flag : mode debug is active
+        protected $_debugOkUsage     = false;       // flag : the function memory_get_usage exist
+        protected $_debugOkPeak      = false;       // flag : the function memory_get_peak_usage exist
+        protected $_debugLevel       = 0;           // level in the debug
+        protected $_debugStartTime   = 0;           // debug start time
+        protected $_debugLastTime    = 0;           // debug stop time
+
+        static protected $_subobj    = null;        // object html2pdf prepared in order to accelerate the creation of sub html2pdf
+        static protected $_tables    = array();     // static table to prepare the nested html tables
+        static protected $_textes    = array();     // static table with locales to use
 
         /**
          * Constructeur
          *
-         * @param    string        sens portrait ou landscape
-         * @param    string        format A4, A5, ...
-         * @param    string        langue : fr, en, it...
-         * @param    boolean        $unicode TRUE means that the input text is unicode (default = true)
-         * @param     String        $encoding charset encoding; default is UTF-8
-         * @param    array        marges par defaut, dans l'ordre (left, top, right, bottom)
-         * @return    null
+         * @param    string  sens portrait ou landscape
+         * @param    string  format A4, A5, ...
+         * @param    string  langue : fr, en, it...
+         * @param    boolean $unicode TRUE means that the input text is unicode (default = true)
+         * @param    String  $encoding charset encoding; default is UTF-8
+         * @param    array   marges par defaut, dans l'ordre (left, top, right, bottom)
+         * @return   null
          */
         public function __construct($sens = 'P', $format = 'A4', $langue='fr', $unicode=true, $encoding='UTF-8', $marges = array(5, 5, 5, 8))
         {
             // sauvegarde des param�tres
             $this->_page         = 0;
-            $this->_sens            = $sens;
-            $this->_format        = $format;
-            $this->_unicode        = $unicode;
-            $this->_encoding        = $encoding;
+            $this->_orientation  = $sens;
+            $this->_format       = $format;
+            $this->_unicode      = $unicode;
+            $this->_encoding     = $encoding;
 
             $this->_firstPage    = true;
-            $this->_langue        = strtolower($langue);
+            $this->_langue       = strtolower($langue);
 
             // chargement du fichier de langue
             HTML2PDF::textLOAD($this->_langue);
@@ -146,7 +161,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $this->_marges = array();
 
             // initialisation des champs de formulaire
-            $this->_lstChamps = array();
+            $this->_lstField = array();
         }
 
         /**
@@ -530,14 +545,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $this->_firstPage = false;
 
             $this->_format = $format ? $format : $this->_format;
-            $this->_sens = $orientation ? $orientation : $this->_sens;
+            $this->_orientation = $orientation ? $orientation : $this->_orientation;
             $this->_background = $background!==null ? $background : $this->_background;
             $this->_maxY = 0;
             $this->_maxX = 0;
             $this->_maxH = 0;
 
             $this->pdf->SetMargins($this->_defaultLeft, $this->_defaultTop, $this->_defaultRight);
-            $this->pdf->AddPage($this->_sens, $this->_format);
+            $this->pdf->AddPage($this->_orientation, $this->_format);
             $this->_page++;
 
             if (!$this->_subPart && !$this->_isSubPart) {
@@ -688,7 +703,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $pdf = null;
 
             HTML2PDF::$_subobj = new HTML2PDF(
-                                        $this->_sens,
+                                        $this->_orientation,
                                         $this->_format,
                                         $this->_langue,
                                         $this->_unicode,
@@ -749,7 +764,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
             $subHtml->style->table            = $this->style->table;
             $subHtml->style->value            = $this->style->value;
             $subHtml->style->setOnlyLeft();
-            $subHtml->setNewPage($this->_format, $this->_sens);
+            $subHtml->setNewPage($this->_format, $this->_orientation);
             $subHtml->initSubHtml($marge, $this->_page, $this->_defList);
         }
 
@@ -3140,19 +3155,19 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
             if (isset($param['name'])) {
                 $nom =     $param['name'];
-                if (!isset($this->_lstAncre[$nom])) $this->_lstAncre[$nom] = array($this->pdf->AddLink(), false);
+                if (!isset($this->_lstAnchor[$nom])) $this->_lstAnchor[$nom] = array($this->pdf->AddLink(), false);
 
-                if (!$this->_lstAncre[$nom][1]) {
-                    $this->_lstAncre[$nom][1] = true;
-                    $this->pdf->SetLink($this->_lstAncre[$nom][0], -1, -1);
+                if (!$this->_lstAnchor[$nom][1]) {
+                    $this->_lstAnchor[$nom][1] = true;
+                    $this->pdf->SetLink($this->_lstAnchor[$nom][0], -1, -1);
                 }
             }
 
             if (preg_match('/^#([^#]+)$/isU', $this->_isInLink, $match)) {
                 $nom = $match[1];
-                if (!isset($this->_lstAncre[$nom])) $this->_lstAncre[$nom] = array($this->pdf->AddLink(), false);
+                if (!isset($this->_lstAnchor[$nom])) $this->_lstAnchor[$nom] = array($this->pdf->AddLink(), false);
 
-                $this->_isInLink = $this->_lstAncre[$nom][0];
+                $this->_isInLink = $this->_lstAnchor[$nom][0];
             }
 
             $this->style->save();
@@ -4923,14 +4938,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function o_SELECT($param)
         {
             // preparation du champs
-            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstChamps)+1);
+            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstField)+1);
 
             $param['name'] = strtolower($param['name']);
 
-            if (isset($this->_lstChamps[$param['name']]))
-                $this->_lstChamps[$param['name']]++;
+            if (isset($this->_lstField[$param['name']]))
+                $this->_lstField[$param['name']]++;
             else
-                $this->_lstChamps[$param['name']] = 1;
+                $this->_lstField[$param['name']] = 1;
 
             $this->style->save();
             $this->style->analyse('select', $param);
@@ -5026,14 +5041,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function o_TEXTAREA($param)
         {
             // preparation du champs
-            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstChamps)+1);
+            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstField)+1);
 
             $param['name'] = strtolower($param['name']);
 
-            if (isset($this->_lstChamps[$param['name']]))
-                $this->_lstChamps[$param['name']]++;
+            if (isset($this->_lstField[$param['name']]))
+                $this->_lstField[$param['name']]++;
             else
-                $this->_lstChamps[$param['name']] = 1;
+                $this->_lstField[$param['name']] = 1;
 
             $this->style->save();
             $this->style->analyse('textarea', $param);
@@ -5095,7 +5110,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
         protected function o_INPUT($param)
         {
             // preparation du champs
-            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstChamps)+1);
+            if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstField)+1);
             if (!isset($param['value']))    $param['value']    = '';
             if (!isset($param['type']))        $param['type']    = 'text';
 
@@ -5104,10 +5119,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');        // classe 
 
             if (!in_array($param['type'], array('text', 'checkbox', 'radio', 'hidden', 'submit', 'reset', 'button'))) $param['type'] = 'text';
 
-            if (isset($this->_lstChamps[$param['name']]))
-                $this->_lstChamps[$param['name']]++;
+            if (isset($this->_lstField[$param['name']]))
+                $this->_lstField[$param['name']]++;
             else
-                $this->_lstChamps[$param['name']] = 1;
+                $this->_lstField[$param['name']] = 1;
 
             $this->style->save();
             $this->style->analyse('input', $param);
