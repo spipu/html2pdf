@@ -512,15 +512,15 @@ class MyPDF extends TCPDF
      * @param float $Ty
      * @access public
      */
-    public function setTranslate($Tx, $Ty)
+    public function setTranslate($xT, $yT)
     {
         // Matrix for Translate
         $tm[0]=1;
         $tm[1]=0;
         $tm[2]=0;
         $tm[3]=1;
-        $tm[4]=$Tx*$this->k;
-        $tm[5]=-$Ty*$this->k;
+        $tm[4]=$xT*$this->k;
+        $tm[5]=-$yT*$this->k;
 
         // apply the Transform Matric
         $this->_out(sprintf('%.3F %.3F %.3F %.3F %.3F %.3F cm', $tm[0], $tm[1], $tm[2], $tm[3], $tm[4], $tm[5]));
@@ -534,23 +534,23 @@ class MyPDF extends TCPDF
      * @param float $Cy
      * @access public
      */
-    public function setRotation($angle, $Cx=null, $Cy=null)
+    public function setRotation($angle, $xC=null, $yC=null)
     {
         // if no center, rotate around the current posiition
-        if($Cx === null) $Cx=$this->x;
-        if($Cy === null) $Cy=$this->y;
+        if($xC === null) $xC=$this->x;
+        if($yC === null) $yC=$this->y;
 
         // prepare the coordinate
-        $Cy=($this->h-$Cy)*$this->k;
-        $Cx*=$this->k;
+        $yC=($this->h-$yC)*$this->k;
+        $xC*=$this->k;
 
         // Matrix for Rotate
         $tm[0]=cos(deg2rad($angle));
         $tm[1]=sin(deg2rad($angle));
         $tm[2]=-$tm[1];
         $tm[3]=$tm[0];
-        $tm[4]=$Cx+$tm[1]*$Cy-$tm[0]*$Cx;
-        $tm[5]=$Cy-$tm[0]*$Cy-$tm[1]*$Cx;
+        $tm[4]=$xC+$tm[1]*$yC-$tm[0]*$xC;
+        $tm[5]=$yC-$tm[0]*$yC-$tm[1]*$xC;
 
         // apply the Transform Matric
         $this->_out(sprintf('%.3F %.3F %.3F %.3F %.3F %.3F cm', $tm[0], $tm[1], $tm[2], $tm[3], $tm[4], $tm[5]));
@@ -1279,8 +1279,8 @@ class MyPDF extends TCPDF
             // Caption (cut to fit on the width page)
             $str=$this->outlines[$i]['t'];
             $strsize=$this->GetStringWidth($str);
-            $avail_size=$this->w-$this->lMargin-$this->rMargin-$pageCellSize-($level*8)-4;
-            while ($strsize>=$avail_size) {
+            $availableSize=$this->w-$this->lMargin-$this->rMargin-$pageCellSize-($level*8)-4;
+            while ($strsize>=$availableSize) {
                 $str=substr($str, 0, -1);
                 $strsize=$this->GetStringWidth($str);
             }
