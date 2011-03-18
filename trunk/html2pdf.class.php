@@ -183,6 +183,20 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
         }
 
         /**
+         * Clone to create a sub HTML2PDF from HTML2PDF::$_subobj
+         *
+         * @access public
+         * @return    null
+         */
+        public function __clone()
+        {
+            $this->pdf      = clone $this->pdf;
+            $this->parsing  = clone $this->parsing;
+            $this->style    = clone $this->style;
+            $this->style->setPdfParent($this->pdf);
+        }
+
+        /**
          * set the debug mode to On
          *
          * @access public
@@ -198,65 +212,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             $this->_debugStartTime = $time;
             $this->_debugLastTime  = $time;
 
-            $this->DEBUG_stepline('step', 'time', 'delta', 'memory', 'peak');
-            $this->DEBUG_add('Init debug');
+            $this->_DEBUG_stepline('step', 'time', 'delta', 'memory', 'peak');
+            $this->_DEBUG_add('Init debug');
 
             return $this;
-        }
-
-        /**
-         * add a debug step
-         *
-         * @access public
-         * @param  string  $name step name
-         * @param  boolean $level (true=up, false=down, null=nothing to do)
-         * @return $this
-         */
-        public function DEBUG_add($name, $level=null)
-        {
-            // if true : UP
-            if ($level===true) $this->_debugLevel++;
-
-            $name   = str_repeat('  ', $this->_debugLevel). $name.($level===true ? ' Begin' : ($level===false ? ' End' : ''));
-            $time  = microtime(true);
-            $usage = ($this->_debugOkUsage ? memory_get_usage() : 0);
-            $peak  = ($this->_debugOkPeak ? memory_get_peak_usage() : 0);
-
-            $this->DEBUG_stepline(
-                $name,
-                number_format(($time - $this->_debugStartTime)*1000, 1, '.', ' ').' ms',
-                number_format(($time - $this->_debugLastTime)*1000, 1, '.', ' ').' ms',
-                number_format($usage/1024, 1, '.', ' ').' Ko',
-                number_format($peak/1024, 1, '.', ' ').' Ko'
-            );
-
-            $this->_debugLastTime = $time;
-
-            // it false : DOWN
-            if ($level===false) $this->_debugLevel--;
-
-            return $this;
-        }
-
-        /**
-         * display a debug line
-         *
-         * @access protected
-         * @param  string $name
-         * @param  string $timeTotal
-         * @param  string $timeStep
-         * @param  string $memoryUsage
-         * @param  string $memoryPeak
-         */
-        protected function DEBUG_stepline($name, $timeTotal, $timeStep, $memoryUsage, $memoryPeak)
-        {
-            $txt = str_pad($name, 30, ' ', STR_PAD_RIGHT).
-                    str_pad($timeTotal, 12, ' ', STR_PAD_LEFT).
-                    str_pad($timeStep, 12, ' ', STR_PAD_LEFT).
-                    str_pad($memoryUsage, 15, ' ', STR_PAD_LEFT).
-                    str_pad($memoryPeak, 15, ' ', STR_PAD_LEFT);
-
-            echo '<pre style="padding:0; margin:0">'.$txt.'</pre>';
         }
 
         /**
@@ -317,6 +276,194 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
         }
 
         /**
+         * add a font, see TCPDF function addFont
+         *
+         * @access public
+         * @param string $family Font family. The name can be chosen arbitrarily. If it is a standard family name, it will override the corresponding font.
+         * @param string $style Font style. Possible values are (case insensitive):<ul><li>empty string: regular (default)</li><li>B: bold</li><li>I: italic</li><li>BI or IB: bold italic</li></ul>
+         * @param string $fontfile The font definition file. By default, the name is built from the family and style, in lower case with no spaces.
+         * @return HTML2PDF $this
+         * @see TCPDF::addFont
+         */
+        public function addFont($family, $style='', $file='')
+        {
+            $this->pdf->AddFont($family, $style, $file);
+
+            return $this;
+        }
+
+        /**
+         * display a automatic index, from the bookmarks
+         *
+         * @access public
+         * @param  string  $titre         index title
+         * @param  int     $sizeTitle     font size of the index title, in mm
+         * @param  int     $sizeBookmark  font size of the index, in mm
+         * @param  boolean $bookmarkTitle add a bookmark for the index, at his beginning
+         * @param  boolean $displayPage   display the page numbers
+         * @param  int     $onPage        if null : at the end of the document on a new page, else on the $onPage page
+         * @param  string  $fontName      font name to use
+         * @return null
+         */
+        public function createIndex($titre = 'Index', $sizeTitle = 20, $sizeBookmark = 15, $bookmarkTitle = true, $displayPage = true, $onPage = null, $fontName = 'helvetica')
+        {
+            $oldPage = $this->INDEX_NewPage($onPage);
+            $this->pdf->createIndex($this, $titre, $sizeTitle, $sizeBookmark, $bookmarkTitle, $displayPage, $onPage, $fontName);
+            if ($oldPage) $this->pdf->setPage($oldPage);
+        }
+
+        /**
+         * Send the document to a given destination: string, local file or browser.
+         * Dest can be :
+         *  I : send the file inline to the browser (default). The plug-in is used if available. The name given by name is used when one selects the "Save as" option on the link generating the PDF.
+         *  D : send to the browser and force a file download with the name given by name.
+         *  F : save to a local server file with the name given by name.
+         *  S : return the document as a string. name is ignored.
+         *  FI: equivalent to F + I option
+         *  FD: equivalent to F + D option
+         *  true  => I
+         *  false => S
+         *
+         * @param  string $name The name of the file when saved.
+         * @param  string $dest Destination where to send the document.
+         * @return string content of the PDF, if $dest=S
+         * @see TCPDF::close
+         * @access public
+
+         */
+        public function Output($name = '', $dest = false)
+        {
+            // clean up
+            HTML2PDF::$_tables = array();
+
+            // id on debug mode
+            if ($this->_debugActif) {
+                $this->_DEBUG_add('Before output');
+                $this->pdf->Close();
+                exit;
+            }
+
+            // complete parameters
+            if ($dest===false) $dest = 'I';
+            if ($dest===true)  $dest = 'S';
+            if ($dest==='')    $dest = 'I';
+            if ($name=='')     $name='document.pdf';
+
+            // clean up the destination
+            $dest = strtoupper($dest);
+            if (!in_array($dest, array('I', 'D', 'F', 'S', 'FI','FD'))) $dest = 'I';
+
+            // the name must be a PDF name
+            if (strtolower(substr($name, -4))!='.pdf') {
+                throw new HTML2PDF_exception(0, 'The output document name "'.$name.'" is not a PDF name');
+            }
+
+            // call the output of TCPDF
+            return $this->pdf->Output($name, $dest);
+        }
+
+        /**
+         * convert HTML to PDF
+         *
+         * @access public
+         * @param  string   $html
+         * @param  boolean  $debugVue  enable the HTML debug vue
+         * @return null
+         */
+        public function writeHTML($html, $debugVue = false)
+        {
+            // if it is a real html page, we have to convert it
+            if (preg_match('/<body/isU', $html))
+                $html = $this->getHtmlFromPage($html);
+
+            $html = str_replace('[[page_nb]]', '{nb}', $html);
+
+            $html = str_replace('[[date_y]]', date('Y'), $html);
+            $html = str_replace('[[date_m]]', date('m'), $html);
+            $html = str_replace('[[date_d]]', date('d'), $html);
+
+            $html = str_replace('[[date_h]]', date('H'), $html);
+            $html = str_replace('[[date_i]]', date('i'), $html);
+            $html = str_replace('[[date_s]]', date('s'), $html);
+
+            // If we are in HTML debug vue : display the HTML
+            if ($debugVue) {
+                return $this->vueHTML($html);
+            }
+
+            // convert HTMl to PDF
+            $this->style->readStyle($html);
+            $this->parsing->setHTML($html);
+            $this->parsing->parse();
+            $this->makeHTMLcode();
+        }
+
+        /**
+         * convert the HTML of a real page, to a code adapted to HTML2PDF
+         *
+         * @access public
+         * @param  string HTML of a real page
+         * @return string HTML adapted to HTML2PDF
+         */
+        public function getHtmlFromPage($html)
+        {
+            $html = str_replace('<BODY', '<body', $html);
+            $html = str_replace('</BODY', '</body', $html);
+
+            // extract the content
+            $res = explode('<body', $html);
+            if (count($res)<2) return $html;
+            $content = '<page'.$res[1];
+            $content = explode('</body', $content);
+            $content = $content[0].'</page>';
+
+            // extract the link tags
+            preg_match_all('/<link([^>]*)>/isU', $html, $match);
+            foreach ($match[0] as $src)
+                $content = $src.'</link>'.$content;
+
+            // extract the css style tags
+            preg_match_all('/<style[^>]*>(.*)<\/style[^>]*>/isU', $html, $match);
+            foreach ($match[0] as $src)
+                $content = $src.$content;
+
+            return $content;
+        }
+
+
+        /**
+         * init a sub HTML2PDF. does not use it directly. Only the method createSubHTML must use it
+         *
+         * @access public
+         * @param  string  $format
+         * @param  string  $orientation
+         * @param  array   $marge
+         * @param  integer $page
+         * @param  array   $defLIST
+         */
+        public function initSubHtml($format, $orientation, $marge, $page, $defLIST)
+        {
+            $this->style->setOnlyLeft();
+
+            $this->_setNewPage($format, $orientation);
+
+            $this->saveMargin(0, 0, $marge);
+            $this->_defList = $defLIST;
+
+            $this->_page = $page;
+            $this->pdf->setXY(0, 0);
+            $this->style->FontSet();
+        }
+
+        /**
+         *
+         */
+        public function setIsSubPart()
+        {
+            $this->_isSubPart = true;
+        }
+
+        /**
          * set the default margins of the page
          *
          * @access protected
@@ -334,6 +481,52 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             $this->_defaultTop    = $this->style->ConvertToMM($top.'mm');
             $this->_defaultRight  = $this->style->ConvertToMM($right.'mm');
             $this->_defaultBottom = $this->style->ConvertToMM($bottom.'mm');
+        }
+
+        /**
+         * creation d'une nouvelle page avec le format et l'orientation specifies
+         *
+         * @param    mixed    format de la page : A5, A4, array(width, height)
+         * @param    string   sens P=portrait ou L=landscape
+         * @param    array    tableau des proprietes du fond de la page
+         * @param    integer  position reelle courante si saut de ligne pendant l'ecriture d'un texte
+         * @return   null
+         */
+        protected function _setNewPage($format = null, $orientation = '', $background = null, $curr = null)
+        {
+            $this->_firstPage = false;
+
+            $this->_format = $format ? $format : $this->_format;
+            $this->_orientation = $orientation ? $orientation : $this->_orientation;
+            $this->_background = $background!==null ? $background : $this->_background;
+            $this->_maxY = 0;
+            $this->_maxX = 0;
+            $this->_maxH = 0;
+
+            $this->pdf->SetMargins($this->_defaultLeft, $this->_defaultTop, $this->_defaultRight);
+            $this->pdf->AddPage($this->_orientation, $this->_format);
+            $this->_page++;
+
+            if (!$this->_subPart && !$this->_isSubPart) {
+                if (is_array($this->_background)) {
+                    if (isset($this->_background['color']) && $this->_background['color']) {
+                        $this->pdf->setFillColorArray($this->_background['color']);
+                        $this->pdf->Rect(0, 0, $this->pdf->getW(), $this->pdf->getH(), 'F');
+                    }
+
+                    if (isset($this->_background['img']) && $this->_background['img'])
+                        $this->pdf->Image($this->_background['img'], $this->_background['posX'], $this->_background['posY'], $this->_background['width']);
+                }
+
+                $this->setPageHeader();
+                $this->setPageFooter();
+            }
+
+            $this->setMargins();
+            $this->pdf->setY($this->_margeTop);
+
+            $this->setNewPositionForNewLine($curr);
+            $this->_maxH = 0;
         }
 
         /**
@@ -357,6 +550,61 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             // set the float Margins
             $this->_pageMarges = array();
             $this->_pageMarges[floor($this->_margeTop*100)] = array($this->_margeLeft, $this->pdf->getW()-$this->_margeRight);
+        }
+
+        /**
+         * add a debug step
+         *
+         * @access protected
+         * @param  string  $name step name
+         * @param  boolean $level (true=up, false=down, null=nothing to do)
+         * @return $this
+         */
+        protected function _DEBUG_add($name, $level=null)
+        {
+            // if true : UP
+            if ($level===true) $this->_debugLevel++;
+
+            $name   = str_repeat('  ', $this->_debugLevel). $name.($level===true ? ' Begin' : ($level===false ? ' End' : ''));
+            $time  = microtime(true);
+            $usage = ($this->_debugOkUsage ? memory_get_usage() : 0);
+            $peak  = ($this->_debugOkPeak ? memory_get_peak_usage() : 0);
+
+            $this->_DEBUG_stepline(
+                $name,
+                number_format(($time - $this->_debugStartTime)*1000, 1, '.', ' ').' ms',
+                number_format(($time - $this->_debugLastTime)*1000, 1, '.', ' ').' ms',
+                number_format($usage/1024, 1, '.', ' ').' Ko',
+                number_format($peak/1024, 1, '.', ' ').' Ko'
+            );
+
+            $this->_debugLastTime = $time;
+
+            // it false : DOWN
+            if ($level===false) $this->_debugLevel--;
+
+            return $this;
+        }
+
+        /**
+         * display a debug line
+         *
+         * @access protected
+         * @param  string $name
+         * @param  string $timeTotal
+         * @param  string $timeStep
+         * @param  string $memoryUsage
+         * @param  string $memoryPeak
+         */
+        protected function _DEBUG_stepline($name, $timeTotal, $timeStep, $memoryUsage, $memoryPeak)
+        {
+            $txt = str_pad($name, 30, ' ', STR_PAD_RIGHT).
+                    str_pad($timeTotal, 12, ' ', STR_PAD_LEFT).
+                    str_pad($timeStep, 12, ' ', STR_PAD_LEFT).
+                    str_pad($memoryUsage, 15, ' ', STR_PAD_LEFT).
+                    str_pad($memoryPeak, 15, ' ', STR_PAD_LEFT);
+
+            echo '<pre style="padding:0; margin:0">'.$txt.'</pre>';
         }
 
         /**
@@ -465,23 +713,6 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
         }
 
         /**
-         * add a font, see TCPDF function addFont
-         *
-         * @access public
-         * @param string $family Font family. The name can be chosen arbitrarily. If it is a standard family name, it will override the corresponding font.
-         * @param string $style Font style. Possible values are (case insensitive):<ul><li>empty string: regular (default)</li><li>B: bold</li><li>I: italic</li><li>BI or IB: bold italic</li></ul>
-         * @param string $fontfile The font definition file. By default, the name is built from the family and style, in lower case with no spaces.
-         * @return HTML2PDF $this
-         * @see TCPDF::addFont
-         */
-        public function addFont($family, $style='', $file='')
-        {
-            $this->pdf->AddFont($family, $style, $file);
-
-            return $this;
-        }
-
-        /**
          * save the current maxs (push)
          *
          * @access protected
@@ -570,52 +801,6 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
         }
 
         /**
-         * cr�ation d'une nouvelle page avec le format et l'orientation sp�cifies
-         *
-         * @param    mixed    format de la page : A5, A4, array(width, height)
-         * @param    string    sens P=portrait ou L=landscape
-         * @param    array    tableau des propri�t�s du fond de la page
-         * @param    integer    position reelle courante si saut de ligne pendant l'ecriture d'un texte
-         * @return    null
-         */
-        public function setNewPage($format = null, $orientation = '', $background = null, $curr = null)
-        {
-            $this->_firstPage = false;
-
-            $this->_format = $format ? $format : $this->_format;
-            $this->_orientation = $orientation ? $orientation : $this->_orientation;
-            $this->_background = $background!==null ? $background : $this->_background;
-            $this->_maxY = 0;
-            $this->_maxX = 0;
-            $this->_maxH = 0;
-
-            $this->pdf->SetMargins($this->_defaultLeft, $this->_defaultTop, $this->_defaultRight);
-            $this->pdf->AddPage($this->_orientation, $this->_format);
-            $this->_page++;
-
-            if (!$this->_subPart && !$this->_isSubPart) {
-                if (is_array($this->_background)) {
-                    if (isset($this->_background['color']) && $this->_background['color']) {
-                        $this->pdf->setFillColorArray($this->_background['color']);
-                        $this->pdf->Rect(0, 0, $this->pdf->getW(), $this->pdf->getH(), 'F');
-                    }
-
-                    if (isset($this->_background['img']) && $this->_background['img'])
-                        $this->pdf->Image($this->_background['img'], $this->_background['posX'], $this->_background['posY'], $this->_background['width']);
-                }
-
-                $this->setPageHeader();
-                $this->setPageFooter();
-            }
-
-            $this->setMargins();
-            $this->pdf->setY($this->_margeTop);
-
-            $this->setNewPositionForNewLine($curr);
-            $this->_maxH = 0;
-        }
-
-        /**
          * calcul de la position de debut de la prochaine ligne en fonction de l'alignement voulu
          *
          * @param    integer    position reelle courante si saut de ligne pendant l'ecriture d'un texte
@@ -685,51 +870,6 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 */
         }
 
-        /**
-         * r�cup�ration du PDF
-         *
-         * @param    string    nom du fichier PDF
-         * @param    boolean    destination
-         * @return    string    contenu �ventuel du pdf
-         *
-         *
-         * Destination o� envoyer le document. Le param�tre peut prendre les valeurs suivantes :
-         * true    : equivalent � I
-         * false    : equivalent � S
-         * I : envoyer en inline au navigateur. Le plug-in est utilis� s'il est install�. Le nom indiqu� dans name est utilis� lorsque l'on s�lectionne "Enregistrer sous" sur le lien g�n�rant le PDF.
-         * D : envoyer au navigateur en for�ant le t�l�chargement, avec le nom indiqu� dans name.
-         * F : sauver dans un fichier local, avec le nom indiqu� dans name (peut inclure un r�pertoire).
-         * S : renvoyer le document sous forme de cha�ne. name est ignor�.
-         */
-        public function Output($name = '', $dest = false)
-        {
-            // nettoyage
-            HTML2PDF::$_tables = array();
-
-            if ($this->_debugActif) {
-                $this->DEBUG_add('Before output');
-                $this->pdf->Close();
-                exit;
-            }
-
-            // interpretation des param�tres
-            if ($dest===false)    $dest = 'I';
-            if ($dest===true)    $dest = 'S';
-            if ($dest==='')        $dest = 'I';
-            if ($name=='')        $name='document.pdf';
-
-            // verification de la destination
-            $dest = strtoupper($dest);
-            if (!in_array($dest, array('I', 'D', 'F', 'S'))) $dest = 'I';
-
-            // verification du nom
-            if (strtolower(substr($name, -4))!='.pdf') {
-                echo 'ERROR : The output document name "'.$name.'" is not a PDF name';
-                exit;
-            }
-
-            return $this->pdf->Output($name, $dest);
-        }
 
         /**
          * preparation de HTML2PDF::$_subobj utilis� pour la cr�ation des sous HTML2PDF
@@ -762,19 +902,6 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
         }
 
         /**
-         * fonction de clonage pour la creation d'un sous HTML2PDF � partir de HTML2PDF::$_subobj
-         *
-         * @return    null
-         */
-        public function __clone()
-        {
-            $this->pdf      = clone $this->pdf;
-            $this->parsing  = clone $this->parsing;
-            $this->style    = clone $this->style;
-            $this->style->setPdfParent($this->pdf);
-        }
-
-        /**
          * cr�ation d'un sous HTML2PDF pour la gestion des tableaux imbriqu�s
          *
          * @param    HTML2PDF    futur sous HTML2PDF pass� en r�f�rence pour cr�ation
@@ -799,31 +926,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             //clonage
             $subHtml = clone HTML2PDF::$_subobj;
-            $subHtml->style->table            = $this->style->table;
-            $subHtml->style->value            = $this->style->value;
-            $subHtml->style->setOnlyLeft();
-            $subHtml->setNewPage($this->_format, $this->_orientation);
-            $subHtml->initSubHtml($marge, $this->_page, $this->_defList);
-        }
-
-        /**
-         * initialise le sous HTML2PDF. Ne pas utiliser directement. seul la fonction createSubHTML doit l'utiliser
-         *
-         * @return    null
-         */
-        public function initSubHtml($marge, $page, $defLIST)
-        {
-            $this->saveMargin(0, 0, $marge);
-            $this->_defList = $defLIST;
-
-            $this->_page = $page;
-            $this->pdf->setXY(0, 0);
-            $this->style->FontSet();
-        }
-
-        public function setIsSubPart()
-        {
-            $this->_isSubPart = true;
+            $subHtml->style->table = $this->style->table;
+            $subHtml->style->value = $this->style->value;
+            $subHtml->initSubHtml($this->_format, $this->_orientation, $marge, $this->_page, $this->_defList);
         }
 
         /**
@@ -986,71 +1091,6 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
         }
 
         /**
-         * traitement d'un code HTML fait pour HTML2PDF
-         *
-         * @param    string    code HTML � convertir
-         * @param    boolean    afficher en pdf (false) ou en html adapt� (true)
-         * @return    null
-         */
-        public function writeHTML($html, $vue = false)
-        {
-            // si c'est une vrai page HTML, une conversion s'impose
-            if (preg_match('/<body/isU', $html))
-                $html = $this->getHtmlFromPage($html);
-
-            $html = str_replace('[[page_nb]]', '{nb}', $html);
-
-            $html = str_replace('[[date_y]]', date('Y'), $html);
-            $html = str_replace('[[date_m]]', date('m'), $html);
-            $html = str_replace('[[date_d]]', date('d'), $html);
-
-            $html = str_replace('[[date_h]]', date('H'), $html);
-            $html = str_replace('[[date_i]]', date('i'), $html);
-            $html = str_replace('[[date_s]]', date('s'), $html);
-
-            // si on veut voir le r�sultat en HTML => on appelle la fonction
-            if ($vue)    $this->vueHTML($html);
-
-            // sinon, traitement pour conversion en PDF :
-            // parsing
-            $this->style->readStyle($html);
-            $this->parsing->setHTML($html);
-            $this->parsing->parse();
-            $this->makeHTMLcode();
-        }
-
-        /**
-         * traitement du code d'une vrai page HTML pour l'adapter � HTML2PDF
-         *
-         * @param    string    code HTML � adapter
-         * @return    string    code HTML adapt�
-         */
-        public function getHtmlFromPage($html)
-        {
-            $html = str_replace('<BODY', '<body', $html);
-            $html = str_replace('</BODY', '</body', $html);
-
-            // extraction du contenu
-            $res = explode('<body', $html);
-            if (count($res)<2) return $html;
-            $content = '<page'.$res[1];
-            $content = explode('</body', $content);
-            $content = $content[0].'</page>';
-
-            // extraction des balises link
-            preg_match_all('/<link([^>]*)>/isU', $html, $match);
-            foreach ($match[0] as $src)
-                $content = $src.'</link>'.$content;
-
-            // extraction des balises style
-            preg_match_all('/<style[^>]*>(.*)<\/style[^>]*>/isU', $html, $match);
-            foreach ($match[0] as $src)
-                $content = $src.$content;
-
-            return $content;
-        }
-
-        /**
          * execute les diff�rentes actions du code HTML
          *
          * @return    null
@@ -1127,14 +1167,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
         protected function loadAction($row)
         {
             // nom de l'action
-            $fnc    = ($row['close'] ? 'c_' : 'o_').strtoupper($row['name']);
+            $fnc    = ($row['close'] ? '_tag_close_' : '_tag_open_').strtoupper($row['name']);
 
             // parametres de l'action
             $param    = $row['param'];
 
             // si aucune page n'est cr��, on la cr��
-            if ($fnc!='o_PAGE' && $this->_firstPage) {
-                $this->setNewPage();
+            if ($fnc!='_tag_open_PAGE' && $this->_firstPage) {
+                $this->_setNewPage();
             }
 
             // lancement de l'action
@@ -1153,10 +1193,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_PAGE($param)
+        protected function _tag_open_PAGE($param)
         {
             if ($this->_isForOneLine) return false;
-            if ($this->_debugActif) $this->DEBUG_add('PAGE n�'.($this->_page+1), true);
+            if ($this->_debugActif) $this->_DEBUG_add('PAGE n�'.($this->_page+1), true);
 
             $newPageSet= (!isset($param['pageset']) || $param['pageset']!='old');
 
@@ -1250,7 +1290,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                 $this->style->FontSet();
 
                 // nouvelle page
-                $this->setNewPage($format, $orientation, $background);
+                $this->_setNewPage($format, $orientation, $background);
 
                 // footer automatique
                 if (isset($param['footer'])) {
@@ -1273,7 +1313,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                 $this->style->setPosition();
                 $this->style->FontSet();
 
-                $this->setNewPage();
+                $this->_setNewPage();
             }
 
             return true;
@@ -1286,7 +1326,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_PAGE($param)
+        protected function _tag_close_PAGE($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -1295,13 +1335,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             $this->style->load();
             $this->style->FontSet();
 
-            if ($this->_debugActif) $this->DEBUG_add('PAGE n�'.$this->_page, false);
+            if ($this->_debugActif) $this->_DEBUG_add('PAGE n�'.$this->_page, false);
 
             return true;
         }
 
 
-        protected function o_PAGE_HEADER($param)
+        protected function _tag_open_PAGE_HEADER($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -1318,7 +1358,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             return true;
         }
 
-        protected function o_PAGE_FOOTER($param)
+        protected function _tag_open_PAGE_FOOTER($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -1335,7 +1375,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             return true;
         }
 
-        protected function o_PAGE_HEADER_SUB($param)
+        protected function _tag_open_PAGE_HEADER_SUB($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -1374,7 +1414,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             return true;
         }
 
-        protected function c_PAGE_HEADER_SUB($param)
+        protected function _tag_close_PAGE_HEADER_SUB($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -1399,7 +1439,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             return true;
         }
 
-        protected function o_PAGE_FOOTER_SUB($param)
+        protected function _tag_open_PAGE_FOOTER_SUB($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -1449,7 +1489,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             return true;
         }
 
-        protected function c_PAGE_FOOTER_SUB($param)
+        protected function _tag_close_PAGE_FOOTER_SUB($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -1479,7 +1519,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_NOBREAK($param)
+        protected function _tag_open_NOBREAK($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -1498,7 +1538,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                 $sub->_maxY < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) &&
                 $y + $sub->_maxY>=($this->pdf->getH() - $this->pdf->getbMargin())
             ) {
-                $this->setNewPage();
+                $this->_setNewPage();
             }
             $this->destroySubHTML($sub);
 
@@ -1513,7 +1553,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_NOBREAK($param)
+        protected function _tag_close_NOBREAK($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -1529,10 +1569,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_DIV($param, $other = 'div')
+        protected function _tag_open_DIV($param, $other = 'div')
         {
             if ($this->_isForOneLine) return false;
-            if ($this->_debugActif) $this->DEBUG_add(strtoupper($other), true);
+            if ($this->_debugActif) $this->_DEBUG_add(strtoupper($other), true);
 
             $this->style->save();
             $this->style->analyse($other, $param);
@@ -1636,14 +1676,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                     $w < ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin()) &&
                     $this->pdf->getX() + $w>=($this->pdf->getW() - $this->pdf->getrMargin())
                     )
-                    $this->o_BR(array());
+                    $this->_tag_open_BR(array());
 
                 if (
                         ($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
                         ($this->pdf->getY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
                         !$this->_isInOverflow
                     )
-                    $this->setNewPage();
+                    $this->_setNewPage();
 
                 // en cas d'alignement => correction
                 $old = $this->style->getOldValues();
@@ -1754,13 +1794,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             return true;
         }
-        protected function o_BLOCKQUOTE($param)
+        protected function _tag_open_BLOCKQUOTE($param)
         {
-            return $this->o_DIV($param, 'blockquote');
+            return $this->_tag_open_DIV($param, 'blockquote');
         }
-        protected function o_LEGEND($param)
+        protected function _tag_open_LEGEND($param)
         {
-            return $this->o_DIV($param, 'legend');
+            return $this->_tag_open_DIV($param, 'legend');
         }
 
         /**
@@ -1771,7 +1811,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_FIELDSET($param)
+        protected function _tag_open_FIELDSET($param)
         {
 
             $this->style->save();
@@ -1813,7 +1853,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             }
             $this->style->load();
 
-            return $this->o_DIV($param, 'fieldset');
+            return $this->_tag_open_DIV($param, 'fieldset');
         }
 
         /**
@@ -1823,7 +1863,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_DIV($param, $other='div')
+        protected function _tag_close_DIV($param, $other='div')
         {
             if ($this->_isForOneLine) return false;
 
@@ -1885,22 +1925,22 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             $this->style->FontSet();
             $this->loadMargin();
 
-            if ($block) $this->o_BR(array());
-            if ($this->_debugActif) $this->DEBUG_add(strtoupper($other), false);
+            if ($block) $this->_tag_open_BR(array());
+            if ($this->_debugActif) $this->_DEBUG_add(strtoupper($other), false);
 
             return true;
         }
-        protected function c_BLOCKQUOTE($param)
+        protected function _tag_close_BLOCKQUOTE($param)
         {
-            return $this->c_DIV($param, 'blockquote');
+            return $this->_tag_close_DIV($param, 'blockquote');
         }
-        protected function c_FIELDSET($param)
+        protected function _tag_close_FIELDSET($param)
         {
-            return $this->c_DIV($param, 'fieldset');
+            return $this->_tag_close_DIV($param, 'fieldset');
         }
-        protected function c_LEGEND($param)
+        protected function _tag_close_LEGEND($param)
         {
-            return $this->c_DIV($param, 'legend');
+            return $this->_tag_close_DIV($param, 'legend');
         }
 
         /**
@@ -1910,7 +1950,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_BARCODE($param)
+        protected function _tag_open_BARCODE($param)
         {
             // pour compatibilit� < 3.29
             $lstBarcode = array();
@@ -1962,7 +2002,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_BARCODE($param)
+        protected function _tag_close_BARCODE($param)
         {
             // completement inutile
 
@@ -1976,12 +2016,12 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_QRCODE($param)
+        protected function _tag_open_QRCODE($param)
         {
             if ($this->_testIsDeprecated && (isset($param['size']) || isset($param['noborder'])))
                 throw new HTML2PDF_exception(9, array('QRCODE', 'size, noborder'));
 
-            if ($this->_debugActif) $this->DEBUG_add('QRCODE', true);
+            if ($this->_debugActif) $this->_DEBUG_add('QRCODE', true);
 
             if (!isset($param['value']))                        $param['value']    = '';
             if (!isset($param['ec']))                            $param['ec']    = 'H';
@@ -2045,9 +2085,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_QRCODE($param)
+        protected function _tag_close_QRCODE($param)
         {
-            if ($this->_debugActif) $this->DEBUG_add('QRCODE', false);
+            if ($this->_debugActif) $this->_DEBUG_add('QRCODE', false);
             // completement inutile
             return true;
         }
@@ -2059,7 +2099,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_BOOKMARK($param)
+        protected function _tag_open_BOOKMARK($param)
         {
             $titre = isset($param['title']) ? trim($param['title']) : '';
             $level = isset($param['level']) ? floor($param['level']) : 0;
@@ -2077,14 +2117,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_BOOKMARK($param)
+        protected function _tag_close_BOOKMARK($param)
         {
             // completement inutile
 
             return true;
         }
 
-        function getElementY($h)
+        protected function getElementY($h)
         {
             if ($this->_subPart || $this->_isSubPart || !$this->_currentH || $this->_currentH<$h)
                 return 0;
@@ -2099,7 +2139,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_WRITE($param)
+        protected function _tag_open_WRITE($param)
         {
             $fill = ($this->style->value['background']['color']!==null && $this->style->value['background']['image']===null);
             if (in_array($this->style->value['id_balise'], array('fieldset', 'legend', 'div', 'table', 'tr', 'td', 'th')))
@@ -2221,7 +2261,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                     }
 
                     // retour � la ligne
-                    $this->o_BR(array('style' => ''), $currPos);
+                    $this->_tag_open_BR(array('style' => ''), $currPos);
 
                     $y = $this->pdf->getY();
                     $x = $this->pdf->getX();
@@ -2230,7 +2270,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                     // si la prochaine ligne ne rentre pas dans la page => nouvelle page
                     if ($y + $h>=$this->pdf->getH() - $this->pdf->getbMargin()) {
                         if (!$this->_isInOverflow && !$this->_isInFooter) {
-                            $this->setNewPage(null, '', null, $currPos);
+                            $this->_setNewPage(null, '', null, $currPos);
                             $y = $this->pdf->getY();
                             $x = $this->pdf->getX();
                             $dy = $this->getElementY($lh);
@@ -2319,7 +2359,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             // detection du float
             $float = $this->style->getFloat();
             if ($float && $this->_maxH)
-                if (!$this->o_BR(array()))
+                if (!$this->_tag_open_BR(array()))
                     return false;
 
             // position d'affichage
@@ -2341,7 +2381,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                 ($y + $h>$this->pdf->getH() - $this->pdf->getbMargin()) &&
                 !$this->_isInOverflow
             ) {
-                $this->setNewPage();
+                $this->_setNewPage();
                 $x = $this->pdf->getX();
                 $y = $this->pdf->getY();
             }
@@ -2912,7 +2952,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    integer    position reelle courante si saut de ligne pendant l'ecriture d'un texte
          * @return    null
          */
-        protected function o_BR($param, $curr = null)
+        protected function _tag_open_BR($param, $curr = null)
         {
             if ($this->_isForOneLine) return false;
 
@@ -2935,7 +2975,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                 if (($this->pdf->getY()+$h<$this->pdf->getH() - $this->pdf->getbMargin()) || $this->_isInOverflow || $this->_isInFooter)
                     $this->setNewLine($h, $curr);
                 else
-                    $this->setNewPage(null, '', null, $curr);
+                    $this->_setNewPage(null, '', null, $curr);
             } else {
                 $this->setNewPositionForNewLine($curr);
             }
@@ -2950,16 +2990,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_HR($param)
+        protected function _tag_open_HR($param)
         {
             if ($this->_isForOneLine) return false;
             $oldAlign = $this->style->value['text-align'];
             $this->style->value['text-align'] = 'left';
 
-            if ($this->_maxH) $this->o_BR($param);
+            if ($this->_maxH) $this->_tag_open_BR($param);
 
             $fontSize = $this->style->value['font-size'];
-            $this->style->value['font-size']=$fontSize*0.5; $this->o_BR($param);
+            $this->style->value['font-size']=$fontSize*0.5; $this->_tag_open_BR($param);
             $this->style->value['font-size']=0;
 
             $param['style']['width'] = '100%';
@@ -2981,9 +3021,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             $this->style->load();
             $this->style->FontSet();
 
-            $this->o_BR($param);
+            $this->_tag_open_BR($param);
 
-            $this->style->value['font-size']=$fontSize*0.5; $this->o_BR($param);
+            $this->style->value['font-size']=$fontSize*0.5; $this->_tag_open_BR($param);
             $this->style->value['font-size']=$fontSize;
 
             $this->style->value['text-align'] = $oldAlign;
@@ -2999,7 +3039,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_B($param, $other = 'b')
+        protected function _tag_open_B($param, $other = 'b')
         {
             $this->style->save();
             $this->style->value['font-bold'] = true;
@@ -3009,9 +3049,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             return true;
         }
-        protected function o_STRONG($param)
+        protected function _tag_open_STRONG($param)
         {
-            return $this->o_B($param, 'strong');
+            return $this->_tag_open_B($param, 'strong');
         }
 
         /**
@@ -3021,16 +3061,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_B($param)
+        protected function _tag_close_B($param)
         {
             $this->style->load();
             $this->style->FontSet();
 
             return true;
         }
-        protected function c_STRONG($param)
+        protected function _tag_close_STRONG($param)
         {
-            return $this->c_B($param);
+            return $this->_tag_close_B($param);
         }
 
         /**
@@ -3040,7 +3080,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_I($param, $other = 'i')
+        protected function _tag_open_I($param, $other = 'i')
         {
             $this->style->save();
             $this->style->value['font-italic'] = true;
@@ -3050,21 +3090,21 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             return true;
         }
-        protected function o_ADDRESS($param)
+        protected function _tag_open_ADDRESS($param)
         {
-            return $this->o_I($param, 'address');
+            return $this->_tag_open_I($param, 'address');
         }
-        protected function o_CITE($param)
+        protected function _tag_open_CITE($param)
         {
-            return $this->o_I($param, 'cite');
+            return $this->_tag_open_I($param, 'cite');
         }
-        protected function o_EM($param)
+        protected function _tag_open_EM($param)
         {
-            return $this->o_I($param, 'em');
+            return $this->_tag_open_I($param, 'em');
         }
-        protected function o_SAMP($param)
+        protected function _tag_open_SAMP($param)
         {
-            return $this->o_I($param, 'samp');
+            return $this->_tag_open_I($param, 'samp');
         }
 
         /**
@@ -3074,28 +3114,28 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_I($param)
+        protected function _tag_close_I($param)
         {
             $this->style->load();
             $this->style->FontSet();
 
             return true;
         }
-        protected function c_ADDRESS($param)
+        protected function _tag_close_ADDRESS($param)
         {
-            return $this->c_I($param);
+            return $this->_tag_close_I($param);
         }
-        protected function c_CITE($param)
+        protected function _tag_close_CITE($param)
         {
-            return $this->c_I($param);
+            return $this->_tag_close_I($param);
         }
-        protected function c_EM($param)
+        protected function _tag_close_EM($param)
         {
-            return $this->c_I($param);
+            return $this->_tag_close_I($param);
         }
-        protected function c_SAMP($param)
+        protected function _tag_close_SAMP($param)
         {
-            return $this->c_I($param);
+            return $this->_tag_close_I($param);
         }
 
         /**
@@ -3105,7 +3145,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_S($param, $other = 's')
+        protected function _tag_open_S($param, $other = 's')
         {
             $this->style->save();
             $this->style->value['font-linethrough'] = true;
@@ -3115,9 +3155,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             return true;
         }
-        protected function o_DEL($param)
+        protected function _tag_open_DEL($param)
         {
-            return $this->o_S($param, 'del');
+            return $this->_tag_open_S($param, 'del');
         }
 
         /**
@@ -3127,16 +3167,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_S($param)
+        protected function _tag_close_S($param)
         {
             $this->style->load();
             $this->style->FontSet();
 
             return true;
         }
-        protected function c_DEL($param)
+        protected function _tag_close_DEL($param)
         {
-            return $this->c_S($param);
+            return $this->_tag_close_S($param);
         }
 
         /**
@@ -3146,7 +3186,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_U($param, $other='u')
+        protected function _tag_open_U($param, $other='u')
         {
             $this->style->save();
             $this->style->value['font-underline'] = true;
@@ -3156,9 +3196,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             return true;
         }
-        protected function o_INS($param)
+        protected function _tag_open_INS($param)
         {
-            return $this->o_U($param, 'ins');
+            return $this->_tag_open_U($param, 'ins');
         }
 
         /**
@@ -3168,16 +3208,16 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_U($param)
+        protected function _tag_close_U($param)
         {
             $this->style->load();
             $this->style->FontSet();
 
             return true;
         }
-        protected function c_INS($param)
+        protected function _tag_close_INS($param)
         {
-            return $this->c_U($param);
+            return $this->_tag_close_U($param);
         }
 
         /**
@@ -3187,7 +3227,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_A($param)
+        protected function _tag_open_A($param)
         {
             $this->_isInLink = str_replace('&amp;', '&', isset($param['href']) ? $param['href'] : '');
 
@@ -3225,7 +3265,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_A($param)
+        protected function _tag_close_A($param)
         {
             $this->_isInLink    = '';
             $this->style->load();
@@ -3241,11 +3281,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_H1($param, $other = 'h1')
+        protected function _tag_open_H1($param, $other = 'h1')
         {
             if ($this->_isForOneLine) return false;
 
-            if ($this->_maxH) $this->o_BR(array());
+            if ($this->_maxH) $this->_tag_open_BR(array());
             $this->style->save();
             $this->style->value['font-bold'] = true;
 
@@ -3263,25 +3303,25 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             return true;
         }
-        protected function o_H2($param)
+        protected function _tag_open_H2($param)
         {
-            return $this->o_H1($param, 'h2');
+            return $this->_tag_open_H1($param, 'h2');
         }
-        protected function o_H3($param)
+        protected function _tag_open_H3($param)
         {
-            return $this->o_H1($param, 'h3');
+            return $this->_tag_open_H1($param, 'h3');
         }
-        protected function o_H4($param)
+        protected function _tag_open_H4($param)
         {
-            return $this->o_H1($param, 'h4');
+            return $this->_tag_open_H1($param, 'h4');
         }
-        protected function o_H5($param)
+        protected function _tag_open_H5($param)
         {
-            return $this->o_H1($param, 'h5');
+            return $this->_tag_open_H1($param, 'h5');
         }
-        protected function o_H6($param)
+        protected function _tag_open_H6($param)
         {
-            return $this->o_H1($param, 'h6');
+            return $this->_tag_open_H1($param, 'h6');
         }
 
 
@@ -3292,7 +3332,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_H1($param)
+        protected function _tag_close_H1($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3309,25 +3349,25 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             return true;
         }
-        protected function c_H2($param)
+        protected function _tag_close_H2($param)
         {
-            return $this->c_H1($param);
+            return $this->_tag_close_H1($param);
         }
-        protected function c_H3($param)
+        protected function _tag_close_H3($param)
         {
-            return $this->c_H1($param);
+            return $this->_tag_close_H1($param);
         }
-        protected function c_H4($param)
+        protected function _tag_close_H4($param)
         {
-            return $this->c_H1($param);
+            return $this->_tag_close_H1($param);
         }
-        protected function c_H5($param)
+        protected function _tag_close_H5($param)
         {
-            return $this->c_H1($param);
+            return $this->_tag_close_H1($param);
         }
-        protected function c_H6($param)
+        protected function _tag_close_H6($param)
         {
-            return $this->c_H1($param);
+            return $this->_tag_close_H1($param);
         }
 
         /**
@@ -3337,7 +3377,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_SPAN($param, $other = 'span')
+        protected function _tag_open_SPAN($param, $other = 'span')
         {
             $this->style->save();
             $this->style->analyse($other, $param);
@@ -3346,14 +3386,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             return true;
         }
-        protected function o_FONT($param)
+        protected function _tag_open_FONT($param)
         {
-            return $this->o_SPAN($param, 'font');
+            return $this->_tag_open_SPAN($param, 'font');
         }
 
-        protected function o_LABEL($param)
+        protected function _tag_open_LABEL($param)
         {
-            return $this->o_SPAN($param, 'label');
+            return $this->_tag_open_SPAN($param, 'label');
         }
 
         /**
@@ -3363,7 +3403,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_SPAN($param)
+        protected function _tag_close_SPAN($param)
         {
             $this->style->restorePosition();
             $this->style->load();
@@ -3371,13 +3411,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             return true;
         }
-        protected function c_FONT($param)
+        protected function _tag_close_FONT($param)
         {
-            return $this->c_SPAN($param);
+            return $this->_tag_close_SPAN($param);
         }
-        protected function c_LABEL($param)
+        protected function _tag_close_LABEL($param)
         {
-            return $this->c_SPAN($param);
+            return $this->_tag_close_SPAN($param);
         }
 
 
@@ -3388,12 +3428,12 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_P($param)
+        protected function _tag_open_P($param)
         {
             if ($this->_isForOneLine) return false;
 
-            if (!in_array($this->_previousCall, array('c_P', 'c_UL'))) {
-                if ($this->_maxH) $this->o_BR(array());
+            if (!in_array($this->_previousCall, array('_tag_close_P', '_tag_close_UL'))) {
+                if ($this->_maxH) $this->_tag_open_BR(array());
             }
 
             $this->style->save();
@@ -3426,11 +3466,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_P($param)
+        protected function _tag_close_P($param)
         {
             if ($this->_isForOneLine) return false;
 
-            if ($this->_maxH) $this->o_BR(array());
+            if ($this->_maxH) $this->_tag_open_BR(array());
             $this->loadMargin();
             $h = $this->style->value['margin']['b']+$this->style->value['padding']['b'];
 
@@ -3448,9 +3488,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_PRE($param, $other = 'pre')
+        protected function _tag_open_PRE($param, $other = 'pre')
         {
-            if ($other=='pre' && $this->_maxH) $this->o_BR(array());
+            if ($other=='pre' && $this->_maxH) $this->_tag_open_BR(array());
 
             $this->style->save();
             $this->style->value['font-family']    = 'courier';
@@ -3458,13 +3498,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             $this->style->setPosition();
             $this->style->FontSet();
 
-            if ($other=='pre') return $this->o_DIV($param, $other);
+            if ($other=='pre') return $this->_tag_open_DIV($param, $other);
 
             return true;
         }
-        protected function o_CODE($param)
+        protected function _tag_open_CODE($param)
         {
-            return $this->o_PRE($param, 'code');
+            return $this->_tag_open_PRE($param, 'code');
         }
 
         /**
@@ -3474,22 +3514,22 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_PRE($param, $other = 'pre')
+        protected function _tag_close_PRE($param, $other = 'pre')
         {
             if ($other=='pre') {
                 if ($this->_isForOneLine) return false;
 
-                $this->c_DIV($param);
-                $this->o_BR(array());
+                $this->_tag_close_DIV($param);
+                $this->_tag_open_BR(array());
             }
             $this->style->load();
             $this->style->FontSet();
 
             return true;
         }
-        protected function c_CODE($param)
+        protected function _tag_close_CODE($param)
         {
-            return $this->c_PRE($param, 'code');
+            return $this->_tag_close_PRE($param, 'code');
         }
 
         /**
@@ -3499,7 +3539,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_BIG($param)
+        protected function _tag_open_BIG($param)
         {
             $this->style->save();
             $this->style->value['mini-decal']-= $this->style->value['mini-size']*0.12;
@@ -3517,7 +3557,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_BIG($param)
+        protected function _tag_close_BIG($param)
         {
             $this->style->load();
             $this->style->FontSet();
@@ -3532,7 +3572,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_SMALL($param)
+        protected function _tag_open_SMALL($param)
         {
             $this->style->save();
             $this->style->value['mini-decal']+= $this->style->value['mini-size']*0.05;
@@ -3550,7 +3590,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_SMALL($param)
+        protected function _tag_close_SMALL($param)
         {
             $this->style->load();
             $this->style->FontSet();
@@ -3566,7 +3606,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_SUP($param)
+        protected function _tag_open_SUP($param)
         {
             $this->style->save();
             $this->style->value['mini-decal']-= $this->style->value['mini-size']*0.15;
@@ -3585,7 +3625,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_SUP($param)
+        protected function _tag_close_SUP($param)
         {
             $this->style->load();
             $this->style->FontSet();
@@ -3600,7 +3640,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_SUB($param)
+        protected function _tag_open_SUB($param)
         {
             $this->style->save();
             $this->style->value['mini-decal']+= $this->style->value['mini-size']*0.15;
@@ -3618,7 +3658,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_SUB($param)
+        protected function _tag_close_SUB($param)
         {
             $this->style->load();
             $this->style->FontSet();
@@ -3633,29 +3673,29 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_UL($param, $other = 'ul')
+        protected function _tag_open_UL($param, $other = 'ul')
         {
             if ($this->_isForOneLine) return false;
 
-            if (!in_array($this->_previousCall, array('c_P', 'c_UL'))) {
-                if ($this->_maxH) $this->o_BR(array());
-                if (!count($this->_defList)) $this->o_BR(array());
+            if (!in_array($this->_previousCall, array('_tag_close_P', '_tag_close_UL'))) {
+                if ($this->_maxH) $this->_tag_open_BR(array());
+                if (!count($this->_defList)) $this->_tag_open_BR(array());
             }
 
             if (!isset($param['style']['width'])) $param['allwidth'] = true;
             $param['cellspacing'] = 0;
 
             // une liste est trait�e comme un tableau
-            $this->o_TABLE($param, $other);
+            $this->_tag_open_TABLE($param, $other);
 
             // ajouter un niveau de liste
             $this->listeAddLevel($other, $this->style->value['list-style-type'], $this->style->value['list-style-image']);
 
             return true;
         }
-        protected function o_OL($param)
+        protected function _tag_open_OL($param)
         {
-            return $this->o_UL($param, 'ol');
+            return $this->_tag_open_UL($param, 'ol');
         }
 
         /**
@@ -3665,25 +3705,25 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_UL($param)
+        protected function _tag_close_UL($param)
         {
             if ($this->_isForOneLine) return false;
 
             // fin du tableau
-            $this->c_TABLE($param);
+            $this->_tag_close_TABLE($param);
 
             // enlever un niveau de liste
             $this->listeDelLevel();
 
             if (!$this->_subPart) {
-                if (!count($this->_defList)) $this->o_BR(array());
+                if (!count($this->_defList)) $this->_tag_open_BR(array());
             }
 
             return true;
         }
-        protected function c_OL($param)
+        protected function _tag_close_OL($param)
         {
-            return $this->c_UL($param);
+            return $this->_tag_close_UL($param);
         }
 
         /**
@@ -3693,7 +3733,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_LI($param)
+        protected function _tag_open_LI($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3723,7 +3763,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             }
 
             // nouvelle ligne
-            $this->o_TR($param, 'li');
+            $this->_tag_open_TR($param, 'li');
 
             $this->style->save();
 
@@ -3747,24 +3787,24 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                 $this->parsing->code[$tmpPos+2]['name']    = 'li';
                 $this->parsing->code[$tmpPos+2]['param']    = $paramPUCE;
                 $this->parsing->code[$tmpPos+2]['close']    = 1;
-                $this->o_TD($paramPUCE, 'li_sub');
-                $this->c_TD($param);
+                $this->_tag_open_TD($paramPUCE, 'li_sub');
+                $this->_tag_close_TD($param);
                 $this->_tempPos = $tmpPos;
                 $this->parsing->code[$tmpPos+1] = $tmpLst1;
                 $this->parsing->code[$tmpPos+2] = $tmpLst2;
             } else {
                 // TD pour la puce
-                $this->o_TD($paramPUCE, 'li_sub');
+                $this->_tag_open_TD($paramPUCE, 'li_sub');
                 unset($paramPUCE['style']['width']);
-                if (isset($paramPUCE['src']))    $this->o_IMG($paramPUCE);
-                else                            $this->o_WRITE($paramPUCE);
-                $this->c_TD($paramPUCE);
+                if (isset($paramPUCE['src']))    $this->_tag_open_IMG($paramPUCE);
+                else                            $this->_tag_open_WRITE($paramPUCE);
+                $this->_tag_close_TD($paramPUCE);
             }
             $this->style->load();
 
 
             // td pour le contenu
-            $this->o_TD($param, 'li');
+            $this->_tag_open_TD($param, 'li');
 
             return true;
         }
@@ -3776,15 +3816,15 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_LI($param)
+        protected function _tag_close_LI($param)
         {
             if ($this->_isForOneLine) return false;
 
             // fin du contenu
-            $this->c_TD($param);
+            $this->_tag_close_TD($param);
 
             // fin de la ligne
-            $this->c_TR($param);
+            $this->_tag_close_TR($param);
 
             return true;
         }
@@ -3796,7 +3836,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_TBODY($param)
+        protected function _tag_open_TBODY($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3815,7 +3855,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_TBODY($param)
+        protected function _tag_close_TBODY($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3832,7 +3872,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_THEAD($param)
+        protected function _tag_open_THEAD($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3867,7 +3907,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_THEAD($param)
+        protected function _tag_close_THEAD($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3891,7 +3931,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_TFOOT($param)
+        protected function _tag_open_TFOOT($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3926,7 +3966,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_TFOOT($param)
+        protected function _tag_close_TFOOT($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3950,7 +3990,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_THEAD_SUB($param)
+        protected function _tag_open_THEAD_SUB($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3969,7 +4009,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_THEAD_SUB($param)
+        protected function _tag_close_THEAD_SUB($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -3986,7 +4026,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_TFOOT_SUB($param)
+        protected function _tag_open_TFOOT_SUB($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -4005,7 +4045,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_TFOOT_SUB($param)
+        protected function _tag_close_TFOOT_SUB($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -4022,7 +4062,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_FORM($param)
+        protected function _tag_open_FORM($param)
         {
             $this->style->save();
             $this->style->analyse('form', $param);
@@ -4050,7 +4090,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_FORM($param)
+        protected function _tag_close_FORM($param)
         {
             $this->_isInForm = false;
             $this->style->load();
@@ -4066,11 +4106,11 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_TABLE($param, $other = 'table')
+        protected function _tag_open_TABLE($param, $other = 'table')
         {
             if ($this->_maxH) {
                 if ($this->_isForOneLine) return false;
-                $this->o_BR(array());
+                $this->_tag_open_BR(array());
             }
 
             if ($this->_isForOneLine) {
@@ -4111,7 +4151,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
             // si on est en mode sub_html : initialisation des dimensions et autres
             if ($this->_subPart) {
-                if ($this->_debugActif) $this->DEBUG_add('Table n�'.$param['num'], true);
+                if ($this->_debugActif) $this->_DEBUG_add('Table n�'.$param['num'], true);
                 HTML2PDF::$_tables[$param['num']] = array();
                 HTML2PDF::$_tables[$param['num']]['border']        = isset($param['border']) ? $this->style->readBorder($param['border']) : null; // border sp�cifique si border precis� en param�tre
                 HTML2PDF::$_tables[$param['num']]['cellpadding']    = $this->style->ConvertToMM(isset($param['cellpadding']) ? $param['cellpadding'] : '1px'); // cellpadding du tableau
@@ -4181,7 +4221,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_TABLE($param)
+        protected function _tag_close_TABLE($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -4307,7 +4347,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                 // restauration des marges
                 $this->loadMargin();
 
-                if ($this->_debugActif) $this->DEBUG_add('Table n�'.$param['num'], false);
+                if ($this->_debugActif) $this->_DEBUG_add('Table n�'.$param['num'], false);
             }
 
             return true;
@@ -4321,7 +4361,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_COL($param)
+        protected function _tag_open_COL($param)
         {
             $span = isset($param['span']) ? $param['span'] : 1;
             for ($k=0; $k<$span; $k++)
@@ -4335,7 +4375,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_TR($param, $other = 'tr')
+        protected function _tag_open_TR($param, $other = 'tr')
         {
             if ($this->_isForOneLine) return false;
 
@@ -4383,7 +4423,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                     }
 
                     HTML2PDF::$_tables[$param['num']]['new_page'] = true;
-                    $this->setNewPage();
+                    $this->_setNewPage();
 
                     HTML2PDF::$_tables[$param['num']]['page']++;
                     HTML2PDF::$_tables[$param['num']]['curr_y'] = $this->pdf->getY();
@@ -4451,7 +4491,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_TR($param)
+        protected function _tag_close_TR($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -4489,7 +4529,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_TD($param, $other = 'td')
+        protected function _tag_open_TD($param, $other = 'td')
         {
             if ($this->_isForOneLine) return false;
 
@@ -4709,7 +4749,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_TD($param)
+        protected function _tag_close_TD($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -4894,14 +4934,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_TH($param)
+        protected function _tag_open_TH($param)
         {
             if ($this->_isForOneLine) return false;
 
             $this->_maxH = 0;
             // identique � TD mais en gras
             if (!isset($param['style']['font-weight'])) $param['style']['font-weight'] = 'bold';
-            $this->o_TD($param, 'th');
+            $this->_tag_open_TD($param, 'th');
 
             return true;
         }
@@ -4913,13 +4953,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_TH($param)
+        protected function _tag_close_TH($param)
         {
             if ($this->_isForOneLine) return false;
 
             $this->_maxH = 0;
             // identique � TD
-            $this->c_TD($param);
+            $this->_tag_close_TD($param);
 
             return true;
         }
@@ -4931,7 +4971,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_IMG($param)
+        protected function _tag_open_IMG($param)
         {
             // analyse du style
             $src    = str_replace('&amp;', '&', $param['src']);
@@ -4973,7 +5013,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_SELECT($param)
+        protected function _tag_open_SELECT($param)
         {
             // preparation du champs
             if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstField)+1);
@@ -5008,12 +5048,12 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_OPTION($param)
+        protected function _tag_open_OPTION($param)
         {
             // on extrait tout ce qui est contenu dans l'option
             $level = $this->parsing->getLevel($this->_parsePos);
             $this->_parsePos+= count($level);
-            $value = isset($param['value']) ? $param['value'] : 'auto_opt_'.(count($this->_lstSelect)+1);
+            $value = isset($param['value']) ? $param['value'] : 'aut_tag_open_opt_'.(count($this->_lstSelect)+1);
 
             $this->_lstSelect['options'][$value] = isset($level[0]['param']['txt']) ? $level[0]['param']['txt'] : '';
 
@@ -5027,7 +5067,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_OPTION($param)
+        protected function _tag_close_OPTION($param)
         {
             return true;
         }
@@ -5039,7 +5079,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_SELECT()
+        protected function _tag_close_SELECT()
         {
             // position d'affichage
             $x = $this->pdf->getX();
@@ -5076,7 +5116,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_TEXTAREA($param)
+        protected function _tag_open_TEXTAREA($param)
         {
             // preparation du champs
             if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstField)+1);
@@ -5130,7 +5170,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_TEXTAREA()
+        protected function _tag_close_TEXTAREA()
         {
             $this->style->load();
             $this->style->FontSet();
@@ -5145,7 +5185,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_INPUT($param)
+        protected function _tag_open_INPUT($param)
         {
             // preparation du champs
             if (!isset($param['name']))        $param['name']    = 'champs_pdf_'.(count($this->_lstField)+1);
@@ -5251,10 +5291,10 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_DRAW($param)
+        protected function _tag_open_DRAW($param)
         {
             if ($this->_isForOneLine) return false;
-            if ($this->_debugActif) $this->DEBUG_add('DRAW', true);
+            if ($this->_debugActif) $this->_DEBUG_add('DRAW', true);
 
             $this->style->save();
             $this->style->analyse('draw', $param);
@@ -5277,14 +5317,14 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                     $w < ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin()) &&
                     $this->pdf->getX() + $w>=($this->pdf->getW() - $this->pdf->getrMargin())
                     )
-                    $this->o_BR(array());
+                    $this->_tag_open_BR(array());
 
                 if (
                         ($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
                         ($this->pdf->getY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
                         !$this->_isInOverflow
                     )
-                    $this->setNewPage();
+                    $this->_setNewPage();
 
                 // en cas d'alignement => correction
                 $old = $this->style->getOldValues();
@@ -5371,7 +5411,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_DRAW($param)
+        protected function _tag_close_DRAW($param)
         {
             if ($this->_isForOneLine) return false;
 
@@ -5415,8 +5455,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             $this->style->FontSet();
             $this->loadMargin();
 
-            if ($block) $this->o_BR(array());
-            if ($this->_debugActif) $this->DEBUG_add('DRAW', false);
+            if ($block) $this->_tag_open_BR(array());
+            if ($this->_debugActif) $this->_DEBUG_add('DRAW', false);
 
             $this->_isInDraw = null;
 
@@ -5430,7 +5470,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_LINE($param)
+        protected function _tag_open_LINE($param)
         {
             if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'LINE');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -5456,7 +5496,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_RECT($param)
+        protected function _tag_open_RECT($param)
         {
             if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'RECT');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -5482,7 +5522,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_CIRCLE($param)
+        protected function _tag_open_CIRCLE($param)
         {
             if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'CIRCLE');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -5506,7 +5546,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_ELLIPSE($param)
+        protected function _tag_open_ELLIPSE($param)
         {
             if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'ELLIPSE');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -5532,7 +5572,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_POLYLINE($param)
+        protected function _tag_open_POLYLINE($param)
         {
             if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'POLYGON');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -5575,7 +5615,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_POLYGON($param)
+        protected function _tag_open_POLYGON($param)
         {
             if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'POLYGON');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -5618,7 +5658,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_PATH($param)
+        protected function _tag_open_PATH($param)
         {
             if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'PATH');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -5725,7 +5765,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function o_G($param)
+        protected function _tag_open_G($param)
         {
             if (!$this->_isInDraw) throw new HTML2PDF_exception(8, 'LINE');
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -5741,7 +5781,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    array    param�tres de l'�l�ment de parsing
          * @return    null
          */
-        protected function c_G($param)
+        protected function _tag_close_G($param)
         {
             $this->pdf->undoTransform();
             $this->style->load();
@@ -5837,25 +5877,6 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
         }
 
         /**
-         * permet d'afficher un index automatique utilisant les bookmark
-         *
-         * @param    string    titre du sommaire
-         * @param    int        taille en mm de la fonte du titre du sommaire
-         * @param    int        taille en mm de la fonte du texte du sommaire
-         * @param    boolean    ajouter un bookmark sp�cifique pour l'index, juste avant le d�but de celui-ci
-         * @param    boolean    afficher les num�ros de page associ�s � chaque bookmark
-         * @param    int        si pr�sent : page o� afficher le sommaire. sinon : nouvelle page
-         * @param    string    nom de la fonte � utiliser
-         * @return    null
-         */
-        public function createIndex($titre = 'Index', $sizeTitle = 20, $sizeBookmark = 15, $bookmarkTitle = true, $displayPage = true, $onPage = null, $fontName = 'helvetica')
-        {
-            $oldPage = $this->INDEX_NewPage($onPage);
-            $this->pdf->createIndex($this, $titre, $sizeTitle, $sizeBookmark, $bookmarkTitle, $displayPage, $onPage, $fontName);
-            if ($oldPage) $this->pdf->setPage($oldPage);
-        }
-
-        /**
          * nouvelle page pour l'index. ne pas utiliser directement. seul MyPDF doit l'utiliser !!!!
          *
          * @param    int        page courante
@@ -5871,7 +5892,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                 $page++;
                 return $oldPage;
             } else {
-                $this->setNewPage();
+                $this->_setNewPage();
                 return null;
             }
         }
@@ -5996,6 +6017,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
                     $msg = str_replace('[[OTHER_0]]', $other[0], $msg);
                     $msg = str_replace('[[OTHER_1]]', $other[1], $msg);
                     $this->_tag = $other[0];
+                    break;
+                case 0:
+                    $msg = $other;
                     break;
             }
 
