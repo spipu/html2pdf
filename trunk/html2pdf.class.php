@@ -306,7 +306,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          */
         public function createIndex($titre = 'Index', $sizeTitle = 20, $sizeBookmark = 15, $bookmarkTitle = true, $displayPage = true, $onPage = null, $fontName = 'helvetica')
         {
-            $oldPage = $this->INDEX_NewPage($onPage);
+            $oldPage = $this->_INDEX_NewPage($onPage);
             $this->pdf->createIndex($this, $titre, $sizeTitle, $sizeBookmark, $bookmarkTitle, $displayPage, $onPage, $fontName);
             if ($oldPage) $this->pdf->setPage($oldPage);
         }
@@ -6017,7 +6017,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * @param    int        page courante
          * @return boolean
          */
-        public function INDEX_NewPage(&$page)
+        public function _INDEX_NewPage(&$page)
         {
             if ($page) {
                 $oldPage = $this->pdf->getPage();
