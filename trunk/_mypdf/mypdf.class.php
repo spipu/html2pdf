@@ -86,19 +86,19 @@ class MyPDF extends TCPDF
         // prepare the text from the tranlated text
         $txt = '';
         if ($this->_footerParam['form']) {
-            $txt = (HTML2PDF::textGET('pdf05'));
+            $txt = (HTML2PDF_locale::get('pdf05'));
         }
         if ($this->_footerParam['date'] && $this->_footerParam['hour']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF::textGET('pdf03'));
+            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf03'));
         }
         if ($this->_footerParam['date'] && !$this->_footerParam['hour']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF::textGET('pdf01'));
+            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf01'));
         }
         if (!$this->_footerParam['date'] && $this->_footerParam['hour']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF::textGET('pdf02'));
+            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf02'));
         }
         if ($this->_footerParam['page']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF::textGET('pdf04'));
+            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf04'));
         }
 
         if (strlen($txt)>0) {
