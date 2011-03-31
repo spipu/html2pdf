@@ -108,7 +108,7 @@ class styleHTML
      */
     public function initStyle()
     {
-        $this->value['id_balise']       = 'body';        // tag name
+        $this->value['id_tag']       = 'body';        // tag name
         $this->value['id_name']          = null;         // tag - attribute name
         $this->value['id_id']            = null;         // tag - attribute id
         $this->value['id_class']         = null;         // tag - attribute class
@@ -429,7 +429,7 @@ class styleHTML
         }
 
         // identify the tag, and the direct styles
-        $this->value['id_balise'] = $tagName;
+        $this->value['id_tag'] = $tagName;
         $this->value['id_name']   = $name;
         $this->value['id_id']     = $id;
         $this->value['id_class']  = $class;
@@ -475,7 +475,7 @@ class styleHTML
     /**
      * Analyse un tableau de style provenant du parseurHTML
      *
-     * @param    string    nom de la balise
+     * @param    string    nom du tag
      * @param    array    tableau de style
      * @param    array    tableau initialisant des styles
      * @return    null
@@ -496,12 +496,12 @@ class styleHTML
             if ($v) $class[] = $v;
         }
 
-        // identification de la balise et des styles direct qui pourraient lui �tre appliqu�s
-        $this->value['id_balise'] = $tagName;
-        $this->value['id_name']   = $name;
-        $this->value['id_id']     = $id;
-        $this->value['id_class']  = $class;
-        $this->value['id_lst']    = array();
+        // identification de la tag et des styles direct qui pourraient lui �tre appliqu�s
+        $this->value['id_tag']   = $tagName;
+        $this->value['id_name']  = $name;
+        $this->value['id_id']    = $id;
+        $this->value['id_class'] = $class;
+        $this->value['id_lst']   = array();
         $this->value['id_lst'][] = '*';
         $this->value['id_lst'][] = $tagName;
         if (count($class)) {
@@ -520,7 +520,7 @@ class styleHTML
         // style CSS
         $styles = $this->getFromCSS();
 
-        // on ajoute le style propre � la balise
+        // on ajoute le style propre � la tag
         $styles = array_merge($styles, $param['style']);
         if (isset($param['allwidth']) && !isset($styles['width'])) $styles['width'] = '100%';
 
@@ -1103,7 +1103,7 @@ class styleHTML
     }
 
     /**
-     * R�cup�ration des propri�t�s CSS de la balise en cours
+     * R�cup�ration des propri�t�s CSS de la tag en cours
      *
      * @return    array()        tableau des propri�t�s CSS
      */
@@ -1133,7 +1133,7 @@ class styleHTML
     }
 
     /**
-     * Identification des styles � r�cuperer, en fonction de la balise et de ses parents
+     * Identification des styles � r�cuperer, en fonction de la tag et de ses parents
      *
      * @param  string      clef CSS � analyser
      * @param  array()     tableau des styles direct, et ceux des parents
@@ -1483,12 +1483,12 @@ class styleHTML
     {
         $style = ' ';
 
-        // extraction des balises link, et suppression de celles-ci dans le code HTML
+        // extraction des tags link, et suppression de celles-ci dans le code HTML
         preg_match_all('/<link([^>]*)>/isU', $html, $match);
         $html = preg_replace('/<link[^>]*>/isU', '', $html);
         $html = preg_replace('/<\/link[^>]*>/isU', '', $html);
 
-        // analyse de chaque balise
+        // analyse de chaque tag
         foreach ($match[1] as $code) {
             $tmp = array();
             // lecture des param�tres du type nom=valeur
@@ -1529,11 +1529,11 @@ class styleHTML
             }
         }
 
-        // extraction des balises style, et suppression de celles-ci dans le code HTML
+        // extraction des tags style, et suppression de celles-ci dans le code HTML
         preg_match_all('/<style[^>]*>(.*)<\/style[^>]*>/isU', $html, $match);
         $html = preg_replace('/<style[^>]*>(.*)<\/style[^>]*>/isU', '', $html);
 
-        // analyse de chaque balise
+        // analyse de chaque tag
         foreach ($match[1] as $code) {
             $code = str_replace('<!--', '', $code);
             $code = str_replace('-->', '', $code);
