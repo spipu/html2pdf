@@ -14,7 +14,7 @@ class parsingHTML
     protected    $_html    = '';        // HTML code to parse
     protected    $_num     = 0;         // table number
     protected    $_level   = 0;         // table level
-    protected    $_encoding = '';        // encoding
+    protected    $_encoding = '';       // encoding
     public       $code     = array();   // parsed HTML codfe
 
     const HTML_TAB = '        ';
