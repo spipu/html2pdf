@@ -289,8 +289,8 @@ class parsingHTML
     protected function analiseCode($code)
     {
         // name of the tag, opening, closure, autoclosure
-        $balise = '<([\/]{0,1})([_a-z0-9]+)([\/>\s]+)';
-        if (!preg_match('/'.$balise.'/isU', $code, $match)) return null;
+        $tag = '<([\/]{0,1})([_a-z0-9]+)([\/>\s]+)';
+        if (!preg_match('/'.$tag.'/isU', $code, $match)) return null;
         $close     = ($match[1]=='/' ? true : false);
         $autoclose = preg_match('/\/>$/isU', $code);
         $name      = strtolower($match[2]);
