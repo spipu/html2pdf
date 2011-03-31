@@ -13,6 +13,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
 define('__CLASS_HTML2PDF__', '4.02');
 
+require_once(dirname(__FILE__).'/_mypdf/exception.class.php');
 require_once(dirname(__FILE__).'/_mypdf/mypdf.class.php');
 require_once(dirname(__FILE__).'/_mypdf/parsingHTML.class.php');
 require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
@@ -5245,7 +5246,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             $this->style->FontSet();
 
             // affichage de l'image
-            $res = $this_drawImage($src, isset($param['sub_li']));
+            $res = $this->_drawImage($src, isset($param['sub_li']));
             if (!$res) return $res;
 
             // restauration du style
@@ -6104,120 +6105,6 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             if (!isset(HTML2PDF::$_textes[$key])) return '######';
 
             return HTML2PDF::$_textes[$key];
-        }
-    }
-
-    class HTML2PDF_exception extends exception
-    {
-        protected $_tag = null;
-        protected $_html = null;
-        protected $_image = null;
-        protected $_messageHtml = '';
-
-        /**
-         * generer une erreur HTML2PDF
-         *
-         * @param    int        numero de l'erreur
-         * @param    mixed    indications suplementaires sur l'erreur
-         * @return    string    code HTML eventuel associ� � l'erreur
-         */
-        final public function __construct($err = 0, $other = null, $html = '')
-        {
-            // creation du message d'erreur
-            $msg = '';
-
-            switch($err)
-            {
-                case 1:
-                    $msg = (HTML2PDF::textGET('err01'));
-                    $msg = str_replace('[[OTHER]]', $other, $msg);
-                    $this->_tag = $other;
-                    break;
-
-                case 2:
-                    $msg = (HTML2PDF::textGET('err02'));
-                    $msg = str_replace('[[OTHER_0]]', $other[0], $msg);
-                    $msg = str_replace('[[OTHER_1]]', $other[1], $msg);
-                    $msg = str_replace('[[OTHER_2]]', $other[2], $msg);
-                    break;
-
-                case 3:
-                    $msg = (HTML2PDF::textGET('err03'));
-                    $msg = str_replace('[[OTHER]]', $other, $msg);
-                    $this->_tag = $other;
-                    break;
-
-                case 4:
-                    $msg = (HTML2PDF::textGET('err04'));
-                    $msg = str_replace('[[OTHER]]', print_r($other, true), $msg);
-                    break;
-
-                case 5:
-                    $msg = (HTML2PDF::textGET('err05'));
-                    $msg = str_replace('[[OTHER]]', print_r($other, true), $msg);
-                    break;
-
-                case 6:
-                    $msg = (HTML2PDF::textGET('err06'));
-                    $msg = str_replace('[[OTHER]]', $other, $msg);
-                    $this->_image = $other;
-                    break;
-
-                case 7:
-                    $msg = (HTML2PDF::textGET('err07'));
-                    break;
-
-                case 8:
-                    $msg = (HTML2PDF::textGET('err08'));
-                    $msg = str_replace('[[OTHER]]', $other, $msg);
-                    $this->_tag = $other;
-                    break;
-
-                case 9:
-                    $msg = (HTML2PDF::textGET('err09'));
-                    $msg = str_replace('[[OTHER_0]]', $other[0], $msg);
-                    $msg = str_replace('[[OTHER_1]]', $other[1], $msg);
-                    $this->_tag = $other[0];
-                    break;
-                case 0:
-                    $msg = $other;
-                    break;
-            }
-
-            // creation du message HTML
-            $this->_messageHtml = '<span style="color: #AA0000; font-weight: bold;">'.(HTML2PDF::textGET('txt01')).$err.'</span><br>';
-            $this->_messageHtml.= (HTML2PDF::textGET('txt02')).' '.$this->file.'<br>';
-            $this->_messageHtml.= (HTML2PDF::textGET('txt03')).' '.$this->line.'<br>';
-            $this->_messageHtml.= '<br>';
-            $this->_messageHtml.= $msg;
-
-            // creation du message classique
-            $msg = HTML2PDF::textGET('txt01').$err.' : '.strip_tags($msg);
-
-            if ($html) {
-                $this->_messageHtml.= "<br><br>HTML : ...".trim(htmlentities($html)).'...';
-                $this->_html = $html;
-                $msg.= ' HTML : ...'.trim($html).'...';
-            }
-
-            parent::__construct($msg, $err);
-        }
-
-        public function __toString()
-        {
-            return $this->_messageHtml;
-        }
-        public function getTAG()
-        {
-            return $this->_tag;
-        }
-        public function getHTML()
-        {
-            return $this->_html;
-        }
-        public function getIMAGE()
-        {
-            return $this->_image;
         }
     }
 }
