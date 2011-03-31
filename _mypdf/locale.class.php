@@ -15,13 +15,19 @@ class HTML2PDF_locale
      * code of the current used locale
      * @var string
      */
-    protected $_code = null;
+    static protected $_code = null;
 
     /**
      * texts of the current used locale
      * @var array
      */
     static protected $_list = array();
+
+    /**
+     * directory where locale files are
+     * @var string
+     */
+    static protected $_directory = null;
 
     /**
      * load the locale
@@ -31,28 +37,32 @@ class HTML2PDF_locale
      */
     static public function load($code)
     {
+        if (self::$_directory===null) {
+            self::$_directory = dirname(dirname(__FILE__)).'/locale/';
+        }
+
         // must be in lower case
         $code = strtolower($code);
 
         // must be [a-z-0-9]
-        if (!preg_match('/^([a-z0-9]+)$/isU', $this->_code)) {
-            throw new HTML2PDF_exception(0, 'invalid language code ['.$this->_code.']');
+        if (!preg_match('/^([a-z0-9]+)$/isU', $code)) {
+            throw new HTML2PDF_exception(0, 'invalid language code ['.self::$_code.']');
         }
 
         // must not be load before with another code
-        if ($this->_code!==null && $this->_code!==$code) {
+        if (self::$_code!==null && self::$_code!==$code) {
             throw new HTML2PDF_exception(0, 'locale is already loaded with a different code.');
         }
 
         // save the code
-        $this->_code = $code;
+        self::$_code = $code;
 
         // get the name of the locale file
-        $file = dirname(__FILE__).'/locale/'.$this->_code.'.csv';
+        $file = self::$_directory.self::$_code.'.csv';
 
         // the file must exist
         if (!is_file($file)) {
-            throw new HTML2PDF_exception(0, 'language code ['.$this->_code.'] unknown. You can create the translation file ['.$file.'] and send it to the webmaster of html2pdf in order to integrate it into a future release');
+            throw new HTML2PDF_exception(0, 'language code ['.self::$_code.'] unknown. You can create the translation file ['.$file.'] and send it to the webmaster of html2pdf in order to integrate it into a future release');
         }
 
         // load the file
@@ -73,8 +83,8 @@ class HTML2PDF_locale
      */
     static public function clean()
     {
-        $this->_code = null;
-        $this->_list = array();
+        self::$_code = null;
+        self::$_list = array();
     }
 
     /**
