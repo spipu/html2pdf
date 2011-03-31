@@ -14,6 +14,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
 define('__CLASS_HTML2PDF__', '4.02');
 
 require_once(dirname(__FILE__).'/_mypdf/exception.class.php');
+require_once(dirname(__FILE__).'/_mypdf/locale.class.php');
 require_once(dirname(__FILE__).'/_mypdf/mypdf.class.php');
 require_once(dirname(__FILE__).'/_mypdf/parsingHTML.class.php');
 require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
@@ -108,7 +109,6 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
 
         static protected $_subobj    = null;        // object html2pdf prepared in order to accelerate the creation of sub html2pdf
         static protected $_tables    = array();     // static table to prepare the nested html tables
-        static protected $_textes    = array();     // static table with locales to use
 
         /**
          * class constructor
@@ -135,9 +135,8 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             $this->_unicode      = $unicode;
             $this->_encoding     = $encoding;
 
-
             // load the Local
-            HTML2PDF::textLOAD($this->_langue);
+            HTML2PDF_locale::load($this->_langue);
 
             // create the  MyPDF object
             $this->pdf = new MyPDF($orientation, 'mm', $format, $unicode, $encoding);
@@ -187,7 +186,6 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * Clone to create a sub HTML2PDF from HTML2PDF::$_subobj
          *
          * @access public
-         * @return    null
          */
         public function __clone()
         {
@@ -337,7 +335,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             // clean up
             HTML2PDF::$_subobj = null;
             HTML2PDF::$_tables = array();
-            HTML2PDF::$_textes = array();
+            HTML2PDF_locale::clean();
 
             // id on debug mode
             if ($this->_debugActif) {
@@ -467,9 +465,9 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          */
         protected function _vueHTML($content)
         {
-            $content = preg_replace('/<page_header([^>]*)>/isU', '<hr>'.HTML2PDF::textGET('vue01').' : $1<hr><div$1>', $content);
-            $content = preg_replace('/<page_footer([^>]*)>/isU', '<hr>'.HTML2PDF::textGET('vue02').' : $1<hr><div$1>', $content);
-            $content = preg_replace('/<page([^>]*)>/isU', '<hr>'.HTML2PDF::textGET('vue03').' : $1<hr><div$1>', $content);
+            $content = preg_replace('/<page_header([^>]*)>/isU', '<hr>'.HTML2PDF_locale::get('vue01').' : $1<hr><div$1>', $content);
+            $content = preg_replace('/<page_footer([^>]*)>/isU', '<hr>'.HTML2PDF_locale::get('vue02').' : $1<hr><div$1>', $content);
+            $content = preg_replace('/<page([^>]*)>/isU', '<hr>'.HTML2PDF_locale::get('vue03').' : $1<hr><div$1>', $content);
             $content = preg_replace('/<\/page([^>]*)>/isU', '</div><hr>', $content);
             $content = preg_replace('/<bookmark([^>]*)>/isU', '<hr>bookmark : $1<hr>', $content);
             $content = preg_replace('/<\/bookmark([^>]*)>/isU', '', $content);
@@ -481,7 +479,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
-        <title>'.HTML2PDF::textGET('vue04').' HTML</title>
+        <title>'.HTML2PDF_locale::get('vue04').' HTML</title>
         <meta http-equiv="Content-Type" content="text/html; charset='.$this->_encoding.'" >
     </head>
     <body style="padding: 10px; font-size: 10pt;font-family:    Verdana;">
@@ -2069,21 +2067,121 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             return $m;
         }
 
-        protected function XXX_getDrawNumber(&$lst, $key, $n=1, $correct=false)
+        /**
+         * @access protected
+         * @param  &array $cases
+         * @param  &array $corr
+         */
+        protected function _calculateTableCellSize(&$cases, &$corr)
         {
-            $res = array_fill(0, $n, 0);
-            $tmp = isset($lst[$key]) ? $lst[$key] : null;
-            if (!$tmp) return $res;
-            $tmp = explode(' ', trim(preg_replace('/[\s]+/', ' ', $tmp)));
-            foreach ($tmp as $k => $v) {
-                $v = trim($v);
-                if (!$correct) {
-                    $res[$k] = $this->style->ConvertToMM($v);
-                } else {
-                    $res[$k] = $this->style->ConvertToMM($v, ($k%2) ? $this->_isInDraw['h'] : $this->_isInDraw['w']);
+            if (!isset($corr[0])) return true;
+
+            // for each cell without colspan, we get the max width for each column
+            $sw = array();
+            for ($x=0; $x<count($corr[0]); $x++) {
+                $m=0;
+                for ($y=0; $y<count($corr); $y++) {
+                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][2]==1) {
+                        $m = max($m, $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w']);
+                    }
+                }
+                $sw[$x] = $m;
+            }
+
+            // for each cell with colspan, we adapt the width of each column
+            for ($x=0; $x<count($corr[0]); $x++) {
+                for ($y=0; $y<count($corr); $y++) {
+                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][2]>1) {
+
+                        // sum the max width of each column in colspan
+                        $s = 0; for ($i=0; $i<$corr[$y][$x][2]; $i++) $s+= $sw[$x+$i];
+
+                        // if the max width is < the width of the cell with colspan => we adapt the width of each max width
+                        if ($s>0 && $s<$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w']) {
+                            for ($i=0; $i<$corr[$y][$x][2]; $i++) {
+                                $sw[$x+$i] = $sw[$x+$i]/$s*$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'];
+                            }
+                        }
+                    }
                 }
             }
-            return $res;
+
+            // set the new width, for each cell
+            for ($x=0; $x<count($corr[0]); $x++) {
+                for ($y=0; $y<count($corr); $y++) {
+                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x])) {
+                        // without colspan
+                        if ($corr[$y][$x][2]==1) {
+                            $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'] = $sw[$x];
+                        // with colspan
+                        } else {
+                            $s = 0;
+                            for ($i=0; $i<$corr[$y][$x][2]; $i++) {
+                                $s+= $sw[$x+$i];
+                            }
+                            $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'] = $s;
+                        }
+                    }
+                }
+            }
+
+            // for each cell without rowspan, we get the max height for each line
+            $sh = array();
+            for ($y=0; $y<count($corr); $y++) {
+                $m=0;
+                for ($x=0; $x<count($corr[0]); $x++) {
+                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][3]==1) {
+                        $m = max($m, $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h']);
+                    }
+                }
+                $sh[$y] = $m;
+            }
+
+            // for each cell with rowspan, we adapt the height of each line
+            for ($y=0; $y<count($corr); $y++) {
+                for ($x=0; $x<count($corr[0]); $x++) {
+                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][3]>1) {
+
+                        // sum the max height of each line in rowspan
+                        $s = 0; for ($i=0; $i<$corr[$y][$x][3]; $i++) $s+= $sh[$y+$i];
+
+                        // if the max height is < the height of the cell with rowspan => we adapt the height of each max height
+                        if ($s>0 && $s<$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h']) {
+                            for ($i=0; $i<$corr[$y][$x][3]; $i++) {
+                                $sh[$y+$i] = $sh[$y+$i]/$s*$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h'];
+                            }
+                        }
+                    }
+                }
+            }
+
+            // set the new height, for each cell
+            for ($y=0; $y<count($corr); $y++) {
+                for ($x=0; $x<count($corr[0]); $x++) {
+                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x])) {
+                        // without rowspan
+                        if ($corr[$y][$x][3]==1) {
+                            $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h'] = $sh[$y];
+                        // with rowspan
+                        } else {
+                            $s = 0;
+                            for ($i=0; $i<$corr[$y][$x][3]; $i++) {
+                                $s+= $sh[$y+$i];
+                            }
+                            $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h'] = $s;
+
+                            for ($j=1; $j<$corr[$y][$x][3]; $j++) {
+                                $tx = $x+1;
+                                $ty = $y+$j;
+                                for (true; isset($corr[$ty][$tx]) && !is_array($corr[$ty][$tx]); $tx++);
+                                if (isset($corr[$ty][$tx])) {
+                                    $cases[$corr[$ty][$tx][1]][$corr[$ty][$tx][0]]['dw']+= $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /**
@@ -2091,7 +2189,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_PAGE($param)
         {
@@ -2225,7 +2323,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_PAGE($param)
         {
@@ -2418,7 +2516,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_NOBREAK($param)
         {
@@ -2452,7 +2550,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_NOBREAK($param)
         {
@@ -2468,7 +2566,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_DIV($param, $other = 'div')
         {
@@ -2710,7 +2808,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * ecrite par Pavel Kochman
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_FIELDSET($param)
         {
@@ -2762,7 +2860,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_DIV($param, $other='div')
         {
@@ -2849,7 +2947,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_BARCODE($param)
         {
@@ -2901,7 +2999,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_BARCODE($param)
         {
@@ -2915,7 +3013,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_QRCODE($param)
         {
@@ -2984,7 +3082,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_QRCODE($param)
         {
@@ -2998,7 +3096,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_BOOKMARK($param)
         {
@@ -3016,7 +3114,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_BOOKMARK($param)
         {
@@ -3030,7 +3128,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_WRITE($param)
         {
@@ -3216,7 +3314,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          *
          * @param    array $param
          * @param    integer    position reelle courante si saut de ligne pendant l'ecriture d'un texte
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_BR($param, $curr = null)
         {
@@ -3239,7 +3337,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_HR($param)
         {
@@ -3288,7 +3386,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_B($param, $other = 'b')
         {
@@ -3310,7 +3408,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_B($param)
         {
@@ -3329,7 +3427,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_I($param, $other = 'i')
         {
@@ -3363,7 +3461,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_I($param)
         {
@@ -3394,7 +3492,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_S($param, $other = 's')
         {
@@ -3416,7 +3514,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_S($param)
         {
@@ -3435,7 +3533,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_U($param, $other='u')
         {
@@ -3457,7 +3555,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_U($param)
         {
@@ -3476,7 +3574,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_A($param)
         {
@@ -3514,7 +3612,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_A($param)
         {
@@ -3530,7 +3628,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_H1($param, $other = 'h1')
         {
@@ -3581,7 +3679,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_H1($param)
         {
@@ -3626,7 +3724,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_SPAN($param, $other = 'span')
         {
@@ -3652,7 +3750,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_SPAN($param)
         {
@@ -3677,7 +3775,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_P($param)
         {
@@ -3715,7 +3813,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_P($param)
         {
@@ -3737,7 +3835,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_PRE($param, $other = 'pre')
         {
@@ -3763,7 +3861,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_PRE($param, $other = 'pre')
         {
@@ -3788,7 +3886,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_BIG($param)
         {
@@ -3806,7 +3904,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_BIG($param)
         {
@@ -3821,7 +3919,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_SMALL($param)
         {
@@ -3839,7 +3937,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_SMALL($param)
         {
@@ -3855,7 +3953,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_SUP($param)
         {
@@ -3874,7 +3972,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_SUP($param)
         {
@@ -3889,7 +3987,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_SUB($param)
         {
@@ -3907,7 +4005,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_SUB($param)
         {
@@ -3922,7 +4020,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_UL($param, $other = 'ul')
         {
@@ -3954,7 +4052,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_UL($param)
         {
@@ -3982,7 +4080,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_LI($param)
         {
@@ -4065,7 +4163,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_LI($param)
         {
@@ -4085,7 +4183,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_TBODY($param)
         {
@@ -4104,7 +4202,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_TBODY($param)
         {
@@ -4121,7 +4219,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_THEAD($param)
         {
@@ -4156,7 +4254,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_THEAD($param)
         {
@@ -4180,7 +4278,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_TFOOT($param)
         {
@@ -4215,7 +4313,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_TFOOT($param)
         {
@@ -4239,7 +4337,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_THEAD_SUB($param)
         {
@@ -4258,7 +4356,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_THEAD_SUB($param)
         {
@@ -4275,7 +4373,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_TFOOT_SUB($param)
         {
@@ -4294,7 +4392,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_TFOOT_SUB($param)
         {
@@ -4311,7 +4409,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_FORM($param)
         {
@@ -4339,7 +4437,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_FORM($param)
         {
@@ -4355,7 +4453,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_TABLE($param, $other = 'table')
         {
@@ -4470,7 +4568,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_TABLE($param)
         {
@@ -4485,7 +4583,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             // si on est en mode sub_html : initialisation des dimensions et autres
             if ($this->_subPart) {
                 // ajustement de la taille des cases
-                $this->calculTailleCases(HTML2PDF::$_tables[$param['num']]['cases'], HTML2PDF::$_tables[$param['num']]['corr']);
+                $this->_calculateTableCellSize(HTML2PDF::$_tables[$param['num']]['cases'], HTML2PDF::$_tables[$param['num']]['corr']);
 
                 // calcul de la hauteur du THEAD et du TFOOT
                 $lst = array('thead', 'tfoot');
@@ -4610,7 +4708,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN (pas de CLOSE)
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_COL($param)
         {
@@ -4624,7 +4722,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_TR($param, $other = 'tr')
         {
@@ -4740,7 +4838,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_TR($param)
         {
@@ -4778,7 +4876,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_TD($param, $other = 'td')
         {
@@ -4998,7 +5096,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_TD($param)
         {
@@ -5052,138 +5150,13 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             return true;
         }
 
-        protected function calculTailleCases(&$cases, &$corr)
-        {
-/*            // construction d'un tableau de correlation
-            $corr = array();
-
-            // on fait correspondre chaque case d'un tableau norm� aux cases r�elles, en prennant en compte les colspan et rowspan
-            $Yr=0;
-            for ($y=0; $y<count($cases); $y++)
-            {
-                $Xr=0;     while(isset($corr[$Yr][$Xr])) $Xr++;
-
-                for ($x=0; $x<count($cases[$y]); $x++)
-                {
-                    for ($j=0; $j<$cases[$y][$x]['rowspan']; $j++) {
-                        for ($i=0; $i<$cases[$y][$x]['colspan']; $i++) {
-                            $corr[$Yr+$j][$Xr+$i] = ($i+$j>0) ? '' : array($x, $y, $cases[$y][$x]['colspan'], $cases[$y][$x]['rowspan']);
-                        }
-                    }
-                    $Xr+= $cases[$y][$x]['colspan'];
-                    while(isset($corr[$Yr][$Xr])) $Xr++;
-                }
-                $Yr++;
-            }
-*/
-            if (!isset($corr[0])) return true;
-
-            // on d�termine, pour les cases sans colspan, la largeur maximale de chaque colone
-            $sw = array();
-            for ($x=0; $x<count($corr[0]); $x++) {
-                $m=0;
-                for ($y=0; $y<count($corr); $y++) {
-                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][2]==1) {
-                        $m = max($m, $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w']);
-                    }
-                }
-                $sw[$x] = $m;
-            }
-
-            // on v�rifie que cette taille est valide avec les colones en colspan
-            for ($x=0; $x<count($corr[0]); $x++) {
-                for ($y=0; $y<count($corr); $y++) {
-                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][2]>1) {
-                        // somme des colonnes correspondant au colspan
-                        $s = 0; for ($i=0; $i<$corr[$y][$x][2]; $i++) $s+= $sw[$x+$i];
-
-                        // si la somme est inf�rieure � la taille necessaire => r�gle de 3 pour adapter
-                        if ($s>0 && $s<$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w']) {
-                            for ($i=0; $i<$corr[$y][$x][2]; $i++) {
-                                $sw[$x+$i] = $sw[$x+$i]/$s*$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'];
-                            }
-                        }
-                    }
-                }
-            }
-
-            // on applique les nouvelles largeurs
-            for ($x=0; $x<count($corr[0]); $x++) {
-                for ($y=0; $y<count($corr); $y++) {
-                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x])) {
-                        if ($corr[$y][$x][2]==1) {
-                            $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'] = $sw[$x];
-                        } else {
-                            // somme des colonnes correspondant au colspan
-                            $s = 0; for ($i=0; $i<$corr[$y][$x][2]; $i++) $s+= $sw[$x+$i];
-                            $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'] = $s;
-                        }
-                    }
-                }
-            }
-
-            // on d�termine, pour les cases sans rowspan, la hauteur maximale de chaque colone
-            $sh = array();
-            for ($y=0; $y<count($corr); $y++) {
-                $m=0;
-                for ($x=0; $x<count($corr[0]); $x++) {
-                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][3]==1) {
-                        $m = max($m, $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h']);
-                    }
-                }
-                $sh[$y] = $m;
-            }
-
-
-            // on v�rifie que cette taille est valide avec les lignes en rowspan
-            for ($y=0; $y<count($corr); $y++) {
-                for ($x=0; $x<count($corr[0]); $x++) {
-                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][3]>1) {
-                        // somme des colonnes correspondant au colspan
-                        $s = 0; for ($i=0; $i<$corr[$y][$x][3]; $i++) $s+= $sh[$y+$i];
-
-                        // si la somme est inf�rieure � la taille necessaire => r�gle de 3 pour adapter
-                        if ($s>0 && $s<$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h']) {
-                            for ($i=0; $i<$corr[$y][$x][3]; $i++) {
-                                $sh[$y+$i] = $sh[$y+$i]/$s*$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h'];
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            // on applique les nouvelles hauteurs
-            for ($y=0; $y<count($corr); $y++) {
-                for ($x=0; $x<count($corr[0]); $x++) {
-                    if (isset($corr[$y][$x]) && is_array($corr[$y][$x])) {
-                        if ($corr[$y][$x][3]==1) {
-                            $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h'] = $sh[$y];
-                        } else {
-                            // somme des lignes correspondant au rowspan
-                            $s = 0; for ($i=0; $i<$corr[$y][$x][3]; $i++) $s+= $sh[$y+$i];
-                            $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h'] = $s;
-
-                            for ($j=1; $j<$corr[$y][$x][3]; $j++) {
-                                $tx = $x+1;
-                                $ty = $y+$j;
-                                for (true; isset($corr[$ty][$tx]) && !is_array($corr[$ty][$tx]); $tx++);
-                                if (isset($corr[$ty][$tx])) {
-                                    $cases[$corr[$ty][$tx][1]][$corr[$ty][$tx][0]]['dw']+= $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         /**
          * tag : TH
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_TH($param)
         {
@@ -5202,7 +5175,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_TH($param)
         {
@@ -5220,7 +5193,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_IMG($param)
         {
@@ -5262,7 +5235,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_SELECT($param)
         {
@@ -5297,7 +5270,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_OPTION($param)
         {
@@ -5316,7 +5289,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_OPTION($param)
         {
@@ -5328,7 +5301,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_SELECT()
         {
@@ -5365,7 +5338,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_TEXTAREA($param)
         {
@@ -5419,7 +5392,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_TEXTAREA()
         {
@@ -5434,7 +5407,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_INPUT($param)
         {
@@ -5540,7 +5513,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_DRAW($param)
         {
@@ -5660,7 +5633,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_DRAW($param)
         {
@@ -5719,7 +5692,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_LINE($param)
         {
@@ -5745,7 +5718,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_RECT($param)
         {
@@ -5771,7 +5744,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_CIRCLE($param)
         {
@@ -5795,7 +5768,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_ELLIPSE($param)
         {
@@ -5821,7 +5794,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_POLYLINE($param)
         {
@@ -5864,7 +5837,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_POLYGON($param)
         {
@@ -5907,7 +5880,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_PATH($param)
         {
@@ -6014,7 +5987,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : OPEN
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_open_G($param)
         {
@@ -6030,7 +6003,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * mode : CLOSE
          *
          * @param    array $param
-         * @return    null
+         * @return boolean
          */
         protected function _tag_close_G($param)
         {
@@ -6042,7 +6015,7 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
          * nouvelle page pour l'index. ne pas utiliser directement. seul MyPDF doit l'utiliser !!!!
          *
          * @param    int        page courante
-         * @return    null
+         * @return boolean
          */
         public function INDEX_NewPage(&$page)
         {
@@ -6059,52 +6032,5 @@ require_once(dirname(__FILE__).'/_mypdf/styleHTML.class.php');
             }
         }
 
-        /**
-         * chargement du fichier de langue
-         *
-         * @param    string langue
-         * @return    null
-         */
-        static protected function textLOAD($langue)
-        {
-            if (count(HTML2PDF::$_textes)) return true;
-
-            if (!preg_match('/^([a-z0-9]+)$/isU', $langue)) {
-                echo 'ERROR : language code <b>'.$langue.'</b> incorrect.';
-                exit;
-            }
-
-            $file = dirname(__FILE__).'/locale/'.strtolower($langue).'.csv';
-            if (!is_file($file)) {
-                echo 'ERROR : language code <b>'.$langue.'</b> unknown.<br>';
-                echo 'You can create the translation file <b>'.$file.'</b> and send it to me in order to integrate it into a future version.';
-                exit;
-            }
-
-            HTML2PDF::$_textes = array();
-            $handle = fopen($file, 'r');
-            while (!feof($handle)) {
-                $line = fgetcsv($handle);
-                if (count($line)!=2) continue;
-
-                HTML2PDF::$_textes[trim($line[0])] = trim($line[1]);
-            }
-            fclose($handle);
-
-            return true;
-        }
-
-        /**
-         * recuperer un texte precis
-         *
-         * @param    string code du texte
-         * @return    null
-         */
-        static public function textGET($key)
-        {
-            if (!isset(HTML2PDF::$_textes[$key])) return '######';
-
-            return HTML2PDF::$_textes[$key];
-        }
     }
 }
