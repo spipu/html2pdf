@@ -91,7 +91,7 @@ class parsingHTML
 
         // search the HTML tags
         $tmp = array();
-        $this->searchCode($tmp);
+        $this->_searchCode($tmp);
 
         // all the actions to do
         $todos = array();
@@ -101,7 +101,7 @@ class parsingHTML
             // if it is a tag code
             if ($part[0]=='code') {
                 // analise the HTML code
-                $res = $this->analiseCode($part[1]);
+                $res = $this->_analiseCode($part[1]);
 
                 // if it is a real HTML tag
                 if ($res) {
@@ -154,7 +154,7 @@ class parsingHTML
                     $todos[] = array(
                         'name'    => 'write',
                         'close'    => false,
-                        'param' => array('txt' => $this->prepareTxt($part[1])),
+                        'param' => array('txt' => $this->_prepareTxt($part[1])),
                     );
                 } else { // else (if we are in a <pre> tag)
                     // prepare the text
@@ -174,7 +174,7 @@ class parsingHTML
                         $todos[] = array(
                             'name'    => 'write',
                             'close'    => false,
-                            'param' => array('txt' => $this->prepareTxt($txt, false)),
+                            'param' => array('txt' => $this->_prepareTxt($txt, false)),
                         );
                     }
                 }
@@ -228,7 +228,7 @@ class parsingHTML
      * @return  string texte
      * @access  protected
      */
-    protected function prepareTxt($txt, $spaces = true)
+    protected function _prepareTxt($txt, $spaces = true)
     {
         if ($spaces) $txt = preg_replace('/\s+/is', ' ', $txt);
         $txt = str_replace('&euro;', '€', $txt);
@@ -242,7 +242,7 @@ class parsingHTML
      * @param    &array    array's result
      * @return   null
      */
-    protected function searchCode(&$tmp)
+    protected function _searchCode(&$tmp)
     {
         // initialise the array
         $tmp = array();
@@ -286,7 +286,7 @@ class parsingHTML
      * @param   string   HTML code to analise
      * @return  array    corresponding action
      */
-    protected function analiseCode($code)
+    protected function _analiseCode($code)
     {
         // name of the tag, opening, closure, autoclosure
         $tag = '<([\/]{0,1})([_a-z0-9]+)([\/>\s]+)';
@@ -425,10 +425,10 @@ class parsingHTML
         }
 
         // prepare the parameters
-        if (isset($param['value']))  $param['value']  = $this->prepareTxt($param['value']);
-        if (isset($param['alt']))    $param['alt']    = $this->prepareTxt($param['alt']);
-        if (isset($param['title']))  $param['title']  = $this->prepareTxt($param['title']);
-        if (isset($param['class']))  $param['class']  = $this->prepareTxt($param['class']);
+        if (isset($param['value']))  $param['value']  = $this->_prepareTxt($param['value']);
+        if (isset($param['alt']))    $param['alt']    = $this->_prepareTxt($param['alt']);
+        if (isset($param['title']))  $param['title']  = $this->_prepareTxt($param['title']);
+        if (isset($param['class']))  $param['class']  = $this->_prepareTxt($param['class']);
 
         // return the new action to do
         return array('name' => $name, 'close' => $close ? 1 : 0, 'autoclose' => $autoclose, 'param' => $param);

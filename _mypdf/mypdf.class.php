@@ -1268,7 +1268,7 @@ class MyPDF extends TCPDF
         for ($i=0;$i<$size;$i++) {
             // if we need a new page => add a new page
             if ($this->getY()+$this->FontSize>=($this->h - $this->bMargin)) {
-                $obj->INDEX_NewPage($page);
+                $obj->_INDEX_NewPage($page);
                 $this->SetFont($fontName, '', $sizeBookmark);
             }
 

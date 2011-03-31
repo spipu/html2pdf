@@ -408,9 +408,9 @@ class styleHTML
      /**
      * Analise the CSS style to convert it into SVG style
      *
+     * @access public
      * @param  string   tag name
      * @param  array    styles
-     * @access public
      */
     public function getSvgStyle($tagName, &$param)
     {
@@ -473,21 +473,21 @@ class styleHTML
     }
 
     /**
-     * Analyse un tableau de style provenant du parseurHTML
+     * analyse the css properties from the HTML parsing
      *
-     * @param    string    nom du tag
-     * @param    array    tableau de style
-     * @param    array    tableau initialisant des styles
-     * @return    null
+     * @access public
+     * @param  string  $tagName
+     * @param  array   $param
+     * @param  array   $legacy
      */
     public function analyse($tagName, &$param, $legacy = null)
     {
-        // preparation
+        // prepare the informations
         $tagName = strtolower($tagName);
         $id   = isset($param['id'])   ? strtolower(trim($param['id']))    : null; if (!$id)   $id   = null;
         $name = isset($param['name']) ? strtolower(trim($param['name']))  : null; if (!$name) $name = null;
 
-        // lecture de la propriete classe
+        // get the class names to use
         $class = array();
         $tmp = isset($param['class']) ? strtolower(trim($param['class'])) : '';
         $tmp = explode(' ', $tmp);
@@ -496,7 +496,7 @@ class styleHTML
             if ($v) $class[] = $v;
         }
 
-        // identification de la tag et des styles direct qui pourraient lui �tre appliqu�s
+        // prepare the values, and the list of css tags to identify
         $this->value['id_tag']   = $tagName;
         $this->value['id_name']  = $name;
         $this->value['id_id']    = $id;
@@ -517,15 +517,17 @@ class styleHTML
             $this->value['id_lst'][] = $tagName.'#'.$id;
         }
 
-        // style CSS
+        // get the css styles from class
         $styles = $this->getFromCSS();
 
-        // on ajoute le style propre � la tag
+        // merge with the css styles from tag
         $styles = array_merge($styles, $param['style']);
         if (isset($param['allwidth']) && !isset($styles['width'])) $styles['width'] = '100%';
 
-        // mise � zero des styles non h�rit�s
+        // reset some styles, depending on the tag name
         $this->resetStyle($tagName);
+
+        // add the legacy values
         if ($legacy) {
             foreach ($legacy as $legacyName => $legacyValue) {
                 if (is_array($legacyValue)) {
@@ -537,17 +539,17 @@ class styleHTML
             }
         }
 
-        // interpreration des nouvelles valeurs
+        // some flags
         $correctWidth = false;
         $noWidth = true;
 
+        // read all the css styles
         foreach ($styles as $nom => $val) {
             switch($nom)
             {
                 case 'font-family':
                     $val = explode(',', $val);
                     $val = trim($val[0]);
-
                     if ($val) $this->value['font-family'] = $val;
                     break;
 
@@ -583,7 +585,6 @@ class styleHTML
                 case 'color':
                     $res = null;
                     $this->value['color'] = $this->ConvertToColor($val, $res);
-
                     if ($tagName=='hr') {
                         $this->value['border']['l']['color'] = $this->value['color'];
                         $this->value['border']['t']['color'] = $this->value['color'];
@@ -640,7 +641,6 @@ class styleHTML
                     }
                     $val = array_values($val);
                     $this->duplicateBorder($val);
-
                     $this->value['padding']['t'] = $this->ConvertToMM($val[0], 0);
                     $this->value['padding']['r'] = $this->ConvertToMM($val[1], 0);
                     $this->value['padding']['b'] = $this->ConvertToMM($val[2], 0);
@@ -679,7 +679,6 @@ class styleHTML
                     }
                     $val = array_values($val);
                     $this->duplicateBorder($val);
-
                     $this->value['margin']['t'] = $this->ConvertToMM($val[0], 0);
                     $this->value['margin']['r'] = $this->ConvertToMM($val[1], 0);
                     $this->value['margin']['b'] = $this->ConvertToMM($val[2], 0);
@@ -718,7 +717,6 @@ class styleHTML
                         }
                     }
                     $this->duplicateBorder($val);
-
                     if ($val[0]) $this->value['border']['t']['type'] = $val[0];
                     if ($val[1]) $this->value['border']['r']['type'] = $val[1];
                     if ($val[2]) $this->value['border']['b']['type'] = $val[2];
@@ -752,7 +750,6 @@ class styleHTML
                     $res = false;
                     $val = preg_replace('/,[\s]+/', ',', $val);
                     $val = explode(' ', $val);
-
                     foreach ($val as $valK => $valV) {
                             $val[$valK] = $this->ConvertToColor($valV, $res);
                             if (!$res) {
@@ -760,7 +757,6 @@ class styleHTML
                             }
                     }
                     $this->duplicateBorder($val);
-
                     if (is_array($val[0])) $this->value['border']['t']['color'] = $val[0];
                     if (is_array($val[1])) $this->value['border']['r']['color'] = $val[1];
                     if (is_array($val[2])) $this->value['border']['b']['color'] = $val[2];
@@ -798,7 +794,6 @@ class styleHTML
                             $val[$valK] = $this->ConvertToMM($valV, 0);
                     }
                     $this->duplicateBorder($val);
-
                     if ($val[0]) $this->value['border']['t']['width'] = $val[0];
                     if ($val[1]) $this->value['border']['r']['width'] = $val[1];
                     if ($val[2]) $this->value['border']['b']['width'] = $val[2];
@@ -834,7 +829,6 @@ class styleHTML
                     if (count($val)>2) {
                         break;
                     }
-
                     $valH = $this->ConvertToRadius(trim($val[0]));
                     if (count($valH)<1 || count($valH)>4) {
                         break;
@@ -842,7 +836,6 @@ class styleHTML
                     if (!isset($valH[1])) $valH[1] = $valH[0];
                     if (!isset($valH[2])) $valH = array($valH[0], $valH[0], $valH[1], $valH[1]);
                     if (!isset($valH[3])) $valH[3] = $valH[1];
-
                     if (isset($val[1])) {
                         $valV = $this->ConvertToRadius(trim($val[1]));
                         if (count($valV)<1 || count($valV)>4) {
@@ -851,10 +844,9 @@ class styleHTML
                         if (!isset($valV[1])) $valV[1] = $valV[0];
                         if (!isset($valV[2])) $valV = array($valV[0], $valV[0], $valV[1], $valV[1]);
                         if (!isset($valV[3])) $valV[3] = $valV[1];
-                    }
-                    else
+                    } else {
                         $valV = $valH;
-
+                    }
                     $this->value['border']['radius'] = array(
                                 'tl' => array($valH[0], $valV[0]),
                                 'tr' => array($valH[1], $valV[1]),
@@ -972,12 +964,14 @@ class styleHTML
 
         $return = true;
 
+        // only for P tag
         if ($this->value['margin']['t']===null) $this->value['margin']['t'] = $this->value['font-size'];
         if ($this->value['margin']['b']===null) $this->value['margin']['b'] = $this->value['font-size'];
 
+        // force the text align to left, if asked by html2pdf
         if ($this->_onlyLeft) $this->value['text-align'] = 'left';
 
-        // correction de la largeur pour correspondre au mod�le de boite quick
+        // correction on the width (quick box)
         if ($noWidth && in_array($tagName, array('div', 'fieldset')) && $this->value['position']!='absolute') {
             $this->value['width'] = $this->getLastWidth();
             $this->value['width']-= $this->value['margin']['l'] + $this->value['margin']['r'];
@@ -1020,9 +1014,10 @@ class styleHTML
     }
 
      /**
-     * R�cup�ration de la hauteur de ligne courante
+     * get the height of the current line
      *
-     * @return    float    hauteur en mm
+     * @access public
+     * @return float $height in mm
      */
     public function getLineHeight()
     {
@@ -1032,9 +1027,11 @@ class styleHTML
     }
 
      /**
-     * R�cup�ration de la largeur de l'objet parent
+     * get the width of the parent
      *
-     * @return    float    largeur
+     * @access public
+     * @param  boolean $mode true => adding padding and border
+     * @return float $width in mm
      */
     public function getLastWidth($mode = false)
     {
@@ -1052,9 +1049,11 @@ class styleHTML
     }
 
      /**
-     * R�cup�ration de la hauteur de l'objet parent
+     * get the height of the parent
      *
-     * @return    float    hauteur
+     * @access public
+     * @param  boolean $mode true => adding padding and border
+     * @return float $height in mm
      */
     public function getLastHeight($mode = false)
     {
@@ -1071,6 +1070,12 @@ class styleHTML
         return $this->_pdf->getH() - $this->_pdf->gettMargin() - $this->_pdf->getbMargin();
     }
 
+    /**
+     * get the value of the float property
+     *
+     * @access public
+     * @return $float left/right
+     */
     public function getFloat()
     {
         if ($this->value['float']=='left')    return 'left';
@@ -1078,14 +1083,29 @@ class styleHTML
         return null;
     }
 
+    /**
+     * get the last value for a specific key
+     *
+     * @access public
+     * @param  string $key
+     * @return mixed
+     */
     public function getLastValue($key)
     {
         $nb = count($this->table);
-        if ($nb>0)
+        if ($nb>0) {
             return $this->table[$nb-1][$key];
-        return null;
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * get the last absolute X
+     *
+     * @access protected
+     * @return float $x
+     */
     protected function getLastAbsoluteX()
     {
         for ($k=count($this->table)-1; $k>=0; $k--) {
@@ -1094,6 +1114,12 @@ class styleHTML
         return $this->_pdf->getlMargin();
     }
 
+    /**
+     * get the last absolute Y
+     *
+     * @access protected
+     * @return float $y
+     */
     protected function getLastAbsoluteY()
     {
         for ($k=count($this->table)-1; $k>=0; $k--) {
