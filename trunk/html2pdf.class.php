@@ -2194,7 +2194,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
         protected function _tag_open_PAGE($param)
         {
             if ($this->_isForOneLine) return false;
-            if ($this->_debugActif) $this->_DEBUG_add('PAGE n�'.($this->_page+1), true);
+            if ($this->_debugActif) $this->_DEBUG_add('PAGE '.($this->_page+1), true);
 
             $newPageSet= (!isset($param['pageset']) || $param['pageset']!='old');
 
@@ -2203,7 +2203,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 $this->_subHEADER = array();
                 $this->_subFOOTER = array();
 
-                // identification de l'orientation demand�e
+                // identification de l'orientation demandee
                 $orientation = '';
                 if (isset($param['orientation'])) {
                     $param['orientation'] = strtolower($param['orientation']);
@@ -2215,7 +2215,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     if ($param['orientation']=='landscape')    $orientation = 'L';
                 }
 
-                // identification de l'orientation demand�e
+                // identification de l'orientation demandee
                 $format = null;
                 if (isset($param['format'])) {
                     $format = strtolower($param['format']);
@@ -2224,7 +2224,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     }
                 }
 
-                // identification des propri�t�s du background
+                // identification des proprietes du background
                 $background = array();
                 if (isset($param['backimg'])) {
                     $background['img']        = isset($param['backimg'])    ? $param['backimg']        : '';        // nom de l'image
@@ -2232,7 +2232,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     $background['posY']        = isset($param['backimgy'])    ? $param['backimgy']    : 'middle'; // position verticale de l'image
                     $background['width']    = isset($param['backimgw'])    ? $param['backimgw']    : '100%';    // taille de l'image (100% = largueur de la feuille)
 
-                    // conversion du nom de l'image, en cas de param�tres en _GET
+                    // conversion du nom de l'image, en cas de parametres en _GET
                     $background['img'] = str_replace('&amp;', '&', $background['img']);
                     // conversion des positions
                     if ($background['posX']=='left')    $background['posX'] = '0%';
@@ -2334,7 +2334,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->parsingCss->load();
             $this->parsingCss->fontSet();
 
-            if ($this->_debugActif) $this->_DEBUG_add('PAGE n�'.$this->_page, false);
+            if ($this->_debugActif) $this->_DEBUG_add('PAGE '.$this->_page, false);
 
             return true;
         }
@@ -2918,9 +2918,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 $this->_loadMax();
             }
 
-             $block = ($this->parsingCss->value['display']!='inline' && $this->parsingCss->value['position']!='absolute');
+            $block = ($this->parsingCss->value['display']!='inline' && $this->parsingCss->value['position']!='absolute');
 
-             $this->parsingCss->load();
+            $this->parsingCss->load();
             $this->parsingCss->fontSet();
             $this->_loadMargin();
 
@@ -3868,7 +3868,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             if ($other=='pre') {
                 if ($this->_isForOneLine) return false;
 
-                $this->_tag_close_DIV($param);
+                $this->_tag_close_DIV($param, $other);
                 $this->_tag_open_BR(array());
             }
             $this->parsingCss->load();
@@ -4500,7 +4500,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             // si on est en mode sub_html : initialisation des dimensions et autres
             if ($this->_subPart) {
-                if ($this->_debugActif) $this->_DEBUG_add('Table n�'.$param['num'], true);
+                if ($this->_debugActif) $this->_DEBUG_add('Table n'.$param['num'], true);
                 HTML2PDF::$_tables[$param['num']] = array();
                 HTML2PDF::$_tables[$param['num']]['border']        = isset($param['border']) ? $this->parsingCss->readBorder($param['border']) : null; // border sp�cifique si border precis� en param�tre
                 HTML2PDF::$_tables[$param['num']]['cellpadding']    = $this->parsingCss->ConvertToMM(isset($param['cellpadding']) ? $param['cellpadding'] : '1px'); // cellpadding du tableau
@@ -4575,10 +4575,6 @@ if (!defined('__CLASS_HTML2PDF__')) {
             if ($this->_isForOneLine) return false;
 
             $this->_maxH = 0;
-
-            // restauration du style
-            $this->parsingCss->load();
-            $this->parsingCss->fontSet();
 
             // si on est en mode sub_html : initialisation des dimensions et autres
             if ($this->_subPart) {
@@ -4668,7 +4664,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     HTML2PDF::$_tables[$param['num']]['td_curr'] = 0;
                     $this->_parsePos = 0;
                     $this->parsingHtml->code = HTML2PDF::$_tables[$param['num']]['tfoot']['code'];
+                    $this->_isInTfoot = true;
                     $this->_makeHTMLcode();
+                    $this->_isInTfoot = false;
 
                     $this->_parsePos =     $oldParsePos;
                     $this->parsingHtml->code = $oldParseCode;
@@ -4696,8 +4694,13 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 // restauration des marges
                 $this->_loadMargin();
 
-                if ($this->_debugActif) $this->_DEBUG_add('Table n�'.$param['num'], false);
+                if ($this->_debugActif) $this->_DEBUG_add('Table '.$param['num'], false);
             }
+
+            // restauration du style
+            $this->parsingCss->load();
+            $this->parsingCss->fontSet();
+
 
             return true;
         }
@@ -4953,7 +4956,6 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
                 $collapse = isset($this->parsingCss->value['border']['collapse']) ? $this->parsingCss->value['border']['collapse'] : false;
             }
-
 
             // analyse du style
             $this->parsingCss->save();

@@ -1,10 +1,10 @@
 4.02 (2011-04-01)
-    uniformisation des fichiers du projet :
-      encodage UTF8
-      fin de ligne UNIX
-      espaces à la place des tabulations
-      commentaires PHPDOC en anglais
-    conversion des fichiers de langue en CSV
+    ATTENTION : beaucoup de changements dans la structure du projet. version 3.xx abandonnée
+    uniformisation des fichiers du projet (standard Zend)
+    conversion des fichiers de langue en CSV, déplacement dans le répertoire "locale"
+    modification du nom de toutes les sous classes
+    déplacement de toutes les sous classes
+    correction sur la gestion des tables
 
 3.30 / 4.01 (2010-05-07)
     correction sur la gestion des textes
