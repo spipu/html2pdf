@@ -29,7 +29,7 @@ class HTML2PDF_parsingCss
      */
     public function __construct(&$pdf)
     {
-        $this->init();
+        $this->_init();
         $this->setPdfParent($pdf);
     }
 
@@ -86,7 +86,7 @@ class HTML2PDF_parsingCss
      *
      * @access protected
      */
-    protected function init()
+    protected function _init()
     {
         // get the Web Colors from TCPDF
         global $webcolor;
@@ -283,7 +283,7 @@ class HTML2PDF_parsingCss
      *
      * @access public
      */
-    public function FontSet()
+    public function fontSet()
     {
         $family = strtolower($this->value['font-family']);
 
@@ -391,8 +391,8 @@ class HTML2PDF_parsingCss
                 $this->value['x'] = $currentX + $x;
                 $this->value['y'] = $currentY + $y;
             } else {
-                $this->value['x'] = $this->getLastAbsoluteX()+$x;
-                $this->value['y'] = $this->getLastAbsoluteY()+$y;
+                $this->value['x'] = $this->_getLastAbsoluteX()+$x;
+                $this->value['y'] = $this->_getLastAbsoluteY()+$y;
             }
         } else {
             $this->value['x'] = $currentX;
@@ -459,7 +459,7 @@ class HTML2PDF_parsingCss
         }
 
         // CSS style
-        $styles = $this->getFromCSS();
+        $styles = $this->_getFromCSS();
 
         // adding the style from the tag
         $styles = array_merge($styles, $param['style']);
@@ -518,7 +518,7 @@ class HTML2PDF_parsingCss
         }
 
         // get the css styles from class
-        $styles = $this->getFromCSS();
+        $styles = $this->_getFromCSS();
 
         // merge with the css styles from tag
         $styles = array_merge($styles, $param['style']);
@@ -640,7 +640,7 @@ class HTML2PDF_parsingCss
                         }
                     }
                     $val = array_values($val);
-                    $this->duplicateBorder($val);
+                    $this->_duplicateBorder($val);
                     $this->value['padding']['t'] = $this->convertToMM($val[0], 0);
                     $this->value['padding']['r'] = $this->convertToMM($val[1], 0);
                     $this->value['padding']['b'] = $this->convertToMM($val[2], 0);
@@ -678,7 +678,7 @@ class HTML2PDF_parsingCss
                         }
                     }
                     $val = array_values($val);
-                    $this->duplicateBorder($val);
+                    $this->_duplicateBorder($val);
                     $this->value['margin']['t'] = $this->convertToMM($val[0], 0);
                     $this->value['margin']['r'] = $this->convertToMM($val[1], 0);
                     $this->value['margin']['b'] = $this->convertToMM($val[2], 0);
@@ -716,7 +716,7 @@ class HTML2PDF_parsingCss
                             $val[$valK] = null;
                         }
                     }
-                    $this->duplicateBorder($val);
+                    $this->_duplicateBorder($val);
                     if ($val[0]) $this->value['border']['t']['type'] = $val[0];
                     if ($val[1]) $this->value['border']['r']['type'] = $val[1];
                     if ($val[2]) $this->value['border']['b']['type'] = $val[2];
@@ -756,7 +756,7 @@ class HTML2PDF_parsingCss
                                 $val[$valK] = null;
                             }
                     }
-                    $this->duplicateBorder($val);
+                    $this->_duplicateBorder($val);
                     if (is_array($val[0])) $this->value['border']['t']['color'] = $val[0];
                     if (is_array($val[1])) $this->value['border']['r']['color'] = $val[1];
                     if (is_array($val[2])) $this->value['border']['b']['color'] = $val[2];
@@ -793,7 +793,7 @@ class HTML2PDF_parsingCss
                     foreach ($val as $valK => $valV) {
                             $val[$valK] = $this->convertToMM($valV, 0);
                     }
-                    $this->duplicateBorder($val);
+                    $this->_duplicateBorder($val);
                     if ($val[0]) $this->value['border']['t']['width'] = $val[0];
                     if ($val[1]) $this->value['border']['r']['width'] = $val[1];
                     if ($val[2]) $this->value['border']['b']['width'] = $val[2];
@@ -1106,7 +1106,7 @@ class HTML2PDF_parsingCss
      * @access protected
      * @return float $x
      */
-    protected function getLastAbsoluteX()
+    protected function _getLastAbsoluteX()
     {
         for ($k=count($this->table)-1; $k>=0; $k--) {
             if ($this->table[$k]['x'] && $this->table[$k]['position']) return $this->table[$k]['x'];
@@ -1120,7 +1120,7 @@ class HTML2PDF_parsingCss
      * @access protected
      * @return float $y
      */
-    protected function getLastAbsoluteY()
+    protected function _getLastAbsoluteY()
     {
         for ($k=count($this->table)-1; $k>=0; $k--) {
             if ($this->table[$k]['y'] && $this->table[$k]['position']) return $this->table[$k]['y'];
@@ -1134,7 +1134,7 @@ class HTML2PDF_parsingCss
      * @access protected
      * @return array $styles
      */
-    protected function getFromCSS()
+    protected function _getFromCSS()
     {
         // styles to apply
         $styles = array();
@@ -1149,7 +1149,7 @@ class HTML2PDF_parsingCss
 
         // foreach selectors in the CSS files, verify if it match with the list of selectors
         foreach($this->cssKeys as $key => $num) {
-            if ($this->getReccursiveStyle($key, $lst)) {
+            if ($this->_getReccursiveStyle($key, $lst)) {
                 $getit[$key] = $num;
             }
         }
@@ -1173,7 +1173,7 @@ class HTML2PDF_parsingCss
      * @param  string   $next next step of parsing the selector
      * @return boolean
      */
-    protected function getReccursiveStyle($key, $lst, $next = null)
+    protected function _getReccursiveStyle($key, $lst, $next = null)
     {
         // if next step
         if ($next!==null) {
@@ -1195,13 +1195,13 @@ class HTML2PDF_parsingCss
             }
 
             // if the end of the key = the selector and the next step is ok => ok
-            if (substr($key, -strlen(' '.$name))==' '.$name && $this->getReccursiveStyle($key, $lst, $name)) {
+            if (substr($key, -strlen(' '.$name))==' '.$name && $this->_getReccursiveStyle($key, $lst, $name)) {
                 return true;
             }
         }
 
         // if we are not in the first step, we analyse the sub steps (the pareng tag of the current tag)
-        if ($next!==null && $this->getReccursiveStyle($key, $lst, '')) {
+        if ($next!==null && $this->_getReccursiveStyle($key, $lst, '')) {
             return true;
         }
 
@@ -1273,7 +1273,7 @@ class HTML2PDF_parsingCss
      * @access protected
      * @param  &array $val
      */
-    protected function duplicateBorder(&$val)
+    protected function _duplicateBorder(&$val)
     {
         // 1 value => L => RTB
         if (count($val)==1) {
@@ -1599,7 +1599,7 @@ class HTML2PDF_parsingCss
      * @access protected
      * @param  &string $code
      */
-    protected function analyseStyle(&$code)
+    protected function _analyseStyle(&$code)
     {
         // clean the spaces
         $code = preg_replace('/[\s]+/', ' ', $code);
@@ -1743,6 +1743,6 @@ class HTML2PDF_parsingCss
         }
 
         //analyse the css content
-        $this->analyseStyle($style);
+        $this->_analyseStyle($style);
     }
 }
