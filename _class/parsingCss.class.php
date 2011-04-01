@@ -122,7 +122,7 @@ class HTML2PDF_parsingCss
         $this->value['font-overline']    = false;
         $this->value['font-linethrough'] = false;
         $this->value['text-transform']   = 'none';
-        $this->value['font-size']        = $this->ConvertToMM('10pt');
+        $this->value['font-size']        = $this->convertToMM('10pt');
         $this->value['text-indent']      = 0;
         $this->value['text-align']       = 'left';
         $this->value['vertical-align']   = 'middle';
@@ -167,8 +167,8 @@ class HTML2PDF_parsingCss
         // prepare somme values
         $border = $this->readBorder('solid 1px #000000');
         $units = array(
-            '1px' => $this->ConvertToMM('1px'),
-            '5px' => $this->ConvertToMM('5px'),
+            '1px' => $this->convertToMM('1px'),
+            '5px' => $this->convertToMM('5px'),
         );
 
 
@@ -271,7 +271,7 @@ class HTML2PDF_parsingCss
                 ),
                 'collapse' => false,
             );
-            $this->ConvertBackground('#FFFFFF', $this->value['background']);
+            $this->convertBackground('#FFFFFF', $this->value['background']);
         }
 
         $this->value['xc'] = null;
@@ -439,7 +439,7 @@ class HTML2PDF_parsingCss
         if (!isset($this->value['svg'])) {
             $this->value['svg'] = array(
                 'stroke'         => null,
-                'stroke-width'   => $this->ConvertToMM('1pt'),
+                'stroke-width'   => $this->convertToMM('1pt'),
                 'fill'           => null,
                 'fill-opacity'   => null,
             );
@@ -464,9 +464,9 @@ class HTML2PDF_parsingCss
         // adding the style from the tag
         $styles = array_merge($styles, $param['style']);
 
-        if (isset($styles['stroke']))        $this->value['svg']['stroke']       = $this->ConvertToColor($styles['stroke'], $res);
-        if (isset($styles['stroke-width']))  $this->value['svg']['stroke-width'] = $this->ConvertToMM($styles['stroke-width']);
-        if (isset($styles['fill']))          $this->value['svg']['fill']         = $this->ConvertToColor($styles['fill'], $res);
+        if (isset($styles['stroke']))        $this->value['svg']['stroke']       = $this->convertToColor($styles['stroke'], $res);
+        if (isset($styles['stroke-width']))  $this->value['svg']['stroke-width'] = $this->convertToMM($styles['stroke-width']);
+        if (isset($styles['fill']))          $this->value['svg']['fill']         = $this->convertToColor($styles['fill'], $res);
         if (isset($styles['fill-opacity']))  $this->value['svg']['fill-opacity'] = 1.*$styles['fill-opacity'];
 
         return $this->value['svg'];
@@ -569,7 +569,7 @@ class HTML2PDF_parsingCss
                     break;
 
                 case 'text-indent':
-                    $this->value['text-indent'] = $this->ConvertToMM($val);
+                    $this->value['text-indent'] = $this->convertToMM($val);
                     break;
 
                 case 'text-transform':
@@ -578,13 +578,13 @@ class HTML2PDF_parsingCss
                     break;
 
                 case 'font-size':
-                    $val = $this->ConvertToMM($val, $this->value['font-size']);
+                    $val = $this->convertToMM($val, $this->value['font-size']);
                     if ($val) $this->value['font-size'] = $val;
                     break;
 
                 case 'color':
                     $res = null;
-                    $this->value['color'] = $this->ConvertToColor($val, $res);
+                    $this->value['color'] = $this->convertToColor($val, $res);
                     if ($tagName=='hr') {
                         $this->value['border']['l']['color'] = $this->value['color'];
                         $this->value['border']['t']['color'] = $this->value['color'];
@@ -604,13 +604,13 @@ class HTML2PDF_parsingCss
                     break;
 
                 case 'width':
-                    $this->value['width'] = $this->ConvertToMM($val, $this->getLastWidth());
+                    $this->value['width'] = $this->convertToMM($val, $this->getLastWidth());
                     if ($this->value['width'] && substr($val, -1)=='%') $correctWidth=true;
                     $noWidth = false;
                     break;
 
                 case 'height':
-                    $this->value['height'] = $this->ConvertToMM($val, $this->getLastHeight());
+                    $this->value['height'] = $this->convertToMM($val, $this->getLastHeight());
                     break;
 
                 case 'line-height':
@@ -641,26 +641,26 @@ class HTML2PDF_parsingCss
                     }
                     $val = array_values($val);
                     $this->duplicateBorder($val);
-                    $this->value['padding']['t'] = $this->ConvertToMM($val[0], 0);
-                    $this->value['padding']['r'] = $this->ConvertToMM($val[1], 0);
-                    $this->value['padding']['b'] = $this->ConvertToMM($val[2], 0);
-                    $this->value['padding']['l'] = $this->ConvertToMM($val[3], 0);
+                    $this->value['padding']['t'] = $this->convertToMM($val[0], 0);
+                    $this->value['padding']['r'] = $this->convertToMM($val[1], 0);
+                    $this->value['padding']['b'] = $this->convertToMM($val[2], 0);
+                    $this->value['padding']['l'] = $this->convertToMM($val[3], 0);
                     break;
 
                 case 'padding-top':
-                    $this->value['padding']['t'] = $this->ConvertToMM($val, 0);
+                    $this->value['padding']['t'] = $this->convertToMM($val, 0);
                     break;
 
                 case 'padding-right':
-                    $this->value['padding']['r'] = $this->ConvertToMM($val, 0);
+                    $this->value['padding']['r'] = $this->convertToMM($val, 0);
                     break;
 
                 case 'padding-bottom':
-                    $this->value['padding']['b'] = $this->ConvertToMM($val, 0);
+                    $this->value['padding']['b'] = $this->convertToMM($val, 0);
                     break;
 
                 case 'padding-left':
-                    $this->value['padding']['l'] = $this->ConvertToMM($val, 0);
+                    $this->value['padding']['l'] = $this->convertToMM($val, 0);
                     break;
 
                 case 'margin':
@@ -679,26 +679,26 @@ class HTML2PDF_parsingCss
                     }
                     $val = array_values($val);
                     $this->duplicateBorder($val);
-                    $this->value['margin']['t'] = $this->ConvertToMM($val[0], 0);
-                    $this->value['margin']['r'] = $this->ConvertToMM($val[1], 0);
-                    $this->value['margin']['b'] = $this->ConvertToMM($val[2], 0);
-                    $this->value['margin']['l'] = $this->ConvertToMM($val[3], 0);
+                    $this->value['margin']['t'] = $this->convertToMM($val[0], 0);
+                    $this->value['margin']['r'] = $this->convertToMM($val[1], 0);
+                    $this->value['margin']['b'] = $this->convertToMM($val[2], 0);
+                    $this->value['margin']['l'] = $this->convertToMM($val[3], 0);
                     break;
 
                 case 'margin-top':
-                    $this->value['margin']['t'] = $this->ConvertToMM($val, 0);
+                    $this->value['margin']['t'] = $this->convertToMM($val, 0);
                     break;
 
                 case 'margin-right':
-                    $this->value['margin']['r'] = $this->ConvertToMM($val, 0);
+                    $this->value['margin']['r'] = $this->convertToMM($val, 0);
                     break;
 
                 case 'margin-bottom':
-                    $this->value['margin']['b'] = $this->ConvertToMM($val, 0);
+                    $this->value['margin']['b'] = $this->convertToMM($val, 0);
                     break;
 
                 case 'margin-left':
-                    $this->value['margin']['l'] = $this->ConvertToMM($val, 0);
+                    $this->value['margin']['l'] = $this->convertToMM($val, 0);
                     break;
 
                 case 'border':
@@ -751,7 +751,7 @@ class HTML2PDF_parsingCss
                     $val = preg_replace('/,[\s]+/', ',', $val);
                     $val = explode(' ', $val);
                     foreach ($val as $valK => $valV) {
-                            $val[$valK] = $this->ConvertToColor($valV, $res);
+                            $val[$valK] = $this->convertToColor($valV, $res);
                             if (!$res) {
                                 $val[$valK] = null;
                             }
@@ -766,32 +766,32 @@ class HTML2PDF_parsingCss
 
                 case 'border-top-color':
                     $res = false;
-                    $val = $this->ConvertToColor($val, $res);
+                    $val = $this->convertToColor($val, $res);
                     if ($res) $this->value['border']['t']['color'] = $val;
                     break;
 
                 case 'border-right-color':
                     $res = false;
-                    $val = $this->ConvertToColor($val, $res);
+                    $val = $this->convertToColor($val, $res);
                     if ($res) $this->value['border']['r']['color'] = $val;
                     break;
 
                 case 'border-bottom-color':
                     $res = false;
-                    $val = $this->ConvertToColor($val, $res);
+                    $val = $this->convertToColor($val, $res);
                     if ($res) $this->value['border']['b']['color'] = $val;
                     break;
 
                 case 'border-left-color':
                     $res = false;
-                    $val = $this->ConvertToColor($val, $res);
+                    $val = $this->convertToColor($val, $res);
                     if ($res) $this->value['border']['l']['color'] = $val;
                     break;
 
                 case 'border-width':
                     $val = explode(' ', $val);
                     foreach ($val as $valK => $valV) {
-                            $val[$valK] = $this->ConvertToMM($valV, 0);
+                            $val[$valK] = $this->convertToMM($valV, 0);
                     }
                     $this->duplicateBorder($val);
                     if ($val[0]) $this->value['border']['t']['width'] = $val[0];
@@ -801,22 +801,22 @@ class HTML2PDF_parsingCss
                     break;
 
                 case 'border-top-width':
-                    $val = $this->ConvertToMM($val, 0);
+                    $val = $this->convertToMM($val, 0);
                     if ($val) $this->value['border']['t']['width'] = $val;
                     break;
 
                 case 'border-right-width':
-                    $val = $this->ConvertToMM($val, 0);
+                    $val = $this->convertToMM($val, 0);
                     if ($val) $this->value['border']['r']['width'] = $val;
                     break;
 
                 case 'border-bottom-width':
-                    $val = $this->ConvertToMM($val, 0);
+                    $val = $this->convertToMM($val, 0);
                     if ($val) $this->value['border']['b']['width'] = $val;
                     break;
 
                 case 'border-left-width':
-                    $val = $this->ConvertToMM($val, 0);
+                    $val = $this->convertToMM($val, 0);
                     if ($val) $this->value['border']['l']['width'] = $val;
                     break;
 
@@ -829,7 +829,7 @@ class HTML2PDF_parsingCss
                     if (count($val)>2) {
                         break;
                     }
-                    $valH = $this->ConvertToRadius(trim($val[0]));
+                    $valH = $this->convertToRadius(trim($val[0]));
                     if (count($valH)<1 || count($valH)>4) {
                         break;
                     }
@@ -837,7 +837,7 @@ class HTML2PDF_parsingCss
                     if (!isset($valH[2])) $valH = array($valH[0], $valH[0], $valH[1], $valH[1]);
                     if (!isset($valH[3])) $valH[3] = $valH[1];
                     if (isset($val[1])) {
-                        $valV = $this->ConvertToRadius(trim($val[1]));
+                        $valV = $this->convertToRadius(trim($val[1]));
                         if (count($valV)<1 || count($valV)>4) {
                             break;
                         }
@@ -856,7 +856,7 @@ class HTML2PDF_parsingCss
                     break;
 
                 case 'border-top-left-radius':
-                    $val = $this->ConvertToRadius($val);
+                    $val = $this->convertToRadius($val);
                     if (count($val)<1 || count($val)>2) {
                         break;
                     }
@@ -864,7 +864,7 @@ class HTML2PDF_parsingCss
                     break;
 
                 case 'border-top-right-radius':
-                    $val = $this->ConvertToRadius($val);
+                    $val = $this->convertToRadius($val);
                     if (count($val)<1 || count($val)>2) {
                         break;
                     }
@@ -872,7 +872,7 @@ class HTML2PDF_parsingCss
                     break;
 
                 case 'border-bottom-right-radius':
-                    $val = $this->ConvertToRadius($val);
+                    $val = $this->convertToRadius($val);
                     if (count($val)<1 || count($val)>2) {
                         break;
                     }
@@ -880,7 +880,7 @@ class HTML2PDF_parsingCss
                     break;
 
                 case 'border-bottom-left-radius':
-                    $val = $this->ConvertToRadius($val);
+                    $val = $this->convertToRadius($val);
                     if (count($val)<1 || count($val)>2) {
                         break;
                     }
@@ -904,24 +904,24 @@ class HTML2PDF_parsingCss
                     break;
 
                 case 'background-color':
-                    $this->value['background']['color'] = $this->ConvertBackgroundColor($val);
+                    $this->value['background']['color'] = $this->convertBackgroundColor($val);
                     break;
 
                 case 'background-image':
-                    $this->value['background']['image'] = $this->ConvertBackgroundImage($val);
+                    $this->value['background']['image'] = $this->convertBackgroundImage($val);
                     break;
 
                 case 'background-position':
                     $res = null;
-                    $this->value['background']['position'] = $this->ConvertBackgroundPosition($val, $res);
+                    $this->value['background']['position'] = $this->convertBackgroundPosition($val, $res);
                     break;
 
                 case 'background-repeat':
-                    $this->value['background']['repeat'] = $this->ConvertBackgroundRepeat($val);
+                    $this->value['background']['repeat'] = $this->convertBackgroundRepeat($val);
                     break;
 
                 case 'background':
-                    $this->ConvertBackground($val, $this->value['background']);
+                    $this->convertBackground($val, $this->value['background']);
                     break;
 
                 case 'position':
@@ -982,7 +982,7 @@ class HTML2PDF_parsingCss
                     $this->value['width']-= $this->value['border']['l']['width'] + $this->value['border']['r']['width'];
                 }
                 if (in_array($tagName, array('th', 'td'))) {
-                    $this->value['width']-= $this->ConvertToMM(isset($param['cellspacing']) ? $param['cellspacing'] : '2px');
+                    $this->value['width']-= $this->convertToMM(isset($param['cellspacing']) ? $param['cellspacing'] : '2px');
                     $return = false;
                 }
                 if ($this->value['width']<0) $this->value['width']=0;
@@ -1002,10 +1002,10 @@ class HTML2PDF_parsingCss
             if ($this->value['padding']['t'])         $this->value['height'] += $this->value['padding']['t'];
         }
 
-        if ($this->value['top']!=null)      $this->value['top']     = $this->ConvertToMM($this->value['top'], $this->getLastHeight(true));
-        if ($this->value['bottom']!=null)   $this->value['bottom']  = $this->ConvertToMM($this->value['bottom'], $this->getLastHeight(true));
-        if ($this->value['left']!=null)     $this->value['left']    = $this->ConvertToMM($this->value['left'], $this->getLastWidth(true));
-        if ($this->value['right']!=null)    $this->value['right']   = $this->ConvertToMM($this->value['right'], $this->getLastWidth(true));
+        if ($this->value['top']!=null)      $this->value['top']     = $this->convertToMM($this->value['top'], $this->getLastHeight(true));
+        if ($this->value['bottom']!=null)   $this->value['bottom']  = $this->convertToMM($this->value['bottom'], $this->getLastHeight(true));
+        if ($this->value['left']!=null)     $this->value['left']    = $this->convertToMM($this->value['left'], $this->getLastWidth(true));
+        if ($this->value['right']!=null)    $this->value['right']   = $this->convertToMM($this->value['right'], $this->getLastWidth(true));
 
         if ($this->value['top'] && $this->value['bottom'] && $this->value['height'])    $this->value['bottom']  = null;
         if ($this->value['left'] && $this->value['right'] && $this->value['width'])     $this->value['right']   = null;
@@ -1023,7 +1023,7 @@ class HTML2PDF_parsingCss
     {
         $val = $this->value['line-height'];
         if ($val=='normal') $val = '108%';
-        return $this->ConvertToMM($val, $this->value['font-size']);
+        return $this->convertToMM($val, $this->value['font-size']);
     }
 
      /**
@@ -1129,28 +1129,34 @@ class HTML2PDF_parsingCss
     }
 
     /**
-     * R�cup�ration des propri�t�s CSS de la tag en cours
+     * get the CSS properties of the current tag
      *
-     * @return    array()        tableau des propri�t�s CSS
+     * @access protected
+     * @return array $styles
      */
     protected function getFromCSS()
     {
-        $styles = array();    // style � appliquer
-        $getit  = array();    // styles � r�cuperer
+        // styles to apply
+        $styles = array();
 
-        // identification des styles direct, et ceux des parents
+        // list of the selectors to get in the CSS files
+        $getit  = array();
+
+        // get the list of the selectors of each tags
         $lst = array();
         $lst[] = $this->value['id_lst'];
         for($i=count($this->table)-1; $i>=0; $i--) $lst[] = $this->table[$i]['id_lst'];
 
-        // identification des styles � r�cuperer
-        foreach($this->cssKeys as $key => $num)
-            if ($this->getReccursiveStyle($key, $lst))
+        // foreach selectors in the CSS files, verify if it match with the list of selectors
+        foreach($this->cssKeys as $key => $num) {
+            if ($this->getReccursiveStyle($key, $lst)) {
                 $getit[$key] = $num;
+            }
+        }
 
-        // si des styles sont � recuperer
+        // if we have selectors
         if (count($getit)) {
-            // on les r�cup�re, mais dans l'odre de d�finition, afin de garder les priorit�s
+            // get them, but in the definition order, because of priority
             asort($getit);
             foreach($getit as $key => $val) $styles = array_merge($styles, $this->css[$key]);
         }
@@ -1159,187 +1165,288 @@ class HTML2PDF_parsingCss
     }
 
     /**
-     * Identification des styles � r�cuperer, en fonction de la tag et de ses parents
+     * identify if the selector $key match with the list of tag selectors
      *
-     * @param  string      clef CSS � analyser
-     * @param  array()     tableau des styles direct, et ceux des parents
-     * @param  string      prochaine etape
-     * @return boolean     clef autoris�e ou non
+     * @access protected
+     * @param  string   $key CSS selector to analyse
+     * @param  array    $lst list of the selectors of each tags
+     * @param  string   $next next step of parsing the selector
+     * @return boolean
      */
     protected function getReccursiveStyle($key, $lst, $next = null)
     {
-        // si propchaine etape, on construit les valeurs
+        // if next step
         if ($next!==null) {
-            if ($next) $key = trim(substr($key, 0, -strlen($next))); // on el�ve cette etape
-            unset($lst[0]);
-            if (!count($lst)) return false; // pas d'etape possible
-            $lst = array_values($lst);
+            // we remove this step
+            if ($next) $key = trim(substr($key, 0, -strlen($next)));
+            array_shift($lst);
+
+            // if no more step to identify => return false
+            if (!count($lst)) {
+                return false;
+            }
         }
 
-        // pour chaque style direct possible de l'etape en cours
-        foreach ($lst[0] as $nom) {
-            if ($key==$nom) return true; // si la clef conrrespond => ok
-            if (substr($key, -strlen(' '.$nom))==' '.$nom && $this->getReccursiveStyle($key, $lst, $nom)) return true; // si la clef est la fin, on analyse ce qui pr�c�de
+        // for each selector of the current step
+        foreach ($lst[0] as $name) {
+            // if selector = key => ok
+            if ($key==$name) {
+                return true;
+            }
+
+            // if the end of the key = the selector and the next step is ok => ok
+            if (substr($key, -strlen(' '.$name))==' '.$name && $this->getReccursiveStyle($key, $lst, $name)) {
+                return true;
+            }
         }
 
-        // si on est pas � la premiere etape, on doit analyse toutes les sous etapes
-        if ($next!==null && $this->getReccursiveStyle($key, $lst, '')) return true;
+        // if we are not in the first step, we analyse the sub steps (the pareng tag of the current tag)
+        if ($next!==null && $this->getReccursiveStyle($key, $lst, '')) {
+            return true;
+        }
 
-        // aucun style trouv�
+        // no corresponding found
         return false;
     }
 
     /**
-     * Analyse d'une propri�t� Border
+     * Analyse a border
      *
-     * @param   string   propri�t� border
-     * @return  array()  propri�t� d�cod�e
+     * @access  public
+     * @param   string $css css border properties
+     * @return  array  border properties
      */
-    public function readBorder($val)
+    public function readBorder($css)
     {
+        // border none
         $none = array('type' => 'none', 'width' => 0, 'color' => array(0, 0, 0));
 
-        // valeurs par d�fault
+        // default value
         $type  = 'solid';
-        $width = $this->ConvertToMM('1pt');
+        $width = $this->convertToMM('1pt');
         $color = array(0, 0, 0);
 
-        // nettoyage des valeurs
-        $val = explode(' ', $val);
-        foreach ($val as $k => $v) {
+        // clean up the values
+        $css = explode(' ', $css);
+        foreach ($css as $k => $v) {
             $v = trim($v);
-            if ($v) $val[$k] = $v;
-            else    unset($val[$k]);
+            if ($v) $css[$k] = $v;
+            else    unset($css[$k]);
         }
-        $val = array_values($val);
-        // identification des valeurs
-        $res = null;
-        foreach ($val as $key) {
-            if ($key=='none' || $key=='hidden') return $none;
+        $css = array_values($css);
 
-            if ($this->ConvertToMM($key)!==null)
-                $width = $this->ConvertToMM($key);
-            else if (in_array($key, array('solid', 'dotted', 'dashed', 'double')))
-                $type = $key;
-            else
-            {
-                $tmp = $this->ConvertToColor($key, $res);
+        // read the values
+        $res = null;
+        foreach ($css as $value) {
+
+            // if no border => return none
+            if ($value=='none' || $value=='hidden') {
+                return $none;
+            }
+
+            // try to convert the value as a distance
+            $tmp = $this->convertToMM($value);
+
+            // if the convert is ok => it is a width
+            if ($tmp!==null) {
+                $width = $tmp;
+            // else, it could be the type
+            } else if (in_array($value, array('solid', 'dotted', 'dashed', 'double'))) {
+                $type = $value;
+            // else, it could be the color
+            } else {
+                $tmp = $this->convertToColor($value, $res);
                 if ($res) $color = $tmp;
             }
         }
+
+        // if no witdh => return none
         if (!$width) return $none;
+
+        // return the border properties
         return array('type' => $type, 'width' => $width, 'color' => $color);
     }
 
+    /**
+     * duplicate the borders if needed
+     *
+     * @access protected
+     * @param  &array $val
+     */
     protected function duplicateBorder(&$val)
     {
+        // 1 value => L => RTB
         if (count($val)==1) {
             $val[1] = $val[0];
             $val[2] = $val[0];
             $val[3] = $val[0];
+        // 2 values => L => R & T => B
         } else if (count($val)==2) {
             $val[2] = $val[0];
             $val[3] = $val[1];
+        // 3 values => T => B
         } else if (count($val)==3) {
             $val[3] = $val[1];
         }
     }
 
-    public function ConvertBackground($stl, &$res)
+    /**
+     * Analyse a background
+     *
+     * @access public
+     * @param  string $css css background properties
+     * @param  &array $value parsed values (by reference, because, ther is a legacy of the parent CSS properties)
+     */
+    public function convertBackground($css, &$value)
     {
-        // Image
+        // is there a image ?
         $text = '/url\(([^)]*)\)/isU';
-        if (preg_match($text, $stl, $match)) {
-            $res['image'] = $this->ConvertBackgroundImage($match[0]);
-            $stl = preg_replace($text, '', $stl);
-            $stl = preg_replace('/[\s]+/', ' ', $stl);
+        if (preg_match($text, $css, $match)) {
+            // get the image
+            $value['image'] = $this->convertBackgroundImage($match[0]);
+
+            // remove if from the css properties
+            $css = preg_replace($text, '', $css);
+            $css = preg_replace('/[\s]+/', ' ', $css);
         }
 
-        // protection des espaces
-        $stl = preg_replace('/,[\s]+/', ',', $stl);
-        $lst = explode(' ', $stl);
+        // protect some spaces
+        $css = preg_replace('/,[\s]+/', ',', $css);
 
+        // explode the values
+        $css = explode(' ', $css);
+
+        // background position to parse
         $pos = '';
-        foreach ($lst as $val) {
-            $ok = false;
-            $color = $this->ConvertToColor($val, $ok);
 
+        // foreach value
+        foreach ($css as $val) {
+            // try to parse the value as a color
+            $ok = false;
+            $color = $this->convertToColor($val, $ok);
+
+            // if ok => it is a color
             if ($ok) {
-                $res['color'] = $color;
+                $value['color'] = $color;
+            // else if transparent => no coloàr
             } else if ($val=='transparent') {
-                $res['color'] = null;
+                $value['color'] = null;
+            // else
             } else {
-                $repeat = $this->ConvertBackgroundRepeat($val);
+                // try to parse the value as a repeat
+                $repeat = $this->convertBackgroundRepeat($val);
+
+                // if ok => it is repeat
                 if ($repeat) {
-                    $res['repeat'] = $repeat;
+                    $value['repeat'] = $repeat;
+                // else => it could only be a position
                 } else {
                     $pos.= ($pos ? ' ' : '').$val;
                 }
             }
         }
+
+        // if we have a position to parse
         if ($pos) {
-            $pos = $this->ConvertBackgroundPosition($pos, $ok);
-            if ($ok) $res['position'] = $pos;
+            // try to read it
+            $pos = $this->convertBackgroundPosition($pos, $ok);
+            if ($ok) $value['position'] = $pos;
         }
     }
 
-    public function ConvertBackgroundColor($val)
+    /**
+     * parse a background color
+     *
+     * @access public
+     * @param  string $css
+     * @return string $value
+     */
+    public function convertBackgroundColor($css)
     {
         $res = null;
-        if ($val=='transparent') return null;
-        else                     return $this->ConvertToColor($val, $res);
+        if ($css=='transparent') return null;
+        else                     return $this->convertToColor($css, $res);
     }
 
-    public function ConvertBackgroundImage($val)
+    /**
+     * parse a background image
+     *
+     * @access public
+     * @param  string $css
+     * @return string $value
+     */
+    public function convertBackgroundImage($css)
     {
-        if ($val=='none')
+        if ($css=='none')
             return null;
-        else if (preg_match('/^url\(([^)]*)\)$/isU', $val, $match))
+        else if (preg_match('/^url\(([^)]*)\)$/isU', $css, $match))
             return $match[1];
         else
             return null;
     }
 
-    public function ConvertBackgroundPosition($val, &$res)
+    /**
+     * parse a background position
+     *
+     * @access public
+     * @param  string $css
+     * @param  &boolean $res flag if conver is ok or not
+     * @return array ($x, $y)
+     */
+    public function convertBackgroundPosition($css, &$res)
     {
-        $val = explode(' ', $val);
-        if (count($val)<2) {
-            if (!$val[0]) return null;
-            $val[1] = 'center';
-        }
-        if (count($val)>2) return null;
+        // init the res
+        $res = false;
 
+        // explode the value
+        $css = explode(' ', $css);
+
+        // we must have 2 values. if 0 or >2 : error. if 1 => put center for 2
+        if (count($css)<2) {
+            if (!$css[0]) return null;
+            $css[1] = 'center';
+        }
+        if (count($css)>2) return null;
+
+        // prepare the values
         $x = 0;
         $y = 0;
         $res = true;
 
-        if ($val[0]=='left')        $x = '0%';
-        else if ($val[0]=='center') $x = '50%';
-        else if ($val[0]=='right')  $x = '100%';
-        else if ($val[0]=='top')    $y = '0%';
-        else if ($val[0]=='bottom') $y = '100%';
-        else if (preg_match('/^[-]?[0-9\.]+%$/isU', $val[0])) $x = $val[0];
-        else if ($this->ConvertToMM($val[0])) $x = $this->ConvertToMM($val[0]);
+        // convert the first value
+        if ($css[0]=='left')        $x = '0%';
+        else if ($css[0]=='center') $x = '50%';
+        else if ($css[0]=='right')  $x = '100%';
+        else if ($css[0]=='top')    $y = '0%';
+        else if ($css[0]=='bottom') $y = '100%';
+        else if (preg_match('/^[-]?[0-9\.]+%$/isU', $css[0])) $x = $css[0];
+        else if ($this->convertToMM($css[0])) $x = $this->convertToMM($css[0]);
         else $res = false;
 
-        if ($val[1]=='left')        $x = '0%';
-        else if ($val[1]=='right')  $x = '100%';
-        else if ($val[1]=='top')    $y = '0%';
-        else if ($val[1]=='center') $y = '50%';
-        else if ($val[1]=='bottom') $y = '100%';
-        else if (preg_match('/^[-]?[0-9\.]+%$/isU', $val[1])) $y = $val[1];
-        else if ($this->ConvertToMM($val[1])) $y = $this->ConvertToMM($val[1]);
+        // convert the second value
+        if ($css[1]=='left')        $x = '0%';
+        else if ($css[1]=='right')  $x = '100%';
+        else if ($css[1]=='top')    $y = '0%';
+        else if ($css[1]=='center') $y = '50%';
+        else if ($css[1]=='bottom') $y = '100%';
+        else if (preg_match('/^[-]?[0-9\.]+%$/isU', $css[1])) $y = $css[1];
+        else if ($this->convertToMM($css[1])) $y = $this->convertToMM($css[1]);
         else $res = false;
 
-        $val[0] = $x;
-        $val[1] = $y;
-
-        return $val;
+        // return the values
+        return array($x, $y);
     }
 
-    public function ConvertBackgroundRepeat($val)
+    /**
+     * parse a background repeat
+     *
+     * @access public
+     * @param  string $css
+     * @return string $value
+     */
+    public function convertBackgroundRepeat($css)
     {
-        switch($val)
+        switch($css)
         {
             case 'repeat':
                 return array(true, true);
@@ -1352,220 +1459,290 @@ class HTML2PDF_parsingCss
         }
         return null;
     }
-     /**
-     * Convertir une longueur en mm
-     *
-     * @param  string   longueur, avec unit�, � convertir
-     * @param  float    longueur du parent
-     * @return float    longueur exprim�e en mm
-     */
-    public function ConvertToMM($val, $old=0.)
-    {
-        $val = trim($val);
-        if (preg_match('/^[0-9\.\-]+$/isU', $val))        $val.= 'px';
-        if (preg_match('/^[0-9\.\-]+px$/isU', $val))      $val = 25.4/96. * str_replace('px', '', $val);
-        else if (preg_match('/^[0-9\.\-]+pt$/isU', $val)) $val = 25.4/72. * str_replace('pt', '', $val);
-        else if (preg_match('/^[0-9\.\-]+in$/isU', $val)) $val = 25.4 * str_replace('in', '', $val);
-        else if (preg_match('/^[0-9\.\-]+mm$/isU', $val)) $val = 1.*str_replace('mm', '', $val);
-        else if (preg_match('/^[0-9\.\-]+%$/isU', $val))  $val = 1.*$old*str_replace('%', '', $val)/100.;
-        else                                              $val = null;
 
-        return $val;
+     /**
+     * convert a distance to mm
+     *
+     * @access public
+     * @param  string $css distance to convert
+     * @param  float  $old parent distance
+     * @return float  $value
+     */
+    public function convertToMM($css, $old=0.)
+    {
+        $css = trim($css);
+        if (preg_match('/^[0-9\.\-]+$/isU', $css))        $css.= 'px';
+        if (preg_match('/^[0-9\.\-]+px$/isU', $css))      $css = 25.4/96. * str_replace('px', '', $css);
+        else if (preg_match('/^[0-9\.\-]+pt$/isU', $css)) $css = 25.4/72. * str_replace('pt', '', $css);
+        else if (preg_match('/^[0-9\.\-]+in$/isU', $css)) $css = 25.4 * str_replace('in', '', $css);
+        else if (preg_match('/^[0-9\.\-]+mm$/isU', $css)) $css = 1.*str_replace('mm', '', $css);
+        else if (preg_match('/^[0-9\.\-]+%$/isU', $css))  $css = 1.*$old*str_replace('%', '', $css)/100.;
+        else                                              $css = null;
+
+        return $css;
     }
 
-    public function ConvertToRadius($val)
+    /**
+     * convert a css radius
+     *
+     * @access public
+     * @param  string $css
+     * @return float  $value
+     */
+    public function convertToRadius($css)
     {
-        $val = explode(' ', $val);
-        foreach ($val as $k => $v) {
+        // explode the value
+        $css = explode(' ', $css);
+
+        foreach ($css as $k => $v) {
             $v = trim($v);
             if ($v) {
-                $v = $this->ConvertToMM($v, 0);
-                if ($v!==null)
-                    $val[$k] = $v;
-                else
-                    unset($val[$k]);
+                $v = $this->convertToMM($v, 0);
+                if ($v!==null) {
+                    $css[$k] = $v;
+                } else {
+                    unset($css[$k]);
+                }
+            } else {
+                unset($css[$k]);
             }
-            else
-                unset($val[$k]);
         }
-        return array_values($val);
+
+        return array_values($css);
     }
 
-     /**
-     * D�composition d'un code couleur HTML
+    /**
+     * convert a css color
      *
-     * @param  string          couleur au format CSS
-     * @return array(r, v, b)  couleur exprim� par ses comporantes R, V, B, de 0 � 255.
+     * @access public
+     * @param  string $css
+     * @param  &boolean $res
+     * @return array (r,g, b)
      */
-    public function ConvertToColor($val, &$res)
+    public function convertToColor($css, &$res)
     {
-
-        $val = trim($val);
+        // prepare the value
+        $css = trim($css);
         $res = true;
 
-        if (strtolower($val)=='transparent') return array(null, null, null);
-        if (isset($this->_htmlColor[strtolower($val)])) {
-            $val = $this->_htmlColor[strtolower($val)];
-            $r = floatVal(hexdec(substr($val, 0, 2)));
-            $v = floatVal(hexdec(substr($val, 2, 2)));
-            $b = floatVal(hexdec(substr($val, 4, 2)));
-            $col = array($r, $v, $b);
-        } elseif (preg_match('/^#[0-9A-Fa-f]{6}$/isU', $val)) {
-            $r = floatVal(hexdec(substr($val, 1, 2)));
-            $v = floatVal(hexdec(substr($val, 3, 2)));
-            $b = floatVal(hexdec(substr($val, 5, 2)));
-            $col = array($r, $v, $b);
-        } elseif (preg_match('/^#[0-9A-F]{3}$/isU', $val)) {
-            $r = floatVal(hexdec(substr($val, 1, 1).substr($val, 1, 1)));
-            $v = floatVal(hexdec(substr($val, 2, 1).substr($val, 2, 1)));
-            $b = floatVal(hexdec(substr($val, 3, 1).substr($val, 3, 1)));
-            $col = array($r, $v, $b);
-        } elseif (preg_match('/rgb\([\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*\)/isU', $val, $match)) {
-            $r = $this->ConvertSubColor($match[1]);
-            $v = $this->ConvertSubColor($match[2]);
-            $b = $this->ConvertSubColor($match[3]);
-            $col = array($r*255., $v*255., $b*255.);
-        } elseif (preg_match('/cmyk\([\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*\)/isU', $val, $match)) {
-            $c = $this->ConvertSubColor($match[1]);
-            $m = $this->ConvertSubColor($match[2]);
-            $y = $this->ConvertSubColor($match[3]);
-            $k = $this->ConvertSubColor($match[4]);
-            $col = array($c*100., $m*100., $y*100., $k*100.);
-        } else {
-            $col = array(0., 0., 0.);
-            $res = false;
+        // if transparent => return null
+        if (strtolower($css)=='transparent') return array(null, null, null);
+
+        // HTML color
+        if (isset($this->_htmlColor[strtolower($css)])) {
+            $css = $this->_htmlColor[strtolower($css)];
+            $r = floatVal(hexdec(substr($css, 0, 2)));
+            $v = floatVal(hexdec(substr($css, 2, 2)));
+            $b = floatVal(hexdec(substr($css, 4, 2)));
+            return array($r, $v, $b);
         }
 
-        return $col;
+        // like #FFFFFF
+        if (preg_match('/^#[0-9A-Fa-f]{6}$/isU', $css)) {
+            $r = floatVal(hexdec(substr($css, 1, 2)));
+            $v = floatVal(hexdec(substr($css, 3, 2)));
+            $b = floatVal(hexdec(substr($css, 5, 2)));
+            return array($r, $v, $b);
+        }
+
+        // like #FFF
+        if (preg_match('/^#[0-9A-F]{3}$/isU', $css)) {
+            $r = floatVal(hexdec(substr($css, 1, 1).substr($css, 1, 1)));
+            $v = floatVal(hexdec(substr($css, 2, 1).substr($css, 2, 1)));
+            $b = floatVal(hexdec(substr($css, 3, 1).substr($css, 3, 1)));
+            return array($r, $v, $b);
+        }
+
+        // like rgb(100, 100, 100)
+        if (preg_match('/rgb\([\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*\)/isU', $css, $match)) {
+            $r = $this->_convertSubColor($match[1]);
+            $v = $this->_convertSubColor($match[2]);
+            $b = $this->_convertSubColor($match[3]);
+            return array($r*255., $v*255., $b*255.);
+        }
+
+        // like cmyk(100, 100, 100, 100)
+        if (preg_match('/cmyk\([\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*\)/isU', $css, $match)) {
+            $c = $this->_convertSubColor($match[1]);
+            $m = $this->_convertSubColor($match[2]);
+            $y = $this->_convertSubColor($match[3]);
+            $k = $this->_convertSubColor($match[4]);
+            return array($c*100., $m*100., $y*100., $k*100.);
+        }
+
+        $res = false;
+        return array(0., 0., 0.);
     }
 
-    protected function ConvertSubColor($c)
+    /**
+     * color value to convert
+     *
+     * @access protected
+     * @param  string $c
+     * @return float $c 0.->1.
+     */
+    protected function _convertSubColor($c)
     {
-        if (substr($c, -1)=='%') $c = floatVal(substr($c, 0, -1))/100.;
-        else
-        {
+        if (substr($c, -1)=='%') {
+            $c = floatVal(substr($c, 0, -1))/100.;
+        } else {
             $c = floatVal($c);
             if ($c>1) $c = $c/255.;
         }
+
         return $c;
     }
 
     /**
-     * Analyser une feuille de style
+     * read a css content
      *
-     * @param    string code CSS
-     * @return    null
+     * @access protected
+     * @param  &string $code
      */
     protected function analyseStyle(&$code)
     {
-        // on remplace tous les espaces, tab, \r, \n, par des espaces uniques
+        // clean the spaces
         $code = preg_replace('/[\s]+/', ' ', $code);
 
-        // on enl�ve les commentaires
+        // remove the comments
         $code = preg_replace('/\/\*.*?\*\//s', '', $code);
 
-        // on analyse chaque style
+        // split each CSS code "selector { value }"
         preg_match_all('/([^{}]+){([^}]*)}/isU', $code, $match);
-        for ($k=0; $k<count($match[0]); $k++) {
-            // noms
-            $noms = strtolower(trim($match[1][$k]));
 
-            // style, s�par� par des; => on remplie le tableau correspondant
+        // for each CSS code
+        for ($k=0; $k<count($match[0]); $k++) {
+
+            // selectors
+            $names = strtolower(trim($match[1][$k]));
+
+            // css style
             $styles = trim($match[2][$k]);
+
+            // explode each value
             $styles = explode(';', $styles);
-            $stl = array();
+
+            // parse each value
+            $css = array();
             foreach ($styles as $style) {
                 $tmp = explode(':', $style);
                 if (count($tmp)>1) {
                     $cod = $tmp[0]; unset($tmp[0]); $tmp = implode(':', $tmp);
-                    $stl[trim(strtolower($cod))] = trim($tmp);
+                    $css[trim(strtolower($cod))] = trim($tmp);
                 }
             }
 
-            // d�composition des noms par les ,
-            $noms = explode(',', $noms);
-            foreach ($noms as $nom) {
-                $nom = trim($nom);
-                // Si il a une fonction sp�cifique, comme :hover => on zap
-                if (strpos($nom, ':')!==false) continue;
-                if (!isset($this->css[$nom]))
-                    $this->css[$nom] = $stl;
+            // explode the names
+            $names = explode(',', $names);
+
+            // save the values for each names
+            foreach ($names as $name) {
+                // clean the name
+                $name = trim($name);
+
+                // if a selector with somethink lige :hover => continue
+                if (strpos($name, ':')!==false) continue;
+
+                // save the value
+                if (!isset($this->css[$name]))
+                    $this->css[$name] = $css;
                 else
-                    $this->css[$nom] = array_merge($this->css[$nom], $stl);
+                    $this->css[$name] = array_merge($this->css[$name], $css);
 
             }
         }
 
+        // get he list of the keys
         $this->cssKeys = array_flip(array_keys($this->css));
     }
 
     /**
-     * Extraction des feuille de style du code HTML
+     * Extract the css files from a html code
      *
-     * @param   string  code HTML
-     * @return  null
+     * @access public
+     * @param  string   &$html
      */
     public function readStyle(&$html)
     {
+        // the CSS content
         $style = ' ';
 
-        // extraction des tags link, et suppression de celles-ci dans le code HTML
+        // extract the link tags, and remove them in the html code
         preg_match_all('/<link([^>]*)>/isU', $html, $match);
         $html = preg_replace('/<link[^>]*>/isU', '', $html);
         $html = preg_replace('/<\/link[^>]*>/isU', '', $html);
 
-        // analyse de chaque tag
+        // analyse each link tag
         foreach ($match[1] as $code) {
             $tmp = array();
-            // lecture des param�tres du type nom=valeur
+
+            // read the attributes name=value
             $prop = '([a-zA-Z0-9_]+)=([^"\'\s>]+)';
             preg_match_all('/'.$prop.'/is', $code, $match);
-            for($k=0; $k<count($match[0]); $k++)
+            for($k=0; $k<count($match[0]); $k++) {
                 $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
+            }
 
-            // lecture des param�tres du type nom="valeur"
+            // read the attributes name="value"
             $prop = '([a-zA-Z0-9_]+)=["]([^"]*)["]';
             preg_match_all('/'.$prop.'/is', $code, $match);
-            for($k=0; $k<count($match[0]); $k++)
+            for($k=0; $k<count($match[0]); $k++) {
                 $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
+            }
 
-            // lecture des param�tres du type nom='valeur'
+            // read the attributes name='value'
             $prop = "([a-zA-Z0-9_]+)=[']([^']*)[']";
             preg_match_all('/'.$prop.'/is', $code, $match);
-            for($k=0; $k<count($match[0]); $k++)
+            for($k=0; $k<count($match[0]); $k++) {
                 $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
+            }
 
-            // si de type text/css => on garde
+            // if type text/css => we keep it
             if (isset($tmp['type']) && strtolower($tmp['type'])=='text/css' && isset($tmp['href'])) {
-                $content = @file_get_contents($tmp['href']);
+
+                // get the href
                 $url = $tmp['href'];
+
+                // get the content of the css file
+                $content = @file_get_contents($url);
+
+                // if "http://" in the url
                 if (strpos($url, 'http://')!==false) {
+
+                    // get the domain "http://xxx/"
                     $url = str_replace('http://', '', $url);
                     $url = explode('/', $url);
                     $urlMain = 'http://'.$url[0].'/';
+
+                    // get the absolute url of the path
                     $urlSelf = $url; unset($urlSelf[count($urlSelf)-1]); $urlSelf = 'http://'.implode('/', $urlSelf).'/';
 
+                    // adapt the url in the css content
                     $content = preg_replace('/url\(([^\\\\][^)]*)\)/isU', 'url('.$urlSelf.'$1)', $content);
                     $content = preg_replace('/url\((\\\\[^)]*)\)/isU', 'url('.$urlMain.'$1)', $content);
                 } else {
-                    // @todo
+                    // @todo correction on url in absolute on a local css content
                     // $content = preg_replace('/url\(([^)]*)\)/isU', 'url('.dirname($url).'/$1)', $content);
                 }
+
+                // add to the CSS content
                 $style.= $content."\n";
             }
         }
 
-        // extraction des tags style, et suppression de celles-ci dans le code HTML
+        // extract the style tags des tags style, and remove them in the html code
         preg_match_all('/<style[^>]*>(.*)<\/style[^>]*>/isU', $html, $match);
         $html = preg_replace('/<style[^>]*>(.*)<\/style[^>]*>/isU', '', $html);
 
-        // analyse de chaque tag
+        // analyse each style tags
         foreach ($match[1] as $code) {
+            // add to the CSS content
             $code = str_replace('<!--', '', $code);
             $code = str_replace('-->', '', $code);
             $style.= $code."\n";
         }
 
+        //analyse the css content
         $this->analyseStyle($style);
     }
 }

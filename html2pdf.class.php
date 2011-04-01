@@ -2280,7 +2280,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 $background['right']  = $this->parsingCss->ConvertToMM($background['right'], $this->pdf->getW());
 
                 $res = false;
-                $background['color']    = isset($param['backcolor'])    ? $this->parsingCss->ConvertToColor($param['backcolor'], $res) : null;
+                $background['color']    = isset($param['backcolor'])    ? $this->parsingCss->convertToColor($param['backcolor'], $res) : null;
                 if (!$res) $background['color'] = null;
 
                 $this->parsingCss->save();
