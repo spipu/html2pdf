@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Librairy - MyPDF class
+ * HTML2PDF Librairy - myPdf class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -9,10 +9,10 @@
  * @version   4.02
  */
 
-require_once(dirname(__FILE__).'/tcpdf_config_html2pdf.php');
+require_once(dirname(__FILE__).'/tcpdfConfig.php');
 require_once(dirname(__FILE__).'/../_tcpdf/tcpdf.php');
 
-class MyPDF extends TCPDF
+class HTML2PDF_myPdf extends TCPDF
 {
     protected $_footerParam = array();
     protected $_transf      = array();
@@ -126,7 +126,7 @@ class MyPDF extends TCPDF
      * after cloning a object, we does not want to clone all the front informations
      * because it take a lot a time and a lot of memory => we use reference
      *
-     * @param &MyPDF object
+     * @param &HTML2PDF_myPdf object
      * @access public
      */
     public function cloneFontFrom(&$pdf)
@@ -887,8 +887,7 @@ class MyPDF extends TCPDF
 
                 // Unknown Path
                 default:
-                    echo 'MyPDF Path Error : <b>'.$action[0].'</b> unkown !!!';
-                    exit;
+                    throw new HTML2PDF_exception(0, 'SVG Path Error : ['.$action[0].'] unkown');
             }
 
             // save the last point

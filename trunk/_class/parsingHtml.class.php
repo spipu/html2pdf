@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Librairy - parsingHTML class
+ * HTML2PDF Librairy - parsingHtml class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -9,13 +9,13 @@
  * @version     4.02
  */
 
-class parsingHTML
+class HTML2PDF_parsingHtml
 {
-    protected    $_html    = '';        // HTML code to parse
-    protected    $_num     = 0;         // table number
-    protected    $_level   = 0;         // table level
-    protected    $_encoding = '';       // encoding
-    public       $code     = array();   // parsed HTML codfe
+    protected    $_html     = '';        // HTML code to parse
+    protected    $_num      = 0;         // table number
+    protected    $_level    = 0;         // table level
+    protected    $_encoding = '';        // encoding
+    public       $code      = array();   // parsed HTML codfe
 
     const HTML_TAB = '        ';
 

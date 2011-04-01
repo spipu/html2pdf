@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Librairy - styleHTML class
+ * HTML2PDF Librairy - parsingCss class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -9,7 +9,7 @@
  * @version     4.02
  */
 
-class styleHTML
+class HTML2PDF_parsingCss
 {
     protected $_pdf         = null;    // reference to the pdf object
     protected $_htmlColor   = array(); // list of the HTML colors
@@ -24,7 +24,7 @@ class styleHTML
     /**
      * Constructor
      *
-     * @param  &MyPDF reference to the PDF $object
+     * @param  &HTML2PDF_myPdf reference to the PDF $object
      * @access public
      */
     public function __construct(&$pdf)
