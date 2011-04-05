@@ -7,6 +7,19 @@
         $url.= $_SERVER['REQUEST_URI'];
     }
 ?>
+<style type="text/css">
+li
+{ font-size: 10pt; }
+
+input, textarea, select
+{
+    border: dashed 1mm red;
+    background: #FCC;
+    color: #400;
+    text-align: left;
+    font-size: 11pt;
+}
+</style>
 <page footer="form">
     <h1>Test de formulaire</h1><br>
     <br>
