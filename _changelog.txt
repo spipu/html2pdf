@@ -1,3 +1,10 @@
+@todo :
+    personnalisé l'aspect des Input / Select / Textarea
+    verification du div rotate si plusieurs lignes
+    margins pour blokquote
+    utilier de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
+    pb de marge pour les <p> : http://yaronet.com/posts.php?s=138739
+
 4.02 (2011-04-01)
     ATTENTION : beaucoup de changements dans la structure du projet. version 3.xx abandonnée
     uniformisation des fichiers du projet (standard Zend)
