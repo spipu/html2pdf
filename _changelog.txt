@@ -13,7 +13,8 @@
     correction sur la gestion des tables
     correction sur la lecture des path des SVG
     premiere version de text-align:justify
-    correction sur la gestion de blockquote
+    correction sur la gestion de la balise BLOCKQUOTE
+    correction sur la gestion de la balie P
 
 3.30 / 4.01 (2010-05-07)
     correction sur la gestion des textes

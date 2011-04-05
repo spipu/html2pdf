@@ -68,6 +68,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
         protected $_isAfterFloat     = false;       // flag : is just after a float
         protected $_isInForm         = false;       // flag : is in a float. false / action of the form
         protected $_isInLink         = '';          // flag : is in a link. empty / href of the link
+        protected $_isInParagraph    = false;       // flag : is in a paragraph
         protected $_isForOneLine     = false;       // flag : in a specific sub html2pdf to have the height of the next line
 
         protected $_maxX             = 0;           // maximum X of the current zone
@@ -576,7 +577,11 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             // set the float Margins
             $this->_pageMarges = array();
-            $this->_pageMarges[floor($this->_margeTop*100)] = array($this->_margeLeft, $this->pdf->getW()-$this->_margeRight);
+            if ($this->_isInParagraph!==false) {
+                $this->_pageMarges[floor($this->_margeTop*100)] = array($this->_isInParagraph[0], $this->pdf->getW()-$this->_isInParagraph[1]);
+            } else {
+                $this->_pageMarges[floor($this->_margeTop*100)] = array($this->_margeLeft, $this->pdf->getW()-$this->_margeRight);
+            }
         }
 
         /**
@@ -4085,7 +4090,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->parsingCss->setPosition();
             $this->parsingCss->fontSet();
 
-             // cancel the effetcs of the setPosition
+             // cancel the effects of the setPosition
             $this->pdf->setXY($this->pdf->getX()-$this->parsingCss->value['margin']['l'], $this->pdf->getY()-$this->parsingCss->value['margin']['t']);
 
             list($mL, $mR) = $this->_getMargins($this->pdf->getY());
@@ -4101,6 +4106,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 $this->_pageMarges[floor($y*100)] = array($mL, $this->pdf->getW()-$mR);
             }
             $this->_makeBreakLine($this->parsingCss->value['margin']['t']+$this->parsingCss->value['padding']['t']);
+            $this->_isInParagraph = array($mL, $mR);
             return true;
         }
 
@@ -4116,6 +4122,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             if ($this->_isForOneLine) return false;
 
             if ($this->_maxH) $this->_tag_open_BR(array());
+            $this->_isInParagraph = false;
             $this->_loadMargin();
             $h = $this->parsingCss->value['margin']['b']+$this->parsingCss->value['padding']['b'];
 
