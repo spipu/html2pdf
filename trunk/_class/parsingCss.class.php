@@ -210,6 +210,13 @@ class HTML2PDF_parsingCss
             $this->value['margin'] = array('t'=>0,'r'=>0,'b'=>0,'l'=>0);
         }
 
+        if (in_array($tagName, array('input', 'select', 'textarea'))) {
+            $this->value['border']['t'] = null;
+            $this->value['border']['r'] = null;
+            $this->value['border']['b'] = null;
+            $this->value['border']['l'] = null;
+        }
+
         if ($tagName=='p') {
             $this->value['margin']['t'] = null;
             $this->value['margin']['b'] = null;
@@ -410,6 +417,45 @@ class HTML2PDF_parsingCss
         // save the new position
         $this->_pdf->setXY($this->value['x'], $this->value['y']);
     }
+    
+     /**
+     * Analise the CSS style to convert it into Form style
+     *
+     * @access public
+     * @param  array    styles
+     */
+    public function getFormStyle()
+    {
+        $prop = array();
+
+        $prop['alignment'] = $this->value['text-align'];
+
+        if (isset($this->value['background']['color']) && is_array($this->value['background']['color'])) {
+            $prop['fillColor'] = $this->value['background']['color'];
+        }
+
+        if (isset($this->value['border']['t']['color'])) {
+            $prop['strokeColor'] = $this->value['border']['t']['color'];
+        }
+
+        if (isset($this->value['border']['t']['width'])) {
+            $prop['lineWidth'] = $this->value['border']['t']['width'];
+        }
+
+        if (isset($this->value['border']['t']['type'])) {
+            $prop['borderStyle'] = $this->value['border']['t']['type'];
+        }
+
+        if (!empty($this->value['color'])) {
+            $prop['textColor'] = $this->value['color'];
+        }
+
+        if (!empty($this->value['font-size'])) {
+            $prop['textSize'] = $this->value['font-size'];
+        }
+
+        return $prop;
+    }
 
      /**
      * Analise the CSS style to convert it into SVG style
@@ -425,7 +471,7 @@ class HTML2PDF_parsingCss
         $id   = isset($param['id'])   ? strtolower(trim($param['id']))   : null; if (!$id)   $id   = null;
         $name = isset($param['name']) ? strtolower(trim($param['name'])) : null; if (!$name) $name = null;
 
-        // read che class attribute
+        // read the class attribute
         $class = array();
         $tmp = isset($param['class']) ? strtolower(trim($param['class'])) : '';
         $tmp = explode(' ', $tmp);

@@ -191,7 +191,8 @@ class HTML2PDF_parsingHtml
             'div', 'hr', 'p', 'ul', 'ol', 'li',
             'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
             'bookmark', 'fieldset', 'legend',
-            'draw', 'circle', 'ellipse', 'path', 'rect', 'line', 'g', 'polygon', 'polyline'
+            'draw', 'circle', 'ellipse', 'path', 'rect', 'line', 'g', 'polygon', 'polyline',
+            'option'
         );
 
         // foreach action

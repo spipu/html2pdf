@@ -5672,17 +5672,19 @@ if (!defined('__CLASS_HTML2PDF__')) {
             // height (automatic)
             $h = ($f*1.07*$this->_lstSelect['size'] + 1);
 
+            $prop = $this->parsingCss->getFormStyle();
+
             // multy select
-            $opts = array();
             if ($this->_lstSelect['multi']) {
-                $opts['multipleSelection'] = 'true';
+                $prop['multipleSelection'] = 'true';
             }
+
 
             // single or multi select
             if ($this->_lstSelect['size']>1) {
-                $this->pdf->ListBox($this->_lstSelect['name'], $w, $h, $this->_lstSelect['options'], $opts);
+                $this->pdf->ListBox($this->_lstSelect['name'], $w, $h, $this->_lstSelect['options'], $prop);
             } else {
-                $this->pdf->ComboBox($this->_lstSelect['name'], $w, $h, $this->_lstSelect['options']);
+                $this->pdf->ComboBox($this->_lstSelect['name'], $w, $h, $this->_lstSelect['options'], $prop);
             }
 
             $this->_maxX = max($this->_maxX, $x+$w);
@@ -5738,7 +5740,8 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $w = $fx*(isset($param['cols']) ? $param['cols'] : 22)+1;
             $h = $fy*1.07*(isset($param['rows']) ? $param['rows'] : 3)+3;
 
-            $prop = array();
+            $prop = $this->parsingCss->getFormStyle();
+
             $prop['multiline'] = true;
             $prop['value'] = isset($level[0]['param']['txt']) ? $level[0]['param']['txt'] : '';
 
@@ -5806,26 +5809,27 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $y = $this->pdf->getY();
             $f = 1.08*$this->parsingCss->value['font-size'];
 
+            $prop = $this->parsingCss->getFormStyle();
+
             switch($param['type'])
             {
                 case 'checkbox':
                     $w = 3;
                     $h = $w;
                     if ($h<$f) $y+= ($f-$h)*0.5;
-                    $this->pdf->CheckBox($name, $w, isset($param['checked']), array(), array(), ($param['value'] ? $param['value'] : 'Yes'), $x, $y);
+                    $this->pdf->CheckBox($name, $w, isset($param['checked']), $prop, array(), ($param['value'] ? $param['value'] : 'Yes'), $x, $y);
                     break;
 
                 case 'radio':
                     $w = 3;
                     $h = $w;
                     if ($h<$f) $y+= ($f-$h)*0.5;
-                    $this->pdf->RadioButton($name, $w, array(), array(), ($param['value'] ? $param['value'] : 'On'), isset($param['selected']), $x, $y);
+                    $this->pdf->RadioButton($name, $w, $prop, array(), ($param['value'] ? $param['value'] : 'On'), isset($param['selected']), $x, $y);
                     break;
 
                 case 'hidden':
                     $w = 0;
                     $h = 0;
-                    $prop = array();
                     $prop['value'] = $param['value'];
                     $this->pdf->TextField($name, $w, $h, $prop, array(), $x, $y);
                     break;
@@ -5833,7 +5837,6 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 case 'text':
                     $w = $this->parsingCss->value['width']; if (!$w) $w = 40;
                     $h = $f*1.3;
-                    $prop = array();
                     $prop['value'] = $param['value'];
                     $this->pdf->TextField($name, $w, $h, $prop, array(), $x, $y);
                     break;
@@ -5842,21 +5845,21 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     $w = $this->parsingCss->value['width'];    if (!$w) $w = 40;
                     $h = $this->parsingCss->value['height'];    if (!$h) $h = $f*1.3;
                     $action = array('S'=>'SubmitForm', 'F'=>$this->_isInForm, 'Flags'=>array('ExportFormat'));
-                    $this->pdf->Button($name, $w, $h, $param['value'], $action, array(), array(), $x, $y);
+                    $this->pdf->Button($name, $w, $h, $param['value'], $action, $prop, array(), $x, $y);
                     break;
 
                 case 'reset':
                     $w = $this->parsingCss->value['width'];    if (!$w) $w = 40;
                     $h = $this->parsingCss->value['height'];    if (!$h) $h = $f*1.3;
                     $action = array('S'=>'ResetForm');
-                    $this->pdf->Button($name, $w, $h, $param['value'], $action, array(), array(), $x, $y);
+                    $this->pdf->Button($name, $w, $h, $param['value'], $action, $prop, array(), $x, $y);
                     break;
 
                 case 'button':
                     $w = $this->parsingCss->value['width'];    if (!$w) $w = 40;
                     $h = $this->parsingCss->value['height'];    if (!$h) $h = $f*1.3;
                     $action = isset($param['onclick']) ? $param['onclick'] : '';
-                    $this->pdf->Button($name, $w, $h, $param['value'], $action, array(), array(), $x, $y);
+                    $this->pdf->Button($name, $w, $h, $param['value'], $action, $prop, array(), $x, $y);
                     break;
 
                 default:

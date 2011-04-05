@@ -1,5 +1,4 @@
 @todo :
-    personnalisé l'aspect des Input / Select / Textarea
     utilier de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
     ajout de reset="reset" pour la balise page
 
@@ -15,6 +14,7 @@
     premiere version de text-align:justify
     correction sur la gestion de la balise BLOCKQUOTE
     correction sur la gestion de la balie P
+    gestion des styles CSS pour les balises TEXTAREA, SELECT, INPUT
 
 3.30 / 4.01 (2010-05-07)
     correction sur la gestion des textes
