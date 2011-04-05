@@ -94,7 +94,7 @@ class HTML2PDF_parsingHtml
         $this->_searchCode($tmp);
 
         // all the actions to do
-        $todos = array();
+        $actions = array();
 
         // foreach part of the HTML code
         foreach ($tmp as $part) {
@@ -123,7 +123,7 @@ class HTML2PDF_parsingHtml
                             // if it is a autoclosed tag
                             if ($res['autoclose']) {
                                 // save the opened tag
-                                $todos[] = $res;
+                                $actions[] = $res;
 
                                 // prepare the closed tag
                                 $res['params'] = array();
@@ -140,8 +140,8 @@ class HTML2PDF_parsingHtml
                         }
                     }
 
-                    // save the action do todo
-                    $todos[] = $res;
+                    // save the actions to convert
+                    $actions[] = $res;
                 } else { // else (it is not a real HTML tag => we transform it in Texte
                     $part[0]='txt';
                 }
@@ -151,7 +151,7 @@ class HTML2PDF_parsingHtml
                 // if we are not in a <pre> tag
                 if (!$tagPreIn) {
                     // save the action
-                    $todos[] = array(
+                    $actions[] = array(
                         'name'    => 'write',
                         'close'    => false,
                         'param' => array('txt' => $this->_prepareTxt($part[1])),
@@ -168,10 +168,10 @@ class HTML2PDF_parsingHtml
                         $txt = str_replace(' ', '&nbsp;', $txt);
 
                         // add a break line
-                        if ($k>0) $todos[] = $tagPreBr;
+                        if ($k>0) $actions[] = $tagPreBr;
 
                         // save the action
-                        $todos[] = array(
+                        $actions[] = array(
                             'name'    => 'write',
                             'close'    => false,
                             'param' => array('txt' => $this->_prepareTxt($txt, false)),
@@ -195,21 +195,21 @@ class HTML2PDF_parsingHtml
         );
 
         // foreach action
-        $nb = count($todos);
+        $nb = count($actions);
         for ($k=0; $k<$nb; $k++) {
             // if it is a Text
-            if ($todos[$k]['name']=='write') {
+            if ($actions[$k]['name']=='write') {
                 // if the tag before the text is a tag to clean => ltrim on the text
-                if ($k>0 && in_array($todos[$k-1]['name'], $tagsToClean))
-                    $todos[$k]['param']['txt'] = ltrim($todos[$k]['param']['txt']);
+                if ($k>0 && in_array($actions[$k-1]['name'], $tagsToClean))
+                    $actions[$k]['param']['txt'] = ltrim($actions[$k]['param']['txt']);
 
                 // if the tag after the text is a tag to clean => rtrim on the text
-                if ($k<$nb-1 && in_array($todos[$k+1]['name'], $tagsToClean))
-                    $todos[$k]['param']['txt'] = rtrim($todos[$k]['param']['txt']);
+                if ($k<$nb-1 && in_array($actions[$k+1]['name'], $tagsToClean))
+                    $actions[$k]['param']['txt'] = rtrim($actions[$k]['param']['txt']);
 
                 // if the text is empty => remove the action
-                if (!strlen($todos[$k]['param']['txt']))
-                    unset($todos[$k]);
+                if (!strlen($actions[$k]['param']['txt']))
+                    unset($actions[$k]);
             }
         }
 
@@ -217,7 +217,7 @@ class HTML2PDF_parsingHtml
         if (count($parents)) throw new HTML2PDF_exception(5, $parents);
 
         // save the actions to do
-        $this->code = array_values($todos);
+        $this->code = array_values($actions);
     }
 
     /**
