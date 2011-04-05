@@ -14,7 +14,7 @@
     ob_start();
     $num = 'CMD01-'.date('ymd');
     $nom = 'DUPONT Alphonse';
-    $date = '01/01/2010';
+    $date = '01/01/2012';
 ?>
 <style type="text/css">
 <!--
