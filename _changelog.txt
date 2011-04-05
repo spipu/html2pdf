@@ -7,6 +7,7 @@
     modification du nom de toutes les méthodes protected
     correction sur la gestion des tables
     correction sur la lecture des path des SVG
+    premiere version de text-align:justify
 
 3.30 / 4.01 (2010-05-07)
     correction sur la gestion des textes

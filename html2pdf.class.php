@@ -830,7 +830,6 @@ if (!defined('__CLASS_HTML2PDF__')) {
         /**
          * calculate the start position of the next line,  depending on the text-align
          *
-         * @todo   use Word Spacing for text-align=justify
          * @access protected
          * @param  integer $curr real current position in the text, if new line in the write of a text
          */
@@ -844,7 +843,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             // if subPart => return because align left
             if ($this->_subPart || $this->_isSubPart || $this->_isForOneLine) {
-//                $this->pdf->setWordSpacing(0);
+                $this->pdf->setWordSpacing(0);
                 return null;
             }
 
@@ -860,7 +859,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             if ($curr!==null && $sub->parsingHtml->code[$this->_parsePos]['name']=='write') {
                 $txt = $sub->parsingHtml->code[$this->_parsePos]['param']['txt'];
                 $txt = str_replace('[[page_cu]]', $sub->_page, $txt);
-                $sub->parsingHtml->code[$this->_parsePos]['param']['txt'] = substr($txt, $curr);
+                $sub->parsingHtml->code[$this->_parsePos]['param']['txt'] = substr($txt, $curr+1);
             } else
                 $sub->_parsePos++;
 
@@ -892,9 +891,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             // if justify => set the word spacing
             if ($this->parsingCss->value['text-align']=='justify' && $e>1) {
-//                $this->pdf->setWordSpacing(($wMax-$w)/($e-1));
+                $this->pdf->setWordSpacing(($wMax-$w)/($e-1));
             } else {
-//                $this->pdf->setWordSpacing(0);
+                $this->pdf->setWordSpacing(0);
             }
         }
 
@@ -3301,15 +3300,6 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 $wc = ($align=='L' ? $str[1] : $this->parsingCss->value['width']);
                 if ($right - $left<$wc) $wc = $right - $left;
 
-                // @todo adding support for justify
-/*
-                if ($this->pdf->ws) {
-                    $oldSpace = $this->pdf->CurrentFont['cw'][' '];
-                    $this->pdf->CurrentFont['cw'][' ']*=(1.+$this->pdf->ws);
-                    $wc = $str[1];
-                    $this->pdf->CurrentFont['cw'][' '] = $oldSpace;
-                }
-*/
                 if (strlen($str[0])) {
                     $this->pdf->setXY($this->pdf->getX(), $y+$dh+$dy);
                     $this->pdf->Cell($wc, $h, $str[0], 0, 0, $align, $fill, $this->_isInLink);
@@ -3333,7 +3323,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
                     // if it is just to calculate for one line => adding the number of words
                     if ($this->_isForOneLine) {
-                        $this->_maxE+= $i+1;
+                        $this->_maxE+= $i;
                         $this->_maxX = max($this->_maxX, $maxX);
                         return null;
                     }
@@ -3371,16 +3361,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             // if we have words after automatic cut, it is because they fit on the line => we write the text
             if (count($words)) {
                 $txt = ''; foreach ($words as $k => $word) $txt.= ($k ? ' ' : '').$word[0];
-
-                // @todo adding support for justify
-/*
-                if ($this->pdf->ws) {
-                    $oldSpace = $this->pdf->CurrentFont['cw'][' '];
-                    $this->pdf->CurrentFont['cw'][' ']*=(1.+$this->pdf->ws);
-                    $w = $this->pdf->GetStringWidth($txt);
-                    $this->pdf->CurrentFont['cw'][' '] = $oldSpace;
-                }
-*/
+                $w+= $this->pdf->getWordSpacing()*(count($words));
                 $this->pdf->setXY($this->pdf->getX(), $y+$dh+$dy);
                 $this->pdf->Cell(($align=='L' ? $w : $this->parsingCss->value['width']), $h, $txt, 0, 0, $align, $fill, $this->_isInLink);
                 $this->pdf->setXY($this->pdf->getX(), $y);
@@ -4802,7 +4783,6 @@ if (!defined('__CLASS_HTML2PDF__')) {
             }
 
             if ($this->_isForOneLine) {
-                $this->_maxE++;
                 $this->_maxX = $this->pdf->getW() - $this->pdf->getlMargin() - $this->pdf->getrMargin();
                 return false;
             }

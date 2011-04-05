@@ -11,12 +11,10 @@
  * it allow to display the result in the HTML format
  */
 
-    // get the HTML
     ob_start();
     include(dirname(__FILE__).'/res/exemple10.php');
     $content = ob_get_clean();
 
-    // convert to PDF
     require_once(dirname(__FILE__).'/../html2pdf.class.php');
     try
     {
@@ -28,4 +26,3 @@
         echo $e;
         exit;
     }
-

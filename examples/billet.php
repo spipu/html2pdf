@@ -54,7 +54,7 @@
                 </div>
             </td>
             <td style="width: 75%">
-                <div class="zone" style="height: 40mm;vertical-align: middle;">
+                <div class="zone" style="height: 40mm;vertical-align: middle; text-align: justify">
                     <b>Conditions d'utilisation du billet</b><br>
                     Le billet est soumis aux conditions générales de vente que vous avez
                     acceptées avant l'achat du billet. Le billet d'entrée est uniquement

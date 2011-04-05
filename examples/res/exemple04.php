@@ -39,8 +39,8 @@ div.special table { width:100%; border:1px solid #000000; font-size:10px; border
             <td style="width: 30%; border: solid 1px #0000FF;">CCC</td>
         </tr>
     </table>
-    <div style="width: 70%; border: solid 1mm #770000; margin: 1mm; padding: 2mm; font-size: 4mm; line-height: normal;">
-        <img src="./res/logo.gif" alt="logo html2pdf" style="float: left; width: 60mm; margin: 2mm; ">
+    <div style="width: 70%; border: solid 1mm #770000; margin: 1mm; padding: 2mm; font-size: 4mm; line-height: normal; text-align: justify">
+        <img src="./res/logo.gif" alt="logo html2pdf" style="float: left; width: 60mm; margin: 2mm;">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed elementum, nibh eu ultricies scelerisque, est lorem dignissim elit, quis tempus tortor eros non ipsum. Mauris convallis augue ac sapien. In scelerisque dignissim elit. Donec consequat semper lectus. Sed in quam. Nunc molestie hendrerit ipsum. Curabitur elit risus, rhoncus ut, mattis a, convallis eu, neque. Morbi luctus est sit amet nunc. In nisl. Donec magna libero, aliquet eu, vestibulum ut, mollis sed, felis.
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed elementum, nibh eu ultricies scelerisque, est lorem dignissim elit, quis tempus tortor eros non ipsum. Mauris convallis augue ac sapien. In scelerisque dignissim elit. Donec consequat semper lectus. Sed in quam. Nunc molestie hendrerit ipsum. Curabitur elit risus, rhoncus ut, mattis a, convallis eu, neque. Morbi luctus est sit amet nunc. In nisl. Donec magna libero, aliquet eu, vestibulum ut, mollis sed, felis.
     </div>
