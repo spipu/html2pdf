@@ -4,7 +4,9 @@
     conversion des fichiers de langue en CSV, déplacement dans le répertoire "locale"
     modification du nom de toutes les sous classes
     déplacement de toutes les sous classes
+    modification du nom de toutes les méthodes protected
     correction sur la gestion des tables
+    correction sur la lecture des path des SVG
 
 3.30 / 4.01 (2010-05-07)
     correction sur la gestion des textes
