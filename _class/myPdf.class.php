@@ -202,7 +202,18 @@ class HTML2PDF_myPdf extends TCPDF
     }
 
     /**
-     * Modify the Word Spacing
+     * Get the Word Spacing
+     *
+     * @access public
+     * @return float word spacing
+     */
+    public function getWordSpacing()
+    {
+        return $this->ws;
+    }
+
+    /**
+     * set the Word Spacing
      *
      * @param float word spacing
      * @access public
