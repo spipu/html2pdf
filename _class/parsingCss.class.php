@@ -214,9 +214,15 @@ class HTML2PDF_parsingCss
             $this->value['margin']['t'] = null;
             $this->value['margin']['b'] = null;
         }
+        if ($tagName=='blockquote') {
+            $this->value['margin']['t'] = 3;
+            $this->value['margin']['r'] = 3;
+            $this->value['margin']['b'] = 3;
+            $this->value['margin']['l'] = 6;
+        }
         $this->value['margin-auto'] = false;
 
-        if (in_array($tagName, array('div', 'fieldset'))) {
+        if (in_array($tagName, array('blockquote', 'div', 'fieldset'))) {
             $this->value['vertical-align'] = 'top';
         }
 
@@ -972,12 +978,12 @@ class HTML2PDF_parsingCss
         if ($this->_onlyLeft) $this->value['text-align'] = 'left';
 
         // correction on the width (quick box)
-        if ($noWidth && in_array($tagName, array('div', 'fieldset')) && $this->value['position']!='absolute') {
+        if ($noWidth && in_array($tagName, array('div', 'blockquote', 'fieldset')) && $this->value['position']!='absolute') {
             $this->value['width'] = $this->getLastWidth();
             $this->value['width']-= $this->value['margin']['l'] + $this->value['margin']['r'];
         } else {
             if ($correctWidth) {
-                if (!in_array($tagName, array('table', 'div', 'fieldset', 'hr'))) {
+                if (!in_array($tagName, array('table', 'div', 'blockquote', 'fieldset', 'hr'))) {
                     $this->value['width']-= $this->value['padding']['l'] + $this->value['padding']['r'];
                     $this->value['width']-= $this->value['border']['l']['width'] + $this->value['border']['r']['width'];
                 }
