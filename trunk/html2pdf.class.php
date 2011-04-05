@@ -528,6 +528,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->_maxY = 0;
             $this->_maxX = 0;
             $this->_maxH = 0;
+            $this->_maxE = 0;
 
             $this->pdf->SetMargins($this->_defaultLeft, $this->_defaultTop, $this->_defaultRight);
             $this->pdf->AddPage($this->_orientation, $this->_format);
@@ -1260,6 +1261,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             }
 
             $this->_maxH = 0;
+            $this->_maxE = 0;
         }
 
         /**
@@ -3139,6 +3141,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->_maxX = max($this->_maxX, $x+$size);
             $this->_maxY = max($this->_maxY, $y+$size);
             $this->_maxH = max($this->_maxH, $size);
+            $this->_maxE++;
 
             $this->pdf->setX($x+$size);
 
@@ -3413,6 +3416,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->_makeBreakLine($h, $curr);
 
             $this->_maxH = 0;
+            $this->_maxE = 0;
 
             return true;
         }
