@@ -5,7 +5,8 @@
 4.02 (2011-04-01)
     ATTENTION : beaucoup de changements dans la structure du projet. version 3.xx abandonnée
     uniformisation des fichiers du projet (standard Zend)
-    conversion des fichiers de langue en CSV, déplacement dans le répertoire "locale"
+    conversion des fichiers de langue en CSV, déplacement dans le répertoire "locale". création d'une classe spécifique à la gestion des locales
+    amélioration de la gestion de certaines erreurs
     modification du nom de toutes les sous classes
     déplacement de toutes les sous classes
     modification du nom de toutes les méthodes protected
