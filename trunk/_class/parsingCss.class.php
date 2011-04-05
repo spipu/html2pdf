@@ -1721,7 +1721,7 @@ class HTML2PDF_parsingCss
                     $content = preg_replace('/url\(([^\\\\][^)]*)\)/isU', 'url('.$urlSelf.'$1)', $content);
                     $content = preg_replace('/url\((\\\\[^)]*)\)/isU', 'url('.$urlMain.'$1)', $content);
                 } else {
-                    // @todo correction on url in absolute on a local css content
+// @TODO correction on url in absolute on a local css content
                     // $content = preg_replace('/url\(([^)]*)\)/isU', 'url('.dirname($url).'/$1)', $content);
                 }
 
