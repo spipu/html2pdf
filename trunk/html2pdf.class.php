@@ -321,7 +321,6 @@ if (!defined('__CLASS_HTML2PDF__')) {
         {
             HTML2PDF::$_subobj = null;
             HTML2PDF::$_tables = array();
-            HTML2PDF_locale::clean();
         }
 
         /**
@@ -346,12 +345,12 @@ if (!defined('__CLASS_HTML2PDF__')) {
         public function Output($name = '', $dest = false)
         {
             // close the pdf and clean up
-            $this->pdf->Close();
             $this->_cleanUp();
 
             // if on debug mode
             if ($this->_debugActif) {
                 $this->_DEBUG_add('Before output');
+                $this->pdf->Close();
                 exit;
             }
 

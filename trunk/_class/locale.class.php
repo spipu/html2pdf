@@ -49,11 +49,6 @@ class HTML2PDF_locale
             throw new HTML2PDF_exception(0, 'invalid language code ['.self::$_code.']');
         }
 
-        // must not be load before with another code
-        if (self::$_code!==null && self::$_code!==$code) {
-            throw new HTML2PDF_exception(0, 'locale is already loaded with a different code.');
-        }
-
         // save the code
         self::$_code = $code;
 
