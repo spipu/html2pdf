@@ -417,7 +417,7 @@ class HTML2PDF_parsingCss
         // save the new position
         $this->_pdf->setXY($this->value['x'], $this->value['y']);
     }
-    
+
      /**
      * Analise the CSS style to convert it into Form style
      *
@@ -1197,10 +1197,12 @@ class HTML2PDF_parsingCss
         // get the list of the selectors of each tags
         $lst = array();
         $lst[] = $this->value['id_lst'];
-        for($i=count($this->table)-1; $i>=0; $i--) $lst[] = $this->table[$i]['id_lst'];
+        for ($i=count($this->table)-1; $i>=0; $i--) {
+            $lst[] = $this->table[$i]['id_lst'];
+        }
 
         // foreach selectors in the CSS files, verify if it match with the list of selectors
-        foreach($this->cssKeys as $key => $num) {
+        foreach ($this->cssKeys as $key => $num) {
             if ($this->_getReccursiveStyle($key, $lst)) {
                 $getit[$key] = $num;
             }
@@ -1210,7 +1212,7 @@ class HTML2PDF_parsingCss
         if (count($getit)) {
             // get them, but in the definition order, because of priority
             asort($getit);
-            foreach($getit as $key => $val) $styles = array_merge($styles, $this->css[$key]);
+            foreach ($getit as $key => $val) $styles = array_merge($styles, $this->css[$key]);
         }
 
         return $styles;
@@ -1731,21 +1733,21 @@ class HTML2PDF_parsingCss
             // read the attributes name=value
             $prop = '([a-zA-Z0-9_]+)=([^"\'\s>]+)';
             preg_match_all('/'.$prop.'/is', $code, $match);
-            for($k=0; $k<count($match[0]); $k++) {
+            for ($k=0; $k<count($match[0]); $k++) {
                 $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
             }
 
             // read the attributes name="value"
             $prop = '([a-zA-Z0-9_]+)=["]([^"]*)["]';
             preg_match_all('/'.$prop.'/is', $code, $match);
-            for($k=0; $k<count($match[0]); $k++) {
+            for ($k=0; $k<count($match[0]); $k++) {
                 $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
             }
 
             // read the attributes name='value'
             $prop = "([a-zA-Z0-9_]+)=[']([^']*)[']";
             preg_match_all('/'.$prop.'/is', $code, $match);
-            for($k=0; $k<count($match[0]); $k++) {
+            for ($k=0; $k<count($match[0]); $k++) {
                 $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
             }
 

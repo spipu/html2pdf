@@ -16,6 +16,8 @@ class HTML2PDF_myPdf extends TCPDF
 {
     protected $_footerParam = array();
     protected $_transf      = array();
+    protected $_myLastPageGroup = null;
+    protected $_myLastPageGroupNb = 0;
 
     // used to make a radius with bezier : (4/3 * (sqrt(2) - 1))
     const MY_ARC = 0.5522847498;
@@ -104,14 +106,14 @@ class HTML2PDF_myPdf extends TCPDF
         if (strlen($txt)>0) {
             // replace some values
             $toReplace = array(
-                '[[date_d]]' => date('d'),
-                '[[date_m]]' => date('m'),
-                '[[date_y]]' => date('Y'),
-                '[[date_h]]' => date('H'),
-                '[[date_i]]' => date('i'),
-                '[[date_s]]' => date('s'),
-                '[[current]]'=> $this->PageNo(),
-                '[[nb]]'     => '{nb}',
+                '[[date_d]]'  => date('d'),
+                '[[date_m]]'  => date('m'),
+                '[[date_y]]'  => date('Y'),
+                '[[date_h]]'  => date('H'),
+                '[[date_i]]'  => date('i'),
+                '[[date_s]]'  => date('s'),
+                '[[page_cu]]' => $this->getMyNumPage(),
+                '[[page_nb]]' => $this->getMyAliasNbPages(),
             );
             $txt = str_replace(array_keys($toReplace), array_values($toReplace), $txt);
 
@@ -1314,5 +1316,102 @@ class HTML2PDF_myPdf extends TCPDF
             }
         }
     }
-}
 
+    /**
+     * Returns the string alias used for the total number of pages.
+     *
+     * @access public
+     * @return string;
+     * @see TCPDF::getAliasNbPages(), TCPDF::getPageGroupAlias()
+     */
+    public function getMyAliasNbPages()
+    {
+        if ($this->_myLastPageGroupNb==0) {
+            return $this->getAliasNbPages();
+        } else {
+            $old = $this->currpagegroup;
+            $this->currpagegroup = '{nb'.$this->_myLastPageGroupNb.'}';
+            $new = $this->getPageGroupAlias();
+            $this->currpagegroup = $old;
+
+            return $new;
+        }
+    }
+
+    /**
+     * Returns the current page number.
+     *
+     * @access public
+     * @param  integer $page
+     * @return integer;
+     */
+    public function getMyNumPage($page=null)
+    {
+        if ($page===null) {
+            $page = $this->page;
+        }
+
+        if ($this->_myLastPageGroupNb==0) {
+            return $page;
+        } else {
+            return $page-$this->_myLastPageGroup;
+        }
+    }
+
+    /**
+     * Start a new group of pages
+     *
+     * @access public
+     * @return integer;
+     * @see tcpdf::startPageGroup
+     */
+    public function myStartPageGroup()
+    {
+        $this->_myLastPageGroup = $this->page-1;
+        $this->_myLastPageGroupNb++;
+    }
+
+    /**
+     * get $_myLastPageGroup;
+     *
+     * @access public
+     * @return integer $_myLastPageGroup;
+     */
+    public function getMyLastPageGroup()
+    {
+        return $this->_myLastPageGroup;
+    }
+
+    /**
+     * set $_myLastPageGroup;
+     *
+     * @access public
+     * @param integer $myLastPageGroup;
+     */
+    public function setMyLastPageGroup($myLastPageGroup)
+    {
+        $this->_myLastPageGroup = $myLastPageGroup;
+    }
+
+    /**
+     * get $_myLastPageGroupNb;
+     *
+     * @access public
+     * @return integer $_myLastPageGroupNb;
+     */
+    public function getMyLastPageGroupNb()
+    {
+        return $this->_myLastPageGroupNb;
+    }
+
+    /**
+     * set $_myLastPageGroupNb;
+     *
+     * @access public
+     * @param integer $myLastPageGroupNb;
+     */
+    public function setMyLastPageGroupNb($myLastPageGroupNb)
+    {
+        $this->_myLastPageGroupNb = $myLastPageGroupNb;
+    }
+}
