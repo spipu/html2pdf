@@ -13,7 +13,7 @@
 "pdf01","Documento generado el [[date_d]]/[[date_m]]/[[date_y]]"
 "pdf02","Documento generado a las [[date_h]]:[[date_i]]"
 "pdf03","Documento generado el [[date_d]]/[[date_m]]/[[date_y]] a las [[date_h]]:[[date_i]]"
-"pdf04","Página [[current]]/[[nb]]"
+"pdf04","Página [[page_cu]]/[[page_nb]]"
 "pdf05","Los formularios requieren el uso de Adobe Reader 9"
 "vue01","ENCABEZADO"
 "vue02","PIE DE PÁGINA"

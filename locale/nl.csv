@@ -13,7 +13,7 @@
 "pdf01","Document gemaakt op [[date_d]]-[[date_m]]-[[date_y]]"
 "pdf02","Document gemaakt om [[date_h]]:[[date_i]]"
 "pdf03","Document gemaakt op [[date_d]]-[[date_m]]-[[date_y]] om [[date_h]]:[[date_i]]"
-"pdf04","Pagina [[current]] van [[nb]]"
+"pdf04","Pagina [[page_cu]] van [[page_nb]]"
 "pdf05","De formulieren vereisen het gebruik van Adobe Reader 9"
 "vue01","Paginakop"
 "vue02","Paginavoet"
