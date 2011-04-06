@@ -313,6 +313,18 @@ if (!defined('__CLASS_HTML2PDF__')) {
         }
 
         /**
+         * clean up the objects
+         *
+         * @access protected
+         */
+        protected function _cleanUp()
+        {
+            HTML2PDF::$_subobj = null;
+            HTML2PDF::$_tables = array();
+            HTML2PDF_locale::clean();
+        }
+
+        /**
          * Send the document to a given destination: string, local file or browser.
          * Dest can be :
          *  I : send the file inline to the browser (default). The plug-in is used if available. The name given by name is used when one selects the "Save as" option on the link generating the PDF.
@@ -333,15 +345,13 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         public function Output($name = '', $dest = false)
         {
-            // clean up
-            HTML2PDF::$_subobj = null;
-            HTML2PDF::$_tables = array();
-            HTML2PDF_locale::clean();
+            // close the pdf and clean up
+            $this->pdf->Close();
+            $this->_cleanUp();
 
-            // id on debug mode
+            // if on debug mode
             if ($this->_debugActif) {
                 $this->_DEBUG_add('Before output');
-                $this->pdf->Close();
                 exit;
             }
 
@@ -377,8 +387,6 @@ if (!defined('__CLASS_HTML2PDF__')) {
             // if it is a real html page, we have to convert it
             if (preg_match('/<body/isU', $html))
                 $html = $this->getHtmlFromPage($html);
-
-            $html = str_replace('[[page_nb]]', '{nb}', $html);
 
             $html = str_replace('[[date_y]]', date('Y'), $html);
             $html = str_replace('[[date_m]]', date('m'), $html);
@@ -441,19 +449,23 @@ if (!defined('__CLASS_HTML2PDF__')) {
          * @param  array   $marge
          * @param  integer $page
          * @param  array   $defLIST
+         * @param  integer $myLastPageGroup
+         * @param  integer $myLastPageGroupNb
          */
-        public function initSubHtml($format, $orientation, $marge, $page, $defLIST)
+        public function initSubHtml($format, $orientation, $marge, $page, $defLIST, $myLastPageGroup, $myLastPageGroupNb)
         {
             $this->_isSubPart = true;
 
             $this->parsingCss->setOnlyLeft();
 
-            $this->_setNewPage($format, $orientation);
+            $this->_setNewPage($format, $orientation, null, null, ($myLastPageGroup!==null));
 
             $this->_saveMargin(0, 0, $marge);
             $this->_defList = $defLIST;
 
             $this->_page = $page;
+            $this->pdf->setMyLastPageGroup($myLastPageGroup);
+            $this->pdf->setMyLastPageGroupNb($myLastPageGroupNb);
             $this->pdf->setXY(0, 0);
             $this->parsingCss->fontSet();
         }
@@ -518,8 +530,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
          * @param  string  $orientation
          * @param  array   $background background information
          * @param  integer $curr real position in the html parseur (if break line in the write of a text)
+         * @param  boolean $resetPageNumber = false
          */
-        protected function _setNewPage($format = null, $orientation = '', $background = null, $curr = null)
+        protected function _setNewPage($format = null, $orientation = '', $background = null, $curr = null, $resetPageNumber=false)
         {
             $this->_firstPage = false;
 
@@ -532,7 +545,17 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->_maxE = 0;
 
             $this->pdf->SetMargins($this->_defaultLeft, $this->_defaultTop, $this->_defaultRight);
+
+            if ($resetPageNumber) {
+                $this->pdf->startPageGroup();
+            }
+
             $this->pdf->AddPage($this->_orientation, $this->_format);
+
+            if ($resetPageNumber) {
+                $this->pdf->myStartPageGroup();
+            }
+
             $this->_page++;
 
             if (!$this->_subPart && !$this->_isSubPart) {
@@ -863,7 +886,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             // if $curr => adapt the current position of the parsing
             if ($curr!==null && $sub->parsingHtml->code[$this->_parsePos]['name']=='write') {
                 $txt = $sub->parsingHtml->code[$this->_parsePos]['param']['txt'];
-                $txt = str_replace('[[page_cu]]', $sub->_page, $txt);
+                $txt = str_replace('[[page_cu]]', $sub->pdf->getMyNumPage($this->_page), $txt);
                 $sub->parsingHtml->code[$this->_parsePos]['param']['txt'] = substr($txt, $curr+1);
             } else
                 $sub->_parsePos++;
@@ -967,7 +990,15 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $subHtml = clone HTML2PDF::$_subobj;
             $subHtml->parsingCss->table = $this->parsingCss->table;
             $subHtml->parsingCss->value = $this->parsingCss->value;
-            $subHtml->initSubHtml($this->_format, $this->_orientation, $marge, $this->_page, $this->_defList);
+            $subHtml->initSubHtml(
+                $this->_format,
+                $this->_orientation,
+                $marge,
+                $this->_page,
+                $this->_defList,
+                $this->pdf->getMyLastPageGroup(),
+                $this->pdf->getMyLastPageGroupNb()
+            );
         }
 
         /**
@@ -2204,6 +2235,8 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             $newPageSet= (!isset($param['pageset']) || $param['pageset']!='old');
 
+            $resetPageNumber = (isset($param['reset']) && $param['reset']=='reset');
+
             $this->_maxH = 0;
 
             // if new page set asked
@@ -2299,7 +2332,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 $this->parsingCss->fontSet();
 
                 // new page
-                $this->_setNewPage($format, $orientation, $background);
+                $this->_setNewPage($format, $orientation, $background, null, $resetPageNumber);
 
                 // automatic footer
                 if (isset($param['footer'])) {
@@ -2323,7 +2356,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 $this->parsingCss->setPosition();
                 $this->parsingCss->fontSet();
 
-                $this->_setNewPage();
+                $this->_setNewPage(null, null, null, null, $resetPageNumber);
             }
 
             return true;
@@ -3222,7 +3255,8 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 $this->_isAfterFloat = false;
             }
 
-            $txt = str_replace('[[page_cu]]', $this->_page, $txt);
+            $txt = str_replace('[[page_nb]]', $this->pdf->getMyAliasNbPages(), $txt);
+            $txt = str_replace('[[page_cu]]', $this->pdf->getMyNumPage($this->_page), $txt);
 
             if ($this->parsingCss->value['text-transform']!='none') {
                 if ($this->parsingCss->value['text-transform']=='capitalize')
@@ -5389,7 +5423,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     }
                 }
                 HTML2PDF::$_tables[$param['num']]['corr_x']+= $colspan;
-                while(isset(HTML2PDF::$_tables[$param['num']]['corr'][HTML2PDF::$_tables[$param['num']]['corr_y']][HTML2PDF::$_tables[$param['num']]['corr_x']])) {
+                while (isset(HTML2PDF::$_tables[$param['num']]['corr'][HTML2PDF::$_tables[$param['num']]['corr_y']][HTML2PDF::$_tables[$param['num']]['corr_x']])) {
                     HTML2PDF::$_tables[$param['num']]['corr_x']++;
                 }
 
