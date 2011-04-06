@@ -1,8 +1,7 @@
 @todo :
-    utilier de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
-    ajout de reset="reset" pour la balise page
+    utiliser de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
 
-4.02 (2011-04-01)
+4.02 (2011-xx-xx)
     ATTENTION : beaucoup de changements dans la structure du projet. version 3.xx abandonnée
     uniformisation des fichiers du projet (standard Zend)
     conversion des fichiers de langue en CSV, déplacement dans le répertoire "locale". création d'une classe spécifique à la gestion des locales
@@ -16,6 +15,7 @@
     correction sur la gestion de la balise BLOCKQUOTE
     correction sur la gestion de la balie P
     gestion des styles CSS pour les balises TEXTAREA, SELECT, INPUT
+    ajout de la propriété reset="reset" sur la balise PAGE
 
 3.30 / 4.01 (2010-05-07)
     correction sur la gestion des textes
