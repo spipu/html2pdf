@@ -13,7 +13,7 @@
 "pdf01","Datei aufgebaut am [[date_d]]/[[date_m]]/[[date_y]]"
 "pdf02","Datei aufgebaut um [[date_h]]:[[date_m]]"
 "pdf03","Datei aufgebaut am [[date_d]]/[[date_m]]/[[date_y]] um [[date_h]]:[[date_i]]"
-"pdf04","Seite [[current]]/[[nb]]"
+"pdf04","Seite [[page_cu]]/[[page_nb]]"
 "pdf05","Die Formulare benötigen Sie den Adobe Reader 9"
 "vue01","Seite-Header"
 "vue02","Fußzeile"

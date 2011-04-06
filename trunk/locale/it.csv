@@ -13,7 +13,7 @@
 "pdf01","Documento generato il [[date_d]]/[[date_m]]/[[date_y]]"
 "pdf02","Documento generato [[date_h]]:[[date_i]]"
 "pdf03","Documento generato il [[date_d]]/[[date_m]]/[[date_y]] nel [[date_h]]:[[date_i]]"
-"pdf04","Pagina [[current]]/[[nb]]"
+"pdf04","Pagina [[page_cu]]/[[page_nb]]"
 "pdf05","I moduli richiedono l'uso di Adobe Reader 9"
 "vue01","HEADER"
 "vue02","FOOTER"
