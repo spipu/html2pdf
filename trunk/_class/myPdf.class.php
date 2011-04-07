@@ -10,7 +10,7 @@
  */
 
 require_once(dirname(__FILE__).'/tcpdfConfig.php');
-require_once(dirname(__FILE__).'/../_tcpdf/tcpdf.php');
+require_once(dirname(__FILE__).'/../_tcpdf_'.HTML2PDF_USED_TCPDF_VERSION.'/tcpdf.php');
 
 class HTML2PDF_myPdf extends TCPDF
 {
@@ -655,7 +655,7 @@ class HTML2PDF_myPdf extends TCPDF
     }
     public function setcMargin($v)
     {
-        $this->cell_padding=array('T' => $v, 'R' => $v, 'B' => $v, 'L' => $v);
+        $this->cMargin=$v;
     }
 
     /**
