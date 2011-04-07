@@ -655,7 +655,7 @@ class HTML2PDF_myPdf extends TCPDF
     }
     public function setcMargin($v)
     {
-        $this->cMargin=$v;
+        $this->cell_padding=array('T' => $v, 'R' => $v, 'B' => $v, 'L' => $v);
     }
 
     /**
