@@ -89,8 +89,8 @@ class HTML2PDF_parsingCss
     protected function _init()
     {
         // get the Web Colors from TCPDF
-        require(dirname(__FILE__).'/../_tcpdf/htmlcolors.php');
-        $this->_htmlColor = $webcolor;
+        global $webcolor;
+        $this->_htmlColor = &$webcolor;
 
         // init the Style
         $this->table = array();
