@@ -529,7 +529,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
          * @param  string  $orientation
          * @param  array   $background background information
          * @param  integer $curr real position in the html parseur (if break line in the write of a text)
-         * @param  boolean $resetPageNumber = false
+         * @param  boolean $resetPageNumber
          */
         protected function _setNewPage($format = null, $orientation = '', $background = null, $curr = null, $resetPageNumber=false)
         {
@@ -2234,7 +2234,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             $newPageSet= (!isset($param['pageset']) || $param['pageset']!='old');
 
-            $resetPageNumber = (isset($param['reset']) && $param['reset']=='reset');
+            $resetPageNumber = (isset($param['pagegroup']) && $param['pagegroup']=='new');
 
             $this->_maxH = 0;
 

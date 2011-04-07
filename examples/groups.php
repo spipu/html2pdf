@@ -19,7 +19,7 @@ ob_start();
     table.page_footer {width: 100%; border: none; background-color: #DDDDFF; border-top: solid 1mm #AAAADD; padding: 2mm}
 -->
 </style>
-<page backtop="14mm" backbottom="14mm" backleft="10mm" backright="10mm" reset="reset">
+<page backtop="14mm" backbottom="14mm" backleft="10mm" backright="10mm" pagegroup="new">
     <page_header>
         <table class="page_header">
             <tr>
@@ -47,7 +47,7 @@ ob_start();
     Ceci est la page 3 du groupe 1
 </page>
 <?php for ($k=2; $k<5; $k++): ?>
-<page pageset="old" reset="reset">
+<page pageset="old" pagegroup="new">
     Ceci est la page 1 du groupe <?php echo $k; ?>
 </page>
 <page pageset="old">
