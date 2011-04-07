@@ -1,3 +1,0 @@
-You can read the documentation at : http://www.tcpdf.org/examples.php
-
-it has been removed because of the size of the package of HTML2PDF... 
