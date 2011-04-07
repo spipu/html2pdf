@@ -2,26 +2,28 @@
 //============================================================+
 // File name   : makefont.php
 // Begin       : 2004-12-31
-// Last Update : 2010-03-19
-// Version     : 1.2.006
+// Last Update : 2010-12-03
+// Version     : 1.2.007
 // License     : GNU LGPL (http://www.gnu.org/copyleft/lesser.html)
 // 	----------------------------------------------------------------------------
-// 	Copyright (C) 2008  Nicola Asuni - Tecnick.com S.r.l.
-// 	
-// 	This program is free software: you can redistribute it and/or modify
-// 	it under the terms of the GNU Lesser General Public License as published by
-// 	the Free Software Foundation, either version 2.1 of the License, or
-// 	(at your option) any later version.
-// 	
-// 	This program is distributed in the hope that it will be useful,
-// 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-// 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// 	GNU Lesser General Public License for more details.
-// 	
-// 	You should have received a copy of the GNU Lesser General Public License
-// 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 	
-// 	See LICENSE.TXT file for more information.
+// 	Copyright (C) 2008-2010  Nicola Asuni - Tecnick.com S.r.l.
+//
+// This file is part of TCPDF software library.
+//
+// TCPDF is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// TCPDF is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with TCPDF.  If not, see <http://www.gnu.org/licenses/>.
+//
+// See LICENSE.TXT file for more information.
 //  ----------------------------------------------------------------------------
 //
 // Description : Utility to generate font definition files fot TCPDF
@@ -39,25 +41,29 @@
 //============================================================+
 
 /**
+ * @file
  * Utility to generate font definition files fot TCPDF.
  * @author Nicola Asuni, Olivier Plathey, Steven Wittens
- * @copyright 2004-2008 Nicola Asuni - Tecnick.com S.r.l (www.tecnick.com) Via Della Pace, 11 - 09044 - Quartucciu (CA) - ITALY - www.tecnick.com - info@tecnick.com
  * @package com.tecnick.tcpdf
- * @link http://www.tcpdf.org
- * @license http://www.gnu.org/copyleft/lesser.html LGPL
 */
 
 /**
- * 
- * @param string $fontfile path to font file (TTF, OTF or PFB).
- * @param string $fmfile font metrics file (UFM or AFM).
- * @param boolean $embedded Set to false to not embed the font, true otherwise (default).
- * @param string $enc Name of the encoding table to use. Omit this parameter for TrueType Unicode, OpenType Unicode and symbolic fonts like Symbol or ZapfDingBats.
- * @param array $patch Optional modification of the encoding
+ * Convert a Font for TCPDF
+ * @param $fontfile (string) path to font file (TTF, OTF or PFB).
+ * @param $fmfile (string) font metrics file (UFM or AFM).
+ * @param $embedded (boolean) Set to false to not embed the font, true otherwise (default).
+ * @param $enc (string) Name of the encoding table to use. Omit this parameter for TrueType Unicode, OpenType Unicode and symbolic fonts like Symbol or ZapfDingBats.
+ * @param $patch (array) Optional modification of the encoding
  */
 function MakeFont($fontfile, $fmfile, $embedded=true, $enc='cp1252', $patch=array()) {
 	//Generate a font definition file
-	set_magic_quotes_runtime(0);
+	if(!defined('PHP_VERSION_ID')) {
+		$version = PHP_VERSION;
+		define('PHP_VERSION_ID', (($version{0} * 10000) + ($version{2} * 100) + $version{4}));
+	}
+	if (PHP_VERSION_ID < 50300) {
+		@set_magic_quotes_runtime(0);
+	}
 	ini_set('auto_detect_line_endings', '1');
 	if (!file_exists($fontfile)) {
 		die('Error: file not found: '.$fontfile);
@@ -199,14 +205,14 @@ function MakeFont($fontfile, $fmfile, $embedded=true, $enc='cp1252', $patch=arra
 		//Not embedded font
 		$s .= '$file='."'';\n";
 	}
-	$s .= "?>";
+	$s .= '// --- EOF ---';
 	SaveToFile($basename.'.php',$s);
 	print "Font definition file generated (".$basename.".php)\n";
 }
 
 /**
  * Read the specified encoding map.
- * @param string $enc map name (see /enc/ folder for valid names).
+ * @param $enc (string) map name (see /enc/ folder for valid names).
  */
 function ReadMap($enc) {
 	//Read a map file
@@ -579,9 +585,11 @@ function CheckTTF($file) {
 	$e = ($fsType & 0x08) != 0;
 	fclose($f);
 	if($rl AND (!$pp) AND (!$e)) {
-		print "Warning: font license does not allow embedding\n";
+		print 'Warning: font license does not allow embedding.'."\n";
 	}
 }
+
+// -------------------------------------------------------------------
 
 $arg = $GLOBALS['argv'];
 if (count($arg) >= 3) {
@@ -605,6 +613,9 @@ if (count($arg) >= 3) {
 	$t = ob_get_clean();
 	print preg_replace('!<BR( /)?>!i', "\n", $t);
 } else {
-	print "Usage: makefont.php <ttf/otf/pfb file> <afm/ufm file> <encoding> <patch>\n";
+	print 'Usage: makefont.php <ttf/otf/pfb file> <afm/ufm file> <encoding> <patch>'."\n";
 }
-?>
+
+//============================================================+
+// END OF FILE
+//============================================================+
