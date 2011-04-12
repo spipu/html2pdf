@@ -5851,14 +5851,16 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     $w = 3;
                     $h = $w;
                     if ($h<$f) $y+= ($f-$h)*0.5;
-                    $this->pdf->CheckBox($name, $w, isset($param['checked']), $prop, array(), ($param['value'] ? $param['value'] : 'Yes'), $x, $y);
+                    $checked = (isset($param['checked']) && $param['checked']=='checked');
+                    $this->pdf->CheckBox($name, $w, $checked, $prop, array(), ($param['value'] ? $param['value'] : 'Yes'), $x, $y);
                     break;
 
                 case 'radio':
                     $w = 3;
                     $h = $w;
                     if ($h<$f) $y+= ($f-$h)*0.5;
-                    $this->pdf->RadioButton($name, $w, $prop, array(), ($param['value'] ? $param['value'] : 'On'), isset($param['selected']), $x, $y);
+                    $checked = (isset($param['checked']) && $param['checked']=='checked');
+                    $this->pdf->RadioButton($name, $w, $prop, array(), ($param['value'] ? $param['value'] : 'On'), $checked, $x, $y);
                     break;
 
                 case 'hidden':
