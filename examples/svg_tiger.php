@@ -266,7 +266,7 @@ $content = '
         $html2pdf = new HTML2PDF('L', 'A4', 'fr');
         $html2pdf->pdf->SetDisplayMode('fullpage');
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-        $html2pdf->Output('draw.pdf');
+        $html2pdf->Output('svg_tiger.pdf');
     }
     catch(HTML2PDF_exception $e) {
         echo $e;
