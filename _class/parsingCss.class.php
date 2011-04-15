@@ -11,7 +11,12 @@
 
 class HTML2PDF_parsingCss
 {
-    protected $_pdf         = null;    // reference to the pdf object
+    /**
+     * reference to the pdf object
+     * @var TCPDF
+     */
+    protected $_pdf         = null;
+
     protected $_htmlColor   = array(); // list of the HTML colors
     protected $_onlyLeft    = false;   // flag if we are in a sub html => only "text-align:left" is used
     protected $_defaultFont = null;    // default font to use if the asked font does not exist
@@ -89,8 +94,8 @@ class HTML2PDF_parsingCss
     protected function _init()
     {
         // get the Web Colors from TCPDF
-        global $webcolor;
-        $this->_htmlColor = &$webcolor;
+        require(K_PATH_MAIN.'htmlcolors.php');
+        $this->_htmlColor = $webcolor;
 
         // init the Style
         $this->table = array();
@@ -306,8 +311,10 @@ class HTML2PDF_parsingCss
         $d = ($this->value['font-linethrough'] ? 'D' : '');
         $o = ($this->value['font-overline']    ? 'O' : '');
 
+        // font style
+        $style = $b.$i;
+
         if ($this->_defaultFont) {
-            $style = $b.$i;
             if($family=='arial')
                 $family='helvetica';
             elseif($family=='symbol' || $family=='zapfdingbats')
@@ -323,12 +330,15 @@ class HTML2PDF_parsingCss
         elseif($family=='symbol' || $family=='zapfdingbats')
             $style='';
 
+        // complete size
+        $style.= $u.$d.$o;
+
         // size : mm => pt
         $size = $this->value['font-size'];
         $size = 72 * $size / 25.4;
 
         // apply the font
-        $this->_pdf->SetFont($family, $b.$i.$u.$d.$o, $this->value['mini-size']*$size);
+        $this->_pdf->SetFont($family, $style, $this->value['mini-size']*$size);
         $this->_pdf->setTextColorArray($this->value['color']);
         if ($this->value['background']['color'])
             $this->_pdf->setFillColorArray($this->value['background']['color']);

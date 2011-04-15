@@ -12,7 +12,8 @@
 if (!defined('__CLASS_HTML2PDF__')) {
 
     define('__CLASS_HTML2PDF__', '4.02');
-    define('HTML2PDF_USED_TCPDF_VERSION', '5.0.002');
+//    define('HTML2PDF_USED_TCPDF_VERSION', '5.0.002');
+    define('HTML2PDF_USED_TCPDF_VERSION', '5.9.064');
 
     require_once(dirname(__FILE__).'/_class/exception.class.php');
     require_once(dirname(__FILE__).'/_class/locale.class.php');
@@ -595,7 +596,6 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             // set the PDF margins
             $this->pdf->SetMargins($this->_margeLeft, $this->_margeTop, $this->_margeRight);
-            $this->pdf->setcMargin(0);
             $this->pdf->SetAutoPageBreak(false, $this->_margeBottom);
 
             // set the float Margins
