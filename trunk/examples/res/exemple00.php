@@ -8,6 +8,13 @@
 }
 -->
 </style>
+<page style="font-family: arial">
+    <span>Test 1</span><br />
+    <span style="font-weight: bold">Test 2</span><br />
+    <span style="font-family: times;">Test 3</span><br />
+    <span style="font-family: times; font-weight: bold">Test 4</span><br />
+</page>
+<!--
 <page style="font-size: 14px">
     <span style="font-weight: bold; font-size: 18pt; color: #FF0000; font-family: Times">Bonjour, voici quelques exemples<br></span>
     <br>
@@ -84,3 +91,4 @@
     <table style="border: solid 1px #440000; width: 5in"    cellspacing="0"><tr><td style="width: 100%">Largeur : 5in</td></tr></table><br>
     <table style="border: solid 1px #440000; width: 80%"    cellspacing="0"><tr><td style="width: 100%">Largeur : 80% </td></tr></table><br>
 </page>
+-->
