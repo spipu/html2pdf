@@ -330,7 +330,7 @@ class HTML2PDF_parsingCss
         elseif($family=='symbol' || $family=='zapfdingbats')
             $style='';
 
-        // complete size
+        // complete style
         $style.= $u.$d.$o;
 
         // size : mm => pt
