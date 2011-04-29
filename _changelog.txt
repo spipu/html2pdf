@@ -1,11 +1,13 @@
 @todo :
     utiliser de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
 
-4.02 (2011-xx-xx)
-    ATTENTION : beaucoup de changements dans la structure du projet. version 3.xx abandonnée
+4.03 (2011-xx-xx)
     mise à jour de TCPDF en version 5.9.064. Attention aux points suivants :
       + The logic of permissions on the SetProtection() method has been inverted and extended (see example 16). Now you have to specify the features you want to block.
       + Support for font subsetting was added by default to reduce the size of documents using large unicode font files.
+
+4.02 (2011-04-29)
+    ATTENTION : beaucoup de changements dans la structure du projet. version 3.xx abandonnée
     uniformisation des fichiers du projet (standard Zend)
     conversion des fichiers de langue en CSV, déplacement dans le répertoire "locale". création d'une classe spécifique à la gestion des locales
     amélioration de la gestion de certaines erreurs

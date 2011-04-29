@@ -6,7 +6,7 @@
  * distributed under the LGPL License
  *
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @version   4.02
+ * @version   4.03
  */
 
 class HTML2PDF_exception extends exception
