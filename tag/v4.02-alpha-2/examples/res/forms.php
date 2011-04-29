@@ -32,7 +32,7 @@ input, textarea, select
         </ul>
         Vous êtes :
         <ul style="list-style: none">
-            <li><input type="radio" name="sexe" value="homme"> un homme</li>
+            <li><input type="radio" name="sexe" value="homme" checked="checked"> un homme</li>
             <li><input type="radio" name="sexe" value="femme"> une femme</li>
         </ul>
         Vous avez :

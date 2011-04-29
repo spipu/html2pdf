@@ -13,8 +13,8 @@
 
 $content = '
 <page>
-    <draw style="margin: auto; width:180mm; height:180mm; background: #444444; border: solid 0.5mm #777777;">
-        <g transform="translate(90mm,90mm) scale(1.5) translate(-250,-245)">
+    <draw style="margin: auto; width:180mm; height:240mm; background: #444444; border: solid 0.5mm #777777;">
+        <g transform="translate(90mm,120mm) scale(1.8) translate(-250,-245)">
             <path d="M 157.219 412.757 C 158.128 465.467 355.334 465.467 354.425 413.666 C 353.516 358.23 159.036 357.322 157.219 412.757 z " id="path749" sodipodi:nodetypes="ccc" style="fill:#623e35;fill-rule:evenodd;stroke:black;stroke-opacity:1;stroke-width:3.75;stroke-linejoin:bevel;stroke-linecap:butt;fill-opacity:1;stroke-dasharray:none;"/>
             <path d="M 212.655 306.43 L 211.746 413.665 C 219.694 425.479 288.517 427.298 299.898 412.757 L 299.898 305.521 C 289.901 320.97 232.647 326.423 212.655 306.43 z " id="path748" sodipodi:nodetypes="ccccc" style="fill:#623e35;fill-rule:evenodd;stroke:black;stroke-opacity:1;stroke-width:4.76806;stroke-linejoin:bevel;stroke-linecap:butt;fill-opacity:1;stroke-dasharray:none;" transform="matrix(0.618557,0.000000,0.000000,1.000000,98.94439,-0.908813)"/>
             <path d="M 248.097 24.7078 C 244.462 35.6132 134.5 111.951 71.7941 150.119 C 109.053 250.994 394.412 247.359 425.31 150.121 C 371.692 134.671 250.823 34.7044 248.097 24.7078 z " id="path747" sodipodi:nodetypes="cccc" style="fill:#009500;fill-rule:evenodd;stroke:black;stroke-opacity:1;stroke-width:3.75;stroke-linejoin:bevel;stroke-linecap:butt;fill-opacity:1;stroke-dasharray:none;" transform="translate(0.908775,139.0434)"/>
@@ -129,10 +129,10 @@ $content = '
     require_once(dirname(__FILE__).'/../html2pdf.class.php');
     try
     {
-        $html2pdf = new HTML2PDF('L', 'A4', 'fr');
+        $html2pdf = new HTML2PDF('P', 'A4', 'fr');
         $html2pdf->pdf->SetDisplayMode('fullpage');
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-        $html2pdf->Output('sapin.pdf');
+        $html2pdf->Output('svg_tree.pdf');
     }
     catch(HTML2PDF_exception $e) {
         echo $e;
