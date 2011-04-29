@@ -57,7 +57,7 @@ class HTML2PDF_myPdf extends TCPDF
         // prepare the automatic footer
         $this->SetMyFooter();
 
-        $this->setcMargin(0);
+        $this->cMargin = 0;
     }
 
     /**
@@ -654,10 +654,6 @@ class HTML2PDF_myPdf extends TCPDF
     public function setbMargin($v)
     {
         $this->bMargin=$v;
-    }
-    public function setcMargin($v)
-    {
-        $this->cMargin=$v;
     }
 
     /**
