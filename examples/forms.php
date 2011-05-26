@@ -14,7 +14,7 @@
     // for display the post information
     if (isset($_POST['test'])) {
         echo '<pre>';
-        print_r($_POST);
+        echo htmlentities(print_r($_POST, true));
         echo '</pre>';
         exit;
     }
