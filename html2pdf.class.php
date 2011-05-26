@@ -6,12 +6,12 @@
  * distributed under the LGPL License
  *
  * @author  Laurent MINGUET <webmaster@html2pdf.fr>
- * @version 4.03
+ * @version 4.04
  */
 
 if (!defined('__CLASS_HTML2PDF__')) {
 
-    define('__CLASS_HTML2PDF__', '4.03');
+    define('__CLASS_HTML2PDF__', '4.04');
 //    define('HTML2PDF_USED_TCPDF_VERSION', '5.0.002');
     define('HTML2PDF_USED_TCPDF_VERSION', '5.9.064');
 
