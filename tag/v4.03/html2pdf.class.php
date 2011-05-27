@@ -3306,7 +3306,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $nb = 0;
 
             // while we have words, and the text does not fit on the line => we cut the sentence
-            while ($x+$w>$right && $x<$right && count($words)) {
+            while ($x+$w>$right && $x<$right+$space && count($words)) {
                 // adding words 1 by 1 to fit on the line
                 $i=0;
                 $old = array('', 0);
@@ -3348,7 +3348,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 // max width
                 $maxX = max($maxX, $this->pdf->getX());
 
-                // new position and new width fot the "while"
+                // new position and new width for the "while"
                 $w-= $str[1];
                 $y = $this->pdf->getY();
                 $x = $this->pdf->getX();
@@ -3358,6 +3358,11 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 if (count($words)) {
                     // remove the space at the end
                     if ($add) $w-= $space;
+
+                    // if we don't add any word, and if the first word is empty => useless space to skip
+                    if (!$add && $words[0][0]==='') {
+                        array_shift($words);
+                    }
 
                     // if it is just to calculate for one line => adding the number of words
                     if ($this->_isForOneLine) {
@@ -3384,9 +3389,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
                         }
                     }
 
-                    // if more than 1000 line => error
+                    // if more than 10000 line => error
                     $nb++;
-                    if ($nb>1000) {
+                    if ($nb>10000) {
                         $txt = ''; foreach ($words as $k => $word) $txt.= ($k ? ' ' : '').$word[0];
                         throw new HTML2PDF_exception(2, array($txt, $right-$left, $w));
                     }
