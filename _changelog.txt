@@ -10,6 +10,7 @@
     correction de l'exemple "form.php" : vulnérabilité cross-site scripting corrigée
     correction sur la gestion des retours à la ligne automatique
     correction sur le calcul de la hauteur des balises H1->H6
+    amélioration de la gestion des exceptions
 
 4.02 (2011-04-29)
     ATTENTION : beaucoup de changements dans la structure du projet. version 3.xx abandonnée
