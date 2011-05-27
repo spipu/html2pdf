@@ -3963,6 +3963,8 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->_makeBreakLine($h);
             $this->_maxH = 0;
 
+            $this->_maxY = max($this->_maxY, $this->pdf->getY());
+
             return true;
         }
 
