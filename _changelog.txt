@@ -6,8 +6,9 @@
       + The logic of permissions on the SetProtection() method has been inverted and extended (see example 16). Now you have to specify the features you want to block.
       + Support for font subsetting was added by default to reduce the size of documents using large unicode font files.
 
-4.03 (2011-05-26)
+4.03 (2011-05-27)
     correction de l'exemple "form.php" : vulnérabilité cross-site scripting corrigée
+    correction sur la gestion des retours à la ligne
 
 4.02 (2011-04-29)
     ATTENTION : beaucoup de changements dans la structure du projet. version 3.xx abandonnée
