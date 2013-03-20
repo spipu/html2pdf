@@ -94,8 +94,7 @@ class HTML2PDF_parsingCss
     protected function _init()
     {
         // get the Web Colors from TCPDF
-        require(K_PATH_MAIN.'htmlcolors.php');
-        $this->_htmlColor = $webcolor;
+        $this->_htmlColor = TCPDF_COLORS::$webcolor;
 
         // init the Style
         $this->table = array();
@@ -113,7 +112,7 @@ class HTML2PDF_parsingCss
      */
     public function initStyle()
     {
-        $this->value['id_tag']       = 'body';        // tag name
+        $this->value['id_tag']           = 'body';       // tag name
         $this->value['id_name']          = null;         // tag - attribute name
         $this->value['id_id']            = null;         // tag - attribute id
         $this->value['id_class']         = null;         // tag - attribute class

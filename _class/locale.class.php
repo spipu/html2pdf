@@ -8,7 +8,6 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @version   4.04
  */
-
 class HTML2PDF_locale
 {
     /**

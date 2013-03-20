@@ -46,26 +46,29 @@ ob_start();
 <page pageset="old">
     Ceci est la page 3 du groupe 1
 </page>
-<?php for ($k=2; $k<5; $k++): ?>
+<?php
+for ($k=2; $k<5; $k++):
+?>
 <page pageset="old" pagegroup="new">
     Ceci est la page 1 du groupe <?php echo $k; ?>
 </page>
 <page pageset="old">
     Ceci est la page 2 du groupe <?php echo $k; ?>
 </page>
-<?php endfor; ?>
 <?php
-    $content = ob_get_clean();
+endfor;
 
-    require_once(dirname(__FILE__).'/../html2pdf.class.php');
-    try
-    {
-        $html2pdf = new HTML2PDF('P', 'A4', 'fr', true, 'UTF-8', 0);
-        $html2pdf->pdf->SetDisplayMode('fullpage');
-        $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-        $html2pdf->Output('groups.pdf');
-    }
-    catch(HTML2PDF_exception $e) {
-        echo $e;
-        exit;
-    }
+$content = ob_get_clean();
+
+require_once(dirname(__FILE__).'/../html2pdf.class.php');
+try
+{
+    $html2pdf = new HTML2PDF('P', 'A4', 'fr', true, 'UTF-8', 0);
+    $html2pdf->pdf->SetDisplayMode('fullpage');
+    $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+    $html2pdf->Output('groups.pdf');
+}
+catch(HTML2PDF_exception $e) {
+    echo $e;
+    exit;
+}

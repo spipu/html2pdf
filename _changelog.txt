@@ -1,8 +1,8 @@
 @todo :
     utiliser de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
 
-4.04 (2011-xx-xx)
-    mise à jour de TCPDF en version 5.9.064. Attention aux points suivants :
+4.04 (2013-XX-XX)
+    mise à jour de TCPDF en version 6.0.002. Attention aux points suivants :
       + The logic of permissions on the SetProtection() method has been inverted and extended (see example 16). Now you have to specify the features you want to block.
       + Support for font subsetting was added by default to reduce the size of documents using large unicode font files.
 
