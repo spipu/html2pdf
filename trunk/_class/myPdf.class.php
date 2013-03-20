@@ -52,6 +52,7 @@ class HTML2PDF_myPdf extends TCPDF
         $this->SetAutoPageBreak(false, 0);
         $this->linestyleCap = '2 J';
         $this->setPrintHeader(false);
+        $this->setFontSubsetting(false);
         $this->jpeg_quality = 90;
 
         // prepare the automatic footer
