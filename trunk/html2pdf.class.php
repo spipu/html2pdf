@@ -936,13 +936,13 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             // create the sub object
             HTML2PDF::$_subobj = new HTML2PDF(
-                                        $this->_orientation,
-                                        $this->_format,
-                                        $this->_langue,
-                                        $this->_unicode,
-                                        $this->_encoding,
-                                        array($this->_defaultLeft,$this->_defaultTop,$this->_defaultRight,$this->_defaultBottom)
-                                    );
+                $this->_orientation,
+                $this->_format,
+                $this->_langue,
+                $this->_unicode,
+                $this->_encoding,
+                array($this->_defaultLeft,$this->_defaultTop,$this->_defaultRight,$this->_defaultBottom)
+            );
 
             // init
             HTML2PDF::$_subobj->setTestTdInOnePage($this->_testTdInOnepage);
