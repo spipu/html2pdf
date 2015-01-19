@@ -1,4 +1,4 @@
-"err01","Tag <b>&lt;[[OTHER]]&gt;</b> endnu ikke eksisterer.<br><br>Hvis du ønsker at tilføje det, skal du oprette de metoder <b>o_[[OTHER]]</b> (for åbning) og <b>c_[[OTHER]]</b> (for lukning) ved at følge den model af eksisterende tags.<br><br>Hvis du opretter disse metoder, så tøv ikke med at send mig en e-mail til webmaster@html2pdf.fr til indsat dem i den næste version af HTML2PDF."
+"err01","Tag <b>&lt;[[OTHER]]&gt;</b> endnu ikke eksisterer.<br><br>Hvis du ønsker at tilføje det, skal du oprette de metoder <b>_tag_open_[[OTHER]]</b> (for åbning) og <b>_tag_close_[[OTHER]]</b> (for lukning) ved at følge den model af eksisterende tags.<br><br>Hvis du opretter disse metoder, så tøv ikke med at send mig en e-mail til webmaster@html2pdf.fr til indsat dem i den næste version af HTML2PDF."
 "err02","Sætning af 1000 lines => er for lang<br><b>sætning :</b> [[OTHER_0]]<br><b>Bredde boksen :</b> [[OTHER_1]]<br><b>Længde tekst :</b> [[OTHER_2]]<br>"
 "err03","HTML-kode er ugyldig, et tag er lukket for mange gange: <b>&lt;[[OTHER]]&gt;</b>"
 "err04","HTML-kode er ugyldig, tags er ikke afsluttet på en ordentlig måde.<br>Status : <pre>[[OTHER]]</pre>"

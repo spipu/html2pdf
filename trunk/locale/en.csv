@@ -1,4 +1,4 @@
-"err01","The tag <b>&lt;[[OTHER]]&gt;</b> does not yet exist.<br><br>If you want to add it, you must create the methods <b>o_[[OTHER]]</b> (for opening) and <b>c_[[OTHER]]</b> (for closure) by following the model of existing tags.<br><br>If you create these methods, do not hesitate to send me an email to webmaster@html2pdf.fr to included them in the next version of HTML2PDF."
+"err01","The tag <b>&lt;[[OTHER]]&gt;</b> does not yet exist.<br><br>If you want to add it, you must create the methods <b>_tag_open_[[OTHER]]</b> (for opening) and <b>_tag_close_[[OTHER]]</b> (for closure) by following the model of existing tags.<br><br>If you create these methods, do not hesitate to send me an email to webmaster@html2pdf.fr to included them in the next version of HTML2PDF."
 "err02","Sentence of 1000 lines => too long<br><b>Sentence :</b> [[OTHER_0]]<br><b>Width box :</b> [[OTHER_1]]<br><b>Length text :</b> [[OTHER_2]]<br>"
 "err03","HTML code invalid, a tag is closed too many times: <b>&lt;[[OTHER]]&gt;</b>"
 "err04","HTML code invalid, the tags are not closed in an orderly fashion.<br>Status : <pre>[[OTHER]]</pre>"

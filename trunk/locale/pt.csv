@@ -1,4 +1,4 @@
-"err01","A tag <b>&lt;[[OTHER]]&gt;</b> ainda não existe.<br><br>Se você quer inserí-la, deve criar os métodos <b>o_[[OTHER]]</b> (para abrí-la) e <b>c_[[OTHER]]</b> (para fechá-la) seguindo o modelo das tags existentes.<br><br>Se você criar novos métodos, os envie para webmaster@html2pdf.fr para que as próximas versões de HTML2PDF, e o restante do mundo se beneficie com isso."
+"err01","A tag <b>&lt;[[OTHER]]&gt;</b> ainda não existe.<br><br>Se você quer inserí-la, deve criar os métodos <b>_tag_open_[[OTHER]]</b> (para abrí-la) e <b>_tag_close_[[OTHER]]</b> (para fechá-la) seguindo o modelo das tags existentes.<br><br>Se você criar novos métodos, os envie para webmaster@html2pdf.fr para que as próximas versões de HTML2PDF, e o restante do mundo se beneficie com isso."
 "err02","Frase de 1000 linhas => muito grande<br><b>Frase :</b> [[OTHER_0]]<br><b>Tamanho do quadro :</b> [[OTHER_1]]<br><b>Tamanho do texto :</b> [[OTHER_2]]<br>"
 "err03","Código HTML não válido, uma tag está com fechamento sobrando : <b>&lt;[[OTHER]]&gt;</b>"
 "err04","Código HTML não válido, as tags não estão fechadas na ordem correta.<br>Estado : <pre>[[OTHER]]</pre>"

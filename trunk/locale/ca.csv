@@ -1,4 +1,4 @@
-"err01","L'etiqueta <b>&lt;[[OTHER]]&gt;</b> encara no existeix.<br><br>Si voleu afegir-la, heu de crear els mètodes <b>o_[[OTHER]]</b> (per l'obertura) i <b>c_[[OTHER]]</b> (pel tancament) seguint el model de les etiquetes existents.<br><br>A més, si creeu nous mètodes, envieu-ho a webmaster@html2pdf.fr per tal d'afegir-los a les següents versions d'HTML2PDF, i que tothom en pugui gaudir."
+"err01","L'etiqueta <b>&lt;[[OTHER]]&gt;</b> encara no existeix.<br><br>Si voleu afegir-la, heu de crear els mètodes <b>_tag_open_[[OTHER]]</b> (per l'obertura) i <b>_tag_close_[[OTHER]]</b> (pel tancament) seguint el model de les etiquetes existents.<br><br>A més, si creeu nous mètodes, envieu-ho a webmaster@html2pdf.fr per tal d'afegir-los a les següents versions d'HTML2PDF, i que tothom en pugui gaudir."
 "err02","Frase de 1000 línies => massa llarga<br><b>Frase :</b> [[OTHER_0]]<br><b>Mida casella :</b> [[OTHER_1]]<br><b>Mida text :</b> [[OTHER_2]]<br>"
 "err03","Codi HTML no vàlid, una etiqueta té un tancament de més : <b>&lt;[[OTHER]]&gt;</b>"
 "err04","Codi HTML no vàlid, les etiquetes no estan tancades en l'ordre correcte.<br>Estat : <pre>[[OTHER]]</pre>"
