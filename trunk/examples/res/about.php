@@ -32,7 +32,7 @@
                     page [[page_cu]]/[[page_nb]]
                 </td>
                 <td style="width: 33%; text-align: right">
-                    &copy;Spipu 2008-2011
+                    &copy;Spipu 2008-2015
                 </td>
             </tr>
         </table>

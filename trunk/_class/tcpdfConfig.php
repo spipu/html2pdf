@@ -2,37 +2,31 @@
 //============================================================+
 // File name   : tcpdf_config.php
 // Begin       : 2004-06-11
-// Last Update : 2013-02-06
+// Last Update : 2009-09-30
 //
 // Description : Configuration file for TCPDF.
-// Author      : Nicola Asuni - Tecnick.com LTD - Manor Coach House, Church Hill, Aldershot, Hants, GU12 4RQ, UK - www.tecnick.com - info@tecnick.com
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-// Copyright (C) 2004-2013  Nicola Asuni - Tecnick.com LTD
 //
-// This file is part of TCPDF software library.
+// Author: Nicola Asuni
 //
-// TCPDF is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// TCPDF is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with TCPDF.  If not, see <http://www.gnu.org/licenses/>.
-//
-// See LICENSE.TXT file for more information.
+// (c) Copyright:
+//               Nicola Asuni
+//               Tecnick.com s.r.l.
+//               Via Della Pace, 11
+//               09044 Quartucciu (CA)
+//               ITALY
+//               www.tecnick.com
+//               info@tecnick.com
 //============================================================+
 
 /**
  * Configuration file for TCPDF.
  * @author Nicola Asuni
+ * @copyright 2004-2008 Nicola Asuni - Tecnick.com S.r.l (www.tecnick.com)
+ *            Via Della Pace, 11 - 09044 - Quartucciu (CA) - ITALY - www.tecnick.com - info@tecnick.com
  * @package com.tecnick.tcpdf
- * @version 4.9.005
+ * @version 4.0.014
+ * @link http://tcpdf.sourceforge.net
+ * @license http://www.gnu.org/copyleft/lesser.html LGPL
  * @since 2004-10-27
  */
 
@@ -250,11 +244,6 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
      * IMPORTANT: For security reason, disable this feature if you are printing user HTML content.
      */
     define('K_TCPDF_CALLS_IN_HTML', false);
-
-    /**
-     * if true adn PHP version is greater than 5, then the Error() method throw new exception instead of terminating the execution.
-     */
-    define('K_TCPDF_THROW_EXCEPTION_ERROR', true);
 }
 
 //============================================================+
