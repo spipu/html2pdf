@@ -5,8 +5,8 @@
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
- * @author  Laurent MINGUET <webmaster@html2pdf.fr>
- * @version 4.04
+ * @author    Laurent MINGUET <webmaster@html2pdf.fr>
+ * @version   4.03
  */
 
 require_once(dirname(__FILE__).'/tcpdfConfig.php');

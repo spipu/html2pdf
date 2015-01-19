@@ -5,9 +5,10 @@
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
- * @author  Laurent MINGUET <webmaster@html2pdf.fr>
- * @version 4.04
+ * @author    Laurent MINGUET <webmaster@html2pdf.fr>
+ * @version   4.03
  */
+
 class HTML2PDF_exception extends exception
 {
     protected $_tag = null;
@@ -19,11 +20,9 @@ class HTML2PDF_exception extends exception
     /**
      * generate a HTML2PDF exception
      *
-     * @param int    $err   error number
-     * @param mixed  $other additionnal informations
-     * @param string $html  additionnal informations
-     *
-     * @return string  $html  optionnal code HTML associated to the error
+     * @param    int     $err error number
+     * @param    mixed   $other additionnal informations
+     * @return   string  $html optionnal code HTML associated to the error
      */
     final public function __construct($err = 0, $other = null, $html = '')
     {
@@ -89,8 +88,7 @@ class HTML2PDF_exception extends exception
         }
 
         // create the HTML message
-        $this->_messageHtml = '<span style="color: #AA0000; font-weight: bold;">';
-        $this->_messageHtml.= HTML2PDF_locale::get('txt01', 'error: ').$err.'</span><br>';
+        $this->_messageHtml = '<span style="color: #AA0000; font-weight: bold;">'.HTML2PDF_locale::get('txt01', 'error: ').$err.'</span><br>';
         $this->_messageHtml.= HTML2PDF_locale::get('txt02', 'file:').' '.$this->file.'<br>';
         $this->_messageHtml.= HTML2PDF_locale::get('txt03', 'line:').' '.$this->line.'<br>';
         $this->_messageHtml.= '<br>';

@@ -4,15 +4,15 @@
 ** http://www.gnu.org/licenses/lgpl.html             **
 ** pour en savoir plus.                              **
 **                                                   **
-**  Copyright 2008-2015 par Laurent Minguet          **
+**  Copyright 2008-2011 par Laurent Minguet          **
 *******************************************************
 *******************************
-* HTML2PDF v4.04 - xx/xx/2015 *
+* HTML2PDF v4.03 - 27/05/2011 *
 *******************************
 
 Utilisation :
 ------------
- - nécessite au minimum PHP5.2
+ - nécessite au minimum PHP5
 
  - regardez les exemples fournis, et lisez le wiki pour comprendre le fonctionnement.
 
@@ -82,6 +82,7 @@ Aide et Support :
 Informations :
 -------------
  Programmeur : Spipu
+      email   : webmaster@html2pdf.fr
       site    : http://html2pdf.fr/
       wiki    : http://html2pdf.fr/fr/wiki
       support : http://html2pdf.fr/fr/forum

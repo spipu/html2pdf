@@ -3,15 +3,15 @@
 ** for more information see file _LGPL.txt or          **
 ** http://www.gnu.org/licenses/lgpl.html               **
 **                                                     **
-**  Copyright 2008-2015 by Laurent Minguet             **
+**  Copyright 2008-2011 by Laurent Minguet             **
 *********************************************************
 *******************************
-* HTML2PDF v4.04 - 2015-xx-xx *
+* HTML2PDF v4.03 - 2011-05-27 *
 *******************************
 
 How to use :
 ------------
- - You need at least PHP 5.2
+ - You need at least PHP 5
 
  - Look at the examples provided to see how it works.
 
@@ -80,6 +80,7 @@ Help & Support :
 Informations :
 -------------
  Programmer : Spipu
+      email    : webmaster@html2pdf.fr
       web site : http://html2pdf.fr/
       wiki     : http://html2pdf.fr/en/wiki
       support  : http://html2pdf.fr/en/forum

@@ -5,8 +5,8 @@
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
- * @author  Laurent MINGUET <webmaster@html2pdf.fr>
- * @version 4.04
+ * @author      Laurent MINGUET <webmaster@html2pdf.fr>
+ * @version     4.03
  */
 
 class HTML2PDF_parsingCss
@@ -113,7 +113,7 @@ class HTML2PDF_parsingCss
      */
     public function initStyle()
     {
-        $this->value['id_tag']           = 'body';       // tag name
+        $this->value['id_tag']       = 'body';        // tag name
         $this->value['id_name']          = null;         // tag - attribute name
         $this->value['id_id']            = null;         // tag - attribute id
         $this->value['id_class']         = null;         // tag - attribute class

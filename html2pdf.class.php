@@ -6,12 +6,12 @@
  * distributed under the LGPL License
  *
  * @author  Laurent MINGUET <webmaster@html2pdf.fr>
- * @version 4.04
+ * @version 4.03
  */
 
 if (!defined('__CLASS_HTML2PDF__')) {
 
-    define('__CLASS_HTML2PDF__', '4.04');
+    define('__CLASS_HTML2PDF__', '4.03');
     define('HTML2PDF_USED_TCPDF_VERSION', '5.0.002');
 
     require_once(dirname(__FILE__).'/_class/exception.class.php');
@@ -935,13 +935,13 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             // create the sub object
             HTML2PDF::$_subobj = new HTML2PDF(
-                $this->_orientation,
-                $this->_format,
-                $this->_langue,
-                $this->_unicode,
-                $this->_encoding,
-                array($this->_defaultLeft,$this->_defaultTop,$this->_defaultRight,$this->_defaultBottom)
-            );
+                                        $this->_orientation,
+                                        $this->_format,
+                                        $this->_langue,
+                                        $this->_unicode,
+                                        $this->_encoding,
+                                        array($this->_defaultLeft,$this->_defaultTop,$this->_defaultRight,$this->_defaultBottom)
+                                    );
 
             // init
             HTML2PDF::$_subobj->setTestTdInOnePage($this->_testTdInOnepage);
