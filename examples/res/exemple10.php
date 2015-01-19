@@ -107,7 +107,7 @@ div.main a:hover
 </style>
     <div class="main">
         <div style="position: absolute; top: 5mm; left: 5mm; font-size:12pt;text-align: left;">Spipu.net</div><br>
-        <div style="position: absolute; bottom: 5mm; right: 5mm; font-size:12pt; text-align: right; ">(c)2011 Spipu</div>
+        <div style="position: absolute; bottom: 5mm; right: 5mm; font-size:12pt; text-align: right; ">(c)2015 Spipu</div>
         <br><br><br>
         <a href="http://cineblog.spipu.net/" >Cineblog by Spipu           </a><br><br>
         <a href="http://html2pdf.fr/"        >HTML2PDF                    </a><br><br>

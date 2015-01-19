@@ -5,8 +5,8 @@
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
- * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @version   4.04
+ * @author  Laurent MINGUET <webmaster@html2pdf.fr>
+ * @version 4.04
  */
 
 require_once(dirname(__FILE__).'/tcpdfConfig.php');
@@ -52,14 +52,12 @@ class HTML2PDF_myPdf extends TCPDF
         $this->SetAutoPageBreak(false, 0);
         $this->linestyleCap = '2 J';
         $this->setPrintHeader(false);
-        $this->setFontSubsetting(false);
         $this->jpeg_quality = 90;
 
         // prepare the automatic footer
         $this->SetMyFooter();
 
-        $this->setCellPaddings(0, 0, 0, 0);
-        $this->setCellMargins(0, 0, 0, 0);
+        $this->cMargin = 0;
     }
 
     /**
