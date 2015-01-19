@@ -1,4 +1,4 @@
-"err01","Il tag <b>&lt;[[OTHER]]&gt;</b> non esiste ancora.<br><br>Se si desidera aggiungere, è necessario creare metodi <b>o_[[OTHER]]</b> (di apertura) e <b>C_[[OTHER]]</b> (per la chiusura) secondo il modello esistente di tag.<br><br>Inoltre, se si creare questi metodi, non esitate a portare il mondo intero ha scritto su webmaster@html2pdf.fr in modo che alla fine nella prossima versione di HTML2PDF."
+"err01","Il tag <b>&lt;[[OTHER]]&gt;</b> non esiste ancora.<br><br>Se si desidera aggiungere, è necessario creare metodi <b>_tag_open_[[OTHER]]</b> (di apertura) e <b>_tag_close_[[OTHER]]</b> (per la chiusura) secondo il modello esistente di tag.<br><br>Inoltre, se si creare questi metodi, non esitate a portare il mondo intero ha scritto su webmaster@html2pdf.fr in modo che alla fine nella prossima versione di HTML2PDF."
 "err02","Citazione di 1000 linee => troppo lungo<br><b>frase :</b> [[OTHER_0]]<br><b>casella Larghezza :</b> [[OTHER_1]]<br><b>Lunghezza testo :</b> [[OTHER_2]]<br>"
 "err03","HTML non valido, un tag è chiusa troppo <b>&lt;[[OTHER]]&gt;</ b>"
 "err04","HTML non validi, i tag non sono chiusi nel corretto ordine.<br>Stato :<pre>[[OTHER]]</pre>"

@@ -1,4 +1,4 @@
-"err01","<b>&lt;[[OTHER]]&gt;</b> etiketi bulunamadý.<br><br>Eklemek isterseniz, <b>o_[[OTHER]]</b> þeklinde açýp, <b>c_[[OTHER]]</b> þeklinde kapatabilirsiniz.<br><br> Bu þekilde etiketler üretirseniz lütfen daha sonraki HTML2PDF versiyonuna eklenmek üzere bana gönderin. ( webmaster@html2pdf.fr )."
+"err01","<b>&lt;[[OTHER]]&gt;</b> etiketi bulunamadý.<br><br>Eklemek isterseniz, <b>_tag_open_[[OTHER]]</b> þeklinde açýp, <b>_tag_close_[[OTHER]]</b> þeklinde kapatabilirsiniz.<br><br> Bu þekilde etiketler üretirseniz lütfen daha sonraki HTML2PDF versiyonuna eklenmek üzere bana gönderin. ( webmaster@html2pdf.fr )."
 "err02","Ýçerik 1000 satýrdan fazla ve gerekenden uzun <br><b>Konu :</b> [[OTHER_0]]<br><b>Geniþlik :</b> [[OTHER_1]]<br><b>Yazý boyutu :</b> [[OTHER_2]]<br>"
 "err03","HTML kodu hatalý, etiket birden fazla defa kapatýlmýþ: <b>&lt;[[OTHER]]&gt;</b>"
 "err04","HTML kodu hatalý, etiketler gereken düzen içinde kapatýlmamýþ.<br>Durum : <pre>[[OTHER]]</pre>"
