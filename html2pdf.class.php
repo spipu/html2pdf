@@ -2179,7 +2179,10 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][3]>1) {
 
                         // sum the max height of each line in rowspan
-                        $s = 0; for ($i=0; $i<$corr[$y][$x][3]; $i++) $s+= $sh[$y+$i];
+                        $s = 0;
+                        for ($i=0; $i<$corr[$y][$x][3]; $i++) {
+                            $s+= isset($sh[$y+$i]) ? $sh[$y+$i] : 0;
+                        }
 
                         // if the max height is < the height of the cell with rowspan => we adapt the height of each max height
                         if ($s>0 && $s<$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h']) {
