@@ -120,7 +120,7 @@ class HTML2PDF_parsingCss
         $this->value['id_lst']           = array('*');   // tag - list of legacy
         $this->value['mini-size']        = 1.;           // specific size report for sup, sub
         $this->value['mini-decal']       = 0;            // specific position report for sup, sub
-        $this->value['font-family']      = 'Arial';
+        $this->value['font-family']      = defined('PDF_FONT_NAME_MAIN') ? PDF_FONT_NAME_MAIN : 'Arial';
         $this->value['font-bold']        = false;
         $this->value['font-italic']      = false;
         $this->value['font-underline']   = false;
