@@ -1,0 +1,27 @@
+{
+    "name": "spipu/html2pdf",
+    "type": "library",
+    "description": "Html2pdf' with Composer support. (Fixed composer dependency problem)",
+    "keywords": ["html", "pdf", "html2pdf"],
+    "homepage": "http://html2pdf.fr/",
+    "license": "LGPL",
+    "authors":
+    [
+        {
+            "name": "Spipu",
+            "homepage": "https://github.com/spipu",
+            "role": "Developer"
+        }
+    ],
+    "require":
+    {
+        "php": ">=5.2"
+    },
+    "autoload":
+    {
+        "psr-0":
+        {
+            "HTML2PDF": "."
+        }
+    }
+}
