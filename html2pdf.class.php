@@ -3262,11 +3262,11 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             if ($this->parsingCss->value['text-transform']!='none') {
                 if ($this->parsingCss->value['text-transform']=='capitalize')
-                    $txt = ucwords($txt);
+                    $txt = mb_convert_case($txt, MB_CASE_TITLE, $this->_encoding);
                 else if ($this->parsingCss->value['text-transform']=='uppercase')
-                    $txt = strtoupper($txt);
+                    $txt = mb_convert_case($txt, MB_CASE_UPPER, $this->_encoding);
                 else if ($this->parsingCss->value['text-transform']=='lowercase')
-                    $txt = strtolower($txt);
+                    $txt = mb_convert_case($txt, MB_CASE_LOWER, $this->_encoding);
             }
 
             // size of the text
