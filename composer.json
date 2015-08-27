@@ -19,9 +19,6 @@
     },
     "autoload":
     {
-        "psr-0":
-        {
-            "HTML2PDF": "."
-        }
+        "files": ["html2pdf.class.php"]
     }
 }
