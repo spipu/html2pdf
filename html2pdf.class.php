@@ -93,7 +93,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
         protected $_pageMarges       = array();     // float marges of the current page
         protected $_background       = array();     // background informations
 
-
+        protected $_hideHeader       = array();     // array : list of pages which the header gonna be hidden
         protected $_firstPage        = true;        // flag : first page
         protected $_defList          = array();     // table to save the stats of the tags UL and OL
 
@@ -807,6 +807,8 @@ if (!defined('__CLASS_HTML2PDF__')) {
         protected function _setPageHeader()
         {
             if (!count($this->_subHEADER)) return false;
+            
+            if (in_array($this->pdf->getPage(), $this->_hideHeader)) return false;
 
             $oldParsePos = $this->_parsePos;
             $oldParseCode = $this->parsingHtml->code;
@@ -2238,6 +2240,10 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $newPageSet= (!isset($param['pageset']) || $param['pageset']!='old');
 
             $resetPageNumber = (isset($param['pagegroup']) && $param['pagegroup']=='new');
+            
+            if (array_key_exist('hideheader', $param) && $param['hideheader']!='false' && !empty($param['hideheader'])) {
+                $this->_hideHeader = (array) array_merge($this->_hideHeader, split(',', $param['hideheader']));
+            }
 
             $this->_maxH = 0;
 
