@@ -12,7 +12,7 @@
 if (!defined('__CLASS_HTML2PDF__')) {
 
     define('__CLASS_HTML2PDF__', '4.04');
-    define('HTML2PDF_USED_TCPDF_VERSION', '5.0.002');
+    define('HTML2PDF_USED_TCPDF_VERSION', '6.2.11');
 
     require_once(dirname(__FILE__).'/_class/exception.class.php');
     require_once(dirname(__FILE__).'/_class/locale.class.php');
@@ -6492,6 +6492,34 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 return null;
             }
         }
+
+        /**
+         * tag : END_LAST_PAGE
+         * mode : OPEN
+         *
+         * @param  array $param
+         * @return void
+         */
+		    protected function _tag_open_END_LAST_PAGE($param)
+				{
+					$height =  $this->parsingCss->ConvertToMM($param['end_height'], $this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin());
+
+					if ($height < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) && $this->pdf->getY() + $height>=($this->pdf->getH() - $this->pdf->getbMargin()))
+						$this->_setNewPage();
+				}
+
+        /**
+         * tag : END_LAST_PAGE
+         * mode : CLOSE
+         *
+         * @param  array $param
+         * @return void
+         */
+				protected function _tag_close_END_LAST_PAGE($param)
+				{
+					$this->parsingCss->load();
+					$this->parsingCss->FontSet();
+				}
 
     }
 }
