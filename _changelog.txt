@@ -1,6 +1,8 @@
 @todo :
     utiliser de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
-
+4.05 (2015-09-16)
+    Update to TCPDF 6.2.11
+    Add a tag END_LAST_PAGE for customize the end of the last page (Thanks alphonix on http://www.yaronet.com/board/topic/125998)
 4.04 (2015-XX-XX)
     mise à jour de TCPDF en version 6.0.002. Attention aux points suivants :
       + The logic of permissions on the SetProtection() method has been inverted and extended (see example 16). Now you have to specify the features you want to block.
