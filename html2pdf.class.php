@@ -6500,12 +6500,12 @@ if (!defined('__CLASS_HTML2PDF__')) {
          * @param  array $param
          * @return void
          */
-		    protected function _tag_open_END_LAST_PAGE($param)
-				{
-					$height =  $this->parsingCss->ConvertToMM($param['end_height'], $this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin());
+        protected function _tag_open_END_LAST_PAGE($param)
+        {
+          $height =  $this->parsingCss->ConvertToMM($param['end_height'], $this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin());
 
-					if ($height < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) && $this->pdf->getY() + $height>=($this->pdf->getH() - $this->pdf->getbMargin()))
-						$this->_setNewPage();
+          if ($height < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) && $this->pdf->getY() + $height>=($this->pdf->getH() - $this->pdf->getbMargin()))
+            $this->_setNewPage();
 				}
 
         /**
@@ -6515,11 +6515,10 @@ if (!defined('__CLASS_HTML2PDF__')) {
          * @param  array $param
          * @return void
          */
-				protected function _tag_close_END_LAST_PAGE($param)
-				{
-					$this->parsingCss->load();
-					$this->parsingCss->FontSet();
-				}
-
+        protected function _tag_close_END_LAST_PAGE($param)
+        {
+          $this->parsingCss->load();
+          $this->parsingCss->FontSet();
+        }
     }
 }
