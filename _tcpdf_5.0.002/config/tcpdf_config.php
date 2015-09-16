@@ -229,7 +229,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * set to true to enable the special procedure used to avoid the overlappind of symbols on Thai language
 	 */
-	define('K_THAI_TOPCHARS', true);
+	define('K_THAI_TOPCHARS', false);
 
 	/**
 	 * if true allows to call TCPDF methods using HTML syntax
