@@ -6481,11 +6481,11 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _tag_open_END_LAST_PAGE($param)
         {
-          $height =  $this->parsingCss->ConvertToMM($param['end_height'], $this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin());
+          $height = $this->parsingCss->ConvertToMM($param['end_height'], $this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin());
 
           if ($height < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) && $this->pdf->getY() + $height>=($this->pdf->getH() - $this->pdf->getbMargin()))
             $this->_setNewPage();
-				}
+        }
 
         /**
          * tag : END_LAST_PAGE
@@ -6508,18 +6508,17 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         public function _INDEX_NewPage(&$page)
         {
-            if ($page) {
-                $oldPage = $this->pdf->getPage();
-                $this->pdf->setPage($page);
-                $this->pdf->setXY($this->_margeLeft, $this->_margeTop);
-                $this->_maxH = 0;
-                $page++;
-                return $oldPage;
-            } else {
-                $this->_setNewPage();
-                return null;
-            }
+          if ($page) {
+              $oldPage = $this->pdf->getPage();
+              $this->pdf->setPage($page);
+              $this->pdf->setXY($this->_margeLeft, $this->_margeTop);
+              $this->_maxH = 0;
+              $page++;
+              return $oldPage;
+          } else {
+              $this->_setNewPage();
+              return null;
+          }
         }
-
     }
 }
