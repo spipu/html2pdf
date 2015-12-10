@@ -22,7 +22,7 @@ class HTML2PDF_parsingHtml
     /**
      * main constructor
      *
-     * @param   string encoding
+     * @param   string $encoding
      * @access  public
      */
     public function __construct($encoding = 'UTF-8')
@@ -37,7 +37,7 @@ class HTML2PDF_parsingHtml
     /**
      * change the encoding
      *
-     * @param   string encoding
+     * @param   string $encoding
      * @access  public
      */
     public function setEncoding($encoding)
@@ -48,7 +48,7 @@ class HTML2PDF_parsingHtml
     /**
      * Define the HTML code to parse
      *
-     * @param   string HTML code
+     * @param   string $html code
      * @access  public
      */
     public function setHTML($html)
@@ -100,12 +100,12 @@ class HTML2PDF_parsingHtml
         foreach ($tmp as $part) {
             // if it is a tag code
             if ($part[0]=='code') {
-                // analise the HTML code
+                // analyze the HTML code
                 $res = $this->_analiseCode($part[1]);
 
                 // if it is a real HTML tag
                 if ($res) {
-                    // save the current posistion in the HTML code
+                    // save the current position in the HTML code
                     $res['html_pos'] = $part[2];
 
                     // if the tag must be closed
@@ -120,7 +120,7 @@ class HTML2PDF_parsingHtml
                             else
                                 unset($parents[count($parents)-1]);
                         } else {
-                            // if it is a autoclosed tag
+                            // if it is an auto-closed tag
                             if ($res['autoclose']) {
                                 // save the opened tag
                                 $actions[] = $res;
@@ -134,7 +134,7 @@ class HTML2PDF_parsingHtml
                                 $parents[count($parents)] = $res['name'];
                         }
 
-                        // if it is a <pre> tag (or <code> tag) not auclosed => update the flag
+                        // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
                         if (($res['name']=='pre' || $res['name']=='code') && !$res['autoclose']) {
                             $tagPreIn = !$res['close'];
                         }
@@ -142,7 +142,7 @@ class HTML2PDF_parsingHtml
 
                     // save the actions to convert
                     $actions[] = $res;
-                } else { // else (it is not a real HTML tag => we transform it in Texte
+                } else { // else (it is not a real HTML tag => we transform it in Text
                     $part[0]='txt';
                 }
             }
@@ -181,7 +181,7 @@ class HTML2PDF_parsingHtml
             }
         }
 
-        // for each indentified action, we have to clean up the begin and the end of the texte
+        // for each identified action, we have to clean up the begin and the end of the texte
         // based on tags that surround it
 
         // list of the tags to clean
@@ -224,9 +224,9 @@ class HTML2PDF_parsingHtml
     /**
      * prepare the text
      *
-     * @param   string texte
-     * @param   boolean true => replace multiple space+\t+\r+\n by a single space
-     * @return  string texte
+     * @param   string $txt
+     * @param   boolean $spaces true => replace multiple space+\t+\r+\n by a single space
+     * @return  string txt
      * @access  protected
      */
     protected function _prepareTxt($txt, $spaces = true)
@@ -284,7 +284,7 @@ class HTML2PDF_parsingHtml
     /**
      * analise a HTML tag
      *
-     * @param   string   HTML code to analise
+     * @param   string   $code HTML code to analise
      * @return  array    corresponding action
      */
     protected function _analiseCode($code)
@@ -307,19 +307,19 @@ class HTML2PDF_parsingHtml
             $param['href'] = '';
         }
 
-        // read the parameters : nom=valeur
+        // read the parameters : name=value
         $prop = '([a-zA-Z0-9_]+)=([^"\'\s>]+)';
         preg_match_all('/'.$prop.'/is', $code, $match);
         for($k=0; $k<count($match[0]); $k++)
             $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
 
-        // read the parameters : nom="valeur"
+        // read the parameters : name="value"
         $prop = '([a-zA-Z0-9_]+)=["]([^"]*)["]';
         preg_match_all('/'.$prop.'/is', $code, $match);
         for($k=0; $k<count($match[0]); $k++)
             $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
 
-        // read the parameters : nom='valeur'
+        // read the parameters : name='value'
         $prop = "([a-zA-Z0-9_]+)=[']([^']*)[']";
         preg_match_all('/'.$prop.'/is', $code, $match);
         for($k=0; $k<count($match[0]); $k++)
@@ -438,7 +438,7 @@ class HTML2PDF_parsingHtml
     /**
      * get a full level of HTML, between an opening and closing corresponding
      *
-     * @param   integer key
+     * @param   integer $k
      * @return  array   actions
      */
     public function getLevel($k)
@@ -508,9 +508,9 @@ class HTML2PDF_parsingHtml
     /**
      * return a part of the HTML code, for error message
      *
-     * @param   integer position
-     * @param   integer take before
-     * @param   integer take after
+     * @param   integer $pos
+     * @param   integer $before take before
+     * @param   integer $after  take after
      * @return  string  part of the html code
      */
     public function getHtmlErrorCode($pos, $before=30, $after=40)
