@@ -1,10 +1,11 @@
 @todo :
     utiliser de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
-
-4.04 (2015-XX-XX)
     mise à jour de TCPDF en version 6.0.002. Attention aux points suivants :
       + The logic of permissions on the SetProtection() method has been inverted and extended (see example 16). Now you have to specify the features you want to block.
       + Support for font subsetting was added by default to reduce the size of documents using large unicode font files.
+
+4.4.0 (2015-12-10)
+   @to write
 
 4.03 (2011-05-27)
     correction de l'exemple "form.php" : vulnérabilité cross-site scripting corrigée
