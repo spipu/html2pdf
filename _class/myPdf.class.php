@@ -9,8 +9,8 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
  */
-require_once(dirname(__FILE__).'/tcpdfConfig.php');
-require_once(dirname(__FILE__).'/../_tcpdf_'.HTML2PDF_USED_TCPDF_VERSION.'/tcpdf.php');
+//require_once(dirname(__FILE__).'/tcpdfConfig.php');
+//require_once(dirname(__FILE__).'/../_tcpdf_'.HTML2PDF_USED_TCPDF_VERSION.'/tcpdf.php');
 
 class HTML2PDF_myPdf extends TCPDF
 {
