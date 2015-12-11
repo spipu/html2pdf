@@ -6502,6 +6502,8 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->parsingCss->analyse('end_last_page', $param);
             $this->parsingCss->setPosition();
             $this->parsingCss->fontSet();
+
+            $this->pdf->setY($this->pdf->getH() - $this->pdf->getbMargin() - $height);
         }
 
         /**

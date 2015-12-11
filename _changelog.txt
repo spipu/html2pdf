@@ -5,7 +5,7 @@
       + Support for font subsetting was added by default to reduce the size of documents using large unicode font files.
 
 4.4.1 (xxxx-xx-xx)
-    add tag 'end_last_page' with property 'end_height'
+    add tag 'end_last_page' with property 'end_height'. Update example 5 to use it
     better composer.json file
 
 4.4.0 (2015-12-11)
