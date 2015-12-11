@@ -106,6 +106,7 @@
         <li>&lt;page&gt;</li>
         <li>&lt;page_header&gt;</li>
         <li>&lt;page_footer&gt;</li>
+        <li>&lt;end_last_page&gt;</li>
         <li>&lt;nobreak&gt;</li>
         <li>&lt;barcode&gt;</li>
         <li>&lt;bookmark&gt;</li>
