@@ -17,6 +17,9 @@
     {
         "php": ">=5.2"
     },
+    "suggest": {
+        "fagundes/zff-html2pdf": "zff-html2pdf module ~0.1.1, if you need to integrate HTML2PDF with Zend Framework 2 (zf2)"
+    },
     "autoload":
     {
         "files": ["html2pdf.class.php"]
