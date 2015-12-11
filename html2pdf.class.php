@@ -3347,6 +3347,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
                 if (strlen($str[0])) {
                     $this->pdf->setXY($this->pdf->getX(), $y+$dh+$dy);
+                    if($this->pdf->getFontFamily() != $this->parsingCss->value['font-family']) {
+                        $this->pdf->SetFont($this->_defaultFont);
+                    }
                     $this->pdf->Cell($wc, $h, $str[0], 0, 0, $align, $fill, $this->_isInLink);
                     $this->pdf->setXY($this->pdf->getX(), $y);
                 }
@@ -3413,6 +3416,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 $txt = ''; foreach ($words as $k => $word) $txt.= ($k ? ' ' : '').$word[0];
                 $w+= $this->pdf->getWordSpacing()*(count($words));
                 $this->pdf->setXY($this->pdf->getX(), $y+$dh+$dy);
+                if($this->pdf->getFontFamily() != $this->parsingCss->value['font-family']) {
+                    $this->pdf->SetFont($this->_defaultFont);
+                }
                 $this->pdf->Cell(($align=='L' ? $w : $this->parsingCss->value['width']), $h, $txt, 0, 0, $align, $fill, $this->_isInLink);
                 $this->pdf->setXY($this->pdf->getX(), $y);
                 $this->_maxH = max($this->_maxH, $lh);
