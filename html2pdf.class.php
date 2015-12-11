@@ -6479,6 +6479,45 @@ if (!defined('__CLASS_HTML2PDF__')) {
         }
 
         /**
+         * tag : END_LAST_PAGE
+         * mode : OPEN
+         *
+         * @param  array $param
+         * @return void
+         */
+        protected function _tag_open_END_LAST_PAGE($param)
+        {
+            $height = $this->parsingCss->ConvertToMM(
+                $param['end_height'],
+                $this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()
+            );
+
+            if ($height < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())
+                && $this->pdf->getY() + $height>=($this->pdf->getH() - $this->pdf->getbMargin())
+            ) {
+                $this->_setNewPage();
+            }
+
+            $this->parsingCss->save();
+            $this->parsingCss->analyse('end_last_page', $param);
+            $this->parsingCss->setPosition();
+            $this->parsingCss->fontSet();
+        }
+
+        /**
+         * tag : END_LAST_PAGE
+         * mode : CLOSE
+         *
+         * @param  array $param
+         * @return void
+         */
+        protected function _tag_close_END_LAST_PAGE($param)
+        {
+            $this->parsingCss->load();
+            $this->parsingCss->fontSet();
+        }
+
+        /**
          * new page for the automatic Index, do not use this method. Only HTML2PDF_myPdf could use it !!!!
          *
          * @param  &int $page
