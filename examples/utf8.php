@@ -13,7 +13,7 @@
  * it allow to display the result in the HTML format
  */
 
-    require_once(dirname(__FILE__).'/../html2pdf.class.php');
+    require_once(dirname(__FILE__).'/../vendor/autoload.php');
 
     // get the HTML
     $content = file_get_contents(dirname(__FILE__).'/../_tcpdf_'.HTML2PDF_USED_TCPDF_VERSION.'/cache/utf8test.txt');

@@ -47,7 +47,7 @@
      $content = ob_get_clean();
 
     // convert to PDF
-    require_once(dirname(__FILE__).'/../html2pdf.class.php');
+    require_once(dirname(__FILE__).'/../vendor/autoload.php');
     try
     {
         $html2pdf = new HTML2PDF('L', 'A4', 'fr', true, 'UTF-8', 10);

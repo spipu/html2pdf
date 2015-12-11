@@ -12,7 +12,7 @@
  * isset($_GET['vuehtml']) is not mandatory
  * it allow to display the result in the HTML format
  */
-    require_once(dirname(__FILE__).'/../html2pdf.class.php');
+    require_once(dirname(__FILE__).'/../vendor/autoload.php');
 
     // get the HTML
     ob_start();
