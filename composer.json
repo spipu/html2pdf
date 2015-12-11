@@ -1,7 +1,7 @@
 {
     "name": "spipu/html2pdf",
     "type": "library",
-    "description": "HTML2PDF is a HTML to PDF converter written in PHP4 (uses FPDF) and PHP5 (uses TCPDF).",
+    "description": "HTML2PDF is a HTML to PDF converter written in PHP5 (it uses TCPDF).",
     "keywords": ["html", "pdf", "html2pdf"],
     "homepage": "http://html2pdf.fr/",
     "license": "LGPL",
