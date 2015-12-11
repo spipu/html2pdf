@@ -17,7 +17,7 @@
                     A propos de ...
                 </td>
                 <td style="width: 50%; text-align: right">
-                    HTML2PDF v<?php echo __CLASS_HTML2PDF__; ?>
+                    HTML2PDF v<?php echo $html2pdf->getVersion(); ?>
                 </td>
             </tr>
         </table>
@@ -40,7 +40,7 @@
     <bookmark title="Présentation" level="0" ></bookmark>
     <br><br><br><br><br><br><br><br>
     <h1>HTML2PDF</h1>
-    <h3>v<?php echo __CLASS_HTML2PDF__; ?></h3><br>
+    <h3>v<?php echo $html2pdf->getVersion(); ?></h3><br>
     <br><br><br><br><br>
     <div style="text-align: center; width: 100%;">
         <br>

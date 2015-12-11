@@ -2,31 +2,37 @@
 //============================================================+
 // File name   : tcpdf_config.php
 // Begin       : 2004-06-11
-// Last Update : 2009-09-30
+// Last Update : 2013-02-06
 //
 // Description : Configuration file for TCPDF.
+// Author      : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
+// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
+// -------------------------------------------------------------------
+// Copyright (C) 2004-2013  Nicola Asuni - Tecnick.com LTD
 //
-// Author: Nicola Asuni
+// This file is part of TCPDF software library.
 //
-// (c) Copyright:
-//               Nicola Asuni
-//               Tecnick.com s.r.l.
-//               Via Della Pace, 11
-//               09044 Quartucciu (CA)
-//               ITALY
-//               www.tecnick.com
-//               info@tecnick.com
+// TCPDF is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// TCPDF is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with TCPDF.  If not, see <http://www.gnu.org/licenses/>.
+//
+// See LICENSE.TXT file for more information.
 //============================================================+
 
 /**
  * Configuration file for TCPDF.
  * @author Nicola Asuni
- * @copyright 2004-2008 Nicola Asuni - Tecnick.com S.r.l (www.tecnick.com)
- *            Via Della Pace, 11 - 09044 - Quartucciu (CA) - ITALY - www.tecnick.com - info@tecnick.com
  * @package com.tecnick.tcpdf
- * @version 4.0.014
- * @link http://tcpdf.sourceforge.net
- * @license http://www.gnu.org/copyleft/lesser.html LGPL
+ * @version 4.9.005
  * @since 2004-10-27
  */
 
@@ -51,7 +57,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
                 substr(str_replace('\\\\', '\\', $_SERVER['PATH_TRANSLATED']), 0, 0-strlen($_SERVER['PHP_SELF']))
             );
         } else {
-            // define here your DOCUMENT_ROOT path if the previous fails
+            // define here your DOCUMENT_ROOT path if the previous fails (e.g. '/var/www')
             $_SERVER['DOCUMENT_ROOT'] = '/var/www';
         }
     }
@@ -59,29 +65,49 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
     // be sure that the end slash is present
     $_SERVER['DOCUMENT_ROOT'] = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'].'/');
 
-    // Automatic calculation for the following K_PATH_MAIN constant
-    $kPathMain = str_replace('\\', '/', dirname(__FILE__));
-    $kPathMain = dirname($kPathMain).'/'; // remove the current directory
-    $kPathMain.= '_tcpdf_'.HTML2PDF_USED_TCPDF_VERSION.'/';
-    define('K_PATH_MAIN', $kPathMain);
+	/**
+	 * Installation path of tcpdf with composer.
+	 */
+    $vendorFolders = array(
+        dirname(dirname(__FILE__)) . '/vendor/',
+        dirname(dirname(__FILE__)) . '/../../',
+    );
+    foreach ($vendorFolders as $vendorFolder) {
+        if (file_exists($vendorFolder.'autoload.php')) {
+            $k_path_main = $vendorFolder . 'tecnickcom/tcpdf/';
+
+            break;
+        }
+    }
+
+    if (!isset($k_path_main)) {
+        echo "
+      [ERROR]
+         It seems that HTML2PDF dependencies are not installed...
+         you must install thems with `composer install`
+
+";
+        exit;
+    }
+    define ('K_PATH_MAIN', $k_path_main);
 
     // Automatic calculation for the following K_PATH_URL constant
-    $kPathUrl = $kPathMain; // default value for console mode
+	$k_path_url = $k_path_main; // default value for console mode
     if (isset($_SERVER['HTTP_HOST']) AND (!empty($_SERVER['HTTP_HOST']))) {
         if (isset($_SERVER['HTTPS']) AND (!empty($_SERVER['HTTPS'])) AND strtolower($_SERVER['HTTPS'])!='off') {
-            $kPathUrl = 'https://';
+			$k_path_url = 'https://';
         } else {
-            $kPathUrl = 'http://';
+			$k_path_url = 'http://';
         }
-        $kPathUrl .= $_SERVER['HTTP_HOST'];
-        $kPathUrl .= str_replace('\\', '/', substr(K_PATH_MAIN, (strlen($_SERVER['DOCUMENT_ROOT']) - 1)));
+		$k_path_url .= $_SERVER['HTTP_HOST'];
+		$k_path_url .= str_replace( '\\', '/', substr(K_PATH_MAIN, (strlen($_SERVER['DOCUMENT_ROOT']) - 1)));
     }
 
     /**
      * URL path to tcpdf installation folder (http://localhost/tcpdf/).
      * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
      */
-    define('K_PATH_URL', $kPathUrl);
+	define ('K_PATH_URL', $k_path_url);
 
     /**
      * path for PDF fonts
@@ -244,6 +270,11 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
      * IMPORTANT: For security reason, disable this feature if you are printing user HTML content.
      */
     define('K_TCPDF_CALLS_IN_HTML', false);
+
+	/**
+	 * if true and PHP version is greater than 5, then the Error() method throw new exception instead of terminating the execution.
+	 */
+	define('K_TCPDF_THROW_EXCEPTION_ERROR', true);
 }
 
 //============================================================+

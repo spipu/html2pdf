@@ -14,11 +14,6 @@
  */
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
 
-    // get the HTML
-    ob_start();
-    include(dirname(__FILE__).'/res/about.php');
-    $content = ob_get_clean();
-
     try
     {
         // init HTML2PDF
@@ -26,6 +21,11 @@
 
         // display the full page
         $html2pdf->pdf->SetDisplayMode('fullpage');
+
+        // get the HTML
+        ob_start();
+        include(dirname(__FILE__).'/res/about.php');
+        $content = ob_get_clean();
 
         // convert
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
