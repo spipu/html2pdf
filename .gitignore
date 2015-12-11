@@ -10,3 +10,6 @@ nbproject
 #examples
 /test/*.pdf
 
+vendor/
+composer.lock
+composer.phar
