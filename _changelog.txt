@@ -1,11 +1,21 @@
 @todo :
     utiliser de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
-    mise à jour de TCPDF en version 6.0.002. Attention aux points suivants :
+    mise à jour de TCPDF en version 6. Attention aux points suivants :
       + The logic of permissions on the SetProtection() method has been inverted and extended (see example 16). Now you have to specify the features you want to block.
       + Support for font subsetting was added by default to reduce the size of documents using large unicode font files.
 
-4.4.0 (2015-12-10)
-   @to write
+4.4.0 (2015-12-11)
+    includes a new attribute to page tag 'hideheader' which accepts a list of pages that gonna skip header.
+    some doc fixes, rephrasing and removing french words
+    add composer management
+    Update autoload type
+    README more readable
+    add automatic generation of pdf test files
+      script ./test/generate.sh
+      You must have the html2pdf folder in http:/localhost/html2pdf/
+    fix: Set default font from PDF_FONT_NAME_MAIN constant from TCPDF, if available
+    fix: Make space-collapsing regexp Unicode-aware
+    fix: some pbs on examples to generate them automatically
 
 4.03 (2011-05-27)
     correction de l'exemple "form.php" : vulnérabilité cross-site scripting corrigée

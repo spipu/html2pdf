@@ -1,14 +1,14 @@
 <?php
 /**
- * HTML2PDF Librairy - parsingHtml class
+ * HTML2PDF Library - parsingHtml class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
- * @author  Laurent MINGUET <webmaster@html2pdf.fr>
- * @version 4.04
+ * @package   Html2pdf
+ * @author    Laurent MINGUET <webmaster@html2pdf.fr>
+ * @copyright 2016 Laurent MINGUET
  */
-
 class HTML2PDF_parsingHtml
 {
     protected    $_html     = '';        // HTML code to parse

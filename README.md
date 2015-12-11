@@ -1,5 +1,5 @@
-HTML2PDF v4.4. - 2015-12-10
-===========================
+HTML2PDF v4.4.0 - 2015-12-11
+============================
 
 License:
 --------
@@ -47,7 +47,7 @@ It is activated by adding the following command just after the contructor (see E
 
   * <page></page>  (CF Exemple 7 & wiki)
     * Determines the orientation, margins left, right, top and bottom, the background image
-    * nd the background color of a page, its size and position, the footer.
+    * and the background color of a page, its size and position, the footer.
     * It is also possible to keep the header and footer of the previous pages,
     * through the attribut pageset="old" (see Example 3 & 4 & wiki)
 
@@ -69,8 +69,7 @@ It is activated by adding the following command just after the contructor (see E
 
   * <bookmark></bookmark> (CF Examples 7 & About & wiki)
     * Can insert bookmark in pdfs, CF Example 7 and About.
-    * It is also possible to automatically create an index at the end of
-    * document (CF Example About & wiki)
+    * It is also possible to automatically create an index at the end of document (CF Example About & wiki)
 
   * css property "rotate":
     * Values : 0, 90, 180, 270

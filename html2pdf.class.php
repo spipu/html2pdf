@@ -5,13 +5,13 @@
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
- * @author  Laurent MINGUET <webmaster@html2pdf.fr>
- * @version 4.04
+ * @package   Html2pdf
+ * @author    Laurent MINGUET <webmaster@html2pdf.fr>
+ * @copyright 2016 Laurent MINGUET
  */
-
 if (!defined('__CLASS_HTML2PDF__')) {
 
-    define('__CLASS_HTML2PDF__', '4.04');
+    define('__CLASS_HTML2PDF__', '4.4.0');
     define('HTML2PDF_USED_TCPDF_VERSION', '5.0.002');
 
     require_once(dirname(__FILE__).'/_class/exception.class.php');

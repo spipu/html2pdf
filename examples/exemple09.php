@@ -1,18 +1,31 @@
 <?php
 /**
- * HTML2PDF Librairy - example
+ * HTML2PDF Library - example
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
- * @author      Laurent MINGUET <webmaster@html2pdf.fr>
- *
+ * @package   Html2pdf
+ * @author    Laurent MINGUET <webmaster@html2pdf.fr>
+ * @copyright 2016 Laurent MINGUET
  */
 
-$generate = isset($_GET['make_pdf']);
-$nom = isset($_GET['nom']) ? $_GET['nom'] : 'inconnu';
+if (isset($_SERVER['REQUEST_URI'])) {
+    $generate = isset($_GET['make_pdf']);
+    $nom = isset($_GET['nom']) ? $_GET['nom'] : 'inconnu';
+    $url = dirname($_SERVER['REQUEST_URI']);
+    if (substr($url, 0, 7)!=='http://') {
+        $url = 'http://'.$_SERVER['HTTP_HOST'].$url;
+    }
+} else {
+    $generate = true;
+    $nom = 'spipu';
+    $url = 'http://localhost/html2pdf/examples/';
+}
 
 $nom = substr(preg_replace('/[^a-zA-Z0-9]/isU', '', $nom), 0, 26);
+$url.= '/res/exemple09.png.php?px=5&amp;py=20';
+
 
 if ($generate) {
     ob_start();
@@ -26,11 +39,6 @@ if ($generate) {
     </head>
     <body>
 <?php
-}
-
-$url = dirname($_SERVER['REQUEST_URI']).'/res/exemple09.png.php?px=5&amp;py=20';
-if (substr($url, 0, 7)!=='http://') {
-    $url = 'http://'.$_SERVER['HTTP_HOST'].$url;
 }
 ?>
 <br>

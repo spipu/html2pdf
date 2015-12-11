@@ -1,14 +1,14 @@
 <?php
 /**
- * HTML2PDF Librairy - myPdf class
+ * HTML2PDF Library - myPdf class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
- * @author  Laurent MINGUET <webmaster@html2pdf.fr>
- * @version 4.04
+ * @package   Html2pdf
+ * @author    Laurent MINGUET <webmaster@html2pdf.fr>
+ * @copyright 2016 Laurent MINGUET
  */
-
 require_once(dirname(__FILE__).'/tcpdfConfig.php');
 require_once(dirname(__FILE__).'/../_tcpdf_'.HTML2PDF_USED_TCPDF_VERSION.'/tcpdf.php');
 
