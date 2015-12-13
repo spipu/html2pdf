@@ -3490,8 +3490,9 @@ class HTML2PDF
         if ($this->_maxH) $this->_tag_open_BR($param);
 
         $fontSize = $this->parsingCss->value['font-size'];
-        $this->parsingCss->value['font-size']=$fontSize*0.5; $this->_tag_open_BR($param);
-        $this->parsingCss->value['font-size']=0;
+        $this->parsingCss->value['font-size']=$fontSize*0.5;
+        $this->_tag_open_BR($param);
+        $this->parsingCss->value['font-size']=$fontSize;
 
         $param['style']['width'] = '100%';
 
@@ -3512,6 +3513,7 @@ class HTML2PDF
         $this->parsingCss->load();
         $this->parsingCss->fontSet();
 
+        $this->parsingCss->value['font-size'] = 0;
         $this->_tag_open_BR($param);
 
         $this->parsingCss->value['font-size']=$fontSize*0.5; $this->_tag_open_BR($param);
