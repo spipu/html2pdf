@@ -123,7 +123,7 @@ class HTML2PDF_myPdf extends TCPDF
         }
     }
 
-     /**
+    /**
      * after cloning a object, we does not want to clone all the front informations
      * because it take a lot a time and a lot of memory => we use reference
      *
@@ -132,6 +132,7 @@ class HTML2PDF_myPdf extends TCPDF
      */
     public function cloneFontFrom(&$pdf)
     {
+        $this->n                = &$pdf->getN();
         $this->fonts            = &$pdf->getFonts();
         $this->FontFiles        = &$pdf->getFontFiles();
         $this->diffs            = &$pdf->getDiffs();
@@ -180,6 +181,10 @@ class HTML2PDF_myPdf extends TCPDF
     public function &getAnnotFonts()
     {
         return $this->annotation_fonts;
+    }
+    public function &getN()
+    {
+        return $this->n;
     }
 
     /**
