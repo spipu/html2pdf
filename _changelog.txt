@@ -8,7 +8,7 @@
 4.5.0 (xxxx-xx-xx)
     add tag 'end_last_page' with property 'end_height'. Update example 5 to use it
     better composer.json file
-    update TCPDF to v6.2.12 => important changes. See the TCPDF changelogs
+    update TCPDF from 5.0.002 to v6.2.12 => important changes. See the TCPDF changelogs
 
 4.4.0 (2015-12-11)
     includes a new attribute to page tag 'hideheader' which accepts a list of pages that gonna skip header.
