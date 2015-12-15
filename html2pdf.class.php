@@ -184,8 +184,8 @@ class HTML2PDF
     {
         return array(
             'major'     => 4,
-            'minor'     => 4,
-            'revision'  => 1,
+            'minor'     => 5,
+            'revision'  => 0,
         );
     }
 
