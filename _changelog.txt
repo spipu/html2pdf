@@ -1,12 +1,14 @@
 @todo :
     utiliser de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
-    mise à jour de TCPDF en version 6. Attention aux points suivants :
-      + The logic of permissions on the SetProtection() method has been inverted and extended (see example 16). Now you have to specify the features you want to block.
-      + Support for font subsetting was added by default to reduce the size of documents using large unicode font files.
+    php 5.4 compatibility
+    namespaces
+    PSR stds
+    ...
 
-4.4.1 (xxxx-xx-xx)
+4.5.0 (xxxx-xx-xx)
     add tag 'end_last_page' with property 'end_height'. Update example 5 to use it
     better composer.json file
+    update TCPDF from 5.0.002 to v6.2.12 => important changes. See the TCPDF changelogs
 
 4.4.0 (2015-12-11)
     includes a new attribute to page tag 'hideheader' which accepts a list of pages that gonna skip header.
