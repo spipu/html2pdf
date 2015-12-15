@@ -9,7 +9,10 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
  */
-class HTML2PDF_parsingHtml
+
+namespace Spipu\Html2Pdf;
+
+class ParsingHtml
 {
     protected    $_html     = '';        // HTML code to parse
     protected    $_num      = 0;         // table number

@@ -13,6 +13,9 @@
  * it allow to display the result in the HTML format
  */
 
+use Spipu\Html2Pdf\HTML2PDF;
+use Spipu\Html2Pdf\HTML2PDF_exception;
+
 $content = '
 <page>
     <draw style="margin: auto; width:180mm; height:240mm; background: #444444; border: solid 0.5mm #777777;">

@@ -9,25 +9,28 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
  */
-require_once(dirname(__FILE__).'/_class/tcpdfConfig.php');
+
+namespace Spipu\Html2Pdf;
+
+require_once __DIR__.'/tcpdfConfig.php';
 
 class HTML2PDF
 {
     /**
      * HTML2PDF_myPdf object, extends from TCPDF
-     * @var HTML2PDF_myPdf
+     * @var MyPdf
      */
     public $pdf = null;
 
     /**
      * CSS parsing
-     * @var HTML2PDF_parsingCss
+     * @var ParsingCss
      */
     public $parsingCss = null;
 
     /**
      * HTML parsing
-     * @var HTML2PDF_parsingHtml
+     * @var ParsingHtml
      */
     public $parsingHtml = null;
 
@@ -109,7 +112,7 @@ class HTML2PDF
      * @access public
      * @param  string   $orientation page orientation, same as TCPDF
      * @param  mixed    $format      The format used for pages, same as TCPDF
-     * @param  $tring   $langue      Lang : fr, en, it...
+     * @param  string   $langue      Lang : fr, en, it...
      * @param  boolean  $unicode     TRUE means that the input text is unicode (default = true)
      * @param  String   $encoding    charset encoding; default is UTF-8
      * @param  array    $marges      Default margins (left, top, right, bottom)
@@ -128,14 +131,14 @@ class HTML2PDF
         $this->_unicode      = $unicode;
         $this->_encoding     = $encoding;
 
-        // load the Local
-        HTML2PDF_locale::load($this->_langue);
+        // load the Locale
+        Locale::load($this->_langue);
 
         // create the  HTML2PDF_myPdf object
-        $this->pdf = new HTML2PDF_myPdf($orientation, 'mm', $format, $unicode, $encoding);
+        $this->pdf = new MyPdf($orientation, 'mm', $format, $unicode, $encoding);
 
         // init the CSS parsing object
-        $this->parsingCss = new HTML2PDF_parsingCss($this->pdf);
+        $this->parsingCss = new ParsingCss($this->pdf);
         $this->parsingCss->fontSet();
         $this->_defList = array();
 
@@ -148,7 +151,7 @@ class HTML2PDF
         $this->setDefaultFont(null);
 
         // init the HTML parsing object
-        $this->parsingHtml = new HTML2PDF_parsingHtml($this->_encoding);
+        $this->parsingHtml = new ParsingHtml($this->_encoding);
         $this->_subHtml = null;
         $this->_subPart = false;
 

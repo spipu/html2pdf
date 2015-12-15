@@ -9,7 +9,12 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
  */
-class HTML2PDF_parsingCss
+
+namespace Spipu\Html2Pdf;
+
+use TCPDF;
+
+class ParsingCss
 {
     /**
      * reference to the pdf object

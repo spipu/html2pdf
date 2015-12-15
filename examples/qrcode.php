@@ -13,6 +13,9 @@
  * it allow to display the result in the HTML format
  */
 
+use Spipu\Html2Pdf\HTML2PDF;
+use Spipu\Html2Pdf\HTML2PDF_exception;
+
     // get the HTML
      ob_start();
      $msg = "Le site de html2pdf\r\nhttp://html2pdf.fr/";

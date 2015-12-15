@@ -13,6 +13,9 @@
  * it allow to display the result in the HTML format
  */
 
+use Spipu\Html2Pdf\HTML2PDF;
+use Spipu\Html2Pdf\HTML2PDF_exception;
+
     ob_start();
     include(dirname(__FILE__).'/res/exemple10.php');
     $content = ob_get_clean();

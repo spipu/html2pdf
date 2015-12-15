@@ -10,6 +10,9 @@
  * @copyright 2016 Laurent MINGUET
  */
 
+use Spipu\Html2Pdf\HTML2PDF;
+use Spipu\Html2Pdf\HTML2PDF_exception;
+
 if (isset($_SERVER['REQUEST_URI'])) {
     $generate = isset($_GET['make_pdf']);
     $nom = isset($_GET['nom']) ? $_GET['nom'] : 'inconnu';

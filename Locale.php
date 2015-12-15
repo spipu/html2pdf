@@ -9,7 +9,10 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
  */
-class HTML2PDF_locale
+
+namespace Spipu\Html2Pdf;
+
+class Locale
 {
     /**
      * code of the current used locale

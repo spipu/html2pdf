@@ -12,6 +12,10 @@
  * isset($_GET['vuehtml']) is not mandatory
  * it allow to display the result in the HTML format
  */
+
+use Spipu\Html2Pdf\HTML2PDF;
+use Spipu\Html2Pdf\HTML2PDF_exception;
+
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
 
     try

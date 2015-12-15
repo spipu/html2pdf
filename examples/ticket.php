@@ -12,6 +12,10 @@
  * isset($_GET['vuehtml']) is not mandatory
  * it allow to display the result in the HTML format
  */
+
+use Spipu\Html2Pdf\HTML2PDF;
+use Spipu\Html2Pdf\HTML2PDF_exception;
+
     // get the HTML
     ob_start();
     $num = 'CMD01-'.date('ymd');

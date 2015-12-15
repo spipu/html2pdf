@@ -13,6 +13,9 @@
  * it allow to display the result in the HTML format
  */
 
+use Spipu\Html2Pdf\HTML2PDF;
+use Spipu\Html2Pdf\HTML2PDF_exception;
+
     // for display the post information
     if (isset($_POST['test'])) {
         echo '<pre>';

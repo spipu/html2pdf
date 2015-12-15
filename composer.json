@@ -21,13 +21,8 @@
         "ext-gd": "Allows to embed images into the PDF"
     },
     "autoload": {
-        "files": [
-            "html2pdf.class.php",
-            "_class/exception.class.php",
-            "_class/locale.class.php",
-            "_class/myPdf.class.php",
-            "_class/parsingHtml.class.php",
-            "_class/parsingCss.class.php"
-        ]
+        "psr-4": {
+            "Spipu\\Html2Pdf\\": ""
+        }
     }
 }

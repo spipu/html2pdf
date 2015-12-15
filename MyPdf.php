@@ -9,7 +9,10 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
  */
-class HTML2PDF_myPdf extends TCPDF
+
+namespace Spipu\Html2Pdf;
+
+class MyPdf extends \TCPDF
 {
     protected $_footerParam = array();
     protected $_transf      = array();
@@ -88,19 +91,19 @@ class HTML2PDF_myPdf extends TCPDF
         // prepare the text from the tranlated text
         $txt = '';
         if ($this->_footerParam['form']) {
-            $txt = (HTML2PDF_locale::get('pdf05'));
+            $txt = (Locale::get('pdf05'));
         }
         if ($this->_footerParam['date'] && $this->_footerParam['hour']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf03'));
+            $txt.= ($txt ? ' - ' : '').(Locale::get('pdf03'));
         }
         if ($this->_footerParam['date'] && !$this->_footerParam['hour']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf01'));
+            $txt.= ($txt ? ' - ' : '').(Locale::get('pdf01'));
         }
         if (!$this->_footerParam['date'] && $this->_footerParam['hour']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf02'));
+            $txt.= ($txt ? ' - ' : '').(Locale::get('pdf02'));
         }
         if ($this->_footerParam['page']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf04'));
+            $txt.= ($txt ? ' - ' : '').(Locale::get('pdf04'));
         }
 
         if (strlen($txt)>0) {

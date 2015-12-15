@@ -13,7 +13,11 @@
  * it allow to display the result in the HTML format
  */
 
+use Spipu\Html2Pdf\HTML2PDF;
+
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
+
+    $html2pdf = new HTML2PDF('P', 'A4', 'fr');
 
     // get the HTML
     $content = file_get_contents(K_PATH_MAIN.'examples/data/utf8test.txt');
@@ -22,7 +26,6 @@
     // convert to PDF
     try
     {
-        $html2pdf = new HTML2PDF('P', 'A4', 'fr');
         $html2pdf->pdf->SetDisplayMode('real');
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
         $html2pdf->Output('utf8.pdf');
