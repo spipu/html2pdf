@@ -114,10 +114,10 @@ class HTML2PDF_parsingHtml
                             // HTML validation
                             if (count($parents) < 1) {
                                 throw new HTML2PDF_exception(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
-                            } else if ($parents[count($parents) - 1] != $res['name']) {
+                            } else if (end($parents) != $res['name']) {
                                 throw new HTML2PDF_exception(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
                             } else {
-                                unset($parents[count($parents) - 1]);
+                                array_pop($parents);
                             }
                         } else {
                             // if it is an auto-closed tag
@@ -130,7 +130,7 @@ class HTML2PDF_parsingHtml
                                 $res['close'] = true;
                             } else {
                                 // else: add a child for validation
-                                $parents[count($parents)] = $res['name'];
+                                array_push($parents, $res['name']);
                             }
                         }
 
