@@ -116,11 +116,6 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
     define('K_PATH_FONTS', K_PATH_MAIN.'fonts/');
 
     /**
-     * cache directory for temporary files (full path)
-     */
-    define('K_PATH_CACHE', K_PATH_MAIN.'cache/');
-
-    /**
      * cache directory for temporary files (url path)
      */
     define('K_PATH_URL_CACHE', K_PATH_URL.'cache/');
