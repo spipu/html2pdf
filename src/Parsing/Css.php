@@ -373,7 +373,7 @@ class Css
     }
 
      /**
-     * restore the Y positiony (used after a span)
+     * restore the Y position (used after a span)
      *
      * @access public
      */
