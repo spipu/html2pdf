@@ -1,4 +1,4 @@
-HTML2PDF v4.4.0 - 2015-12-11
+HTML2PDF v4.5.0 - xxxx-xx-xx
 ============================
 
 License:
@@ -14,12 +14,20 @@ License:
 How to use:
 -----------
 
- * You need at least PHP 5.2
-
+ * You need at least PHP 5.3.2
+ 
+ * Use composer to install it
+   * Composer : https://getcomposer.org/
+   * Official Package : spipu/html2pdf
+    
+ * If you install html2pdf without using composer, it will not work directly.
+   You must do "composer install" on the html2pdf folder
+   in order to install the TCPDF dependency. 
+   
  * Look at the examples provided to see how it works.
 
  * It is very important to provide valid HTML 4.01 to the converter,
-but only what is in the `<body>`
+   but only what is in the `<body>`. Use the `<page>` tag. 
 
  * for borders: it is advised that they are like `solid 1mm #000000`
 
