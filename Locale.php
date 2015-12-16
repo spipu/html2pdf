@@ -41,7 +41,7 @@ class Locale
     static public function load($code)
     {
         if (self::$_directory===null) {
-            self::$_directory = dirname(dirname(__FILE__)).'/locale/';
+            self::$_directory = __DIR__.'/locale/';
         }
 
         // must be in lower case
