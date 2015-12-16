@@ -143,14 +143,14 @@ for ($i; $i<12; $i++) {
                         <th style="width: 50%; border: solid 1px #000000;">Produit à reconditionner    </th>
                     </tr>
 <?php
-    for ($i=0; $i<12; $i++) {
+for ($i=0; $i<12; $i++) {
 ?>
-                    <tr>
-                        <td style="width: 50%; border: solid 1px #000000;">&nbsp;</td>
-                        <td style="width: 50%; border: solid 1px #000000;">&nbsp;</td>
-                    </tr>
+                <tr>
+                    <td style="width: 50%; border: solid 1px #000000;">&nbsp;</td>
+                    <td style="width: 50%; border: solid 1px #000000;">&nbsp;</td>
+                </tr>
 <?php
-    }
+}
 ?>
                 </table>
                 <br>

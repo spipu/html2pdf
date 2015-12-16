@@ -38,7 +38,7 @@ class Locale
      * @access public
      * @param  string $code
      */
-    static public function load($code)
+    public static function load($code)
     {
         if (self::$_directory===null) {
             self::$_directory = __DIR__ . '/locale/';
@@ -68,7 +68,9 @@ class Locale
         $handle = fopen($file, 'r');
         while (!feof($handle)) {
             $line = fgetcsv($handle);
-            if (count($line)!=2) continue;
+            if (count($line)!=2) {
+                continue;
+            }
             self::$_list[trim($line[0])] = trim($line[1]);
         }
         fclose($handle);
@@ -79,7 +81,7 @@ class Locale
      *
      * @access public static
      */
-    static public function clean()
+    public static function clean()
     {
         self::$_code = null;
         self::$_list = array();
@@ -92,7 +94,7 @@ class Locale
      * @param  string $key
      * @return string
      */
-    static public function get($key, $default='######')
+    public static function get($key, $default = '######')
     {
         return (isset(self::$_list[$key]) ? self::$_list[$key] : $default);
     }

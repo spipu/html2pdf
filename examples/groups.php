@@ -52,7 +52,7 @@ ob_start();
     Ceci est la page 3 du groupe 1
 </page>
 <?php
-for ($k=2; $k<5; $k++):
+for ($k=2; $k<5; $k++) :
 ?>
 <page pageset="old" pagegroup="new">
     Ceci est la page 1 du groupe <?php echo $k; ?>
@@ -66,14 +66,12 @@ endfor;
 $content = ob_get_clean();
 
 require_once(dirname(__FILE__).'/../vendor/autoload.php');
-try
-{
+try {
     $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
     $html2pdf->pdf->SetDisplayMode('fullpage');
     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
     $html2pdf->Output('groups.pdf');
-}
-catch(Html2PdfException $e) {
+} catch (Html2PdfException $e) {
     echo $e;
     exit;
 }

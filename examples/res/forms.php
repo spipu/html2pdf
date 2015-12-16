@@ -4,7 +4,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
     $url = $_SERVER['REQUEST_URI'];
     if (substr($url, 0, 7)!=='http://') {
         $url = 'http://'.$_SERVER['HTTP_HOST'];
-        if (ISSET($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT']!=80) {
+        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT']!=80) {
             $url.= ':'.$_SERVER['SERVER_PORT'];
         }
         $url.= $_SERVER['REQUEST_URI'];

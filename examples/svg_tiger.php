@@ -266,14 +266,12 @@ $content = '
 
     // convert to PDF
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
-    try
-    {
-        $html2pdf = new Html2Pdf('L', 'A4', 'fr');
-        $html2pdf->pdf->SetDisplayMode('fullpage');
-        $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-        $html2pdf->Output('svg_tiger.pdf');
-    }
-    catch(Html2PdfException $e) {
-        echo $e;
-        exit;
-    }
+try {
+    $html2pdf = new Html2Pdf('L', 'A4', 'fr');
+    $html2pdf->pdf->SetDisplayMode('fullpage');
+    $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+    $html2pdf->Output('svg_tiger.pdf');
+} catch (Html2PdfException $e) {
+    echo $e;
+    exit;
+}
