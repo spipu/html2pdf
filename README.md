@@ -1,4 +1,4 @@
-HTML2PDF v5.0.0 - xxxx-xx-xx
+Html2Pdf v5.0.0 - xxxx-xx-xx
 ============================
 
 VERSION UNDER DEVELOPMENT !!!

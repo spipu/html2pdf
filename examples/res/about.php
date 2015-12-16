@@ -17,7 +17,7 @@
                     A propos de ...
                 </td>
                 <td style="width: 50%; text-align: right">
-                    HTML2PDF v<?php echo $html2pdf->getVersion(); ?>
+                    Html2Pdf v<?php echo $html2pdf->getVersion(); ?>
                 </td>
             </tr>
         </table>
@@ -39,23 +39,23 @@
     </page_footer>
     <bookmark title="Présentation" level="0" ></bookmark>
     <br><br><br><br><br><br><br><br>
-    <h1>HTML2PDF</h1>
+    <h1>Html2Pdf</h1>
     <h3>v<?php echo $html2pdf->getVersion(); ?></h3><br>
     <br><br><br><br><br>
     <div style="text-align: center; width: 100%;">
         <br>
-        <img src="./res/logo.png" alt="Logo HTML2PDF" style="width: 150mm">
+        <img src="./res/logo.png" alt="Logo Html2Pdf" style="width: 150mm">
         <br>
     </div>
     <br><br><br><br><br>
     <div class="note">
-        HTML2PDF est un convertisseur de code HTML vers PDF écrit en PHP5, utilisant la librairie <a href="http://tcpdf.org">TCPDF.</a><br>
+        Html2Pdf est un convertisseur de code HTML vers PDF écrit en PHP5, utilisant la librairie <a href="http://tcpdf.org">TCPDF.</a><br>
         <br>
         Il permet la conversion d'HTML et d'xHTML valide au format PDF, et est distribué sous licence LGPL.<br>
         <br>
         Cette librairie a été conçue pour gérer principalement les TABLE imbriquées afin de générer des factures, bon de livraison, et autres documents officiels.<br>
         <br>
-        Vous pouvez télécharger la dernière version de HTML2PDF ici : <a href="http://html2pdf.fr/">http://html2pdf.fr/</a>.<br>
+        Vous pouvez télécharger la dernière version de Html2Pdf ici : <a href="http://html2pdf.fr/">http://html2pdf.fr/</a>.<br>
     </div>
 </page>
 <page pageset="old">
@@ -71,7 +71,7 @@
     </div>
     <br>
     <ul class="main">
-        <li>&lt;a&gt; : Ceci est un lien vers <a href="http://html2pdf.fr">le site de HTML2PDF</a></li>
+        <li>&lt;a&gt; : Ceci est un lien vers <a href="http://html2pdf.fr">le site de Html2Pdf</a></li>
         <li>&lt;b&gt;, &lt;strong&gt; : Ecrire en <b>gras</b>.</li>
         <li>&lt;big&gt; : Ecrire plus <big>gros</big>.</li>
         <li>&lt;br&gt; : Permet d'aller à la ligne</li>

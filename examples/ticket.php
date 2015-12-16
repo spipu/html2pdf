@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - example
+ * Html2Pdf Library - example
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,8 +13,8 @@
  * it allow to display the result in the HTML format
  */
 
-use Spipu\Html2Pdf\HTML2PDF;
-use Spipu\Html2Pdf\HTML2PDF_exception;
+use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Html2Pdf_exception;
 
     // get the HTML
     ob_start();
@@ -47,7 +47,7 @@ use Spipu\Html2Pdf\HTML2PDF_exception;
                         N° commande : <b><?php echo $num; ?></b><br>
                         Date d'achat : <b><?php echo date('d/m/Y à H:i:s'); ?></b><br>
                     </div>
-                    <h1>Billet soirée spécial HTML2PDF</h1>
+                    <h1>Billet soirée spécial Html2Pdf</h1>
                     &nbsp;&nbsp;&nbsp;&nbsp;<b>Valable le <?php echo $date; ?> à 20h30</b><br>
                     <img src="./res/logo.gif" alt="logo" style="margin-top: 3mm; margin-left: 20mm">
                 </div>
@@ -92,12 +92,12 @@ use Spipu\Html2Pdf\HTML2PDF_exception;
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
     try
     {
-        $html2pdf = new HTML2PDF('P', 'A4', 'fr', true, 'UTF-8', 0);
+        $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
         $html2pdf->pdf->SetDisplayMode('fullpage');
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
         $html2pdf->Output('ticket.pdf');
     }
-    catch(HTML2PDF_exception $e) {
+    catch(Html2Pdf_exception $e) {
         echo $e;
         exit;
     }

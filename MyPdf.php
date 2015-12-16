@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - myPdf class
+ * Html2Pdf Library - myPdf class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -47,7 +47,7 @@ class MyPdf extends \TCPDF
         // call the parent constructor
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache);
 
-        // init the specific parameters used by HTML2PDF
+        // init the specific parameters used by Html2Pdf
         $this->SetCreator(PDF_CREATOR);
         $this->SetAutoPageBreak(false, 0);
         $this->linestyleCap = '2 J';
@@ -131,7 +131,7 @@ class MyPdf extends \TCPDF
      * after cloning a object, we does not want to clone all the front informations
      * because it take a lot a time and a lot of memory => we use reference
      *
-     * @param &HTML2PDF_myPdf object
+     * @param myPdf &$pdf
      * @access public
      */
     public function cloneFontFrom(&$pdf)
@@ -579,7 +579,7 @@ class MyPdf extends \TCPDF
 
     /**
      * we redifine the original SetX method, because we don't want the automatic treatment.
-     * It is HTML2PDF that make the treatment
+     * It is Html2Pdf that make the treatment
      *
      * @param float   $x
      * @param boolean $rtloff NOT USED
@@ -592,7 +592,7 @@ class MyPdf extends \TCPDF
 
     /**
      * we redifine the original SetY method, because we don't want the automatic treatment.
-     * It is HTML2PDF that make the treatment
+     * It is Html2Pdf that make the treatment
      *
      * @param float   $y
      * @param boolean $resetx Reset the X position
@@ -609,7 +609,7 @@ class MyPdf extends \TCPDF
 
     /**
      * we redifine the original SetXY method, because we don't want the automatic treatment.
-     * It is HTML2PDF that make the treatment
+     * It is Html2Pdf that make the treatment
      *
      * @param integer $x
      * @param integer $y
@@ -623,7 +623,7 @@ class MyPdf extends \TCPDF
     }
 
     /**
-     * multiple public accessor because HTML2PDF need to use TCPDF without being a extend of it
+     * multiple public accessor because Html2Pdf need to use TCPDF without being a extend of it
      *
      * @param  mixed
      * @return mixed
@@ -904,7 +904,7 @@ class MyPdf extends \TCPDF
 
                 // Unknown Path
                 default:
-                    throw new HTML2PDF_exception(0, 'SVG Path Error : ['.$action[0].'] unkown');
+                    throw new Html2Pdf_exception(0, 'SVG Path Error : ['.$action[0].'] unkown');
             }
 
             // save the last point
@@ -1208,7 +1208,7 @@ class MyPdf extends \TCPDF
     }
 
     /**
-     * Convert a HTML2PDF barcode in a TCPDF barcode
+     * Convert a Html2Pdf barcode in a TCPDF barcode
      *
      * @param string $code code to print
      * @param string $type type of barcode (see tcpdf/barcodes.php for supported formats)

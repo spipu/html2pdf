@@ -47,8 +47,8 @@ div.minifiche div.download { position: absolute; border: none; left: 257px; top:
     </table>
     <hr>
     <div class="minifiche" >
-        <img class="icone"    src="./res/exemple10b.jpg" alt="HTML2PDF" >
-        <div class="zone1">HTML2PDF</div>
+        <img class="icone"    src="./res/exemple10b.jpg" alt="Html2Pdf" >
+        <div class="zone1">Html2Pdf</div>
         <div class="zone2">PHP</div>
         <div class="zone3">Utilitaire</div>
         <div class="zone4">1.00</div>
@@ -110,7 +110,7 @@ div.main a:hover
         <div style="position: absolute; bottom: 5mm; right: 5mm; font-size:12pt; text-align: right; ">(c)2015 Spipu</div>
         <br><br><br>
         <a href="http://cineblog.spipu.net/" >Cineblog by Spipu           </a><br><br>
-        <a href="http://html2pdf.fr/"        >HTML2PDF                    </a><br><br>
+        <a href="http://html2pdf.fr/"        >Html2Pdf                    </a><br><br>
         <a href="http://lambda.spipu.net/"   >Lambda Finder               </a><br><br>
         <a href="http://open.spipu.net/"     >Gestion des Opens - Yaronet </a><br><br>
         <a href="http://perso.spipu.net/"    >A propos de moi             </a><br><br>

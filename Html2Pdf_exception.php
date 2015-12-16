@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - HTML2PDF Exception
+ * Html2Pdf Library - Exception
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -12,7 +12,7 @@
 
 namespace Spipu\Html2Pdf;
 
-class HTML2PDF_exception extends \Exception
+class Html2Pdf_exception extends \Exception
 {
     protected $_tag = null;
     protected $_html = null;
@@ -21,13 +21,13 @@ class HTML2PDF_exception extends \Exception
     protected $_messageHtml = '';
 
     /**
-     * generate a HTML2PDF exception
+     * generate a Html2Pdf exception
      *
      * @param int    $err   error number
      * @param mixed  $other additionnal informations
      * @param string $html  additionnal informations
      *
-     * @return HTML2PDF_exception
+     * @return Html2Pdf_exception
      */
     final public function __construct($err = 0, $other = null, $html = '')
     {

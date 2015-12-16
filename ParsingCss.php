@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - parsingCss class
+ * Html2Pdf Library - parsingCss class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -34,7 +34,7 @@ class ParsingCss
     /**
      * Constructor
      *
-     * @param  &HTML2PDF_myPdf reference to the PDF $object
+     * @param  myPdf $pdf reference to the PDF $object
      * @access public
      */
     public function __construct(&$pdf)
@@ -44,9 +44,9 @@ class ParsingCss
     }
 
     /**
-     * Set the HTML2PDF parent object
+     * Set the $pdf parent object
      *
-     * @param  &HTML2PDF reference to the HTML2PDF parent $object
+     * @param  Html2Pdf &$pdf reference to the Html2Pdf parent
      * @access public
      */
     public function setPdfParent(&$pdf)

@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - example
+ * Html2Pdf Library - example
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,11 +13,11 @@
  * it allow to display the result in the HTML format
  */
 
-use Spipu\Html2Pdf\HTML2PDF;
+use Spipu\Html2Pdf\Html2Pdf;
 
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
 
-    $html2pdf = new HTML2PDF('P', 'A4', 'fr');
+    $html2pdf = new Html2Pdf('P', 'A4', 'fr');
 
     // get the HTML
     $content = file_get_contents(K_PATH_MAIN.'examples/data/utf8test.txt');
@@ -30,7 +30,7 @@ use Spipu\Html2Pdf\HTML2PDF;
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
         $html2pdf->Output('utf8.pdf');
     }
-    catch(HTML2PDF_exception $e) {
+    catch(Html2Pdf_exception $e) {
         echo $e;
         exit;
     }

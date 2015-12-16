@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - HTML2PDF Locale
+ * Html2Pdf Library - Locale
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -49,7 +49,7 @@ class Locale
 
         // must be [a-z-0-9]
         if (!preg_match('/^([a-z0-9]+)$/isU', $code)) {
-            throw new HTML2PDF_exception(0, 'invalid language code ['.self::$_code.']');
+            throw new Html2Pdf_exception(0, 'invalid language code ['.self::$_code.']');
         }
 
         // save the code
@@ -60,7 +60,7 @@ class Locale
 
         // the file must exist
         if (!is_file($file)) {
-            throw new HTML2PDF_exception(0, 'language code ['.self::$_code.'] unknown. You can create the translation file ['.$file.'] and send it to the webmaster of html2pdf in order to integrate it into a future release');
+            throw new Html2Pdf_exception(0, 'language code ['.self::$_code.'] unknown. You can create the translation file ['.$file.'] and send it to the webmaster of html2pdf in order to integrate it into a future release');
         }
 
         // load the file

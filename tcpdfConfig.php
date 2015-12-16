@@ -83,7 +83,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
     if (!isset($k_path_main)) {
         echo "
       [ERROR]
-         It seems that HTML2PDF dependencies are not installed...
+         It seems that Html2Pdf dependencies are not installed...
          you must install thems with `composer install`
 
 ";
@@ -143,12 +143,12 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
     /**
      * document creator
      */
-    define('PDF_CREATOR', 'HTML2PDF - TCPDF');
+    define('PDF_CREATOR', 'Html2Pdf - TCPDF');
 
     /**
      * document author
      */
-    define('PDF_AUTHOR', 'HTML2PDF - TCPDF');
+    define('PDF_AUTHOR', 'Html2Pdf - TCPDF');
 
     /**
      * header title

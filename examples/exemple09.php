@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - example
+ * Html2Pdf Library - example
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -10,8 +10,8 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-use Spipu\Html2Pdf\HTML2PDF;
-use Spipu\Html2Pdf\HTML2PDF_exception;
+use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Html2Pdf_exception;
 
 if (isset($_SERVER['REQUEST_URI'])) {
     $generate = isset($_GET['make_pdf']);
@@ -65,12 +65,12 @@ Bonjour <b><?php echo $nom; ?></b>, ton nom peut s'écrire : <br>
         require_once(dirname(__FILE__).'/../vendor/autoload.php');
         try
         {
-            $html2pdf = new HTML2PDF('P', 'A4', 'fr');
+            $html2pdf = new Html2Pdf('P', 'A4', 'fr');
             $html2pdf->writeHTML($content);
             $html2pdf->Output('exemple09.pdf');
             exit;
         }
-        catch(HTML2PDF_exception $e) {
+        catch(Html2Pdf_exception $e) {
             echo $e;
             exit;
         }

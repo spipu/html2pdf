@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - parsingHtml class
+ * Html2Pdf Library - parsingHtml class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -116,9 +116,9 @@ class ParsingHtml
                         if ($res['close']) {
                             // HTML validation
                             if (count($parents) < 1) {
-                                throw new HTML2PDF_exception(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
+                                throw new Html2Pdf_exception(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
                             } else if (end($parents) != $res['name']) {
-                                throw new HTML2PDF_exception(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
+                                throw new Html2Pdf_exception(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
                             } else {
                                 array_pop($parents);
                             }
@@ -222,7 +222,7 @@ class ParsingHtml
 
         // if we are not on the level 0 => HTML validator ERROR
         if (count($parents)) {
-            throw new HTML2PDF_exception(5, $parents);
+            throw new Html2Pdf_exception(5, $parents);
         }
 
         // save the actions to do

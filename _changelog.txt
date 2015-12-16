@@ -1,11 +1,12 @@
 @todo :
     utiliser de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
-    php 5.4 compatibility
-    namespaces
-    PSR stds
-    ...
+
+
 5.0.0 (xxxx-xx-xx) - Under-Dev
-    ...
+    PHP 5.4 compatibility
+    Using Namespaces
+    all the classes have moved
+    all the classes have been renamed
 
 4.5.0 (xxxx-xx-xx) - RC1
     add tag 'end_last_page' with property 'end_height'. Update example 5 to use it
@@ -72,7 +73,7 @@
     amélioration sur createIndex
     harmonisation des noms des méthodes
     correction sur la gestion des textes
-    v4.00 uniquement : HTML2PDF est maintenant écrit en PHP5 et basé sur TCPDF (=> unicode, utf8, ...)
+    v4.00 uniquement : Html2Pdf est maintenant écrit en PHP5 et basé sur TCPDF (=> unicode, utf8, ...)
     v4.00 uniquement : utilisation de TCPDF pour les formulaires et les barcodes
     v4.00 uniquement : amélioration de la partie SVG (alpha)
 
@@ -129,7 +130,7 @@
     ATTENTION : la methode d'appel de CreateIndex a changé. Regardez l'exemple About !!!!
 
 3.22a (2009-06-16)
-    redistribution de HTML2PDF sous la licence LGPL !!! (au lieu de GPL)
+    redistribution de Html2Pdf sous la licence LGPL !!! (au lieu de GPL)
 
 3.22 (2009-06-08)
     correction sur le background-color
@@ -186,7 +187,7 @@
     pour la balise table, ajout de l'interprétation de align="center" et align="right" (cf exemple 1)
     correction dans le positionnement des images
     correction de quelques bugs
-    ajout d'une fonction d'analyse des ressources HTML2PDFgetTimerDebug (cf début du fichier html2pdf.class.php)
+    ajout d'une fonction d'analyse des ressources getTimerDebug (cf début du fichier html2pdf.class.php)
 
 3.14 (2008-11-17)
     ajout d'une langue (pt : Brazilian Portuguese language) et amelioration de la methode vueHTML (merci à Rodrigo)

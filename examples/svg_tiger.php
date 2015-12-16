@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - example
+ * Html2Pdf Library - example
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,8 +13,8 @@
  * it allow to display the result in the HTML format
  */
 
-use Spipu\Html2Pdf\HTML2PDF;
-use Spipu\Html2Pdf\HTML2PDF_exception;
+use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Html2Pdf_exception;
 
 $content = '
 <page>
@@ -268,12 +268,12 @@ $content = '
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
     try
     {
-        $html2pdf = new HTML2PDF('L', 'A4', 'fr');
+        $html2pdf = new Html2Pdf('L', 'A4', 'fr');
         $html2pdf->pdf->SetDisplayMode('fullpage');
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
         $html2pdf->Output('svg_tiger.pdf');
     }
-    catch(HTML2PDF_exception $e) {
+    catch(Html2Pdf_exception $e) {
         echo $e;
         exit;
     }

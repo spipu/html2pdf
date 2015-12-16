@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - example
+ * Html2Pdf Library - example
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,8 +13,8 @@
  * it allow to display the result in the HTML format
  */
 
-use Spipu\Html2Pdf\HTML2PDF;
-use Spipu\Html2Pdf\HTML2PDF_exception;
+use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Html2Pdf_exception;
 
 ob_start();
 ?>
@@ -105,12 +105,12 @@ ob_start();
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
     try
     {
-        $html2pdf = new HTML2PDF('P', 'A4', 'fr', true, 'UTF-8', 0);
+        $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
         $html2pdf->createIndex('Sommaire', 25, 12, false, true, 1);
         $html2pdf->Output('bookmark.pdf');
     }
-    catch(HTML2PDF_exception $e) {
+    catch(Html2Pdf_exception $e) {
         echo $e;
         exit;
     }

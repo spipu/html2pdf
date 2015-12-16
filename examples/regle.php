@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML2PDF Library - example
+ * Html2Pdf Library - example
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,8 +13,8 @@
  * it allow to display the result in the HTML format
  */
 
-use Spipu\Html2Pdf\HTML2PDF;
-use Spipu\Html2Pdf\HTML2PDF_exception;
+use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Html2Pdf_exception;
 
     // get the HTML
      ob_start();
@@ -53,12 +53,12 @@ use Spipu\Html2Pdf\HTML2PDF_exception;
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
     try
     {
-        $html2pdf = new HTML2PDF('L', 'A4', 'fr', true, 'UTF-8', 10);
+        $html2pdf = new Html2Pdf('L', 'A4', 'fr', true, 'UTF-8', 10);
         $html2pdf->pdf->SetDisplayMode('fullpage');
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
         $html2pdf->Output('regle.pdf');
     }
-    catch(HTML2PDF_exception $e) {
+    catch(Html2Pdf_exception $e) {
         echo $e;
         exit;
     }
