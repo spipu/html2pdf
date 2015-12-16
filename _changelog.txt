@@ -1,12 +1,11 @@
 @todo :
     utiliser de meilleurs fonctions pour manipuler les chaines, car pb d'UTF8
 
-
-5.0.0 (xxxx-xx-xx) - Under-Dev
     PHP 5.4 compatibility
     Using Namespaces
     all the classes have moved
     all the classes have been renamed
+    new tag structure : one class per tag
 
 4.5.0 (xxxx-xx-xx) - RC1
     add tag 'end_last_page' with property 'end_height'. Update example 5 to use it
