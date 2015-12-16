@@ -107,6 +107,18 @@ class Html2Pdf
     static protected $_tables    = array();     // static table to prepare the nested html tables
 
     /**
+     * list of tag definitions
+     * @var array
+     */
+    protected $_tagDefinitions = array();
+
+    /**
+     * List of tag objects
+     * @var TagAbstract[]
+     */
+    protected $_tagObjects = array();
+
+    /**
      * class constructor
      *
      * @access public
@@ -164,6 +176,9 @@ class Html2Pdf
         // init the form's fields
         $this->_lstField = array();
 
+        $this->_loadTagDefinitions();
+        $this->_loadTagObjects();
+
         return $this;
     }
 
@@ -214,6 +229,59 @@ class Html2Pdf
         $this->parsingHtml = clone $this->parsingHtml;
         $this->parsingCss = clone $this->parsingCss;
         $this->parsingCss->setPdfParent($this->pdf);
+
+        foreach ($this->_tagObjects as $tagName => $tagObject) {
+            $this->_tagObjects[$tagName] = clone $tagObject;
+            $this->_tagObjects[$tagName]->setParsingCssObject($this->parsingCss);
+        }
+    }
+
+    /**
+     * load the list of the tag definitions
+     */
+    protected function _loadTagDefinitions()
+    {
+        $this->_tagDefinitions = array(
+            'ADDRESS' => 'Spipu\\Html2Pdf\\Tag\\Address',
+            'B'       => 'Spipu\\Html2Pdf\\Tag\\B',
+            'BIG'     => 'Spipu\\Html2Pdf\\Tag\\Big',
+            'CITE'    => 'Spipu\\Html2Pdf\\Tag\\Cite',
+            'DEL'     => 'Spipu\\Html2Pdf\\Tag\\Del',
+            'EM'      => 'Spipu\\Html2Pdf\\Tag\\Em',
+            'FONT'    => 'Spipu\\Html2Pdf\\Tag\\Font',
+            'I'       => 'Spipu\\Html2Pdf\\Tag\\I',
+            'INS'     => 'Spipu\\Html2Pdf\\Tag\\Ins',
+            'LABEL'   => 'Spipu\\Html2Pdf\\Tag\\Label',
+            'S'       => 'Spipu\\Html2Pdf\\Tag\\S',
+            'SAMP'    => 'Spipu\\Html2Pdf\\Tag\\Samp',
+            'SMALL'   => 'Spipu\\Html2Pdf\\Tag\\Small',
+            'SPAN'    => 'Spipu\\Html2Pdf\\Tag\\Span',
+            'STRONG'  => 'Spipu\\Html2Pdf\\Tag\\Strong',
+            'SUB'     => 'Spipu\\Html2Pdf\\Tag\\Sub',
+            'SUP'     => 'Spipu\\Html2Pdf\\Tag\\Sup',
+            'U'       => 'Spipu\\Html2Pdf\\Tag\\U',
+        );
+    }
+
+    /**
+     * load the list of the tag objects
+     */
+    protected function _loadTagObjects()
+    {
+        $this->_tagObjects = array();
+
+        foreach ($this->_tagDefinitions as $tagName => $className) {
+            $tagName = strtoupper($tagName);
+            $this->_tagObjects[$tagName] = new $className();
+
+            if (!($this->_tagObjects[$tagName] instanceof TagInterface)) {
+                throw new \Exception(
+                    'The asked class for the tag ['.$tagName.'] does not implement TagInterface'
+                );
+            }
+
+            $this->_tagObjects[$tagName]->setParsingCssObject($this->parsingCss);
+        }
     }
 
     /**
@@ -1258,24 +1326,30 @@ class Html2Pdf
      */
     protected function _executeAction($action)
     {
-        // name of the action
-        $fnc = ($action['close'] ? '_tag_close_' : '_tag_open_').strtoupper($action['name']);
+        $action['name'] = strtoupper($action['name']);
 
-        // parameters of the action
-        $param = $action['param'];
-
-        // if it is the first action of the first page, and if it is not an open tag of PAGE => create the new page
-        if ($fnc!='_tag_open_PAGE' && $this->_firstPage) {
+        if ($this->_firstPage && $action['name'] !== 'PAGE' && !$action['close']) {
             $this->_setNewPage();
         }
 
-        // the action must exist
-        if (!is_callable(array(&$this, $fnc))) {
+        // properties of the action
+        $properties = $action['param'];
+
+        // name of the action (old method)
+        $fnc = ($action['close'] ? '_tag_close_' : '_tag_open_').strtoupper($action['name']);
+
+        if (array_key_exists($action['name'], $this->_tagObjects)) {
+            if ($action['close']) {
+                $res = $this->_tagObjects[$action['name']]->close($properties);
+            } else {
+                $res = $this->_tagObjects[$action['name']]->open($properties);
+            }
+
+        } else if (is_callable(array(&$this, $fnc))) {
+            $res = $this->{$fnc}($properties);
+        } else {
             throw new Html2PdfException(1, strtoupper($action['name']), $this->parsingHtml->getHtmlErrorCode($action['html_pos']));
         }
-
-        // run the action
-        $res = $this->{$fnc}($param);
 
         // save the name of the action
         $this->_previousCall = $fnc;
@@ -3529,310 +3603,6 @@ class Html2Pdf
     }
 
     /**
-     * tag : B
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @param  string $other
-     * @return boolean
-     */
-    protected function _tag_open_B($param, $other = 'b')
-    {
-        $this->parsingCss->save();
-        $this->parsingCss->value['font-bold'] = true;
-        $this->parsingCss->analyse($other, $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : STRONG
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_STRONG($param)
-    {
-        return $this->_tag_open_B($param, 'strong');
-    }
-
-    /**
-     * tag : B
-     * mode : CLOSE
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_close_B($param)
-    {
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : STRONG
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_STRONG($param)
-    {
-        return $this->_tag_close_B($param);
-    }
-
-    /**
-     * tag : I
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @param  string $other
-     * @return boolean
-     */
-    protected function _tag_open_I($param, $other = 'i')
-    {
-        $this->parsingCss->save();
-        $this->parsingCss->value['font-italic'] = true;
-        $this->parsingCss->analyse($other, $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : ADDRESS
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_ADDRESS($param)
-    {
-        return $this->_tag_open_I($param, 'address');
-    }
-
-    /**
-     * tag : CITE
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_CITE($param)
-    {
-        return $this->_tag_open_I($param, 'cite');
-    }
-
-    /**
-     * tag : EM
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_EM($param)
-    {
-        return $this->_tag_open_I($param, 'em');
-    }
-
-    /**
-     * tag : SAMP
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_SAMP($param)
-    {
-        return $this->_tag_open_I($param, 'samp');
-    }
-
-    /**
-     * tag : I
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_I($param)
-    {
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : ADDRESS
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_ADDRESS($param)
-    {
-        return $this->_tag_close_I($param);
-    }
-
-    /**
-     * tag : CITE
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_CITE($param)
-    {
-        return $this->_tag_close_I($param);
-    }
-
-    /**
-     * tag : EM
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_EM($param)
-    {
-        return $this->_tag_close_I($param);
-    }
-
-    /**
-     * tag : SAMP
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_SAMP($param)
-    {
-        return $this->_tag_close_I($param);
-    }
-
-    /**
-     * tag : S
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @param  string $other
-     * @return boolean
-     */
-    protected function _tag_open_S($param, $other = 's')
-    {
-        $this->parsingCss->save();
-        $this->parsingCss->value['font-linethrough'] = true;
-        $this->parsingCss->analyse($other, $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : DEL
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_DEL($param)
-    {
-        return $this->_tag_open_S($param, 'del');
-    }
-
-    /**
-     * tag : S
-     * mode : CLOSE
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_close_S($param)
-    {
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : DEL
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_DEL($param)
-    {
-        return $this->_tag_close_S($param);
-    }
-
-    /**
-     * tag : U
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @param  string $other
-     * @return boolean
-     */
-    protected function _tag_open_U($param, $other='u')
-    {
-        $this->parsingCss->save();
-        $this->parsingCss->value['font-underline'] = true;
-        $this->parsingCss->analyse($other, $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : INS
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_INS($param)
-    {
-        return $this->_tag_open_U($param, 'ins');
-    }
-
-    /**
-     * tag : U
-     * mode : CLOSE
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_close_U($param)
-    {
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : INS
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_INS($param)
-    {
-        return $this->_tag_close_U($param);
-    }
-
-    /**
      * tag : A
      * mode : OPEN
      *
@@ -4063,88 +3833,6 @@ class Html2Pdf
     }
 
     /**
-     * tag : SPAN
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @param  string $other
-     * @return boolean
-     */
-    protected function _tag_open_SPAN($param, $other = 'span')
-    {
-        $this->parsingCss->save();
-        $this->parsingCss->analyse($other, $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : FONT
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_FONT($param)
-    {
-        return $this->_tag_open_SPAN($param, 'font');
-    }
-
-    /**
-     * tag : LABEL
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_LABEL($param)
-    {
-        return $this->_tag_open_SPAN($param, 'label');
-    }
-
-    /**
-     * tag : SPAN
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_SPAN($param)
-    {
-        $this->parsingCss->restorePosition();
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : FONT
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_FONT($param)
-    {
-        return $this->_tag_close_SPAN($param);
-    }
-
-    /**
-     * tag : LABEL
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_LABEL($param)
-    {
-        return $this->_tag_close_SPAN($param);
-    }
-
-    /**
      * tag : P
      * mode : OPEN
      *
@@ -4274,139 +3962,6 @@ class Html2Pdf
     protected function _tag_close_CODE($param)
     {
         return $this->_tag_close_PRE($param, 'code');
-    }
-
-    /**
-     * tag : BIG
-     * mode : OPEN
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_open_BIG($param)
-    {
-        $this->parsingCss->save();
-        $this->parsingCss->value['mini-decal']-= $this->parsingCss->value['mini-size']*0.12;
-        $this->parsingCss->value['mini-size'] *= 1.2;
-        $this->parsingCss->analyse('big', $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-        return true;
-    }
-
-    /**
-     * tag : BIG
-     * mode : CLOSE
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_close_BIG($param)
-    {
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : SMALL
-     * mode : OPEN
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_open_SMALL($param)
-    {
-        $this->parsingCss->save();
-        $this->parsingCss->value['mini-decal']+= $this->parsingCss->value['mini-size']*0.05;
-        $this->parsingCss->value['mini-size'] *= 0.82;
-        $this->parsingCss->analyse('small', $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-        return true;
-    }
-
-    /**
-     * tag : SMALL
-     * mode : CLOSE
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_close_SMALL($param)
-    {
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : SUP
-     * mode : OPEN
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_open_SUP($param)
-    {
-        $this->parsingCss->save();
-        $this->parsingCss->value['mini-decal']-= $this->parsingCss->value['mini-size']*0.15;
-        $this->parsingCss->value['mini-size'] *= 0.75;
-        $this->parsingCss->analyse('sup', $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : SUP
-     * mode : CLOSE
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_close_SUP($param)
-    {
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
-
-        return true;
-    }
-
-    /**
-     * tag : SUB
-     * mode : OPEN
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_open_SUB($param)
-    {
-        $this->parsingCss->save();
-        $this->parsingCss->value['mini-decal']+= $this->parsingCss->value['mini-size']*0.15;
-        $this->parsingCss->value['mini-size'] *= 0.75;
-        $this->parsingCss->analyse('sub', $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-        return true;
-    }
-
-    /**
-     * tag : SUB
-     * mode : CLOSE
-     *
-     * @param    array $param
-     * @return boolean
-     */
-    protected function _tag_close_SUB($param)
-    {
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
-
-        return true;
     }
 
     /**
