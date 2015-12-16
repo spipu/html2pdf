@@ -4,8 +4,10 @@
     namespaces
     PSR stds
     ...
+5.0.0 (xxxx-xx-xx) - Under-Dev
+    ...
 
-4.5.0 (xxxx-xx-xx)
+4.5.0 (xxxx-xx-xx) - RC1
     add tag 'end_last_page' with property 'end_height'. Update example 5 to use it
     better composer.json file
     update TCPDF from 5.0.002 to v6.2.12 => important changes. See the TCPDF changelogs

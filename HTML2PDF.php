@@ -186,8 +186,8 @@ class HTML2PDF
     public function getVersionAsArray()
     {
         return array(
-            'major'     => 4,
-            'minor'     => 5,
+            'major'     => 5,
+            'minor'     => 0,
             'revision'  => 0,
         );
     }

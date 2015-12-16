@@ -1,5 +1,7 @@
-HTML2PDF v4.5.0 - xxxx-xx-xx
+HTML2PDF v5.0.0 - xxxx-xx-xx
 ============================
+
+VERSION UNDER DEVELOPMENT !!!
 
 License:
 --------
