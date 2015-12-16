@@ -99,7 +99,7 @@ class ParsingCss
     protected function _init()
     {
         // get the Web Colors from TCPDF
-        $this->_htmlColor = TCPDF_COLORS::$webcolor;
+        $this->_htmlColor = \TCPDF_COLORS::$webcolor;
 
         // init the Style
         $this->table = array();
