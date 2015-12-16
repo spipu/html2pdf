@@ -12,6 +12,8 @@
 
 namespace Spipu\Html2Pdf\Parsing;
 
+use Spipu\Html2Pdf\Html2PdfException;
+
 class Html
 {
     protected    $_html     = '';        // HTML code to parse
