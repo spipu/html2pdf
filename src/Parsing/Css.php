@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - parsingCss class
+ * Html2Pdf Library - parsing Css class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -10,11 +10,11 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf;
+namespace Spipu\Html2Pdf\Parsing;
 
 use TCPDF;
 
-class ParsingCss
+class Css
 {
     /**
      * reference to the pdf object

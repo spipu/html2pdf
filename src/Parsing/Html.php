@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - parsingHtml class
+ * Html2Pdf Library - parsing Html class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -10,9 +10,9 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf;
+namespace Spipu\Html2Pdf\Parsing;
 
-class ParsingHtml
+class Html
 {
     protected    $_html     = '';        // HTML code to parse
     protected    $_num      = 0;         // table number
@@ -116,9 +116,9 @@ class ParsingHtml
                         if ($res['close']) {
                             // HTML validation
                             if (count($parents) < 1) {
-                                throw new Html2Pdf_exception(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
+                                throw new Html2PdfException(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
                             } else if (end($parents) != $res['name']) {
-                                throw new Html2Pdf_exception(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
+                                throw new Html2PdfException(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
                             } else {
                                 array_pop($parents);
                             }
@@ -222,7 +222,7 @@ class ParsingHtml
 
         // if we are not on the level 0 => HTML validator ERROR
         if (count($parents)) {
-            throw new Html2Pdf_exception(5, $parents);
+            throw new Html2PdfException(5, $parents);
         }
 
         // save the actions to do

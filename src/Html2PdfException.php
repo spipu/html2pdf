@@ -10,9 +10,9 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf;
+namespace Spipu\Html2Pdf\Exception;
 
-class Html2Pdf_exception extends \Exception
+class Html2PdfException extends \Exception
 {
     protected $_tag = null;
     protected $_html = null;
@@ -27,7 +27,7 @@ class Html2Pdf_exception extends \Exception
      * @param mixed  $other additionnal informations
      * @param string $html  additionnal informations
      *
-     * @return Html2Pdf_exception
+     * @return Html2PdfException
      */
     final public function __construct($err = 0, $other = null, $html = '')
     {

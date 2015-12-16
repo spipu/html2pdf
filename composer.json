@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Spipu\\Html2Pdf\\": ""
+            "Spipu\\Html2Pdf\\": "src/"
         }
     }
 }

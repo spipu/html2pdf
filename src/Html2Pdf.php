@@ -12,7 +12,7 @@
 
 namespace Spipu\Html2Pdf;
 
-require_once __DIR__.'/tcpdfConfig.php';
+require_once dirname(__FILE__) . '/config/tcpdf.config.php';
 
 class Html2Pdf
 {
@@ -24,13 +24,13 @@ class Html2Pdf
 
     /**
      * CSS parsing
-     * @var ParsingCss
+     * @var Parsing\Css
      */
     public $parsingCss = null;
 
     /**
      * HTML parsing
-     * @var ParsingHtml
+     * @var Parsing\Html
      */
     public $parsingHtml = null;
 
@@ -138,7 +138,7 @@ class Html2Pdf
         $this->pdf = new MyPdf($orientation, 'mm', $format, $unicode, $encoding);
 
         // init the CSS parsing object
-        $this->parsingCss = new ParsingCss($this->pdf);
+        $this->parsingCss = new Parsing\Css($this->pdf);
         $this->parsingCss->fontSet();
         $this->_defList = array();
 
@@ -151,7 +151,7 @@ class Html2Pdf
         $this->setDefaultFont(null);
 
         // init the HTML parsing object
-        $this->parsingHtml = new ParsingHtml($this->_encoding);
+        $this->parsingHtml = new Parsing\Html($this->_encoding);
         $this->_subHtml = null;
         $this->_subPart = false;
 
@@ -358,7 +358,7 @@ class Html2Pdf
      * @param  string $name The name of the file when saved.
      * @param  string $dest Destination where to send the document.
      * @return string content of the PDF, if $dest=S
-     * @throws Html2Pdf_exception
+     * @throws Html2PdfException
      * @see    TCPDF::close
      * @access public
      */
@@ -386,7 +386,7 @@ class Html2Pdf
 
         // the name must be a PDF name
         if (strtolower(substr($name, -4))!='.pdf') {
-            throw new Html2Pdf_exception(0, 'The output document name "'.$name.'" is not a PDF name');
+            throw new Html2PdfException(0, 'The output document name "'.$name.'" is not a PDF name');
         }
 
         // call the output of TCPDF
@@ -1254,7 +1254,7 @@ class Html2Pdf
      * @access protected
      * @param  array $action
      *
-     * @throws Html2Pdf_exception
+     * @throws Html2PdfException
      */
     protected function _executeAction($action)
     {
@@ -1271,7 +1271,7 @@ class Html2Pdf
 
         // the action must exist
         if (!is_callable(array(&$this, $fnc))) {
-            throw new Html2Pdf_exception(1, strtoupper($action['name']), $this->parsingHtml->getHtmlErrorCode($action['html_pos']));
+            throw new Html2PdfException(1, strtoupper($action['name']), $this->parsingHtml->getHtmlErrorCode($action['html_pos']));
         }
 
         // run the action
@@ -1328,7 +1328,7 @@ class Html2Pdf
      * @param  string $src
      * @param  boolean $subLi if true=image of a list
      * @return boolean depending on "isForOneLine"
-     * @throws Html2Pdf_exception
+     * @throws Html2PdfException
      */
     protected function _drawImage($src, $subLi=false)
     {
@@ -1340,7 +1340,7 @@ class Html2Pdf
         if (count($infos)<2) {
             // if the test is activ => exception
             if ($this->_testIsImage) {
-                throw new Html2Pdf_exception(6, $src);
+                throw new Html2PdfException(6, $src);
             }
 
             // else, display a gray rectangle
@@ -1503,7 +1503,7 @@ class Html2Pdf
      * @param  float $margin  - external margin of the rectangle
      * @param  array $background
      * @return boolean
-     * @throws Html2Pdf_exception
+     * @throws Html2PdfException
      */
     protected function _drawRectangle($x, $y, $w, $h, $border, $padding, $margin, $background)
     {
@@ -1604,7 +1604,7 @@ class Html2Pdf
             // if the image can not be loaded
             if (count($imageInfos)<2) {
                 if ($this->_testIsImage) {
-                    throw new Html2Pdf_exception(6, $iName);
+                    throw new Html2PdfException(6, $iName);
                 }
             } else {
                 // convert the size of the image from pixel to the unit of the PDF
@@ -3105,7 +3105,7 @@ class Html2Pdf
         if (!isset($param['style']['color'])) $param['style']['color'] = '#000000';
 
         if ($this->_testIsDeprecated && (isset($param['bar_h']) || isset($param['bar_w'])))
-            throw new Html2Pdf_exception(9, array('BARCODE', 'bar_h, bar_w'));
+            throw new Html2PdfException(9, array('BARCODE', 'bar_h, bar_w'));
 
         $param['type'] = strtoupper($param['type']);
         if (isset($lstBarcode[$param['type']])) $param['type'] = $lstBarcode[$param['type']];
@@ -3160,7 +3160,7 @@ class Html2Pdf
     protected function _tag_open_QRCODE($param)
     {
         if ($this->_testIsDeprecated && (isset($param['size']) || isset($param['noborder'])))
-            throw new Html2Pdf_exception(9, array('QRCODE', 'size, noborder'));
+            throw new Html2PdfException(9, array('QRCODE', 'size, noborder'));
 
         if ($this->_debugActif) $this->_DEBUG_add('QRCODE');
 
@@ -3425,7 +3425,7 @@ class Html2Pdf
                 $nb++;
                 if ($nb>10000) {
                     $txt = ''; foreach ($words as $k => $word) $txt.= ($k ? ' ' : '').$word[0];
-                    throw new Html2Pdf_exception(2, array($txt, $right-$left, $w));
+                    throw new Html2PdfException(2, array($txt, $right-$left, $w));
                 }
 
                 // new margins for the new line
@@ -5305,7 +5305,7 @@ class Html2Pdf
      * @param string $other
      *
      * @return boolean
-     * @throws Html2Pdf_exception
+     * @throws Html2PdfException
      */
     protected function _tag_open_TD($param, $other = 'td')
     {
@@ -5557,7 +5557,7 @@ class Html2Pdf
 
             // it msut take only one page
             if ($this->_testTdInOnepage && $this->_subHtml->pdf->getPage()>1) {
-                throw new Html2Pdf_exception(7);
+                throw new Html2PdfException(7);
             }
 
             // size of the content of the TD
@@ -6150,7 +6150,7 @@ class Html2Pdf
      */
     protected function _tag_open_LINE($param)
     {
-        if (!$this->_isInDraw) throw new Html2Pdf_exception(8, 'LINE');
+        if (!$this->_isInDraw) throw new Html2PdfException(8, 'LINE');
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
@@ -6177,7 +6177,7 @@ class Html2Pdf
      */
     protected function _tag_open_RECT($param)
     {
-        if (!$this->_isInDraw) throw new Html2Pdf_exception(8, 'RECT');
+        if (!$this->_isInDraw) throw new Html2PdfException(8, 'RECT');
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
@@ -6204,7 +6204,7 @@ class Html2Pdf
      */
     protected function _tag_open_CIRCLE($param)
     {
-        if (!$this->_isInDraw) throw new Html2Pdf_exception(8, 'CIRCLE');
+        if (!$this->_isInDraw) throw new Html2PdfException(8, 'CIRCLE');
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
@@ -6229,7 +6229,7 @@ class Html2Pdf
      */
     protected function _tag_open_ELLIPSE($param)
     {
-        if (!$this->_isInDraw) throw new Html2Pdf_exception(8, 'ELLIPSE');
+        if (!$this->_isInDraw) throw new Html2PdfException(8, 'ELLIPSE');
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
@@ -6256,7 +6256,7 @@ class Html2Pdf
      */
     protected function _tag_open_POLYLINE($param)
     {
-        if (!$this->_isInDraw) throw new Html2Pdf_exception(8, 'POLYGON');
+        if (!$this->_isInDraw) throw new Html2PdfException(8, 'POLYGON');
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
@@ -6302,7 +6302,7 @@ class Html2Pdf
      */
     protected function _tag_open_POLYGON($param)
     {
-        if (!$this->_isInDraw) throw new Html2Pdf_exception(8, 'POLYGON');
+        if (!$this->_isInDraw) throw new Html2PdfException(8, 'POLYGON');
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
@@ -6349,7 +6349,7 @@ class Html2Pdf
      */
     protected function _tag_open_PATH($param)
     {
-        if (!$this->_isInDraw) throw new Html2Pdf_exception(8, 'PATH');
+        if (!$this->_isInDraw) throw new Html2PdfException(8, 'PATH');
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
@@ -6478,7 +6478,7 @@ class Html2Pdf
      */
     protected function _tag_open_G($param)
     {
-        if (!$this->_isInDraw) throw new Html2Pdf_exception(8, 'G');
+        if (!$this->_isInDraw) throw new Html2PdfException(8, 'G');
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
