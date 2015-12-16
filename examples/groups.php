@@ -14,7 +14,7 @@
  */
 
 use Spipu\Html2Pdf\Html2Pdf;
-use Spipu\Html2Pdf\Html2Pdf_exception;
+use Spipu\Html2Pdf\Html2PdfException;
 
 ob_start();
 ?>
@@ -73,7 +73,7 @@ try
     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
     $html2pdf->Output('groups.pdf');
 }
-catch(Html2Pdf_exception $e) {
+catch(Html2PdfException $e) {
     echo $e;
     exit;
 }

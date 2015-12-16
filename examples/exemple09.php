@@ -11,7 +11,7 @@
  */
 
 use Spipu\Html2Pdf\Html2Pdf;
-use Spipu\Html2Pdf\Html2Pdf_exception;
+use Spipu\Html2Pdf\Html2PdfException;
 
 if (isset($_SERVER['REQUEST_URI'])) {
     $generate = isset($_GET['make_pdf']);
@@ -70,7 +70,7 @@ Bonjour <b><?php echo $nom; ?></b>, ton nom peut s'écrire : <br>
             $html2pdf->Output('exemple09.pdf');
             exit;
         }
-        catch(Html2Pdf_exception $e) {
+        catch(Html2PdfException $e) {
             echo $e;
             exit;
         }

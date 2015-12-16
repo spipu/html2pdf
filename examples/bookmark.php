@@ -14,7 +14,7 @@
  */
 
 use Spipu\Html2Pdf\Html2Pdf;
-use Spipu\Html2Pdf\Html2Pdf_exception;
+use Spipu\Html2Pdf\Html2PdfException;
 
 ob_start();
 ?>
@@ -110,7 +110,7 @@ ob_start();
         $html2pdf->createIndex('Sommaire', 25, 12, false, true, 1);
         $html2pdf->Output('bookmark.pdf');
     }
-    catch(Html2Pdf_exception $e) {
+    catch(Html2PdfException $e) {
         echo $e;
         exit;
     }

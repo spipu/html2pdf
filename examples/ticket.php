@@ -14,7 +14,7 @@
  */
 
 use Spipu\Html2Pdf\Html2Pdf;
-use Spipu\Html2Pdf\Html2Pdf_exception;
+use Spipu\Html2Pdf\Html2PdfException;
 
     // get the HTML
     ob_start();
@@ -97,7 +97,7 @@ use Spipu\Html2Pdf\Html2Pdf_exception;
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
         $html2pdf->Output('ticket.pdf');
     }
-    catch(Html2Pdf_exception $e) {
+    catch(Html2PdfException $e) {
         echo $e;
         exit;
     }

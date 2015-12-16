@@ -30,7 +30,7 @@ use Spipu\Html2Pdf\Html2Pdf;
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
         $html2pdf->Output('utf8.pdf');
     }
-    catch(Html2Pdf_exception $e) {
+    catch(Html2PdfException $e) {
         echo $e;
         exit;
     }

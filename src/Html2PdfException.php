@@ -10,7 +10,7 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Exception;
+namespace Spipu\Html2Pdf;
 
 class Html2PdfException extends \Exception
 {

@@ -14,7 +14,7 @@
  */
 
 use Spipu\Html2Pdf\Html2Pdf;
-use Spipu\Html2Pdf\Html2Pdf_exception;
+use Spipu\Html2Pdf\Html2PdfException;
 
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
 
@@ -40,7 +40,7 @@ use Spipu\Html2Pdf\Html2Pdf_exception;
         // send the PDF
         $html2pdf->Output('about.pdf');
     }
-    catch(Html2Pdf_exception $e) {
+    catch(Html2PdfException $e) {
         echo $e;
         exit;
     }

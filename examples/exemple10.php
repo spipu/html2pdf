@@ -14,7 +14,7 @@
  */
 
 use Spipu\Html2Pdf\Html2Pdf;
-use Spipu\Html2Pdf\Html2Pdf_exception;
+use Spipu\Html2Pdf\Html2PdfException;
 
     ob_start();
     include(dirname(__FILE__).'/res/exemple10.php');
@@ -27,7 +27,7 @@ use Spipu\Html2Pdf\Html2Pdf_exception;
         $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
         $html2pdf->Output('exemple10.pdf');
     }
-    catch(Html2Pdf_exception $e) {
+    catch(Html2PdfException $e) {
         echo $e;
         exit;
     }
