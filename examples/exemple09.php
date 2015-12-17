@@ -9,6 +9,7 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
  */
+require_once dirname(__FILE__).'/../vendor/autoload.php';
 
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Html2PdfException;
@@ -62,7 +63,7 @@ Bonjour <b><?php echo $nom; ?></b>, ton nom peut s'écrire : <br>
 <?php
 if ($generate) {
     $content = ob_get_clean();
-    require_once(dirname(__FILE__).'/../vendor/autoload.php');
+
     try {
         $html2pdf = new Html2Pdf('P', 'A4', 'fr');
         $html2pdf->writeHTML($content);
