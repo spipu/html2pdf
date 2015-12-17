@@ -262,7 +262,7 @@ class Html
         $tokens = array();
 
         // regexp to separate the tags from the texts
-        $reg = '/(<[^>]+>)|([^<]+)/is';
+        $reg = '/(<[^>\s]+>)|([^<]+|<)/is';
 
         // last match found
         $str = '';
