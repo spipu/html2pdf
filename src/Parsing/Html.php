@@ -9,13 +9,13 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
  */
-
 namespace Spipu\Html2Pdf\Parsing;
 
 use Spipu\Html2Pdf\Html2PdfException;
 
 class Html
 {
+    protected $lexer;
     protected $_html     = '';        // HTML code to parse
     protected $_num      = 0;         // table number
     protected $_level    = 0;         // table level
@@ -32,6 +32,7 @@ class Html
      */
     public function __construct($encoding = 'UTF-8')
     {
+        $this->lexer = new HtmlLexer();
         $this->_num   = 0;
         $this->_level = array($this->_num);
         $this->_html  = '';
@@ -95,7 +96,7 @@ class Html
         );
 
         // search the HTML tags
-        $tokens = $this->_tokenize();
+        $tokens = $this->lexer->tokenize($this->_html);
 
         // all the actions to do
         $actions = array();
@@ -105,7 +106,7 @@ class Html
             // if it is a tag code
             if ($part[0] == 'code') {
                 // analyze the HTML code
-                $res = $this->_analyzeCode($part[1]);
+                $res = $this->_analyzeTag($part[1]);
 
                 // if it is a real HTML tag
                 if ($res) {
@@ -252,60 +253,12 @@ class Html
     }
 
     /**
-     * Tokenize the HTML code
-     *
-     * @return array
-     */
-    protected function _tokenize()
-    {
-        // initialise the array
-        $tokens = array();
-
-        // regexp to separate the tags from the texts
-        $reg = '/(<\/?\w[^<>]*>)|([^<]+|<)/is';
-
-        // last match found
-        $str = '';
-        $offset = 0;
-
-        // As it finds a match
-        while (preg_match($reg, $this->_html, $parse, PREG_OFFSET_CAPTURE, $offset)) {
-            // if it is a tag
-            if ($parse[1][0]) {
-                // save the previous text if it exists
-                if ($str !== '') {
-                    $tokens[] = array('txt', $str);
-                }
-
-                // save the tag, with the offset
-                $tokens[] = array('code', trim($parse[1][0]), $offset);
-
-                // init the current text
-                $str = '';
-            } else { // else (if it is a text)
-                // add the new text to the current text
-                $str .= $parse[2][0];
-            }
-
-            // Update offset to the end of the match
-            $offset = $parse[0][1] + strlen($parse[0][0]);
-            unset($parse);
-        }
-        // if a text is present in the end, we save it
-        if ($str != '') {
-            $tokens[] = array('txt', $str);
-        }
-
-        return $tokens;
-    }
-
-    /**
-     * analise a HTML tag
+     * analyze a HTML tag
      *
      * @param   string   $code HTML code to analise
      * @return  array    corresponding action
      */
-    protected function _analyzeCode($code)
+    protected function _analyzeTag($code)
     {
         // name of the tag, opening, closure, autoclosure
         $tag = '<([\/]{0,1})([_a-z0-9]+)([\/>\s]+)';
