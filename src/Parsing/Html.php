@@ -95,13 +95,13 @@ class Html
         );
 
         // search the HTML tags
-        $parts = $this->_searchCode();
+        $tokens = $this->_tokenize();
 
         // all the actions to do
         $actions = array();
 
         // foreach part of the HTML code
-        foreach ($parts as $part) {
+        foreach ($tokens as $part) {
             // if it is a tag code
             if ($part[0] == 'code') {
                 // analyze the HTML code
@@ -252,14 +252,14 @@ class Html
     }
 
     /**
-     * parse the HTML code
+     * Tokenize the HTML code
      *
      * @return array
      */
-    protected function _searchCode()
+    protected function _tokenize()
     {
         // initialise the array
-        $parts = array();
+        $tokens = array();
 
         // regexp to separate the tags from the texts
         $reg = '/(<[^>]+>)|([^<]+)+/isU';
@@ -274,11 +274,11 @@ class Html
             if ($parse[1][0]) {
                 // save the previous text if it exists
                 if ($str !== '') {
-                    $parts[] = array('txt', $str);
+                    $tokens[] = array('txt', $str);
                 }
 
                 // save the tag, with the offset
-                $parts[] = array('code', trim($parse[1][0]), $offset);
+                $tokens[] = array('code', trim($parse[1][0]), $offset);
 
                 // init the current text
                 $str = '';
@@ -293,10 +293,10 @@ class Html
         }
         // if a text is present in the end, we save it
         if ($str != '') {
-            $parts[] = array('txt', $str);
+            $tokens[] = array('txt', $str);
         }
 
-        return $parts;
+        return $tokens;
     }
 
     /**
