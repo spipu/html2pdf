@@ -12,6 +12,8 @@
 
 namespace Spipu\Html2Pdf;
 
+use Spipu\Html2Pdf\Parsing\Css as ParsingCss;
+
 interface TagInterface
 {
     /**
@@ -24,12 +26,19 @@ interface TagInterface
     /**
      * Set the Parsing Css Object
      *
-     * @param Parsing\Css $parsingCss The parsing css object
+     * @param ParsingCss $parsingCss The parsing css object
      *
-     * @return TagAbstract
+     * @return TagInterface
      * @throws \Exception
      */
-    public function setParsingCssObject(Parsing\Css $parsingCss);
+    public function setParsingCssObject(ParsingCss $parsingCss);
+
+    /**
+     * get the name of the tag
+     *
+     * @return string
+     */
+    public function getName();
 
     /**
      * Open the HTML tag

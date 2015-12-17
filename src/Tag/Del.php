@@ -14,8 +14,13 @@ namespace Spipu\Html2Pdf\Tag;
 class Del extends S
 {
     /**
-     * Tag name
-     * @var string
+     * get the name of the tag
+     *
+     * @return string
      */
-    protected $_tagName = 'del';
+    public function getName()
+    {
+        return 'del';
+    }
+
 }

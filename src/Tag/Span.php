@@ -11,13 +11,18 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
-class Span extends DefaultTag
+class Span extends AbstractDefaultTag
 {
     /**
-     * Tag name
-     * @var string
+     * get the name of the tag
+     *
+     * @return string
      */
-    protected $_tagName = 'span';
+    public function getName()
+    {
+        return 'span';
+    }
+
 
     /**
      * Close the HTML tag

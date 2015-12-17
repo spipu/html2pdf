@@ -14,8 +14,13 @@ namespace Spipu\Html2Pdf\Tag;
 class Samp extends I
 {
     /**
-     * Tag name
-     * @var string
+     * get the name of the tag
+     *
+     * @return string
      */
-    protected $_tagName = 'samp';
+    public function getName()
+    {
+        return 'samp';
+    }
+
 }

@@ -12,9 +12,7 @@
 
 namespace Spipu\Html2Pdf\Tag;
 
-use Spipu\Html2Pdf\TagAbstract;
-
-class DefaultTag extends TagAbstract
+abstract class AbstractDefaultTag extends AbstractTag
 {
     /**
      * Open the HTML tag
@@ -27,7 +25,7 @@ class DefaultTag extends TagAbstract
     {
         $this->_parsingCss->save();
         $this->_overrideStyles();
-        $this->_parsingCss->analyse($this->_tagName, $properties);
+        $this->_parsingCss->analyse($this->getName(), $properties);
         $this->_parsingCss->setPosition();
         $this->_parsingCss->fontSet();
 

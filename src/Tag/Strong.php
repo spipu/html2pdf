@@ -14,8 +14,13 @@ namespace Spipu\Html2Pdf\Tag;
 class Strong extends B
 {
     /**
-     * Tag name
-     * @var string
+     * get the name of the tag
+     *
+     * @return string
      */
-    protected $_tagName = 'strong';
+    public function getName()
+    {
+        return 'strong';
+    }
+
 }

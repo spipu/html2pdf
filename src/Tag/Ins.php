@@ -14,8 +14,13 @@ namespace Spipu\Html2Pdf\Tag;
 class Ins extends U
 {
     /**
-     * Tag name
-     * @var string
+     * get the name of the tag
+     *
+     * @return string
      */
-    protected $_tagName = 'Ins';
+    public function getName()
+    {
+        return 'ins';
+    }
+
 }

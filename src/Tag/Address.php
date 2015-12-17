@@ -14,8 +14,13 @@ namespace Spipu\Html2Pdf\Tag;
 class Address extends I
 {
     /**
-     * Tag name
-     * @var string
+     * get the name of the tag
+     *
+     * @return string
      */
-    protected $_tagName = 'address';
+    public function getName()
+    {
+        return 'address';
+    }
+
 }

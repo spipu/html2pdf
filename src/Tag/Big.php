@@ -11,13 +11,17 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
-class Big extends DefaultTag
+class Big extends AbstractDefaultTag
 {
     /**
-     * Tag name
-     * @var string
+     * get the name of the tag
+     *
+     * @return string
      */
-    protected $_tagName = 'big';
+    public function getName()
+    {
+        return 'big';
+    }
 
     /**
      * override some styles

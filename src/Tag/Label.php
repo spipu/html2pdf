@@ -14,8 +14,13 @@ namespace Spipu\Html2Pdf\Tag;
 class Label extends Span
 {
     /**
-     * Tag name
-     * @var string
+     * get the name of the tag
+     *
+     * @return string
      */
-    protected $_tagName = 'label';
+    public function getName()
+    {
+        return 'label';
+    }
+
 }

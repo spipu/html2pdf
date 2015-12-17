@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - TagAbstrat class
+ * Html2Pdf Library - Abstract Tag class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -10,49 +10,51 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf;
+namespace Spipu\Html2Pdf\Tag;
 
-abstract class TagAbstract implements TagInterface
+use Spipu\Html2Pdf\TagInterface;
+use Spipu\Html2Pdf\Parsing\Css as ParsingCss;
+
+abstract class AbstractTag implements TagInterface
 {
     /**
-     * Tag name, must be defined in each tag classe
-     * @var string
-     */
-    protected $_tagName;
-
-    /**
      * Css Parsing object
-     * @var Parsing\Css
+     * @var ParsingCss
      */
     protected $_parsingCss;
 
     /**
      * PHP constructor.
      *
-     * @return TagAbstract
+     * @return AbstractTag
      * @throws \Exception
      */
     public function __construct()
     {
-        if (is_null($this->_tagName)) {
-            throw new \Exception('Tag name is not defined');
-        }
+
     }
 
     /**
      * Set the Parsing Css Object
      *
-     * @param Parsing\Css $parsingCss The parsing css object
+     * @param ParsingCss $parsingCss The parsing css object
      *
-     * @return TagAbstract
+     * @return AbstractTag
      * @throws \Exception
      */
-    public function setParsingCssObject(Parsing\Css $parsingCss)
+    public function setParsingCssObject(ParsingCss $parsingCss)
     {
         $this->_parsingCss = $parsingCss;
 
         return $this;
     }
+
+    /**
+     * get the name of the tag
+     *
+     * @return string
+     */
+    abstract public function getName();
 
     /**
      * Open the HTML tag
