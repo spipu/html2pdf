@@ -62,10 +62,10 @@ div.zone_over
     <br>
     <b>Exemple de couleur : </b><br>
     <span style="color: RGB(255, 0, 0)">Texte de couleur</span><br>
-    <span style="color: RGB(0., 1., 0.)">Texte de couleur</span><br>
+    <span style="color: RGB(0, 1.0, 0)">Texte de couleur</span><br>
     <span style="color: RGB(0, 0, 100%)">Texte de couleur</span><br>
     <span style="color: CMYK(255, 0, 0, 0)">Texte de couleur</span><br>
-    <span style="color: CMYK(0., 1., 0., 0.)">Texte de couleur</span><br>
+    <span style="color: CMYK(0, 1.0, 0, 0)">Texte de couleur</span><br>
     <span style="color: CMYK(0, 0, 100%, 0)">Texte de couleur</span><br>
     <span style="color: CMYK(0, 0, 0, 255)">Texte de couleur</span><br>
     <br>

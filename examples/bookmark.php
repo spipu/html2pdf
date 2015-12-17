@@ -103,14 +103,12 @@ ob_start();
     $content = ob_get_clean();
 
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
-    try
-    {
-        $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
-        $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-        $html2pdf->createIndex('Sommaire', 25, 12, false, true, 1);
-        $html2pdf->Output('bookmark.pdf');
-    }
-    catch(Html2PdfException $e) {
-        echo $e;
-        exit;
-    }
+try {
+    $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
+    $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+    $html2pdf->createIndex('Sommaire', 25, 12, false, true, 1);
+    $html2pdf->Output('bookmark.pdf');
+} catch (Html2PdfException $e) {
+    echo $e;
+    exit;
+}

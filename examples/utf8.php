@@ -24,13 +24,11 @@ use Spipu\Html2Pdf\Html2Pdf;
     $content = '<page style="font-family: freeserif"><br />'.nl2br($content).'</page>';
 
     // convert to PDF
-    try
-    {
-        $html2pdf->pdf->SetDisplayMode('real');
-        $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-        $html2pdf->Output('utf8.pdf');
-    }
-    catch(Html2PdfException $e) {
-        echo $e;
-        exit;
-    }
+try {
+    $html2pdf->pdf->SetDisplayMode('real');
+    $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+    $html2pdf->Output('utf8.pdf');
+} catch (Html2PdfException $e) {
+    echo $e;
+    exit;
+}

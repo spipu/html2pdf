@@ -58,16 +58,16 @@ end_last_page div
         </tr>
     </thead>
 <?php
-    for ($k=0; $k<50; $k++) {
+for ($k=0; $k<50; $k++) {
 ?>
-    <tr>
-        <td><?php echo $k; ?></td>
-        <td>test de texte assez long pour engendrer des retours à la ligne automatique...</td>
-        <td>test de texte assez long pour engendrer des retours à la ligne automatique...</td>
-        <td>test de texte assez long pour engendrer des retours à la ligne automatique...</td>
-    </tr>
+<tr>
+    <td><?php echo $k; ?></td>
+    <td>test de texte assez long pour engendrer des retours à la ligne automatique...</td>
+    <td>test de texte assez long pour engendrer des retours à la ligne automatique...</td>
+    <td>test de texte assez long pour engendrer des retours à la ligne automatique...</td>
+</tr>
 <?php
-    }
+}
 ?>
     <tfoot>
         <tr>

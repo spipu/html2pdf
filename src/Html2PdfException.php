@@ -32,8 +32,7 @@ class Html2PdfException extends \Exception
     final public function __construct($err = 0, $other = null, $html = '')
     {
         // read the error
-        switch($err)
-        {
+        switch ($err) {
             case 1: // Unsupported tag
                 $msg = (Locale::get('err01'));
                 $msg = str_replace('[[OTHER]]', $other, $msg);

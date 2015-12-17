@@ -37,13 +37,14 @@ class MyPdf extends \TCPDF
      * @access public
      */
     public function __construct(
-        $orientation='P',
-        $unit='mm',
-        $format='A4',
-        $unicode=true,
-        $encoding='UTF-8',
-        $diskcache=false)
-    {
+        $orientation = 'P',
+        $unit = 'mm',
+        $format = 'A4',
+        $unicode = true,
+        $encoding = 'UTF-8',
+        $diskcache = false
+    ) {
+    
         // call the parent constructor
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache);
 
@@ -58,7 +59,7 @@ class MyPdf extends \TCPDF
         $this->SetMyFooter();
 
         $this->setCellPaddings(0, 0, 0, 0);
-        $this->setCellMargins(0,0,0,0);
+        $this->setCellMargins(0, 0, 0, 0);
     }
 
     /**
@@ -228,7 +229,7 @@ class MyPdf extends \TCPDF
      * @param float word spacing
      * @access public
      */
-    public function setWordSpacing($ws=0.)
+    public function setWordSpacing($ws = 0.)
     {
         $this->ws = $ws;
         $this->_out(sprintf('%.3F Tw', $ws*$this->k));
@@ -252,11 +253,12 @@ class MyPdf extends \TCPDF
         $y = null,
         $w = null,
         $h = null,
-        $cornerTL=null,
-        $cornerTR=null,
-        $cornerBL=null,
-        $cornerBR=null)
-    {
+        $cornerTL = null,
+        $cornerTR = null,
+        $cornerBL = null,
+        $cornerBR = null
+    ) {
+    
         // init the path
         $path = '';
 
@@ -555,11 +557,15 @@ class MyPdf extends \TCPDF
      * @param float $Cy
      * @access public
      */
-    public function setRotation($angle, $xC=null, $yC=null)
+    public function setRotation($angle, $xC = null, $yC = null)
     {
         // if no center, rotate around the current posiition
-        if($xC === null) $xC=$this->x;
-        if($yC === null) $yC=$this->y;
+        if ($xC === null) {
+            $xC=$this->x;
+        }
+        if ($yC === null) {
+            $yC=$this->y;
+        }
 
         // prepare the coordinate
         $yC=($this->h-$yC)*$this->k;
@@ -585,7 +591,7 @@ class MyPdf extends \TCPDF
      * @param boolean $rtloff NOT USED
      * @access public
      */
-    public function SetX($x, $rtloff=false)
+    public function SetX($x, $rtloff = false)
     {
         $this->x=$x;
     }
@@ -599,10 +605,11 @@ class MyPdf extends \TCPDF
      * @param boolean $rtloff NOT USED
      * @access public
      */
-    public function SetY($y, $resetx=true, $rtloff=false)
+    public function SetY($y, $resetx = true, $rtloff = false)
     {
-        if ($resetx)
+        if ($resetx) {
             $this->x=$this->lMargin;
+        }
 
         $this->y=$y;
     }
@@ -616,7 +623,7 @@ class MyPdf extends \TCPDF
      * @param boolean $rtloff NOT USED
      * @access public
      */
-    public function SetXY($x, $y, $rtloff=false)
+    public function SetXY($x, $y, $rtloff = false)
     {
         $this->x=$x;
         $this->y=$y;
@@ -719,9 +726,13 @@ class MyPdf extends \TCPDF
         $y4=$y+$h;
 
         // get the Closing operator from the PDF Style
-        if($style=='F') $op='f';
-        elseif($style=='FD' || $style=='DF') $op='B';
-        else $op='S';
+        if ($style=='F') {
+            $op='f';
+        } elseif ($style=='FD' || $style=='DF') {
+            $op='B';
+        } else {
+            $op='S';
+        }
 
         // drawing
         $this->_Point($x1, $y1, true);
@@ -765,9 +776,13 @@ class MyPdf extends \TCPDF
     public function svgEllipse($x0, $y0, $rx, $ry, $style)
     {
         // get the Closing operator from the PDF Style
-        if($style=='F') $op='f';
-        elseif($style=='FD' || $style=='DF') $op='B';
-        else $op='S';
+        if ($style=='F') {
+            $op='f';
+        } elseif ($style=='FD' || $style=='DF') {
+            $op='B';
+        } else {
+            $op='S';
+        }
 
         // drawing
         $this->_Arc($x0, $y0, $rx, $ry, 0, 2*M_PI, true, true, true);
@@ -784,65 +799,92 @@ class MyPdf extends \TCPDF
     public function svgPolygone($actions, $style)
     {
         // get the Closing operator from the PDF Style
-        if($style=='F') $op='f';
-        elseif($style=='FD' || $style=='DF') $op='B';
-        else $op='S';
+        if ($style=='F') {
+            $op='f';
+        } elseif ($style=='FD' || $style=='DF') {
+            $op='B';
+        } else {
+            $op='S';
+        }
 
         // To save the First action and the last point
         $first = array('', 0, 0);
         $last = array(0, 0, 0, 0);
 
         foreach ($actions as $action) {
-            switch($action[0])
-            {
-                // Start the Path
+            switch ($action[0]) {
+            // Start the Path
                 case 'M':
                 case 'm':
                     $first = $action;
-                    $x = $action[1]; $y = $action[2]; $xc = $x; $yc = $y;
+                    $x = $action[1];
+                    $y = $action[2];
+                    $xc = $x;
+                    $yc = $y;
                     $this->_Point($x, $y, true);
                     break;
 
                 // Close the Path
                 case 'Z':
                 case 'z':
-                    $x = $first[1]; $y = $first[2]; $xc = $x; $yc = $y;
+                    $x = $first[1];
+                    $y = $first[2];
+                    $xc = $x;
+                    $yc = $y;
                     $this->_Line($x, $y, true);
                     break;
 
                 // Make a Line (new point)
                 case 'L':
-                    $x = $action[1]; $y = $action[2]; $xc = $x; $yc = $y;
+                    $x = $action[1];
+                    $y = $action[2];
+                    $xc = $x;
+                    $yc = $y;
                     $this->_Line($x, $y, true);
                     break;
 
                 // Make a Line (vector from last point)
                 case 'l':
-                    $x = $last[0]+$action[1]; $y = $last[1]+$action[2]; $xc = $x; $yc = $y;
+                    $x = $last[0]+$action[1];
+                    $y = $last[1]+$action[2];
+                    $xc = $x;
+                    $yc = $y;
                     $this->_Line($x, $y, true);
                     break;
 
                 // Make a Horizontal Line (new point)
                 case 'H':
-                    $x = $action[1]; $y = $last[1]; $xc = $x; $yc = $y;
+                    $x = $action[1];
+                    $y = $last[1];
+                    $xc = $x;
+                    $yc = $y;
                     $this->_Line($x, $y, true);
                     break;
 
                 // Make a Horisontal Line (vector from last point)
                 case 'h':
-                    $x = $last[0]+$action[1]; $y = $last[1]; $xc = $x; $yc = $y;
+                    $x = $last[0]+$action[1];
+                    $y = $last[1];
+                    $xc = $x;
+                    $yc = $y;
                     $this->_Line($x, $y, true);
                     break;
 
                 // Make a Vertical Line (new point)
                 case 'V':
-                    $x = $last[0]; $y = $action[1]; $xc = $x; $yc = $y;
+                    $x = $last[0];
+                    $y = $action[1];
+                    $xc = $x;
+                    $yc = $y;
                     $this->_Line($x, $y, true);
                     break;
 
                 // Make a Vertical Line (vector from last point)
                 case 'v':
-                    $x = $last[0]; $y = $last[1]+$action[1]; $xc = $x; $yc = $y;
+                    $x = $last[0];
+                    $y = $last[1]+$action[1];
+                    $xc = $x;
+                    $yc = $y;
                     $this->_Line($x, $y, true);
                     break;
 
@@ -859,7 +901,10 @@ class MyPdf extends \TCPDF
                     $y2 = $action[7];   // final y
 
                     $this->_Arc2($x1, $y1, $x2, $y2, $rx, $ry, $a, $l, $s, true);
-                    $x = $x2; $y = $y2; $xc = $x; $yc = $y;
+                    $x = $x2;
+                    $y = $y2;
+                    $xc = $x;
+                    $yc = $y;
                     break;
 
                 // Make a Arc (vector from last point)
@@ -875,7 +920,10 @@ class MyPdf extends \TCPDF
                     $y2 = $last[1]+$action[7]; // final y
 
                     $this->_Arc2($x1, $y1, $x2, $y2, $rx, $ry, $a, $l, $s, true);
-                    $x = $x2; $y = $y2; $xc = $x; $yc = $y;
+                    $x = $x2;
+                    $y = $y2;
+                    $xc = $x;
+                    $yc = $y;
                     break;
 
                 // Make a Bezier Curve (new point)
@@ -887,7 +935,10 @@ class MyPdf extends \TCPDF
                     $xf = $action[5];
                     $yf = $action[6];
                     $this->_Curve($x1, $y1, $x2, $y2, $xf, $yf, true);
-                    $x = $xf; $y = $yf; $xc = $x2; $yc = $y2;
+                    $x = $xf;
+                    $y = $yf;
+                    $xc = $x2;
+                    $yc = $y2;
                     break;
 
                 // Make a Bezier Curve (vector from last point)
@@ -899,7 +950,10 @@ class MyPdf extends \TCPDF
                     $xf = $last[0]+$action[5];
                     $yf = $last[1]+$action[6];
                     $this->_Curve($x1, $y1, $x2, $y2, $xf, $yf, true);
-                    $x = $xf; $y = $yf; $xc = $x2; $yc = $y2;
+                    $x = $xf;
+                    $y = $yf;
+                    $xc = $x2;
+                    $yc = $y2;
                     break;
 
                 // Unknown Path
@@ -925,7 +979,9 @@ class MyPdf extends \TCPDF
      */
     protected function _Point($x, $y, $trans = false)
     {
-        if ($trans) $this->ptTransform($x, $y);
+        if ($trans) {
+            $this->ptTransform($x, $y);
+        }
 
         $this->_out(sprintf('%.2F %.2F m', $x, $y));
     }
@@ -940,7 +996,9 @@ class MyPdf extends \TCPDF
      */
     protected function _Line($x, $y, $trans = false)
     {
-        if ($trans) $this->ptTransform($x, $y);
+        if ($trans) {
+            $this->ptTransform($x, $y);
+        }
 
         $this->_out(sprintf('%.2F %.2F l', $x, $y));
     }
@@ -990,17 +1048,21 @@ class MyPdf extends \TCPDF
         $angleEnd,
         $direction = true,
         $drawFirst = true,
-        $trans=false)
-    {
+        $trans = false
+    ) {
+    
         // if we want the no trigo direction : add 2PI to the begin angle, to invert the direction
-        if (!$direction) $angleBegin+= M_PI*2.;
+        if (!$direction) {
+            $angleBegin+= M_PI*2.;
+        }
 
         // cut in segment to convert in berize curv
         $dt = ($angleEnd - $angleBegin)/self::ARC_NB_SEGMENT;
         $dtm = $dt/3;
 
         // center of the arc
-        $x0 = $xc; $y0 = $yc;
+        $x0 = $xc;
+        $y0 = $yc;
 
         // calculing the first point
         $t1 = $angleBegin;
@@ -1010,7 +1072,9 @@ class MyPdf extends \TCPDF
         $d0 = $ry * cos($t1);
 
         // if drawFirst => draw the first point
-        if ($drawFirst) $this->_Point($a0, $b0, $trans);
+        if ($drawFirst) {
+            $this->_Point($a0, $b0, $trans);
+        }
 
         // foreach segment
         for ($i = 1; $i <= self::ARC_NB_SEGMENT; $i++) {
@@ -1023,9 +1087,12 @@ class MyPdf extends \TCPDF
 
             // make the bezier curv
             $this->_Curve(
-                $a0 + ($c0 * $dtm), $b0 + ($d0 * $dtm),
-                $a1 - ($c1 * $dtm), $b1 - ($d1 * $dtm),
-                $a1, $b1,
+                $a0 + ($c0 * $dtm),
+                $b0 + ($d0 * $dtm),
+                $a1 - ($c1 * $dtm),
+                $b1 - ($d1 * $dtm),
+                $a1,
+                $b1,
                 $trans
             );
 
@@ -1052,7 +1119,7 @@ class MyPdf extends \TCPDF
      * @param boolean $trans apply transformation
      * @access protected
      */
-    protected function _Arc2($x1, $y1, $x2, $y2, $rx, $ry, $angle=0., $l=0, $s=0, $trans = false)
+    protected function _Arc2($x1, $y1, $x2, $y2, $rx, $ry, $angle = 0., $l = 0, $s = 0, $trans = false)
     {
         // array to stock the parameters
         $v = array();
@@ -1097,7 +1164,9 @@ class MyPdf extends \TCPDF
         $v['s1']['y'] =-$v['s1']['xr']*sin($angle)+$v['s1']['yr']*cos($angle);
         $v['s1']['a1'] = atan2($v['y1']-$v['s1']['y'], $v['x1']-$v['s1']['x']);
         $v['s1']['a2'] = atan2($v['y2']-$v['s1']['y'], $v['x2']-$v['s1']['x']);
-        if ($v['s1']['a1']>$v['s1']['a2']) $v['s1']['a1']-=2*M_PI;
+        if ($v['s1']['a1']>$v['s1']['a2']) {
+            $v['s1']['a1']-=2*M_PI;
+        }
 
         $v['s2'] = array();
         $v['s2']['t'] = -$v['s1']['t'];
@@ -1109,7 +1178,9 @@ class MyPdf extends \TCPDF
         $v['s2']['y'] =-$v['s2']['xr']*sin($angle)+$v['s2']['yr']*cos($angle);
         $v['s2']['a1'] = atan2($v['y1']-$v['s2']['y'], $v['x1']-$v['s2']['x']);
         $v['s2']['a2'] = atan2($v['y2']-$v['s2']['y'], $v['x2']-$v['s2']['x']);
-        if ($v['s2']['a1']>$v['s2']['a2']) $v['s2']['a1']-=2*M_PI;
+        if ($v['s2']['a1']>$v['s2']['a2']) {
+            $v['s2']['a1']-=2*M_PI;
+        }
 
         if (!$l) {
             if ($s) {
@@ -1151,12 +1222,15 @@ class MyPdf extends \TCPDF
      * @return boolean
      * @access public
      */
-    public function ptTransform(&$x,  &$y, $trans=true)
+    public function ptTransform(&$x, &$y, $trans = true)
     {
         // load the last Transfomation Matrix
         $nb = count($this->_transf);
-        if ($nb)    $m = $this->_transf[$nb-1];
-        else        $m = array(1,0,0,1,0,0);
+        if ($nb) {
+            $m = $this->_transf[$nb-1];
+        } else {
+            $m = array(1,0,0,1,0,0);
+        }
 
         // apply the Transformation Matrix
         list($x,$y) = array(($x*$m[0]+$y*$m[2]+$m[4]),($x*$m[1]+$y*$m[3]+$m[5]));
@@ -1180,11 +1254,16 @@ class MyPdf extends \TCPDF
     {
         // get the last Transformation Matrix
         $nb = count($this->_transf);
-        if ($nb)    $m = $this->_transf[$nb-1];
-        else        $m = array(1,0,0,1,0,0);
+        if ($nb) {
+            $m = $this->_transf[$nb-1];
+        } else {
+            $m = array(1,0,0,1,0,0);
+        }
 
         // if no transform, get the Identity Matrix
-        if (!$n) $n = array(1,0,0,1,0,0);
+        if (!$n) {
+            $n = array(1,0,0,1,0,0);
+        }
 
         // create the new Transformation Matrix
         $this->_transf[] = array(
@@ -1234,7 +1313,9 @@ class MyPdf extends \TCPDF
         $this->write1DBarcode($code, $type, $x, $y, $w, $h, '', $style, 'N');
 
         // it Label => add the FontSize to the height
-        if ($labelFontsize) $h+= ($labelFontsize);
+        if ($labelFontsize) {
+            $h+= ($labelFontsize);
+        }
 
         // return the size of the barcode
         return array($w, $h);
@@ -1261,10 +1342,13 @@ class MyPdf extends \TCPDF
         $bookmarkTitle = true,
         $displayPage = true,
         $page = null,
-        $fontName = 'helvetica')
-    {
+        $fontName = 'helvetica'
+    ) {
+    
         // bookmark the Title if wanted
-        if ($bookmarkTitle) $this->Bookmark($titre, 0, -1);
+        if ($bookmarkTitle) {
+            $this->Bookmark($titre, 0, -1);
+        }
 
         // display the Title with the good Font size
         $this->SetFont($fontName, '', $sizeTitle);
@@ -1281,7 +1365,7 @@ class MyPdf extends \TCPDF
         $pageCellSize=$this->GetStringWidth('p. '.$this->outlines[$size-1]['p'])+2;
 
         // Foreach bookmark
-        for ($i=0;$i<$size;$i++) {
+        for ($i=0; $i<$size; $i++) {
             // if we need a new page => add a new page
             if ($this->getY()+$this->FontSize>=($this->h - $this->bMargin)) {
                 $obj->_INDEX_NewPage($page);
@@ -1290,7 +1374,9 @@ class MyPdf extends \TCPDF
 
             // Offset of the current level
             $level=$this->outlines[$i]['l'];
-            if($level>0) $this->Cell($level*8);
+            if ($level>0) {
+                $this->Cell($level*8);
+            }
 
             // Caption (cut to fit on the width page)
             $str=$this->outlines[$i]['t'];
@@ -1349,7 +1435,7 @@ class MyPdf extends \TCPDF
      * @param  integer $page
      * @return integer;
      */
-    public function getMyNumPage($page=null)
+    public function getMyNumPage($page = null)
     {
         if ($page===null) {
             $page = $this->page;

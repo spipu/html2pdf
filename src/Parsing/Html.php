@@ -16,11 +16,11 @@ use Spipu\Html2Pdf\Html2PdfException;
 
 class Html
 {
-    protected    $_html     = '';        // HTML code to parse
-    protected    $_num      = 0;         // table number
-    protected    $_level    = 0;         // table level
-    protected    $_encoding = '';        // encoding
-    public       $code      = array();   // parsed HTML code
+    protected $_html     = '';        // HTML code to parse
+    protected $_num      = 0;         // table number
+    protected $_level    = 0;         // table level
+    protected $_encoding = '';        // encoding
+    public $code      = array();   // parsed HTML code
 
     const HTML_TAB = '        ';
 
@@ -119,7 +119,7 @@ class Html
                             // HTML validation
                             if (count($parents) < 1) {
                                 throw new Html2PdfException(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
-                            } else if (end($parents) != $res['name']) {
+                            } elseif (end($parents) != $res['name']) {
                                 throw new Html2PdfException(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
                             } else {
                                 array_pop($parents);
@@ -208,12 +208,14 @@ class Html
             // if it is a Text
             if ($actions[$k]['name']=='write') {
                 // if the tag before the text is a tag to clean => ltrim on the text
-                if ($k>0 && in_array($actions[$k - 1]['name'], $tagsToClean))
+                if ($k>0 && in_array($actions[$k - 1]['name'], $tagsToClean)) {
                     $actions[$k]['param']['txt'] = ltrim($actions[$k]['param']['txt']);
+                }
 
                 // if the tag after the text is a tag to clean => rtrim on the text
-                if ($k < $nb - 1 && in_array($actions[$k + 1]['name'], $tagsToClean))
+                if ($k < $nb - 1 && in_array($actions[$k + 1]['name'], $tagsToClean)) {
                     $actions[$k]['param']['txt'] = rtrim($actions[$k]['param']['txt']);
+                }
 
                 // if the text is empty => remove the action
                 if (!strlen($actions[$k]['param']['txt'])) {
@@ -241,7 +243,9 @@ class Html
      */
     protected function _prepareTxt($txt, $spaces = true)
     {
-        if ($spaces) $txt = preg_replace('/\s+/isu', ' ', $txt);
+        if ($spaces) {
+            $txt = preg_replace('/\s+/isu', ' ', $txt);
+        }
         $txt = str_replace('&euro;', '€', $txt);
         $txt = html_entity_decode($txt, ENT_QUOTES, $this->_encoding);
         return $txt;
@@ -349,8 +353,7 @@ class Html
         $border = null;
         foreach ($param as $key => $val) {
             $key = strtolower($key);
-            switch($key)
-            {
+            switch ($key) {
                 case 'width':
                     unset($param[$key]);
                     $param['style'] .= 'width: '.$val.'px; ';
@@ -414,8 +417,11 @@ class Html
 
         // compliance of the border
         if ($border !== null) {
-            if ($border)    $border = 'border: solid '.$border.' '.$color;
-            else            $border = 'border: none';
+            if ($border) {
+                $border = 'border: solid '.$border.' '.$color;
+            } else {
+                $border = 'border: none';
+            }
 
             $param['style'] .= $border.'; ';
             $param['border'] = $border;
@@ -451,10 +457,18 @@ class Html
         }
 
         // prepare the parameters
-        if (isset($param['value']))  $param['value']  = $this->_prepareTxt($param['value']);
-        if (isset($param['alt']))    $param['alt']    = $this->_prepareTxt($param['alt']);
-        if (isset($param['title']))  $param['title']  = $this->_prepareTxt($param['title']);
-        if (isset($param['class']))  $param['class']  = $this->_prepareTxt($param['class']);
+        if (isset($param['value'])) {
+            $param['value']  = $this->_prepareTxt($param['value']);
+        }
+        if (isset($param['alt'])) {
+            $param['alt']    = $this->_prepareTxt($param['alt']);
+        }
+        if (isset($param['title'])) {
+            $param['title']  = $this->_prepareTxt($param['title']);
+        }
+        if (isset($param['class'])) {
+            $param['class']  = $this->_prepareTxt($param['class']);
+        }
 
         // return the new action to do
         return array('name' => $name, 'close' => $close ? 1 : 0, 'autoclose' => $autoclose, 'param' => $param);
@@ -543,7 +557,7 @@ class Html
      * @param   integer $after  take after
      * @return  string  part of the html code
      */
-    public function getHtmlErrorCode($pos, $before=30, $after=40)
+    public function getHtmlErrorCode($pos, $before = 30, $after = 40)
     {
         return substr($this->_html, $pos-$before, $before+$after);
     }

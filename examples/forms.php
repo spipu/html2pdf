@@ -17,12 +17,12 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Html2PdfException;
 
     // for display the post information
-    if (isset($_POST['test'])) {
-        echo '<pre>';
-        echo htmlentities(print_r($_POST, true));
-        echo '</pre>';
-        exit;
-    }
+if (isset($_POST['test'])) {
+    echo '<pre>';
+    echo htmlentities(print_r($_POST, true));
+    echo '</pre>';
+    exit;
+}
 
     // get the HTML
     ob_start();
@@ -31,14 +31,12 @@ use Spipu\Html2Pdf\Html2PdfException;
 
     // convert to PDF
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
-    try
-    {
-        $html2pdf = new Html2Pdf('P', 'A4', 'fr');
-        $html2pdf->pdf->SetDisplayMode('fullpage');
-        $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-        $html2pdf->Output('forms.pdf');
-    }
-    catch(Html2PdfException $e) {
-        echo $e;
-        exit;
-    }
+try {
+    $html2pdf = new Html2Pdf('P', 'A4', 'fr');
+    $html2pdf->pdf->SetDisplayMode('fullpage');
+    $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+    $html2pdf->Output('forms.pdf');
+} catch (Html2PdfException $e) {
+    echo $e;
+    exit;
+}

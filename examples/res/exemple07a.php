@@ -3,7 +3,6 @@
 table { vertical-align: top; }
 tr    { vertical-align: top; }
 td    { vertical-align: top; }
-}
 -->
 </style>
 <page backcolor="#FEFEFE" backimg="./res/bas_page.png" backimgx="center" backimgy="bottom" backimgw="100%" backtop="0" backbottom="30mm" footer="date;heure;page" style="font-size: 12pt">

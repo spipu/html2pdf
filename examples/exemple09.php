@@ -50,31 +50,29 @@ Ceci est un exemple de génération de PDF via un bouton :)<br>
 <img src="<?php echo $url; ?>" alt="image_php" ><br>
 <br>
 <?php
-    if ($generate) {
+if ($generate) {
 ?>
 Bonjour <b><?php echo $nom; ?></b>, ton nom peut s'écrire : <br>
 <barcode type="C39" value="<?php echo strtoupper($nom); ?>" style="color: #770000" ></barcode><hr>
 <br>
 <?php
-    }
+}
 ?>
 <br>
 <?php
-    if ($generate) {
-        $content = ob_get_clean();
-        require_once(dirname(__FILE__).'/../vendor/autoload.php');
-        try
-        {
-            $html2pdf = new Html2Pdf('P', 'A4', 'fr');
-            $html2pdf->writeHTML($content);
-            $html2pdf->Output('exemple09.pdf');
-            exit;
-        }
-        catch(Html2PdfException $e) {
-            echo $e;
-            exit;
-        }
+if ($generate) {
+    $content = ob_get_clean();
+    require_once(dirname(__FILE__).'/../vendor/autoload.php');
+    try {
+        $html2pdf = new Html2Pdf('P', 'A4', 'fr');
+        $html2pdf->writeHTML($content);
+        $html2pdf->Output('exemple09.pdf');
+        exit;
+    } catch (Html2PdfException $e) {
+        echo $e;
+        exit;
     }
+}
 ?>
         <form method="get" action="">
             <input type="hidden" name="make_pdf" value="">

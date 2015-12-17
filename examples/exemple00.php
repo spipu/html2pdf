@@ -23,15 +23,13 @@ use Spipu\Html2Pdf\Html2PdfException;
 
     // convert in PDF
     require_once(dirname(__FILE__).'/../vendor/autoload.php');
-    try
-    {
-        $html2pdf = new Html2Pdf('P', 'A4', 'fr');
+try {
+    $html2pdf = new Html2Pdf('P', 'A4', 'fr');
 //      $html2pdf->setModeDebug();
-        $html2pdf->setDefaultFont('Arial');
-        $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-        $html2pdf->Output('exemple00.pdf');
-    }
-    catch(Html2PdfException $e) {
-        echo $e;
-        exit;
-    }
+    $html2pdf->setDefaultFont('Arial');
+    $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+    $html2pdf->Output('exemple00.pdf');
+} catch (Html2PdfException $e) {
+    echo $e;
+    exit;
+}

@@ -9,17 +9,17 @@
             via la méthode <b>setTestTdInOnePage</b>.<br>
             <table style="width:100%;">
 <?php
-    for ($i=0; $i<=40; $i++) {
+for ($i=0; $i<=40; $i++) {
 ?>
-                <tr>
-                    <td style="border:1px solid red;width:100%;">
-                        test de texte assez long pour engendrer des retours à la ligne automatique...
-                        a b c d e f g h i j k l m n o p q r s t u v w x y z
-                        a b c d e f g h i j k l m n o p q r s t u v w x y z
-                    </td>
-                </tr>
+            <tr>
+                <td style="border:1px solid red;width:100%;">
+                    test de texte assez long pour engendrer des retours à la ligne automatique...
+                    a b c d e f g h i j k l m n o p q r s t u v w x y z
+                    a b c d e f g h i j k l m n o p q r s t u v w x y z
+                </td>
+            </tr>
 <?php
-    }
+}
 ?>
             </table>
         </td>
