@@ -53,5 +53,7 @@ abstract class AbstractDefaultTag extends AbstractTag
     {
         $this->_parsingCss->load();
         $this->_parsingCss->fontSet();
+
+        return true;
     }
 }
