@@ -1,30 +1,32 @@
-Html2Pdf v5.0.0 - xxxx-xx-xx
-============================
+Html2Pdf
+========
 
-VERSION UNDER DEVELOPMENT !!!
-
-License:
---------
-```
- This program is distributed under the LGPL License,
- for more information see file _LGPL.txt or
- http://www.gnu.org/licenses/lgpl.html
-
- Copyright 2008-2015 by Laurent Minguet
-```
+Latest stable release : v4.5.0 (2015-12-18)
 
 How to use:
 -----------
 
- * You need at least PHP 5.3.2
- 
- * Use composer to install it
-   * Composer : https://getcomposer.org/
-   * Official Package : spipu/html2pdf
-    
- * If you install html2pdf without using composer, it will not work directly.
-   You must do "composer install" on the html2pdf folder
-   in order to install the TCPDF dependency. 
+### Requirements
+
+HTML2PDF works with PHP 5.3.2 and above.
+
+### Installation
+
+This package can be installed in your project through composer.
+
+```
+composer require spipu/html2pdf
+```
+
+If you wish to try html2pdf outside a main project, you can just clone the project and run composer:
+
+```
+git clone https://github.com/spipu/html2pdf.git
+cd html2pdf
+composer install
+```
+
+### Recommendations
    
  * Look at the examples provided to see how it works.
 
@@ -96,13 +98,23 @@ Help & Support:
 For questions and bug reports, thank you to use only the support link below.
 I will answer to your questions only on it...
 
-Informations:
--------------
+Information:
+------------
 
 * Programmer: Spipu
 * Web Site  : http://html2pdf.fr/
 * Wiki      : http://html2pdf.fr/en/wiki
 * Support   : http://html2pdf.fr/en/forum
+
+License:
+--------
+```
+ This program is distributed under the LGPL License,
+ for more information see file _LGPL.txt or
+ http://www.gnu.org/licenses/lgpl.html
+
+ Copyright 2008-2015 by Laurent Minguet
+```
 
 Thanks:
 -------
