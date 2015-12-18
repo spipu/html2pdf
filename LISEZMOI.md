@@ -1,4 +1,4 @@
-HTML2PDF v4.5.0 - xxxx-xx-xx
+HTML2PDF v4.5.0 - 2015-12-18
 ============================
 
 License:
