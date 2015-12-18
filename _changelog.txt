@@ -7,7 +7,7 @@
     all the classes have been renamed
     new tag structure : one class per tag
 
-4.5.0 (xxxx-xx-xx) - RC1
+4.5.0 (2015-12-18)
     add tag 'end_last_page' with property 'end_height'. Update example 5 to use it
     better composer.json file
     update TCPDF from 5.0.002 to v6.2.12 => important changes. See the TCPDF changelogs
