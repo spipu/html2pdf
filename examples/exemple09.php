@@ -13,6 +13,7 @@ require_once dirname(__FILE__).'/../vendor/autoload.php';
 
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Html2PdfException;
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
 if (isset($_SERVER['REQUEST_URI'])) {
     $generate = isset($_GET['make_pdf']);
@@ -70,7 +71,8 @@ if ($generate) {
         $html2pdf->Output('exemple09.pdf');
         exit;
     } catch (Html2PdfException $e) {
-        echo $e;
+        $formatter = new ExceptionFormatter($e);
+        echo $formatter->getHtmlMessage();
         exit;
     }
 }

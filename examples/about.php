@@ -16,7 +16,7 @@ require_once dirname(__FILE__).'/../vendor/autoload.php';
 
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Html2PdfException;
-
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
 // convert to PDF
 try {
@@ -40,6 +40,6 @@ try {
     // send the PDF
     $html2pdf->Output('about.pdf');
 } catch (Html2PdfException $e) {
-    echo $e;
-    exit;
+    $formatter = new ExceptionFormatter($e);
+    echo $formatter->getHtmlMessage();
 }
