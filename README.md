@@ -35,7 +35,7 @@ composer install
 
  * for borders: it is advised that they are like `solid 1mm #000000`
 
- * for padding, they are applicable only on tags table, th, td, div, li
+ * for padding, they are applicable only on tags `table`, `th`, `td`, `div`, `li`
 
  * A default font can be specified, if the requested font does not exist or if no font is specified:
  
@@ -45,11 +45,11 @@ composer install
 
  * Some tests can be enabled (true) or disabled (false):
 
-  * setTestIsImage method:      test that images must exist
+  * `setTestIsImage` method:      test that images must exist
 
-  * setTestTdInOnePage method:  test that the contents of TDs fit on one page
+  * `setTestTdInOnePage` method:  test that the contents of TDs fit on one page
 
-  * setTestIsDeprecated method: test that old properties of specific tags are not used anymore
+  * `setTestIsDeprecated` method: test that old properties of specific tags are not used anymore
 
  * A DEBUG mode to know the resources used is present.
 It is activated by adding the following command just after the contructor (see Example 0):
@@ -57,33 +57,33 @@ It is activated by adding the following command just after the contructor (see E
 
 * Some specific tags have been introduced:
 
-  * <page></page>  (CF Exemple 7 & wiki)
+  * `<page></page>`  (CF Exemple 7 & wiki)
     * Determines the orientation, margins left, right, top and bottom, the background image
     * and the background color of a page, its size and position, the footer.
     * It is also possible to keep the header and footer of the previous pages,
-    * through the attribut pageset="old" (see Example 3 & 4 & wiki)
+    * through the attribut `pageset="old"` (see Example 3 & 4 & wiki)
 
-  * <page_header></page_header> (CF Example 3 & wiki)
+  * `<page_header></page_header>` (CF Example 3 & wiki)
 
-  * <page_footer></page_footer> (CF Example 3 & wiki)
+  * `<page_footer></page_footer>` (CF Example 3 & wiki)
 
-  * <nobreak></nobreak> (CF wiki)
+  * `<nobreak></nobreak>` (CF wiki)
     * Used to force the display of a section on the same page.
     * If this section does not fit into the rest of the page, a page break is done before.
 
-  * <barcode></barcode>  (CF Examples 0 & 9 & wiki)
+  * `<barcode></barcode>`  (CF Examples 0 & 9 & wiki)
     * Can insert barcodes in pdfs, CF Examples 0 and 9
     * the possible types of codebar are alls of TCPDF
 
-  * <qrcode></qrcode> (CF Example 13 & wiki)
+  * `<qrcode></qrcode>` (CF Example 13 & wiki)
     * can insert QRcode 2D barcodes
     * (QR Code is registered trademark of DENSO WAVE INCORPORATED | http://www.denso-wave.com/qrcode/)
 
-  * <bookmark></bookmark> (CF Examples 7 & About & wiki)
+  * `<bookmark></bookmark>` (CF Examples 7 & About & wiki)
     * Can insert bookmark in pdfs, CF Example 7 and About.
     * It is also possible to automatically create an index at the end of document (CF Example About & wiki)
 
-  * css property "rotate":
+  * css property `rotate`:
     * Values : 0, 90, 180, 270
     * Works only on div (cf example 8)
 
