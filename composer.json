@@ -28,5 +28,8 @@
         "psr-4": {
             "Spipu\\Html2Pdf\\": "src/"
         }
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }
