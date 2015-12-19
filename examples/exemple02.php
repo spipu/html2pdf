@@ -16,6 +16,7 @@ require_once dirname(__FILE__).'/../vendor/autoload.php';
 
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Html2PdfException;
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
 // get the HTML
 ob_start();
@@ -29,6 +30,6 @@ try {
     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
     $html2pdf->Output('exemple02.pdf');
 } catch (Html2PdfException $e) {
-    echo $e;
-    exit;
+    $formatter = new ExceptionFormatter($e);
+    echo $formatter->getHtmlMessage();
 }
