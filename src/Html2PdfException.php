@@ -14,11 +14,7 @@ namespace Spipu\Html2Pdf;
 
 class Html2PdfException extends \Exception
 {
-    protected $_tag = null;
-    protected $_html = null;
-    protected $_other = null;
-    protected $_image = null;
-    protected $_messageHtml = '';
+    protected $html = null;
 
     /**
      * generate a Html2Pdf exception
@@ -36,7 +32,6 @@ class Html2PdfException extends \Exception
             case 1: // Unsupported tag
                 $msg = (Locale::get('err01'));
                 $msg = str_replace('[[OTHER]]', $other, $msg);
-                $this->_tag = $other;
                 break;
 
             case 2: // too long sentence
@@ -49,7 +44,6 @@ class Html2PdfException extends \Exception
             case 3: // closing tag in excess
                 $msg = (Locale::get('err03'));
                 $msg = str_replace('[[OTHER]]', $other, $msg);
-                $this->_tag = $other;
                 break;
 
             case 4: // tags closed in the wrong order
@@ -65,7 +59,6 @@ class Html2PdfException extends \Exception
             case 6: // image can not be loaded
                 $msg = (Locale::get('err06'));
                 $msg = str_replace('[[OTHER]]', $other, $msg);
-                $this->_image = $other;
                 break;
 
             case 7: // too big TD content
@@ -75,14 +68,12 @@ class Html2PdfException extends \Exception
             case 8: // SVG tag not in DRAW tag
                 $msg = (Locale::get('err08'));
                 $msg = str_replace('[[OTHER]]', $other, $msg);
-                $this->_tag = $other;
                 break;
 
             case 9: // deprecated
                 $msg = (Locale::get('err09'));
                 $msg = str_replace('[[OTHER_0]]', $other[0], $msg);
                 $msg = str_replace('[[OTHER_1]]', $other[1], $msg);
-                $this->_tag = $other[0];
                 break;
 
             case 0: // specific error
@@ -91,26 +82,10 @@ class Html2PdfException extends \Exception
                 break;
         }
 
-        // create the HTML message
-        $this->_messageHtml = '<span style="color: #AA0000; font-weight: bold;">'."\n";
-        $this->_messageHtml.= Locale::get('txt01', 'error: ').$err.'</span><br>'."\n";
-        $this->_messageHtml.= Locale::get('txt02', 'file:').' '.$this->file.'<br>'."\n";
-        $this->_messageHtml.= Locale::get('txt03', 'line:').' '.$this->line.'<br>'."\n";
-        $this->_messageHtml.= '<br>'."\n";
-        $this->_messageHtml.= $msg."\n";
-
-        // create the text message
-        $msg = Locale::get('txt01', 'error: ').$err.' : '.strip_tags($msg);
-
         // add the optionnal html content
         if ($html) {
-            $this->_messageHtml.= "<br><br>HTML : ...".trim(htmlentities($html)).'...';
-            $this->_html = $html;
-            $msg.= ' HTML : ...'.trim($html).'...';
+            $this->html = $html;
         }
-
-        // save the other informations
-        $this->_other = $other;
 
         // construct the exception
         parent::__construct($msg, $err);
@@ -124,18 +99,7 @@ class Html2PdfException extends \Exception
      */
     public function __toString()
     {
-        return $this->_messageHtml;
-    }
-
-    /**
-     * get the html tag name
-     *
-     * @access public
-     * @return string $tagName
-     */
-    public function getTAG()
-    {
-        return $this->_tag;
+        return $this->message;
     }
 
     /**
@@ -146,28 +110,6 @@ class Html2PdfException extends \Exception
      */
     public function getHTML()
     {
-        return $this->_html;
-    }
-
-    /**
-     * get the optional other informations
-     *
-     * @access public
-     * @return mixed $other
-     */
-    public function getOTHER()
-    {
-        return $this->_other;
-    }
-
-    /**
-     * get the image source
-     *
-     * @access public
-     * @return string $imageSrc
-     */
-    public function getIMAGE()
-    {
-        return $this->_image;
+        return $this->html;
     }
 }
