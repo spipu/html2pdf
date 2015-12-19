@@ -11,7 +11,8 @@
  */
 namespace Spipu\Html2Pdf\Parsing;
 
-use Spipu\Html2Pdf\Html2PdfException;
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
+use Spipu\Html2Pdf\Exception\UnclosedHtmlTagException;
 
 class Html
 {
@@ -119,9 +120,9 @@ class Html
                         if ($res['close']) {
                             // HTML validation
                             if (count($parents) < 1) {
-                                throw new Html2PdfException(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
+                                throw new HtmlParsingException(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
                             } elseif (end($parents) != $res['name']) {
-                                throw new Html2PdfException(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
+                                throw new HtmlParsingException(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
                             } else {
                                 array_pop($parents);
                             }
@@ -227,7 +228,7 @@ class Html
 
         // if we are not on the level 0 => HTML validator ERROR
         if (count($parents)) {
-            throw new Html2PdfException(5, $parents);
+            throw new UnclosedHtmlTagException('An HTML tag has not been closed', $parents);
         }
 
         // save the actions to do
