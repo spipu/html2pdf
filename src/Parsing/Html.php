@@ -12,6 +12,7 @@
 namespace Spipu\Html2Pdf\Parsing;
 
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
+use Spipu\Html2Pdf\Exception\InvalidHtmlTagException;
 use Spipu\Html2Pdf\Exception\UnclosedHtmlTagException;
 
 class Html
@@ -109,52 +110,45 @@ class Html
                 // analyze the HTML code
                 $res = $this->_analyzeTag($part[1]);
 
-                // if it is a real HTML tag
-                if ($res) {
-                    // save the current position in the HTML code
-                    $res['html_pos'] = $part[2];
+                // save the current position in the HTML code
+                $res['html_pos'] = $part[2];
 
-                    // if the tag must be closed
-                    if (!in_array($res['name'], $tagsNotClosed)) {
-                        // if it is a closure tag
-                        if ($res['close']) {
-                            // HTML validation
-                            if (count($parents) < 1) {
-                                throw new HtmlParsingException(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
-                            } elseif (end($parents) != $res['name']) {
-                                throw new HtmlParsingException(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
-                            } else {
-                                array_pop($parents);
-                            }
+                // if the tag must be closed
+                if (!in_array($res['name'], $tagsNotClosed)) {
+                    // if it is a closure tag
+                    if ($res['close']) {
+                        // HTML validation
+                        if (count($parents) < 1) {
+                            throw new HtmlParsingException(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
+                        } elseif (end($parents) != $res['name']) {
+                            throw new HtmlParsingException(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
                         } else {
-                            // if it is an auto-closed tag
-                            if ($res['autoclose']) {
-                                // save the opened tag
-                                $actions[] = $res;
-
-                                // prepare the closed tag
-                                $res['params'] = array();
-                                $res['close'] = true;
-                            } else {
-                                // else: add a child for validation
-                                array_push($parents, $res['name']);
-                            }
+                            array_pop($parents);
                         }
+                    } else {
+                        // if it is an auto-closed tag
+                        if ($res['autoclose']) {
+                            // save the opened tag
+                            $actions[] = $res;
 
-                        // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
-                        if (($res['name'] == 'pre' || $res['name'] == 'code') && !$res['autoclose']) {
-                            $tagPreIn = !$res['close'];
+                            // prepare the closed tag
+                            $res['params'] = array();
+                            $res['close'] = true;
+                        } else {
+                            // else: add a child for validation
+                            array_push($parents, $res['name']);
                         }
                     }
 
-                    // save the actions to convert
-                    $actions[] = $res;
-                } else { // else (it is not a real HTML tag => we transform it in Text
-                    $part[0] = 'txt';
+                    // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
+                    if (($res['name'] == 'pre' || $res['name'] == 'code') && !$res['autoclose']) {
+                        $tagPreIn = !$res['close'];
+                    }
                 }
-            }
-            // if it is text
-            if ($part[0] == 'txt') {
+
+                // save the actions to convert
+                $actions[] = $res;
+            } else if ($part[0] == 'txt') {
                 // if we are not in a <pre> tag
                 if (!$tagPreIn) {
                     // save the action
@@ -264,7 +258,7 @@ class Html
         // name of the tag, opening, closure, autoclosure
         $tag = '<([\/]{0,1})([_a-z0-9]+)([\/>\s]+)';
         if (!preg_match('/'.$tag.'/isU', $code, $match)) {
-            return null;
+            throw new InvalidHtmlTagException('The HTML tag provided in invalid', $code);
         }
         $close     = ($match[1] == '/' ? true : false);
         $autoclose = preg_match('/\/>$/isU', $code);
