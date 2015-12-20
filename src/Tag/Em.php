@@ -22,5 +22,4 @@ class Em extends I
     {
         return 'em';
     }
-
 }

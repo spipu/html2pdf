@@ -22,5 +22,4 @@ class Ins extends U
     {
         return 'ins';
     }
-
 }

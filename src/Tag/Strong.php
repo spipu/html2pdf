@@ -22,5 +22,4 @@ class Strong extends B
     {
         return 'strong';
     }
-
 }

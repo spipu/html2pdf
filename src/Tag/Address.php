@@ -22,5 +22,4 @@ class Address extends I
     {
         return 'address';
     }
-
 }

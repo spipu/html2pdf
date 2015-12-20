@@ -22,5 +22,4 @@ class Cite extends I
     {
         return 'cite';
     }
-
 }

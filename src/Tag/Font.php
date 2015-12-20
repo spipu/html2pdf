@@ -22,5 +22,4 @@ class Font extends Span
     {
         return 'font';
     }
-
 }
