@@ -27,7 +27,6 @@ abstract class AbstractTag implements TagInterface
      * PHP constructor.
      *
      * @return AbstractTag
-     * @throws \Exception
      */
     public function __construct()
     {
@@ -40,7 +39,6 @@ abstract class AbstractTag implements TagInterface
      * @param ParsingCss $parsingCss The parsing css object
      *
      * @return AbstractTag
-     * @throws \Exception
      */
     public function setParsingCssObject(ParsingCss $parsingCss)
     {

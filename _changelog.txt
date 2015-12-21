@@ -6,6 +6,8 @@
     all the classes have moved
     all the classes have been renamed
     new tag structure : one class per tag
+    better exception management
+    add unit testing
 
 4.5.0 (2015-12-18)
     add tag 'end_last_page' with property 'end_height'. Update example 5 to use it

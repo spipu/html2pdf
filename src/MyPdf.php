@@ -12,6 +12,8 @@
 
 namespace Spipu\Html2Pdf;
 
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
+
 class MyPdf extends \TCPDF
 {
     protected $_footerParam = array();
@@ -958,7 +960,9 @@ class MyPdf extends \TCPDF
 
                 // Unknown Path
                 default:
-                    throw new Html2PdfException(0, 'SVG Path Error : ['.$action[0].'] unkown');
+                    $e = new HtmlParsingException('SVG Path Error : ['.$action[0].'] is unknown');
+                    $e->setInvalidTag('POLYGON');
+                    throw $e;
             }
 
             // save the last point

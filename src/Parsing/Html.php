@@ -12,8 +12,6 @@
 namespace Spipu\Html2Pdf\Parsing;
 
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
-use Spipu\Html2Pdf\Exception\InvalidHtmlTagException;
-use Spipu\Html2Pdf\Exception\UnclosedHtmlTagException;
 
 class Html
 {
@@ -119,9 +117,15 @@ class Html
                     if ($res['close']) {
                         // HTML validation
                         if (count($parents) < 1) {
-                            throw new HtmlParsingException(3, $res['name'], $this->getHtmlErrorCode($res['html_pos']));
+                            $e = new HtmlParsingException('Too many tag closures found for ['.$res['name'].']');
+                            $e->setInvalidTag($res['name']);
+                            $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
+                            throw $e;
                         } elseif (end($parents) != $res['name']) {
-                            throw new HtmlParsingException(4, $parents, $this->getHtmlErrorCode($res['html_pos']));
+                            $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$res['name'].']');
+                            $e->setInvalidTag($res['name']);
+                            $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
+                            throw $e;
                         } else {
                             array_pop($parents);
                         }
@@ -222,7 +226,15 @@ class Html
 
         // if we are not on the level 0 => HTML validator ERROR
         if (count($parents)) {
-            throw new UnclosedHtmlTagException('An HTML tag has not been closed', $parents);
+            if (count($parents)>1) {
+                $errorMsg = 'The following tags have not been closed:';
+            } else {
+                $errorMsg = 'The following tag has not been closed:';
+            }
+
+            $e = new HtmlParsingException($errorMsg.' '.implode(', ', $parents));
+            $e->setInvalidTag($parents[0]);
+            throw $e;
         }
 
         // save the actions to do
@@ -258,7 +270,9 @@ class Html
         // name of the tag, opening, closure, autoclosure
         $tag = '<([\/]{0,1})([_a-z0-9]+)([\/>\s]+)';
         if (!preg_match('/'.$tag.'/isU', $code, $match)) {
-            throw new InvalidHtmlTagException('The HTML tag provided in invalid', $code);
+            $e = new HtmlParsingException('The HTML tag ['.$code.'] provided is invalid');
+            $e->setInvalidTag($code);
+            throw $e;
         }
         $close     = ($match[1] == '/' ? true : false);
         $autoclose = preg_match('/\/>$/isU', $code);

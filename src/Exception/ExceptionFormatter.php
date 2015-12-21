@@ -1,126 +1,158 @@
 <?php
+/**
+ * Html2Pdf Library - Formatter Exception
+ *
+ * HTML => PDF convertor
+ * distributed under the LGPL License
+ *
+ * @package   Html2pdf
+ * @author    Laurent MINGUET <webmaster@html2pdf.fr>
+ * @copyright 2016 Laurent MINGUET
+ */
 
 namespace Spipu\Html2Pdf\Exception;
 
-use Spipu\Html2Pdf\Html2PdfException;
 use Spipu\Html2Pdf\Locale;
 
 /**
  * Class ExceptionFormatter
+ *
+ * @package   Html2pdf
+ * @author    Laurent MINGUET <webmaster@html2pdf.fr>
+ * @copyright 2016 Laurent MINGUET
  */
 class ExceptionFormatter
 {
     /**
+     * the text message
      * @var string
      */
-    protected $message;
+    protected $_message;
 
     /**
+     * the html message
      * @var string
      */
-    protected $htmlMessage;
+    protected $_htmlMessage;
 
     /**
-     * @param Html2PdfException $e
+     * PHP Constructor
+     *
+     * @param Html2PdfException $e the exception to format
+     *
+     * @return ExceptionFormatter
      */
     public function __construct(Html2PdfException $e)
     {
-        $other = $e->getOther();
-        // read the error
-        switch ($e->getCode()) {
-            case 1: // Unsupported tag
-                $msg = (Locale::get('err01'));
-                $msg = str_replace('[[OTHER]]', $other, $msg);
-                break;
+        $data = $this->_getAdditionnalData($e);
 
-            case 2: // too long sentence
-                $msg = (Locale::get('err02'));
-                $msg = str_replace('[[OTHER_0]]', $other[0], $msg);
-                $msg = str_replace('[[OTHER_1]]', $other[1], $msg);
-                $msg = str_replace('[[OTHER_2]]', $other[2], $msg);
-                break;
-
-            case 3: // closing tag in excess
-                $msg = (Locale::get('err03'));
-                $msg = str_replace('[[OTHER]]', $other, $msg);
-                break;
-
-            case 4: // tags closed in the wrong order
-                $msg = (Locale::get('err04'));
-                $msg = str_replace('[[OTHER]]', print_r($other, true), $msg);
-                break;
-
-            case 5: // unclosed tag
-                $msg = (Locale::get('err05'));
-                $msg = str_replace('[[OTHER]]', print_r($other, true), $msg);
-                break;
-
-            case 6: // image can not be loaded
-                $msg = (Locale::get('err06'));
-                $msg = str_replace('[[OTHER]]', $other, $msg);
-                break;
-
-            case 7: // too big TD content
-                $msg = (Locale::get('err07'));
-                break;
-
-            case 8: // SVG tag not in DRAW tag
-                $msg = (Locale::get('err08'));
-                $msg = str_replace('[[OTHER]]', $other, $msg);
-                break;
-
-            case 9: // deprecated
-                $msg = (Locale::get('err09'));
-                $msg = str_replace('[[OTHER_0]]', $other[0], $msg);
-                $msg = str_replace('[[OTHER_1]]', $other[1], $msg);
-                break;
-
-            case 0: // specific error
-            default:
-                $msg = $other;
-                break;
-        }
-
-        $this->message = Locale::get('txt01', 'error: ').$e->getCode().' : '.strip_tags($msg);
-
-        $this->buildHtmlMessage($msg, $e);
-
-        $this->appendHtmlContent($e->getHTML());
+        $this->_buildTextMessage($e, $data);
+        $this->_buildHtmlMessage($e, $data);
     }
 
     /**
+     * get the txt message
+     *
      * @return string
      */
     public function getMessage()
     {
-        return $this->message;
+        return $this->_message;
     }
 
     /**
+     * get tht HTML message
+     *
      * @return string
      */
     public function getHtmlMessage()
     {
-        return $this->htmlMessage;
+        return $this->_htmlMessage;
     }
 
-    protected function buildHtmlMessage($msg, \Exception $e)
+    /**
+     * get the additionnal data from the exception
+     *
+     * @param Html2PdfException $e the exception to display
+     *
+     * @return array
+     */
+    protected function _getAdditionnalData(Html2PdfException $e)
     {
-        // create the HTML message
-        $this->htmlMessage = '<span style="color: #AA0000; font-weight: bold;">'."\n";
-        $this->htmlMessage.= Locale::get('txt01', 'error: ').$e->getCode().'</span><br>'."\n";
-        $this->htmlMessage.= Locale::get('txt02', 'file:').' '.$e->getFile().'<br>'."\n";
-        $this->htmlMessage.= Locale::get('txt03', 'line:').' '.$e->getLine().'<br>'."\n";
-        $this->htmlMessage.= '<br>'."\n";
-        $this->htmlMessage.= $msg . "\n";
-    }
+        $data = array();
 
-    protected function appendHtmlContent($html)
-    {
-        if ($html) {
-            $this->htmlMessage .= "<br><br>HTML : ..." . trim(htmlentities($html)) . '...';
-            $this->message .= ' HTML : ...'.trim($html).'...';
+        // read the error
+        switch ($e->getCode()) {
+            case HtmlParsingException::ERROR_CODE:
+                $data['invalid tag'] = $e->getInvalidTag();
+                if ($e->getHtmlPart()) {
+                    $data['html part'] = '... '.$e->getHtmlPart().' ...';
+                }
+                break;
+
+            case ImageException::ERROR_CODE:
+                $data['image src'] = $e->getImage();
+                break;
+
+            case LongSentenceException::ERROR_CODE:
+                $msg = $e->getMessage();
+                $data['sentence']  = $e->getSentence();
+                $data['bow width'] = $e->getWidthBox();
+                $data['length']    = $e->getLength();
+                break;
+
+            case TableException::ERROR_CODE:
+            case Html2PdfException::ERROR_CODE:
+            default:
+                break;
         }
 
+        return $data;
+    }
+
+    /**
+     * Build the text message
+     *
+     * @param Html2PdfException $e    the exception of the error
+     * @param array             $data additionnal data
+     *
+     * @return void
+     */
+    protected function _buildTextMessage(Html2PdfException $e, $data)
+    {
+        $this->_message = 'Html2Pdf Error ['.$e->getCode().']'."\n";
+        $this->_message.= $e->getMessage()."\n";
+        $this->_message.= ' File: '.$e->getFile()."\n";
+        $this->_message.= ' Line: '.$e->getLine()."\n";
+
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
+                $this->_message .= ' '.ucwords($key).': '.trim($value)."\n";
+            }
+        }
+    }
+
+    /**
+     * build the html message
+     *
+     * @param Html2PdfException $e    the exception of the error
+     * @param array             $data additionnal data
+     *
+     * @return void
+     */
+    protected function _buildHtmlMessage(Html2PdfException $e, $data)
+    {
+        $this->_htmlMessage = '<span style="color: #A00; font-weight: bold;">';
+        $this->_htmlMessage.= 'Html2Pdf Error ['.$e->getCode().']';
+        $this->_htmlMessage.= '</span><br />'."\n";
+        $this->_htmlMessage.= htmlentities($e->getMessage())."<br />\n";
+        $this->_htmlMessage.= ' File: '.$e->getFile()."<br />\n";
+        $this->_htmlMessage.= ' Line: '.$e->getLine()."<br />\n";
+
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
+                $this->_htmlMessage .= ' '.ucwords($key).': '.trim(htmlentities($value))."<br />\n";
+            }
+        }
     }
 }

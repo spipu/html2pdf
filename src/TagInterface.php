@@ -29,7 +29,6 @@ interface TagInterface
      * @param ParsingCss $parsingCss The parsing css object
      *
      * @return TagInterface
-     * @throws \Exception
      */
     public function setParsingCssObject(ParsingCss $parsingCss);
 

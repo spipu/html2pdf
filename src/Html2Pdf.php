@@ -12,6 +12,12 @@
 
 namespace Spipu\Html2Pdf;
 
+use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Exception\ImageException;
+use Spipu\Html2Pdf\Exception\LongSentenceException;
+use Spipu\Html2Pdf\Exception\TableException;
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
+
 require_once dirname(__FILE__) . '/config/tcpdf.config.php';
 
 class Html2Pdf
@@ -42,7 +48,6 @@ class Html2Pdf
 
     protected $_testTdInOnepage  = true;        // test of TD that can not take more than one page
     protected $_testIsImage      = true;        // test if the images exist or not
-    protected $_testIsDeprecated = false;       // test the deprecated functions
 
     protected $_parsePos         = 0;           // position in the parsing
     protected $_tempPos          = 0;           // temporary position for complex table
@@ -157,7 +162,6 @@ class Html2Pdf
         // init some tests
         $this->setTestTdInOnePage(true);
         $this->setTestIsImage(true);
-        $this->setTestIsDeprecated(true);
 
         // init the default font
         $this->setDefaultFont(null);
@@ -261,6 +265,21 @@ class Html2Pdf
     }
 
     /**
+     * add a tag definition
+     *
+     * @param string $className the classname definition
+     *
+     * @return boolean
+     * @throws Html2PdfException
+     */
+    public function addTagDefinition($className)
+    {
+        $this->_tagDefinitions[] = $className;
+
+        return $this->_loadTagObject($className);
+    }
+
+    /**
      * load the list of the tag objects
      */
     protected function _loadTagObjects()
@@ -268,17 +287,29 @@ class Html2Pdf
         $this->_tagObjects = array();
 
         foreach ($this->_tagDefinitions as $className) {
-
-            $tagObject = new $className();
-            if (!($tagObject instanceof TagInterface)) {
-                throw new \Exception(
-                    'The asked class ['.$className.'] does not implement TagInterface'
-                );
-            }
-
-            $tagName = strtoupper($tagObject->getName());
-            $this->_tagObjects[$tagName] = $tagObject;
+            $this->_loadTagObject($className);
         }
+    }
+
+    /**
+     * load a tag object
+     *
+     * @param string $className the classname to load
+     *
+     * @return void
+     * @throws Html2PdfException
+     */
+    protected function _loadTagObject($className)
+    {
+        $tagObject = new $className();
+        if (!($tagObject instanceof TagInterface)) {
+            throw new Html2PdfException('The asked class ['.$className.'] does not implement TagInterface');
+        }
+
+        $tagName = strtoupper($tagObject->getName());
+        $this->_tagObjects[$tagName] = $tagObject;
+
+        return true;
     }
 
     /**
@@ -327,20 +358,6 @@ class Html2Pdf
     public function setTestIsImage($mode = true)
     {
         $this->_testIsImage = $mode ? true : false;
-
-        return $this;
-    }
-
-    /**
-     * Set the test on deprecated functions
-     *
-     * @access public
-     * @param  boolean  $mode
-     * @return Html2Pdf $this
-     */
-    public function setTestIsDeprecated($mode = true)
-    {
-        $this->_testIsDeprecated = $mode ? true : false;
 
         return $this;
     }
@@ -425,7 +442,6 @@ class Html2Pdf
      * @param  string $name The name of the file when saved.
      * @param  string $dest Destination where to send the document.
      * @return string content of the PDF, if $dest=S
-     * @throws Html2PdfException
      * @see    TCPDF::close
      * @access public
      */
@@ -463,7 +479,7 @@ class Html2Pdf
 
         // the name must be a PDF name
         if (strtolower(substr($name, -4))!='.pdf') {
-            throw new Html2PdfException(0, 'The output document name "'.$name.'" is not a PDF name');
+            throw new Html2PdfException('The output document name ['.$name.'] is not a PDF name');
         }
 
         // call the output of TCPDF
@@ -1083,7 +1099,6 @@ class Html2Pdf
         // init
         self::$_subobj->setTestTdInOnePage($this->_testTdInOnepage);
         self::$_subobj->setTestIsImage($this->_testIsImage);
-        self::$_subobj->setTestIsDeprecated($this->_testIsDeprecated);
         self::$_subobj->setDefaultFont($this->_defaultFont);
         self::$_subobj->parsingCss->css            = &$this->parsingCss->css;
         self::$_subobj->parsingCss->cssKeys        = &$this->parsingCss->cssKeys;
@@ -1400,8 +1415,6 @@ class Html2Pdf
      *
      * @access protected
      * @param  array $action
-     *
-     * @throws Html2PdfException
      */
     protected function _executeAction($action)
     {
@@ -1428,7 +1441,13 @@ class Html2Pdf
         } elseif (is_callable(array(&$this, $fnc))) {
             $res = $this->{$fnc}($properties);
         } else {
-            throw new Html2PdfException(1, strtoupper($action['name']), $this->parsingHtml->getHtmlErrorCode($action['html_pos']));
+            $e = new HtmlParsingException(
+                'The html tag ['.$action['name'].'] is not known by Html2Pdf not exists.'.
+                'You can create it and push it on the Html2Pdf GitHub project.'
+            );
+            $e->setInvalidTag($action['name']);
+            $e->setHtmlPart($this->parsingHtml->getHtmlErrorCode($action['html_pos']));
+            throw $e;
         }
 
         // save the name of the action
@@ -1484,7 +1503,6 @@ class Html2Pdf
      * @param  string $src
      * @param  boolean $subLi if true=image of a list
      * @return boolean depending on "isForOneLine"
-     * @throws Html2PdfException
      */
     protected function _drawImage($src, $subLi = false)
     {
@@ -1494,9 +1512,10 @@ class Html2Pdf
 
         // if the image does not exist, or can not be loaded
         if (count($infos)<2) {
-            // if the test is activ => exception
             if ($this->_testIsImage) {
-                throw new Html2PdfException(6, $src);
+                $e = new ImageException('Unable to get the size of the image ['.$src.']');
+                $e->setImage($src);
+                throw $e;
             }
 
             // else, display a gray rectangle
@@ -1661,7 +1680,6 @@ class Html2Pdf
      * @param  float $margin  - external margin of the rectangle
      * @param  array $background
      * @return boolean
-     * @throws Html2PdfException
      */
     protected function _drawRectangle($x, $y, $w, $h, $border, $padding, $margin, $background)
     {
@@ -1772,7 +1790,9 @@ class Html2Pdf
             // if the image can not be loaded
             if (count($imageInfos)<2) {
                 if ($this->_testIsImage) {
-                    throw new Html2PdfException(6, $iName);
+                    $e = new ImageException('Unable to get the size of the image ['.$iName.']');
+                    $e->setImage($iName);
+                    throw $e;
                 }
             } else {
                 // convert the size of the image from pixel to the unit of the PDF
@@ -3654,10 +3674,6 @@ class Html2Pdf
             $param['style']['color'] = '#000000';
         }
 
-        if ($this->_testIsDeprecated && (isset($param['bar_h']) || isset($param['bar_w']))) {
-            throw new Html2PdfException(9, array('BARCODE', 'bar_h, bar_w'));
-        }
-
         $param['type'] = strtoupper($param['type']);
         if (isset($lstBarcode[$param['type']])) {
             $param['type'] = $lstBarcode[$param['type']];
@@ -3718,10 +3734,6 @@ class Html2Pdf
      */
     protected function _tag_open_QRCODE($param)
     {
-        if ($this->_testIsDeprecated && (isset($param['size']) || isset($param['noborder']))) {
-            throw new Html2PdfException(9, array('QRCODE', 'size, noborder'));
-        }
-
         if ($this->_debugActif) {
             $this->_DEBUG_add('QRCODE');
         }
@@ -4016,7 +4028,11 @@ class Html2Pdf
                     foreach ($words as $k => $word) {
                         $txt.= ($k ? ' ' : '').$word[0];
                     }
-                    throw new Html2PdfException(2, array($txt, $right-$left, $w));
+                    $e = new LongSentenceException('The current sentence takes more than 1000 lines is the current box');
+                    $e->setSentence($txt);
+                    $e->setWidthBox($right-$left);
+                    $e->setLength($w);
+                    throw $e;
                 }
 
                 // new margins for the new line
@@ -5501,7 +5517,6 @@ class Html2Pdf
      * @param string $other
      *
      * @return boolean
-     * @throws Html2PdfException
      */
     protected function _tag_open_TD($param, $other = 'td')
     {
@@ -5733,7 +5748,7 @@ class Html2Pdf
      * tag : TD
      * mode : CLOSE
      *
-     * @param    array $param
+     * @param  array $param
      * @return boolean
      */
     protected function _tag_close_TD($param)
@@ -5760,7 +5775,7 @@ class Html2Pdf
 
             // it msut take only one page
             if ($this->_testTdInOnepage && $this->_subHtml->pdf->getPage()>1) {
-                throw new Html2PdfException(7);
+                throw new TableException('The content of the TD tag does not fit on only one page');
             }
 
             // size of the content of the TD
@@ -6413,7 +6428,9 @@ class Html2Pdf
     protected function _tag_open_LINE($param)
     {
         if (!$this->_isInDraw) {
-            throw new Html2PdfException(8, 'LINE');
+            $e = new HtmlParsingException('The asked [LINE] tag is not in a [DRAW] tag');
+            $e->setInvalidTag('LINE');
+            throw $e;
         }
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -6442,7 +6459,9 @@ class Html2Pdf
     protected function _tag_open_RECT($param)
     {
         if (!$this->_isInDraw) {
-            throw new Html2PdfException(8, 'RECT');
+            $e = new HtmlParsingException('The asked [RECT] tag is not in a [DRAW] tag');
+            $e->setInvalidTag('RECT');
+            throw $e;
         }
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -6471,7 +6490,9 @@ class Html2Pdf
     protected function _tag_open_CIRCLE($param)
     {
         if (!$this->_isInDraw) {
-            throw new Html2PdfException(8, 'CIRCLE');
+            $e = new HtmlParsingException('The asked [CIRCLE] tag is not in a [DRAW] tag');
+            $e->setInvalidTag('CIRCLE');
+            throw $e;
         }
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -6498,7 +6519,9 @@ class Html2Pdf
     protected function _tag_open_ELLIPSE($param)
     {
         if (!$this->_isInDraw) {
-            throw new Html2PdfException(8, 'ELLIPSE');
+            $e = new HtmlParsingException('The asked [ELLIPSE] tag is not in a [DRAW] tag');
+            $e->setInvalidTag('ELLIPSE');
+            throw $e;
         }
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -6527,7 +6550,9 @@ class Html2Pdf
     protected function _tag_open_POLYLINE($param)
     {
         if (!$this->_isInDraw) {
-            throw new Html2PdfException(8, 'POLYGON');
+            $e = new HtmlParsingException('The asked [POLYLINE] tag is not in a [DRAW] tag');
+            $e->setInvalidTag('POLYLINE');
+            throw $e;
         }
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -6577,7 +6602,9 @@ class Html2Pdf
     protected function _tag_open_POLYGON($param)
     {
         if (!$this->_isInDraw) {
-            throw new Html2PdfException(8, 'POLYGON');
+            $e = new HtmlParsingException('The asked [POLYGON] tag is not in a [DRAW] tag');
+            $e->setInvalidTag('POLYGON');
+            throw $e;
         }
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -6628,7 +6655,9 @@ class Html2Pdf
     protected function _tag_open_PATH($param)
     {
         if (!$this->_isInDraw) {
-            throw new Html2PdfException(8, 'PATH');
+            $e = new HtmlParsingException('The asked [PATH] tag is not in a [DRAW] tag');
+            $e->setInvalidTag('PATH');
+            throw $e;
         }
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
@@ -6760,7 +6789,9 @@ class Html2Pdf
     protected function _tag_open_G($param)
     {
         if (!$this->_isInDraw) {
-            throw new Html2PdfException(8, 'G');
+            $e = new HtmlParsingException('The asked [G] tag is not in a [DRAW] tag');
+            $e->setInvalidTag('G');
+            throw $e;
         }
 
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);

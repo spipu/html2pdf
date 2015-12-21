@@ -46,10 +46,9 @@ composer install
  * Some tests can be enabled (true) or disabled (false):
 
   * `setTestIsImage` method:      test that images must exist
-
+  
   * `setTestTdInOnePage` method:  test that the contents of TDs fit on one page
 
-  * `setTestIsDeprecated` method: test that old properties of specific tags are not used anymore
 
  * A DEBUG mode to know the resources used is present.
 It is activated by adding the following command just after the contructor (see Example 0):

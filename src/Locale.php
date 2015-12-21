@@ -11,6 +11,7 @@
  */
 
 namespace Spipu\Html2Pdf;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
 
 class Locale
 {
@@ -49,7 +50,7 @@ class Locale
 
         // must be [a-z-0-9]
         if (!preg_match('/^([a-z0-9]+)$/isU', $code)) {
-            throw new Html2PdfException(0, 'invalid language code ['.self::$_code.']');
+            throw new Html2PdfException('language code ['.self::$_code.'] invalid.');
         }
 
         // save the code
@@ -60,7 +61,10 @@ class Locale
 
         // the file must exist
         if (!is_file($file)) {
-            throw new Html2PdfException(0, 'language code ['.self::$_code.'] unknown. You can create the translation file ['.$file.'] and send it to the webmaster of html2pdf in order to integrate it into a future release');
+            throw new Html2PdfException(
+                'language code ['.self::$_code.'] unknown. '.
+                'You can create the translation file ['.$file.'] and push it on the Html2Pdf GitHub project.'
+            );
         }
 
         // load the file
