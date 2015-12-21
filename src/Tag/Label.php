@@ -22,5 +22,4 @@ class Label extends Span
     {
         return 'label';
     }
-
 }

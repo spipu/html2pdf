@@ -22,5 +22,4 @@ class Samp extends I
     {
         return 'samp';
     }
-
 }
