@@ -279,42 +279,21 @@ class Html
         $name      = strtolower($match[2]);
 
         // required parameters (depends on the tag name)
-        $param    = array();
-        $param['style'] = '';
+        $defaultParams = array();
+        $defaultParams['style'] = '';
         if ($name == 'img') {
-            $param['alt'] = '';
-            $param['src'] = '';
-        }
-        if ($name == 'a') {
-            $param['href'] = '';
-        }
-
-        // read the parameters : name=value
-        $prop = '([a-zA-Z0-9_]+)=([^"\'\s>]+)';
-        preg_match_all('/'.$prop.'/is', $code, $match);
-        for ($k = 0; $k < count($match[0]); $k++) {
-            $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
+            $defaultParams['alt'] = '';
+            $defaultParams['src'] = '';
+        } else if ($name == 'a') {
+            $defaultParams['href'] = '';
         }
 
-        // read the parameters : name="value"
-        $prop = '([a-zA-Z0-9_]+)=["]([^"]*)["]';
-        preg_match_all('/'.$prop.'/is', $code, $match);
-        for ($k = 0; $k < count($match[0]); $k++) {
-            $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
-        }
-
-        // read the parameters : name='value'
-        $prop = "([a-zA-Z0-9_]+)=[']([^']*)[']";
-        preg_match_all('/'.$prop.'/is', $code, $match);
-        for ($k = 0; $k < count($match[0]); $k++) {
-            $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
-        }
+        $param = array_merge($defaultParams, $this->extractTagAttributes($code));
 
         // compliance of each parameter
         $color  = "#000000";
         $border = null;
         foreach ($param as $key => $val) {
-            $key = strtolower($key);
             switch ($key) {
                 case 'width':
                     unset($param[$key]);
@@ -405,17 +384,17 @@ class Html
         // determining the level of table opening, with an added level
         if (in_array($name, array('ul', 'ol', 'table')) && !$close) {
             $this->_num++;
-            $this->_level[count($this->_level)] = $this->_num;
+            array_push($this->_level, $this->_num);
         }
 
         // get the level of the table containing the element
         if (!isset($param['num'])) {
-            $param['num'] = $this->_level[count($this->_level) - 1];
+            $param['num'] = end($this->_level);
         }
 
         // for closures table: remove a level
         if (in_array($name, array('ul', 'ol', 'table')) && $close) {
-            unset($this->_level[count($this->_level) - 1]);
+            array_pop($this->_level);
         }
 
         // prepare the parameters
@@ -434,6 +413,32 @@ class Html
 
         // return the new action to do
         return array('name' => $name, 'close' => $close ? 1 : 0, 'autoclose' => $autoclose, 'param' => $param);
+    }
+
+    /**
+     * Extract the list of attribute => value inside an HTML tag
+     *
+     * @param string $code The full HTML tag to parse
+     *
+     * @return array
+     */
+    protected function extractTagAttributes($code)
+    {
+        $param = array();
+        $regexes = array(
+            '([a-zA-Z0-9_]+)=([^"\'\s>]+)',  // read the parameters : name=value
+            '([a-zA-Z0-9_]+)=["]([^"]*)["]', // read the parameters : name="value"
+            "([a-zA-Z0-9_]+)=[']([^']*)[']"  // read the parameters : name='value'
+        );
+
+        foreach ($regexes as $regex) {
+            preg_match_all('/'.$regex.'/is', $code, $match);
+            for ($k = 0; $k < count($match[0]); $k++) {
+                $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
+            }
+        }
+
+        return $param;
     }
 
     /**
