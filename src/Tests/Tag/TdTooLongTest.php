@@ -10,29 +10,35 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\Parsing;
+namespace Spipu\Html2Pdf\Tests\Tag;
 
 use Spipu\Html2Pdf\Html2Pdf;
 
 /**
- * Class SrcErrorTest
+ * Class TagInterfaceErrorTest
  *
  * @package   Html2pdf
  * @copyright 2016 Laurent MINGUET
  */
-class SrcErrorTest extends \PHPUnit_Framework_TestCase
+class TdTooLongTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * test: The image src is unknown
+     * test: The tag class must implement TagInterface
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\ImageException
+     * @expectedException \Spipu\Html2Pdf\Exception\TableException
      */
     public function testCase()
     {
+        $sentence = 'Hello World ! ';
+        $sentences = '';
+        for ($k=0; $k<100; $k++) {
+            $sentences.= $sentence;
+        }
+
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
-        $object->writeHTML('Hello World <img src="'.dirname(__FILE__).'/res/wrong.png" />');
+        $object->writeHTML('<table><tr><td style="width: 28mm">'.$sentences.'</td></tr></table>');
         $object->Output('test.pdf', 'S');
     }
 }

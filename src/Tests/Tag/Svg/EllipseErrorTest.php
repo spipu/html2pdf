@@ -10,20 +10,20 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\Parsing;
+namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
 use Spipu\Html2Pdf\Html2Pdf;
 
 /**
- * Class UnknownTagTest
+ * Class EllipseErrorTest
  *
  * @package   Html2pdf
  * @copyright 2016 Laurent MINGUET
  */
-class UnknownTagTest extends \PHPUnit_Framework_TestCase
+class EllipseErrorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * test: The tag is unknown
+     * test: The tag class must implement TagInterface
      *
      * @return void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
@@ -31,7 +31,8 @@ class UnknownTagTest extends \PHPUnit_Framework_TestCase
     public function testCase()
     {
         $object = new Html2Pdf();
-        $object->writeHTML('<bad_tag>Hello World</bad_tag>');
+        $object->pdf->SetTitle('PhpUnit Test');
+        $object->writeHTML('<ellipse />');
         $object->Output('test.pdf', 'S');
     }
 }

@@ -30,8 +30,8 @@ class FileNameOkTest extends \PHPUnit_Framework_TestCase
     public function testCase()
     {
         $object = new Html2Pdf();
-        $object->writeHTML('Hello World');
         $object->pdf->SetTitle('PhpUnit Test');
+        $object->writeHTML('Hello World');
         $result = $object->Output('test.pdf', 'S');
 
         $this->assertContains('PhpUnit Test', $result);

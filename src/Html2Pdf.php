@@ -6764,7 +6764,10 @@ class Html2Pdf
 
                     case 'z':
                     case 'Z':
+                        break;
+
                     default:
+                        $k+= 1;
                         break;
                 }
                 // add the action

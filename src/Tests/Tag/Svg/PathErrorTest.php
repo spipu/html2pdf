@@ -10,30 +10,29 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\Parsing;
+namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
 use Spipu\Html2Pdf\Html2Pdf;
 
 /**
- * Class BackgroundOkTest
+ * Class PathErrorTest
  *
  * @package   Html2pdf
  * @copyright 2016 Laurent MINGUET
  */
-class BackgroundOkTest extends \PHPUnit_Framework_TestCase
+class PathErrorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * test: The image src is unknown
+     * test: The tag class must implement TagInterface
      *
      * @return void
+     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testCase()
     {
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
-        $object->writeHTML('<div style="background-image: url('.dirname(__FILE__).'/res/logo.png)">Hello World</div>');
-        $result = $object->Output('test.pdf', 'S');
-
-        $this->assertContains('PhpUnit Test', $result);
+        $object->writeHTML('<path />');
+        $object->Output('test.pdf', 'S');
     }
 }

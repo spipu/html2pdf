@@ -31,8 +31,9 @@ class TagInterfaceOkTest extends \PHPUnit_Framework_TestCase
     public function testCase()
     {
         $object = new Html2Pdf();
+        $result = $object->addTagDefinition('Spipu\\Html2Pdf\\Tests\\Tag\\TagExampleOK');
 
-        $this->assertEquals(true, $object->addTagDefinition('Spipu\\Html2Pdf\\Tests\\Tag\\TagExampleOK'));
+        $this->assertEquals(true, $result);
     }
 }
 

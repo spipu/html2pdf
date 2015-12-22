@@ -10,29 +10,36 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\Parsing;
+namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
 use Spipu\Html2Pdf\Html2Pdf;
 
 /**
- * Class SrcErrorTest
+ * Class PathInvalidTest
  *
  * @package   Html2pdf
  * @copyright 2016 Laurent MINGUET
  */
-class SrcErrorTest extends \PHPUnit_Framework_TestCase
+class PathInvalidTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * test: The image src is unknown
+     * test: The tag class must implement TagInterface
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\ImageException
+     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testCase()
     {
+        $html = '
+<page>
+    <draw style="width:150mm; height:100mm;">
+        <path style="fill:#770000; stroke:#AA0033;" d="n 20mm,40mm a16mm,8mm 0,0,0 16mm,8mm" />
+    </draw>
+</page>';
+
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
-        $object->writeHTML('Hello World <img src="'.dirname(__FILE__).'/res/wrong.png" />');
+        $object->writeHTML($html);
         $object->Output('test.pdf', 'S');
     }
 }
