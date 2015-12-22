@@ -21,7 +21,7 @@ class HtmlLexer
      *
      * @param string $html HTML code to tokenize
      *
-     * @return array
+     * @return Token[]
      */
     public function tokenize($html)
     {
@@ -41,11 +41,11 @@ class HtmlLexer
             if ($parse[1][0]) {
                 // save the previous text if it exists
                 if ($str !== '') {
-                    $tokens[] = array('txt', $str);
+                    $tokens[] = new Token('txt', $str);
                 }
 
                 // save the tag, with the offset
-                $tokens[] = array('code', trim($parse[1][0]), $offset);
+                $tokens[] = new Token('code', trim($parse[1][0]), $offset);
 
                 // init the current text
                 $str = '';
@@ -60,7 +60,7 @@ class HtmlLexer
         }
         // if a text is present in the end, we save it
         if ($str != '') {
-            $tokens[] = array('txt', $str);
+            $tokens[] = new Token('txt', $str);
         }
 
         return $tokens;

@@ -16,6 +16,7 @@ use Spipu\Html2Pdf\Exception\HtmlParsingException;
 class Html
 {
     protected $lexer;
+    protected $tagPreIn;
     protected $_html     = '';        // HTML code to parse
     protected $_num      = 0;         // table number
     protected $_level    = 0;         // table level
@@ -73,118 +74,23 @@ class Html
      */
     public function parse()
     {
+        // search the HTML tags
+        $tokens = $this->lexer->tokenize($this->_html);
+
         $parents = array();
 
         // flag : are we in a <pre> Tag ?
-        $tagPreIn = false;
-
-        // action to use for each line of the content of a <pre> Tag
-        $tagPreBr = array(
-                    'name' => 'br',
-                    'close' => false,
-                    'param' => array(
-                        'style' => array(),
-                        'num'    => 0
-                    )
-                );
-
-        // tag that can be not closed
-        $tagsNotClosed = array(
-            'br', 'hr', 'img', 'col',
-            'input', 'link', 'option',
-            'circle', 'ellipse', 'path', 'rect', 'line', 'polygon', 'polyline'
-        );
-
-        // search the HTML tags
-        $tokens = $this->lexer->tokenize($this->_html);
+        $this->tagPreIn = false;
 
         // all the actions to do
         $actions = array();
 
-        // foreach part of the HTML code
-        foreach ($tokens as $part) {
-            // if it is a tag code
-            if ($part[0] == 'code') {
-                // analyze the HTML code
-                $res = $this->_analyzeTag($part[1]);
-
-                // save the current position in the HTML code
-                $res['html_pos'] = $part[2];
-
-                // if the tag must be closed
-                if (!in_array($res['name'], $tagsNotClosed)) {
-                    // if it is a closure tag
-                    if ($res['close']) {
-                        // HTML validation
-                        if (count($parents) < 1) {
-                            $e = new HtmlParsingException('Too many tag closures found for ['.$res['name'].']');
-                            $e->setInvalidTag($res['name']);
-                            $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
-                            throw $e;
-                        } elseif (end($parents) != $res['name']) {
-                            $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$res['name'].']');
-                            $e->setInvalidTag($res['name']);
-                            $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
-                            throw $e;
-                        } else {
-                            array_pop($parents);
-                        }
-                    } else {
-                        // if it is an auto-closed tag
-                        if ($res['autoclose']) {
-                            // save the opened tag
-                            $actions[] = $res;
-
-                            // prepare the closed tag
-                            $res['params'] = array();
-                            $res['close'] = true;
-                        } else {
-                            // else: add a child for validation
-                            array_push($parents, $res['name']);
-                        }
-                    }
-
-                    // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
-                    if (($res['name'] == 'pre' || $res['name'] == 'code') && !$res['autoclose']) {
-                        $tagPreIn = !$res['close'];
-                    }
-                }
-
-                // save the actions to convert
-                $actions[] = $res;
-            } else if ($part[0] == 'txt') {
-                // if we are not in a <pre> tag
-                if (!$tagPreIn) {
-                    // save the action
-                    $actions[] = array(
-                        'name'  => 'write',
-                        'close' => false,
-                        'param' => array('txt' => $this->_prepareTxt($part[1])),
-                    );
-                } else { // else (if we are in a <pre> tag)
-                    // prepare the text
-                    $part[1] = str_replace("\r", '', $part[1]);
-                    $part[1] = explode("\n", $part[1]);
-
-                    // foreach line of the text
-                    foreach ($part[1] as $k => $txt) {
-                        // transform the line
-                        $txt = str_replace("\t", self::HTML_TAB, $txt);
-                        $txt = str_replace(' ', '&nbsp;', $txt);
-
-                        // add a break line
-                        if ($k > 0) {
-                            $actions[] = $tagPreBr;
-                        }
-
-                        // save the action
-                        $actions[] = array(
-                            'name'  => 'write',
-                            'close' => false,
-                            'param' => array('txt' => $this->_prepareTxt($txt, false)),
-                        );
-                    }
-                }
+        // get the actions from the html tokens
+        foreach ($tokens as $token) {
+            if ($token->getType() == 'code') {
+                $actions = array_merge($actions, $this->getTagAction($token, $parents));
+            } else if ($token->getType() == 'txt') {
+                $actions = array_merge($actions, $this->getTextAction($token));
             }
         }
 
@@ -239,6 +145,125 @@ class Html
 
         // save the actions to do
         $this->code = array_values($actions);
+    }
+
+    /**
+     * TODO remove the reference on the $parents variable
+     *
+     * @param Token $token
+     * @param array $parents
+     *
+     * @return array
+     * @throws HtmlParsingException
+     */
+    protected function getTagAction(Token $token, &$parents)
+    {
+        // tag that can be not closed
+        $tagsNotClosed = array(
+            'br', 'hr', 'img', 'col',
+            'input', 'link', 'option',
+            'circle', 'ellipse', 'path', 'rect', 'line', 'polygon', 'polyline'
+        );
+
+        // analyze the HTML code
+        $res = $this->_analyzeTag($token->getData());
+
+        // save the current position in the HTML code
+        $res['html_pos'] = $token->getOffset();
+
+        $actions = array();
+        // if the tag must be closed
+        if (!in_array($res['name'], $tagsNotClosed)) {
+            // if it is a closure tag
+            if ($res['close']) {
+                // HTML validation
+                if (count($parents) < 1) {
+                    $e = new HtmlParsingException('Too many tag closures found for ['.$res['name'].']');
+                    $e->setInvalidTag($res['name']);
+                    $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
+                    throw $e;
+                } elseif (end($parents) != $res['name']) {
+                    $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$res['name'].']');
+                    $e->setInvalidTag($res['name']);
+                    $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
+                    throw $e;
+                } else {
+                    array_pop($parents);
+                }
+            } else {
+                // if it is an auto-closed tag
+                if ($res['autoclose']) {
+                    // save the opened tag
+                    $actions[] = $res;
+
+                    // prepare the closed tag
+                    $res['params'] = array();
+                    $res['close'] = true;
+                } else {
+                    // else: add a child for validation
+                    array_push($parents, $res['name']);
+                }
+            }
+
+            // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
+            if (($res['name'] == 'pre' || $res['name'] == 'code') && !$res['autoclose']) {
+                $this->tagPreIn = !$res['close'];
+            }
+        }
+
+        // save the actions to convert
+        $actions[] = $res;
+
+        return $actions;
+    }
+
+
+    protected function getTextAction(Token $token)
+    {
+        // action to use for each line of the content of a <pre> Tag
+        $tagPreBr = array(
+            'name' => 'br',
+            'close' => false,
+            'param' => array(
+                'style' => array(),
+                'num'    => 0
+            )
+        );
+        $actions = array();
+
+        // if we are not in a <pre> tag
+        if (!$this->tagPreIn) {
+            // save the action
+            $actions[] = array(
+                'name'  => 'write',
+                'close' => false,
+                'param' => array('txt' => $this->_prepareTxt($token->getData())),
+            );
+        } else { // else (if we are in a <pre> tag)
+            // prepare the text
+            $data = str_replace("\r", '', $token->getData());
+            $lines = explode("\n", $data);
+
+            // foreach line of the text
+            foreach ($lines as $k => $txt) {
+                // transform the line
+                $txt = str_replace("\t", self::HTML_TAB, $txt);
+                $txt = str_replace(' ', '&nbsp;', $txt);
+
+                // add a break line
+                if ($k > 0) {
+                    $actions[] = $tagPreBr;
+                }
+
+                // save the action
+                $actions[] = array(
+                    'name'  => 'write',
+                    'close' => false,
+                    'param' => array('txt' => $this->_prepareTxt($txt, false)),
+                );
+            }
+        }
+        return $actions;
     }
 
     /**
