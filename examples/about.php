@@ -18,26 +18,16 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
-// convert to PDF
 try {
-    // init Html2Pdf
     $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', array(0, 0, 0, 0));
-
-    // display the full page
     $html2pdf->pdf->SetDisplayMode('fullpage');
 
-    // get the HTML
     ob_start();
-    require dirname(__FILE__).'/res/about.php';
+    include dirname(__FILE__).'/res/about.php';
     $content = ob_get_clean();
 
-    // convert
     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
-
-    // add the automatic index
     $html2pdf->createIndex('Sommaire', 30, 12, false, true, 2);
-
-    // send the PDF
     $html2pdf->Output('about.pdf');
 } catch (Html2PdfException $e) {
     $formatter = new ExceptionFormatter($e);

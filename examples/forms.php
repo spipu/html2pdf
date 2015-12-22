@@ -26,13 +26,11 @@ if (isset($_POST['test'])) {
     exit;
 }
 
-// get the HTML
-ob_start();
-require dirname(__FILE__).'/res/forms.php';
-$content = ob_get_clean();
-
-// convert to PDF
 try {
+    ob_start();
+    require dirname(__FILE__).'/res/forms.php';
+    $content = ob_get_clean();
+
     $html2pdf = new Html2Pdf('P', 'A4', 'fr');
     $html2pdf->pdf->SetDisplayMode('fullpage');
     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));

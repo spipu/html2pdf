@@ -18,19 +18,14 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
-// get the HTML
-ob_start();
-?>
+try {
+    $content = "
 <page>
     <h1>Test de JavaScript 1</h1><br>
     <br>
     Normalement la fenetre d'impression devrait apparaitre automatiquement
-</page>
-<?php
-$content = ob_get_clean();
+</page>";
 
-// convert to PDF
-try {
     $html2pdf = new Html2Pdf('P', 'A4', 'fr');
     $html2pdf->pdf->IncludeJS("print(true);");
     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));

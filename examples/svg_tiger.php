@@ -18,13 +18,11 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
-// get the HTML
-ob_start();
-require dirname(__FILE__).'/res/svg_tiger.php';
-$content = ob_get_clean();
-
-// convert to PDF
 try {
+    ob_start();
+    include dirname(__FILE__).'/res/svg_tiger.php';
+    $content = ob_get_clean();
+
     $html2pdf = new Html2Pdf('L', 'A4', 'fr');
     $html2pdf->pdf->SetDisplayMode('fullpage');
     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));

@@ -18,13 +18,11 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
-// get the HTML
-ob_start();
-require dirname(__FILE__).'/res/bookmark.php';
-$content = ob_get_clean();
-
-// convert to PDF
 try {
+    ob_start();
+    include dirname(__FILE__).'/res/bookmark.php';
+    $content = ob_get_clean();
+
     $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
     $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
     $html2pdf->createIndex('Sommaire', 25, 12, false, true, 1);
