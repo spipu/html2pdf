@@ -33,7 +33,15 @@ class HtmlLexerTest extends \PHPUnit_Framework_TestCase
     public function testTokenize($html, $expectedTokens)
     {
         $lexer = new HtmlLexer();
-        $this->assertEquals($expectedTokens, $lexer->tokenize($html));
+        $tokens = $lexer->tokenize($html);
+
+        $this->assertEquals(count($expectedTokens), count($tokens));
+
+        for ($i = 0; $i < count($tokens); $i++) {
+            $this->assertEquals($expectedTokens[$i][0], $tokens[$i]->getType());
+            $this->assertEquals($expectedTokens[$i][1], $tokens[$i]->getData());
+            $this->assertEquals($expectedTokens[$i][2], $tokens[$i]->getOffset());
+        }
     }
 
     /**
@@ -48,7 +56,7 @@ class HtmlLexerTest extends \PHPUnit_Framework_TestCase
                 '<p>test</p>',
                 array(
                     array('code', '<p>', 0),
-                    array('txt', 'test'),
+                    array('txt', 'test', 0),
                     array('code', '</p>', 7),
                 )
             )
