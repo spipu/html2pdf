@@ -12,8 +12,6 @@
 
 namespace Spipu\Html2Pdf\Exception;
 
-use Spipu\Html2Pdf\Locale;
-
 /**
  * Class ExceptionFormatter
  *
