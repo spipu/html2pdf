@@ -595,9 +595,9 @@ class Html2Pdf
      */
     protected function _vueHTML($content)
     {
-        $content = preg_replace('/<page_header([^>]*)>/isU', '<hr>'.Locale::get('vue01').' : $1<hr><div$1>', $content);
-        $content = preg_replace('/<page_footer([^>]*)>/isU', '<hr>'.Locale::get('vue02').' : $1<hr><div$1>', $content);
-        $content = preg_replace('/<page([^>]*)>/isU', '<hr>'.Locale::get('vue03').' : $1<hr><div$1>', $content);
+        $content = preg_replace('/<page_header([^>]*)>/isU', '<hr>Page Header : $1<hr><div$1>', $content);
+        $content = preg_replace('/<page_footer([^>]*)>/isU', '<hr>Page Footer : $1<hr><div$1>', $content);
+        $content = preg_replace('/<page([^>]*)>/isU', '<hr>Page : $1<hr><div$1>', $content);
         $content = preg_replace('/<\/page([^>]*)>/isU', '</div><hr>', $content);
         $content = preg_replace('/<bookmark([^>]*)>/isU', '<hr>bookmark : $1<hr>', $content);
         $content = preg_replace('/<\/bookmark([^>]*)>/isU', '', $content);
@@ -609,7 +609,7 @@ class Html2Pdf
         echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
-        <title>'.Locale::get('vue04').' HTML</title>
+        <title>HTML View</title>
         <meta http-equiv="Content-Type" content="text/html; charset='.$this->_encoding.'" >
     </head>
     <body style="padding: 10px; font-size: 10pt;font-family:    Verdana;">
