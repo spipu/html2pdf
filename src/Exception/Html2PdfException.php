@@ -36,7 +36,6 @@ class Html2PdfException extends \Exception
      */
     public function __construct($message)
     {
-        $className = get_class($this);
-        return parent::__construct($message, $className::ERROR_CODE);
+        parent::__construct($message, static::ERROR_CODE);
     }
 }
