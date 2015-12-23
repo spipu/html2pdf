@@ -19,6 +19,7 @@ use Spipu\Html2Pdf\Exception\TableException;
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Extension\CoreExtension;
 use Spipu\Html2Pdf\Extension\ExtensionInterface;
+use Spipu\Html2Pdf\Parsing\HtmlLexer;
 
 require_once dirname(__FILE__) . '/config/tcpdf.config.php';
 
@@ -41,6 +42,11 @@ class Html2Pdf
      * @var Parsing\Html
      */
     public $parsingHtml = null;
+
+    /**
+     * @var HtmlLexer
+     */
+    private $lexer;
 
     protected $_langue           = 'fr';        // locale of the messages
     protected $_orientation      = 'P';         // page orientation : Portrait ou Landscape
@@ -173,6 +179,7 @@ class Html2Pdf
         // init the default font
         $this->setDefaultFont(null);
 
+        $this->lexer = new HtmlLexer();
         // init the HTML parsing object
         $this->parsingHtml = new Parsing\Html($this->_encoding);
         $this->_subHtml = null;
@@ -500,8 +507,7 @@ class Html2Pdf
 
         // convert HTMl to PDF
         $this->parsingCss->readStyle($html);
-        $this->parsingHtml->setHTML($html);
-        $this->parsingHtml->parse();
+        $this->parsingHtml->parse($this->lexer->tokenize($html));
         $this->_makeHTMLcode();
     }
 

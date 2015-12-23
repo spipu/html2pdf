@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - parsing Html class
+ * Html2Pdf Library
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,13 +13,14 @@ namespace Spipu\Html2Pdf\Parsing;
 
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
 
+/**
+ * Class Html
+ */
 class Html
 {
-    protected $lexer;
     protected $tagParser;
     protected $textParser;
     protected $tagPreIn;
-    protected $_html     = '';        // HTML code to parse
     protected $_encoding = '';        // encoding
     public $code      = array();   // parsed HTML code
 
@@ -33,10 +34,8 @@ class Html
      */
     public function __construct($encoding = 'UTF-8')
     {
-        $this->lexer = new HtmlLexer();
         $this->textParser = new TextParser($encoding);
         $this->tagParser = new TagParser($this->textParser);
-        $this->_html  = '';
         $this->code  = array();
         $this->setEncoding($encoding);
     }
@@ -53,30 +52,14 @@ class Html
     }
 
     /**
-     * Define the HTML code to parse
-     *
-     * @param   string $html code
-     * @access  public
-     */
-    public function setHTML($html)
-    {
-        // remove the HTML in comment
-        $html = preg_replace('/<!--(.*)-->/isU', '', $html);
-
-        // save the HTML code
-        $this->_html = $html;
-    }
-
-    /**
      * parse the HTML code
      *
-     * @access public
+     * @param array $tokens A list of tokens to parse
+     *
+     * @throws HtmlParsingException
      */
-    public function parse()
+    public function parse($tokens)
     {
-        // search the HTML tags
-        $tokens = $this->lexer->tokenize($this->_html);
-
         $parents = array();
 
         // flag : are we in a <pre> Tag ?
