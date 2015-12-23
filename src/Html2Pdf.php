@@ -115,13 +115,18 @@ class Html2Pdf
      * list of tag definitions
      * @var array
      */
-    protected $_tagDefinitions = array();
+    protected $tagDefinitions = array();
 
     /**
      * List of tag objects
      * @var TagInterface[]
      */
-    protected $_tagObjects = array();
+    protected $tagObjects = array();
+
+    /**
+     * @var bool
+     */
+    protected $tagObjectsLoaded = false;
 
     /**
      * class constructor
@@ -182,8 +187,7 @@ class Html2Pdf
         // init the form's fields
         $this->_lstField = array();
 
-        $this->_loadTagDefinitions();
-        $this->_loadTagObjects();
+        $this->loadTagObjects();
 
         return $this;
     }
@@ -240,76 +244,78 @@ class Html2Pdf
     /**
      * load the list of the tag definitions
      */
-    protected function _loadTagDefinitions()
+    protected function getTagDefinitions()
     {
-        $this->_tagDefinitions = array(
-            'Spipu\\Html2Pdf\\Tag\\Address',
-            'Spipu\\Html2Pdf\\Tag\\B',
-            'Spipu\\Html2Pdf\\Tag\\Big',
-            'Spipu\\Html2Pdf\\Tag\\Cite',
-            'Spipu\\Html2Pdf\\Tag\\Del',
-            'Spipu\\Html2Pdf\\Tag\\Em',
-            'Spipu\\Html2Pdf\\Tag\\Font',
-            'Spipu\\Html2Pdf\\Tag\\I',
-            'Spipu\\Html2Pdf\\Tag\\Ins',
-            'Spipu\\Html2Pdf\\Tag\\Label',
-            'Spipu\\Html2Pdf\\Tag\\S',
-            'Spipu\\Html2Pdf\\Tag\\Samp',
-            'Spipu\\Html2Pdf\\Tag\\Small',
-            'Spipu\\Html2Pdf\\Tag\\Span',
-            'Spipu\\Html2Pdf\\Tag\\Strong',
-            'Spipu\\Html2Pdf\\Tag\\Sub',
-            'Spipu\\Html2Pdf\\Tag\\Sup',
-            'Spipu\\Html2Pdf\\Tag\\U',
-        );
-    }
+        if (empty($this->tagDefinitions)) {
+            $this->tagDefinitions = array(
+                new \Spipu\Html2Pdf\Tag\Address(),
+                new \Spipu\Html2Pdf\Tag\B(),
+                new \Spipu\Html2Pdf\Tag\Big(),
+                new \Spipu\Html2Pdf\Tag\Cite(),
+                new \Spipu\Html2Pdf\Tag\Del(),
+                new \Spipu\Html2Pdf\Tag\Em(),
+                new \Spipu\Html2Pdf\Tag\Font(),
+                new \Spipu\Html2Pdf\Tag\I(),
+                new \Spipu\Html2Pdf\Tag\Ins(),
+                new \Spipu\Html2Pdf\Tag\Label(),
+                new \Spipu\Html2Pdf\Tag\S(),
+                new \Spipu\Html2Pdf\Tag\Samp(),
+                new \Spipu\Html2Pdf\Tag\Small(),
+                new \Spipu\Html2Pdf\Tag\Span(),
+                new \Spipu\Html2Pdf\Tag\Strong(),
+                new \Spipu\Html2Pdf\Tag\Sub(),
+                new \Spipu\Html2Pdf\Tag\Sup(),
+                new \Spipu\Html2Pdf\Tag\U(),
+            );
+        }
 
-    /**
-     * add a tag definition
-     *
-     * @param string $className the classname definition
-     *
-     * @return boolean
-     * @throws Html2PdfException
-     */
-    public function addTagDefinition($className)
-    {
-        $this->_tagDefinitions[] = $className;
-
-        return $this->_loadTagObject($className);
+        return $this->tagDefinitions;
     }
 
     /**
      * load the list of the tag objects
      */
-    protected function _loadTagObjects()
+    protected function loadTagObjects()
     {
-        $this->_tagObjects = array();
-
-        foreach ($this->_tagDefinitions as $className) {
-            $this->_loadTagObject($className);
+        if ($this->tagObjectsLoaded) {
+            return;
         }
+        $this->tagObjects = array();
+        foreach ($this->getTagDefinitions() as $className) {
+            $this->addTagObject($className);
+        }
+
+        $this->tagObjectsLoaded = true;
     }
 
     /**
      * load a tag object
      *
-     * @param string $className the classname to load
-     *
-     * @return void
-     * @throws Html2PdfException
+     * @param TagInterface $tagObject the object
      */
-    protected function _loadTagObject($className)
+    public function addTagObject(TagInterface $tagObject)
     {
-        $tagObject = new $className();
-        if (!($tagObject instanceof TagInterface)) {
-            throw new Html2PdfException('The asked class ['.$className.'] does not implement TagInterface');
+        $tagName = strtoupper($tagObject->getName());
+        $this->tagObjects[$tagName] = $tagObject;
+    }
+
+    /**
+     * get the tag object from a tag name
+     *
+     * @param string $tagName tag name to load
+     *
+     * @return TagInterface|null
+     */
+    protected function getTagObject($tagName)
+    {
+        if (!array_key_exists($tagName, $this->tagObjects)) {
+            return null;
         }
 
-        $tagName = strtoupper($tagObject->getName());
-        $this->_tagObjects[$tagName] = $tagObject;
+        $tagObject = $this->tagObjects[$tagName];
+        $tagObject->setParsingCssObject($this->parsingCss);
 
-        return true;
+        return $tagObject;
     }
 
     /**
@@ -1392,25 +1398,6 @@ class Html2Pdf
     }
 
     /**
-     * get the tag object from a tag name
-     *
-     * @param string $tagName tag name to load
-     *
-     * @return TagInterface|null
-     */
-    protected function _getTagObject($tagName)
-    {
-        if (!array_key_exists($tagName, $this->_tagObjects)) {
-            return null;
-        }
-
-        $tagObject = $this->_tagObjects[$tagName];
-        $tagObject->setParsingCssObject($this->parsingCss);
-
-        return $tagObject;
-    }
-
-    /**
      * execute the action from the parsing
      *
      * @access protected
@@ -1430,7 +1417,7 @@ class Html2Pdf
         // name of the action (old method)
         $fnc = ($action['close'] ? '_tag_close_' : '_tag_open_').strtoupper($action['name']);
 
-        $tagObject = $this->_getTagObject($action['name']);
+        $tagObject = $this->getTagObject($action['name']);
 
         if (!is_null($tagObject)) {
             if ($action['close']) {
