@@ -37,8 +37,9 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
         $content = file_get_contents($filename);
 
         // keep only the example
-        $content = explode('try {', $content)[1];
-        $content = explode('} catch', $content)[0];
+        $parts = explode('try {', $content);
+        $parts = explode('} catch', $parts[1]);
+        $content = $parts[0];
 
         // replace the good path
         $content = str_replace('dirname(__FILE__)', "'$folder'", $content);
