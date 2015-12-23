@@ -17,6 +17,8 @@ use Spipu\Html2Pdf\Exception\ImageException;
 use Spipu\Html2Pdf\Exception\LongSentenceException;
 use Spipu\Html2Pdf\Exception\TableException;
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
+use Spipu\Html2Pdf\Extension\CoreExtension;
+use Spipu\Html2Pdf\Extension\ExtensionInterface;
 
 require_once dirname(__FILE__) . '/config/tcpdf.config.php';
 
@@ -113,9 +115,9 @@ class Html2Pdf
 
     /**
      * list of tag definitions
-     * @var array
+     * @var ExtensionInterface[]
      */
-    protected $tagDefinitions = array();
+    protected $extensions = array();
 
     /**
      * List of tag objects
@@ -126,7 +128,7 @@ class Html2Pdf
     /**
      * @var bool
      */
-    protected $tagObjectsLoaded = false;
+    protected $extensionsLoaded = false;
 
     /**
      * class constructor
@@ -187,20 +189,9 @@ class Html2Pdf
         // init the form's fields
         $this->_lstField = array();
 
-        $this->loadTagObjects();
+        $this->addExtension(new CoreExtension());
 
         return $this;
-    }
-
-    /**
-     * Destructor
-     *
-     * @access public
-     * @return null
-     */
-    public function __destruct()
-    {
-
     }
 
     /**
@@ -242,58 +233,41 @@ class Html2Pdf
     }
 
     /**
-     * load the list of the tag definitions
+     * @param ExtensionInterface $extension
      */
-    protected function getTagDefinitions()
+    public function addExtension(ExtensionInterface $extension)
     {
-        if (empty($this->tagDefinitions)) {
-            $this->tagDefinitions = array(
-                new \Spipu\Html2Pdf\Tag\Address(),
-                new \Spipu\Html2Pdf\Tag\B(),
-                new \Spipu\Html2Pdf\Tag\Big(),
-                new \Spipu\Html2Pdf\Tag\Cite(),
-                new \Spipu\Html2Pdf\Tag\Del(),
-                new \Spipu\Html2Pdf\Tag\Em(),
-                new \Spipu\Html2Pdf\Tag\Font(),
-                new \Spipu\Html2Pdf\Tag\I(),
-                new \Spipu\Html2Pdf\Tag\Ins(),
-                new \Spipu\Html2Pdf\Tag\Label(),
-                new \Spipu\Html2Pdf\Tag\S(),
-                new \Spipu\Html2Pdf\Tag\Samp(),
-                new \Spipu\Html2Pdf\Tag\Small(),
-                new \Spipu\Html2Pdf\Tag\Span(),
-                new \Spipu\Html2Pdf\Tag\Strong(),
-                new \Spipu\Html2Pdf\Tag\Sub(),
-                new \Spipu\Html2Pdf\Tag\Sup(),
-                new \Spipu\Html2Pdf\Tag\U(),
-            );
-        }
-
-        return $this->tagDefinitions;
+        $this->extensions[$extension->getName()] = $extension;
     }
 
     /**
-     * load the list of the tag objects
+     * Initialize the registered extensions
+     *
+     * @throws Html2PdfException
      */
-    protected function loadTagObjects()
+    protected function loadExtensions()
     {
-        if ($this->tagObjectsLoaded) {
+        if ($this->extensionsLoaded) {
             return;
         }
-        $this->tagObjects = array();
-        foreach ($this->getTagDefinitions() as $className) {
-            $this->addTagObject($className);
+        foreach ($this->extensions as $extension) {
+            foreach ($extension->getTags() as $tag) {
+                if (!$tag instanceof TagInterface) {
+                    throw new Html2PdfException('The ExtensionInterface::getTags() method must return an array of TagInterface.');
+                }
+                $this->addTagObject($tag);
+            }
         }
 
-        $this->tagObjectsLoaded = true;
+        $this->extensionsLoaded = true;
     }
 
     /**
-     * load a tag object
+     * register a tag object
      *
      * @param TagInterface $tagObject the object
      */
-    public function addTagObject(TagInterface $tagObject)
+    protected function addTagObject(TagInterface $tagObject)
     {
         $tagName = strtoupper($tagObject->getName());
         $this->tagObjects[$tagName] = $tagObject;
@@ -308,6 +282,10 @@ class Html2Pdf
      */
     protected function getTagObject($tagName)
     {
+        if (!$this->extensionsLoaded) {
+            $this->loadExtensions();
+        }
+
         if (!array_key_exists($tagName, $this->tagObjects)) {
             return null;
         }
