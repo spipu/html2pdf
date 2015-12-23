@@ -34,6 +34,7 @@ class HtmlLexer
         // last match found
         $str = '';
         $offset = 0;
+        $line = 1;
 
         // As it finds a match
         while (preg_match($reg, $html, $parse, PREG_OFFSET_CAPTURE, $offset)) {
@@ -45,13 +46,15 @@ class HtmlLexer
                 }
 
                 // save the tag, with the offset
-                $tokens[] = new Token('code', trim($parse[1][0]));
+                $tokens[] = new Token('code', trim($parse[1][0]), $line);
+                $line += substr_count($parse[1][0], "\n");
 
                 // init the current text
                 $str = '';
             } else { // else (if it is a text)
                 // add the new text to the current text
                 $str .= $parse[2][0];
+                $line += substr_count($parse[2][0], "\n");
             }
 
             // Update offset to the end of the match
