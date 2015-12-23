@@ -16,9 +16,6 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 /**
  * Class EllipseErrorTest
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class EllipseErrorTest extends \PHPUnit_Framework_TestCase
 {

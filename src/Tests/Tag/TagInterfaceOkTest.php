@@ -17,9 +17,6 @@ use Spipu\Html2Pdf\Tag\AbstractDefaultTag;
 
 /**
  * Class TagInterfaceOkTest
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class TagInterfaceOkTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,9 +36,6 @@ class TagInterfaceOkTest extends \PHPUnit_Framework_TestCase
 
 /**
  * Test Class TagExampleOK
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class TagExampleOK extends AbstractDefaultTag
 {

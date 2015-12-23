@@ -1,6 +1,6 @@
-<?php 
+<?php
 /**
- * Html2Pdf Library - Exception
+ * Html2Pdf Library - Exception class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,11 +13,7 @@
 namespace Spipu\Html2Pdf\Exception;
 
 /**
- * Html2Pdf Library - Html2PdfException
- *
- * @package   Html2pdf
- * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2016 Laurent MINGUET
+ * Html Parsing Exception
  */
 class HtmlParsingException extends Html2PdfException
 {
@@ -31,13 +27,13 @@ class HtmlParsingException extends Html2PdfException
      * invalid tag
      * @var string
      */
-    protected $_invalidTag;
+    protected $invalidTag;
 
     /**
      * the html part that has the pb
      * @var string
      */
-    protected $_htmlPart;
+    protected $htmlPart;
 
     /**
      * set the invalid Tag
@@ -48,7 +44,7 @@ class HtmlParsingException extends Html2PdfException
      */
     public function setInvalidTag($value)
     {
-        $this->_invalidTag = $value;
+        $this->invalidTag = $value;
 
         return $this;
     }
@@ -60,7 +56,7 @@ class HtmlParsingException extends Html2PdfException
      */
     public function getInvalidTag()
     {
-        return $this->_invalidTag;
+        return $this->invalidTag;
     }
 
     /**
@@ -72,7 +68,7 @@ class HtmlParsingException extends Html2PdfException
      */
     public function setHtmlPart($value)
     {
-        $this->_htmlPart = $value;
+        $this->htmlPart = $value;
 
         return $this;
     }
@@ -84,6 +80,6 @@ class HtmlParsingException extends Html2PdfException
      */
     public function getHtmlPart()
     {
-        return $this->_htmlPart;
+        return $this->htmlPart;
     }
 }

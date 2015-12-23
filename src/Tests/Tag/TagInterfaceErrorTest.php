@@ -16,9 +16,6 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 /**
  * Class TagInterfaceErrorTest
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class TagInterfaceErrorTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,9 +34,6 @@ class TagInterfaceErrorTest extends \PHPUnit_Framework_TestCase
 
 /**
  * Test Class TagExampleError
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class TagExampleError
 {

@@ -16,9 +16,6 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 /**
  * Class PolylineErrorTest
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class PolylineErrorTest extends \PHPUnit_Framework_TestCase
 {

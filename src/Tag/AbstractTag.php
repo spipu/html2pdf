@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Abstract Tag class
+ * Html2Pdf Library - Tag class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -15,13 +15,17 @@ namespace Spipu\Html2Pdf\Tag;
 use Spipu\Html2Pdf\TagInterface;
 use Spipu\Html2Pdf\Parsing\Css as ParsingCss;
 
+/**
+ * Abstract Tag
+ * must be used by all the tags
+ */
 abstract class AbstractTag implements TagInterface
 {
     /**
      * Css Parsing object
      * @var ParsingCss
      */
-    protected $_parsingCss;
+    protected $parsingCss;
 
     /**
      * PHP constructor.
@@ -42,7 +46,7 @@ abstract class AbstractTag implements TagInterface
      */
     public function setParsingCssObject(ParsingCss $parsingCss)
     {
-        $this->_parsingCss = $parsingCss;
+        $this->parsingCss = $parsingCss;
 
         return $this;
     }

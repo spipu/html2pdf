@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Exception
+ * Html2Pdf Library - Exception class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,11 +13,7 @@
 namespace Spipu\Html2Pdf\Exception;
 
 /**
- * Html2Pdf Library - LongSentenceException
- *
- * @package   Html2pdf
- * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2016 Laurent MINGUET
+ * Long Sentence Exception
  */
 class LongSentenceException extends Html2PdfException
 {
@@ -31,19 +27,19 @@ class LongSentenceException extends Html2PdfException
      * the sentence
      * @var string
      */
-    protected $_sentence;
+    protected $sentence;
 
     /**
      * the width of the box
      * @var string
      */
-    protected $_widthBox;
+    protected $widthBox;
 
     /**
      * the length of the sentence
      * @var string
      */
-    protected $_length;
+    protected $length;
 
     /**
      * set the sentence
@@ -54,7 +50,7 @@ class LongSentenceException extends Html2PdfException
      */
     public function setSentence($value)
     {
-        $this->_sentence = $value;
+        $this->sentence = $value;
 
         return $this;
     }
@@ -66,7 +62,7 @@ class LongSentenceException extends Html2PdfException
      */
     public function getSentence()
     {
-        return $this->_sentence;
+        return $this->sentence;
     }
 
     /**
@@ -78,7 +74,7 @@ class LongSentenceException extends Html2PdfException
      */
     public function setWidthBox($value)
     {
-        $this->_widthBox = $value;
+        $this->widthBox = $value;
 
         return $this;
     }
@@ -90,7 +86,7 @@ class LongSentenceException extends Html2PdfException
      */
     public function getWidthBox()
     {
-        return $this->_widthBox;
+        return $this->widthBox;
     }
 
     /**
@@ -102,7 +98,7 @@ class LongSentenceException extends Html2PdfException
      */
     public function setLength($value)
     {
-        $this->_length = $value;
+        $this->length = $value;
 
         return $this;
     }
@@ -114,6 +110,6 @@ class LongSentenceException extends Html2PdfException
      */
     public function getLength()
     {
-        return $this->_length;
+        return $this->length;
     }
 }

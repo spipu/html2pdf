@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Tag S
+ * Html2Pdf Library - Tag class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -11,6 +11,9 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
+/**
+ * Tag S
+ */
 class S extends AbstractDefaultTag
 {
     /**
@@ -23,15 +26,14 @@ class S extends AbstractDefaultTag
         return 's';
     }
 
-
     /**
      * override some styles
      *
      * @return Span
      */
-    protected function _overrideStyles()
+    protected function overrideStyles()
     {
-        $this->_parsingCss->value['font-linethrough'] = true;
+        $this->parsingCss->value['font-linethrough'] = true;
 
         return $this;
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Tag U
+ * Html2Pdf Library - Tag class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -11,6 +11,9 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
+/**
+ * Tag U
+ */
 class U extends AbstractDefaultTag
 {
     /**
@@ -28,9 +31,9 @@ class U extends AbstractDefaultTag
      *
      * @return Span
      */
-    protected function _overrideStyles()
+    protected function overrideStyles()
     {
-        $this->_parsingCss->value['font-underline'] = true;
+        $this->parsingCss->value['font-underline'] = true;
 
         return $this;
     }

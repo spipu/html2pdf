@@ -16,9 +16,6 @@ use Spipu\Html2Pdf\Parsing\HtmlLexer;
 
 /**
  * Class HtmlLexerTest
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class HtmlLexerTest extends \PHPUnit_Framework_TestCase
 {

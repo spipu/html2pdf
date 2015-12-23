@@ -16,9 +16,6 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 /**
  * Class PathInvalidTest
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class PathInvalidTest extends \PHPUnit_Framework_TestCase
 {

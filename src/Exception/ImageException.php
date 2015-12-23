@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Exception
+ * Html2Pdf Library - Exception class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,11 +13,7 @@
 namespace Spipu\Html2Pdf\Exception;
 
 /**
- * Html2Pdf Library - ImageException
- *
- * @package   Html2pdf
- * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2016 Laurent MINGUET
+ * Image Exception
  */
 class ImageException extends Html2PdfException
 {
@@ -31,7 +27,7 @@ class ImageException extends Html2PdfException
      * asked unknown image
      * @var string
      */
-    protected $_image;
+    protected $image;
 
     /**
      * set the image in error
@@ -42,7 +38,7 @@ class ImageException extends Html2PdfException
      */
     public function setImage($value)
     {
-        $this->_image = $value;
+        $this->image = $value;
 
         return $this;
     }
@@ -54,6 +50,6 @@ class ImageException extends Html2PdfException
      */
     public function getImage()
     {
-        return $this->_image;
+        return $this->image;
     }
 }

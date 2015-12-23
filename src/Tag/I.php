@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Tag I
+ * Html2Pdf Library - Tag class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -11,6 +11,9 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
+/**
+ * Tag I
+ */
 class I extends AbstractDefaultTag
 {
     /**
@@ -23,15 +26,14 @@ class I extends AbstractDefaultTag
         return 'i';
     }
 
-
     /**
      * override some styles
      *
      * @return Span
      */
-    protected function _overrideStyles()
+    protected function overrideStyles()
     {
-        $this->_parsingCss->value['font-italic'] = true;
+        $this->parsingCss->value['font-italic'] = true;
 
         return $this;
     }

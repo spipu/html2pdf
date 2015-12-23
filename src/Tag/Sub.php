@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Tag Sub
+ * Html2Pdf Library - Tag class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -11,6 +11,9 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
+/**
+ * Tag Sub
+ */
 class Sub extends AbstractDefaultTag
 {
     /**
@@ -23,16 +26,15 @@ class Sub extends AbstractDefaultTag
         return 'sub';
     }
 
-
     /**
      * override some styles
      *
      * @return Span
      */
-    protected function _overrideStyles()
+    protected function overrideStyles()
     {
-        $this->_parsingCss->value['mini-decal']+= $this->_parsingCss->value['mini-size']*0.15;
-        $this->_parsingCss->value['mini-size'] *= 0.75;
+        $this->parsingCss->value['mini-decal']+= $this->parsingCss->value['mini-size']*0.15;
+        $this->parsingCss->value['mini-size'] *= 0.75;
 
         return $this;
     }

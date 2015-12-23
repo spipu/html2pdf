@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Exception
+ * Html2Pdf Library - Exception class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,11 +13,7 @@
 namespace Spipu\Html2Pdf\Exception;
 
 /**
- * Html2Pdf Library - TableException
- *
- * @package   Html2pdf
- * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2016 Laurent MINGUET
+ * Table Exception
  */
 class TableException extends Html2PdfException
 {

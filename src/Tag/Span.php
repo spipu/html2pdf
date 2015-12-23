@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Tag Span
+ * Html2Pdf Library - Tag class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -11,6 +11,9 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
+/**
+ * Tag Span
+ */
 class Span extends AbstractDefaultTag
 {
     /**
@@ -23,7 +26,6 @@ class Span extends AbstractDefaultTag
         return 'span';
     }
 
-
     /**
      * Close the HTML tag
      *
@@ -33,7 +35,7 @@ class Span extends AbstractDefaultTag
      */
     public function close($properties)
     {
-        $this->_parsingCss->restorePosition();
+        $this->parsingCss->restorePosition();
 
         return parent::close($properties);
     }

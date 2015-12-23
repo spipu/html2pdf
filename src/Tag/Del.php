@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Tag Del
+ * Html2Pdf Library - Tag class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -11,6 +11,9 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
+/**
+ * Tag Del
+ */
 class Del extends S
 {
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Formatter Exception
+ * Html2Pdf Library - Exception class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,11 +13,7 @@
 namespace Spipu\Html2Pdf\Exception;
 
 /**
- * Class ExceptionFormatter
- *
- * @package   Html2pdf
- * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2016 Laurent MINGUET
+ * Exception Formatter
  */
 class ExceptionFormatter
 {
@@ -25,13 +21,13 @@ class ExceptionFormatter
      * the text message
      * @var string
      */
-    protected $_message;
+    protected $message;
 
     /**
      * the html message
      * @var string
      */
-    protected $_htmlMessage;
+    protected $htmlMessage;
 
     /**
      * PHP Constructor
@@ -42,10 +38,10 @@ class ExceptionFormatter
      */
     public function __construct(Html2PdfException $e)
     {
-        $data = $this->_getAdditionnalData($e);
+        $data = $this->getAdditionnalData($e);
 
-        $this->_buildTextMessage($e, $data);
-        $this->_buildHtmlMessage($e, $data);
+        $this->buildTextMessage($e, $data);
+        $this->buildHtmlMessage($e, $data);
     }
 
     /**
@@ -55,7 +51,7 @@ class ExceptionFormatter
      */
     public function getMessage()
     {
-        return $this->_message;
+        return $this->message;
     }
 
     /**
@@ -65,7 +61,7 @@ class ExceptionFormatter
      */
     public function getHtmlMessage()
     {
-        return $this->_htmlMessage;
+        return $this->htmlMessage;
     }
 
     /**
@@ -75,13 +71,14 @@ class ExceptionFormatter
      *
      * @return array
      */
-    protected function _getAdditionnalData(Html2PdfException $e)
+    protected function getAdditionnalData(Html2PdfException $e)
     {
         $data = array();
 
         // read the error
         switch ($e->getCode()) {
             case HtmlParsingException::ERROR_CODE:
+                /** @var HtmlParsingException $e */
                 $data['invalid tag'] = $e->getInvalidTag();
                 if ($e->getHtmlPart()) {
                     $data['html part'] = '... '.$e->getHtmlPart().' ...';
@@ -89,13 +86,14 @@ class ExceptionFormatter
                 break;
 
             case ImageException::ERROR_CODE:
+                /** @var ImageException $e */
                 $data['image src'] = $e->getImage();
                 break;
 
             case LongSentenceException::ERROR_CODE:
-                $msg = $e->getMessage();
+                /** @var LongSentenceException $e */
                 $data['sentence']  = $e->getSentence();
-                $data['bow width'] = $e->getWidthBox();
+                $data['box width'] = $e->getWidthBox();
                 $data['length']    = $e->getLength();
                 break;
 
@@ -116,16 +114,16 @@ class ExceptionFormatter
      *
      * @return void
      */
-    protected function _buildTextMessage(Html2PdfException $e, $data)
+    protected function buildTextMessage(Html2PdfException $e, $data)
     {
-        $this->_message = 'Html2Pdf Error ['.$e->getCode().']'."\n";
-        $this->_message.= $e->getMessage()."\n";
-        $this->_message.= ' File: '.$e->getFile()."\n";
-        $this->_message.= ' Line: '.$e->getLine()."\n";
+        $this->message = 'Html2Pdf Error ['.$e->getCode().']'."\n";
+        $this->message.= $e->getMessage()."\n";
+        $this->message.= ' File: '.$e->getFile()."\n";
+        $this->message.= ' Line: '.$e->getLine()."\n";
 
         if (!empty($data)) {
             foreach ($data as $key => $value) {
-                $this->_message .= ' '.ucwords($key).': '.trim($value)."\n";
+                $this->message .= ' '.ucwords($key).': '.trim($value)."\n";
             }
         }
     }
@@ -138,18 +136,18 @@ class ExceptionFormatter
      *
      * @return void
      */
-    protected function _buildHtmlMessage(Html2PdfException $e, $data)
+    protected function buildHtmlMessage(Html2PdfException $e, $data)
     {
-        $this->_htmlMessage = '<span style="color: #A00; font-weight: bold;">';
-        $this->_htmlMessage.= 'Html2Pdf Error ['.$e->getCode().']';
-        $this->_htmlMessage.= '</span><br />'."\n";
-        $this->_htmlMessage.= htmlentities($e->getMessage())."<br />\n";
-        $this->_htmlMessage.= ' File: '.$e->getFile()."<br />\n";
-        $this->_htmlMessage.= ' Line: '.$e->getLine()."<br />\n";
+        $this->htmlMessage = '<span style="color: #A00; font-weight: bold;">';
+        $this->htmlMessage.= 'Html2Pdf Error ['.$e->getCode().']';
+        $this->htmlMessage.= '</span><br />'."\n";
+        $this->htmlMessage.= htmlentities($e->getMessage())."<br />\n";
+        $this->htmlMessage.= ' File: '.$e->getFile()."<br />\n";
+        $this->htmlMessage.= ' Line: '.$e->getLine()."<br />\n";
 
         if (!empty($data)) {
             foreach ($data as $key => $value) {
-                $this->_htmlMessage .= ' '.ucwords($key).': '.trim(htmlentities($value))."<br />\n";
+                $this->htmlMessage .= ' '.ucwords($key).': '.trim(htmlentities($value))."<br />\n";
             }
         }
     }

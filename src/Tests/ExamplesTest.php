@@ -12,17 +12,20 @@
 
 namespace Spipu\Html2Pdf\Tests\Tag;
 
-use Spipu\Html2Pdf\Html2Pdf;
-
 /**
  * Class ExamplesTest
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class ExamplesTest extends \PHPUnit_Framework_TestCase
 {
-    protected function _launchExample($example)
+    /**
+     * Launch a example
+     *
+     * @param string $example code of the example
+     *
+     * @return void
+     * @throws \Exception
+     */
+    protected function launchExample($example)
     {
         $filename = dirname(dirname(dirname(__FILE__))).'/examples/'.$example.'.php';
         if (!is_file($filename)) {
@@ -65,7 +68,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testAbout()
     {
-        $this->_launchExample('about');
+        $this->launchExample('about');
     }
 
     /**
@@ -75,7 +78,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testBookmark()
     {
-        $this->_launchExample('bookmark');
+        $this->launchExample('bookmark');
     }
 
     /**
@@ -85,7 +88,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple01()
     {
-        $this->_launchExample('exemple01');
+        $this->launchExample('exemple01');
     }
 
     /**
@@ -95,7 +98,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple02()
     {
-        $this->_launchExample('exemple02');
+        $this->launchExample('exemple02');
     }
 
     /**
@@ -105,7 +108,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple03()
     {
-        $this->_launchExample('exemple03');
+        $this->launchExample('exemple03');
     }
 
     /**
@@ -115,7 +118,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple04()
     {
-        $this->_launchExample('exemple04');
+        $this->launchExample('exemple04');
     }
 
     /**
@@ -125,7 +128,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple05()
     {
-        $this->_launchExample('exemple05');
+        $this->launchExample('exemple05');
     }
 
     /**
@@ -135,7 +138,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple06()
     {
-        $this->_launchExample('exemple06');
+        $this->launchExample('exemple06');
     }
 
     /**
@@ -145,7 +148,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple07()
     {
-        $this->_launchExample('exemple07');
+        $this->launchExample('exemple07');
     }
 
     /**
@@ -155,7 +158,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple08()
     {
-        $this->_launchExample('exemple08');
+        $this->launchExample('exemple08');
     }
 
     /**
@@ -165,7 +168,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple10()
     {
-        $this->_launchExample('exemple10');
+        $this->launchExample('exemple10');
     }
 
     /**
@@ -175,7 +178,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple11()
     {
-        $this->_launchExample('exemple11');
+        $this->launchExample('exemple11');
     }
 
     /**
@@ -185,7 +188,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple12()
     {
-        $this->_launchExample('exemple12');
+        $this->launchExample('exemple12');
     }
 
     /**
@@ -195,7 +198,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple13()
     {
-        $this->_launchExample('exemple13');
+        $this->launchExample('exemple13');
     }
 
     /**
@@ -205,7 +208,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testForms()
     {
-        $this->_launchExample('forms');
+        $this->launchExample('forms');
     }
 
     /**
@@ -215,7 +218,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testGroups()
     {
-        $this->_launchExample('groups');
+        $this->launchExample('groups');
     }
 
     /**
@@ -225,7 +228,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testJs1()
     {
-        $this->_launchExample('js1');
+        $this->launchExample('js1');
     }
 
     /**
@@ -235,7 +238,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testJs2()
     {
-        $this->_launchExample('js2');
+        $this->launchExample('js2');
     }
 
     /**
@@ -245,7 +248,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testJs3()
     {
-        $this->_launchExample('js3');
+        $this->launchExample('js3');
     }
 
     /**
@@ -255,7 +258,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testQrcode()
     {
-        $this->_launchExample('qrcode');
+        $this->launchExample('qrcode');
     }
 
     /**
@@ -265,7 +268,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testRadius()
     {
-        $this->_launchExample('radius');
+        $this->launchExample('radius');
     }
 
     /**
@@ -275,7 +278,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegle()
     {
-        $this->_launchExample('regle');
+        $this->launchExample('regle');
     }
 
     /**
@@ -285,7 +288,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testSvg()
     {
-        $this->_launchExample('svg');
+        $this->launchExample('svg');
     }
 
     /**
@@ -295,7 +298,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testSvgTiger()
     {
-        $this->_launchExample('svg_tiger');
+        $this->launchExample('svg_tiger');
     }
 
     /**
@@ -305,7 +308,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testSvgTree()
     {
-        $this->_launchExample('svg_tree');
+        $this->launchExample('svg_tree');
     }
 
     /**
@@ -315,7 +318,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testTicket()
     {
-        $this->_launchExample('ticket');
+        $this->launchExample('ticket');
     }
 
     /**
@@ -325,6 +328,6 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testUtf8()
     {
-        $this->_launchExample('utf8');
+        $this->launchExample('utf8');
     }
 }

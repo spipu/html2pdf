@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Tag B
+ * Html2Pdf Library - Tag class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -12,6 +12,10 @@
 
 namespace Spipu\Html2Pdf\Tag;
 
+/**
+ * Abstract Default Tag
+ * used by all the simple tags like b, u, i, ...
+ */
 abstract class AbstractDefaultTag extends AbstractTag
 {
     /**
@@ -23,11 +27,11 @@ abstract class AbstractDefaultTag extends AbstractTag
      */
     public function open($properties)
     {
-        $this->_parsingCss->save();
-        $this->_overrideStyles();
-        $this->_parsingCss->analyse($this->getName(), $properties);
-        $this->_parsingCss->setPosition();
-        $this->_parsingCss->fontSet();
+        $this->parsingCss->save();
+        $this->overrideStyles();
+        $this->parsingCss->analyse($this->getName(), $properties);
+        $this->parsingCss->setPosition();
+        $this->parsingCss->fontSet();
 
         return true;
     }
@@ -37,7 +41,7 @@ abstract class AbstractDefaultTag extends AbstractTag
      *
      * @return Span
      */
-    protected function _overrideStyles()
+    protected function overrideStyles()
     {
         return $this;
     }
@@ -51,8 +55,8 @@ abstract class AbstractDefaultTag extends AbstractTag
      */
     public function close($properties)
     {
-        $this->_parsingCss->load();
-        $this->_parsingCss->fontSet();
+        $this->parsingCss->load();
+        $this->parsingCss->fontSet();
 
         return true;
     }

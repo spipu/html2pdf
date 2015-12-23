@@ -16,9 +16,6 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 /**
  * Class SrcOkTest
- *
- * @package   Html2pdf
- * @copyright 2016 Laurent MINGUET
  */
 class SrcOkTest extends \PHPUnit_Framework_TestCase
 {
