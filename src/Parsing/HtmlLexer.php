@@ -45,7 +45,7 @@ class HtmlLexer
                 }
 
                 // save the tag, with the offset
-                $tokens[] = new Token('code', trim($parse[1][0]), $offset);
+                $tokens[] = new Token('code', trim($parse[1][0]));
 
                 // init the current text
                 $str = '';

@@ -169,7 +169,7 @@ class Html
         $res = $this->tagParser->analyzeTag($token->getData());
 
         // save the current position in the HTML code
-        $res['html_pos'] = $token->getOffset();
+        $res['line'] = $token->getLine();
 
         $actions = array();
         // if the tag must be closed
@@ -180,12 +180,12 @@ class Html
                 if (count($parents) < 1) {
                     $e = new HtmlParsingException('Too many tag closures found for ['.$res['name'].']');
                     $e->setInvalidTag($res['name']);
-                    $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
+                    $e->setHtmlLine($res['line']);
                     throw $e;
                 } elseif (end($parents) != $res['name']) {
                     $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$res['name'].']');
                     $e->setInvalidTag($res['name']);
-                    $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
+                    $e->setHtmlLine($res['line']);
                     throw $e;
                 } else {
                     array_pop($parents);
@@ -338,18 +338,5 @@ class Html
 
         // return the extract
         return $code;
-    }
-
-    /**
-     * return a part of the HTML code, for error message
-     *
-     * @param   integer $pos
-     * @param   integer $before take before
-     * @param   integer $after  take after
-     * @return  string  part of the html code
-     */
-    public function getHtmlErrorCode($pos, $before = 30, $after = 40)
-    {
-        return substr($this->_html, $pos-$before, $before+$after);
     }
 }

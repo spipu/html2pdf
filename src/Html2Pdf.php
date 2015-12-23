@@ -1412,7 +1412,7 @@ class Html2Pdf
                 'You can create it and push it on the Html2Pdf GitHub project.'
             );
             $e->setInvalidTag($action['name']);
-            $e->setHtmlPart($this->parsingHtml->getHtmlErrorCode($action['html_pos']));
+            $e->setHtmlLine($action['line']);
             throw $e;
         }
 
