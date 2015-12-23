@@ -1086,6 +1086,7 @@ class Html2Pdf
         self::$_subobj->setDefaultFont($this->_defaultFont);
         self::$_subobj->parsingCss->css            = &$this->parsingCss->css;
         self::$_subobj->parsingCss->cssKeys        = &$this->parsingCss->cssKeys;
+        self::$_subobj->extensions                 = $this->extensions;
 
         // clone font from the original PDF
         self::$_subobj->pdf->cloneFontFrom($this->pdf);
