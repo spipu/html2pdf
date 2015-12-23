@@ -30,10 +30,10 @@ class HtmlParsingException extends Html2PdfException
     protected $invalidTag;
 
     /**
-     * the html part that has the pb
-     * @var string
+     * the line in HTML data where the error occurred
+     * @var int
      */
-    protected $htmlPart;
+    protected $htmlLine;
 
     /**
      * set the invalid Tag
@@ -60,26 +60,22 @@ class HtmlParsingException extends Html2PdfException
     }
 
     /**
-     * set the html part
-     *
-     * @param string $value the value
+     * @param int $lineNumber the value
      *
      * @return HtmlParsingException
      */
-    public function setHtmlPart($value)
+    public function setHtmlLine($lineNumber)
     {
-        $this->htmlPart = $value;
+        $this->htmlLine = $lineNumber;
 
         return $this;
     }
 
     /**
-     * get the html part
-     *
-     * @return string
+     * @return int
      */
-    public function getHtmlPart()
+    public function getHtmlLine()
     {
-        return $this->htmlPart;
+        return $this->htmlLine;
     }
 }

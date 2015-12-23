@@ -37,7 +37,7 @@ class HtmlLexerTest extends \PHPUnit_Framework_TestCase
         for ($i = 0; $i < count($tokens); $i++) {
             $this->assertEquals($expectedTokens[$i][0], $tokens[$i]->getType());
             $this->assertEquals($expectedTokens[$i][1], $tokens[$i]->getData());
-            $this->assertEquals($expectedTokens[$i][2], $tokens[$i]->getOffset());
+            $this->assertEquals($expectedTokens[$i][2], $tokens[$i]->getLine());
         }
     }
 
@@ -52,9 +52,18 @@ class HtmlLexerTest extends \PHPUnit_Framework_TestCase
             array(
                 '<p>test</p>',
                 array(
-                    array('code', '<p>', 0),
-                    array('txt', 'test', 0),
-                    array('code', '</p>', 7),
+                    array('code', '<p>', 1),
+                    array('txt', 'test', -1),
+                    array('code', '</p>', 1),
+                )
+            ),
+            array(
+                "<a><!-- comment -->\n<b><c>",
+                array(
+                    array('code', '<a>', 1),
+                    array('txt', "\n", -1),
+                    array('code', '<b>', 2),
+                    array('code', '<c>', 2),
                 )
             )
         );

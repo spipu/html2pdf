@@ -38,7 +38,7 @@ class ExceptionFormatter
      */
     public function __construct(Html2PdfException $e)
     {
-        $data = $this->getAdditionnalData($e);
+        $data = $this->getAdditionalData($e);
 
         $this->buildTextMessage($e, $data);
         $this->buildHtmlMessage($e, $data);
@@ -65,13 +65,13 @@ class ExceptionFormatter
     }
 
     /**
-     * get the additionnal data from the exception
+     * get the additional data from the exception
      *
      * @param Html2PdfException $e the exception to display
      *
      * @return array
      */
-    protected function getAdditionnalData(Html2PdfException $e)
+    protected function getAdditionalData(Html2PdfException $e)
     {
         $data = array();
 
@@ -80,9 +80,7 @@ class ExceptionFormatter
             case HtmlParsingException::ERROR_CODE:
                 /** @var HtmlParsingException $e */
                 $data['invalid tag'] = $e->getInvalidTag();
-                if ($e->getHtmlPart()) {
-                    $data['html part'] = '... '.$e->getHtmlPart().' ...';
-                }
+                $data['html line'] = $e->getHtmlLine();
                 break;
 
             case ImageException::ERROR_CODE:
@@ -132,7 +130,7 @@ class ExceptionFormatter
      * build the html message
      *
      * @param Html2PdfException $e    the exception of the error
-     * @param array             $data additionnal data
+     * @param array             $data additional data
      *
      * @return void
      */

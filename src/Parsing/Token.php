@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - parsing Html class
+ * Html2Pdf Library
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -20,18 +20,18 @@ class Token
 {
     private $type;
     private $data;
-    private $offset;
+    private $line;
 
     /**
      * @param string $type
      * @param string $data
-     * @param int    $offset
+     * @param int    $line
      */
-    public function __construct($type, $data, $offset = 0)
+    public function __construct($type, $data, $line = -1)
     {
         $this->type = $type;
         $this->data = $data;
-        $this->offset = $offset;
+        $this->line = $line;
     }
 
     /**
@@ -53,8 +53,8 @@ class Token
     /**
      * @return int
      */
-    public function getOffset()
+    public function getLine()
     {
-        return $this->offset;
+        return $this->line;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - parsing Html class
+ * Html2Pdf Library
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
@@ -13,13 +13,14 @@ namespace Spipu\Html2Pdf\Parsing;
 
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
 
+/**
+ * Class Html
+ */
 class Html
 {
-    protected $lexer;
     protected $tagParser;
     protected $textParser;
     protected $tagPreIn;
-    protected $_html     = '';        // HTML code to parse
     protected $_encoding = '';        // encoding
     public $code      = array();   // parsed HTML code
 
@@ -33,10 +34,8 @@ class Html
      */
     public function __construct($encoding = 'UTF-8')
     {
-        $this->lexer = new HtmlLexer();
         $this->textParser = new TextParser($encoding);
         $this->tagParser = new TagParser($this->textParser);
-        $this->_html  = '';
         $this->code  = array();
         $this->setEncoding($encoding);
     }
@@ -53,30 +52,14 @@ class Html
     }
 
     /**
-     * Define the HTML code to parse
-     *
-     * @param   string $html code
-     * @access  public
-     */
-    public function setHTML($html)
-    {
-        // remove the HTML in comment
-        $html = preg_replace('/<!--(.*)-->/isU', '', $html);
-
-        // save the HTML code
-        $this->_html = $html;
-    }
-
-    /**
      * parse the HTML code
      *
-     * @access public
+     * @param array $tokens A list of tokens to parse
+     *
+     * @throws HtmlParsingException
      */
-    public function parse()
+    public function parse($tokens)
     {
-        // search the HTML tags
-        $tokens = $this->lexer->tokenize($this->_html);
-
         $parents = array();
 
         // flag : are we in a <pre> Tag ?
@@ -169,7 +152,7 @@ class Html
         $res = $this->tagParser->analyzeTag($token->getData());
 
         // save the current position in the HTML code
-        $res['html_pos'] = $token->getOffset();
+        $res['line'] = $token->getLine();
 
         $actions = array();
         // if the tag must be closed
@@ -180,12 +163,12 @@ class Html
                 if (count($parents) < 1) {
                     $e = new HtmlParsingException('Too many tag closures found for ['.$res['name'].']');
                     $e->setInvalidTag($res['name']);
-                    $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
+                    $e->setHtmlLine($res['line']);
                     throw $e;
                 } elseif (end($parents) != $res['name']) {
                     $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$res['name'].']');
                     $e->setInvalidTag($res['name']);
-                    $e->setHtmlPart($this->getHtmlErrorCode($res['html_pos']));
+                    $e->setHtmlLine($res['line']);
                     throw $e;
                 } else {
                     array_pop($parents);
@@ -338,18 +321,5 @@ class Html
 
         // return the extract
         return $code;
-    }
-
-    /**
-     * return a part of the HTML code, for error message
-     *
-     * @param   integer $pos
-     * @param   integer $before take before
-     * @param   integer $after  take after
-     * @return  string  part of the html code
-     */
-    public function getHtmlErrorCode($pos, $before = 30, $after = 40)
-    {
-        return substr($this->_html, $pos-$before, $before+$after);
     }
 }
