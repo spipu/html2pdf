@@ -10,7 +10,7 @@
  * @copyright 2016 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf;
+namespace Spipu\Html2Pdf\Tag;
 
 use Spipu\Html2Pdf\Parsing\Css as ParsingCss;
 

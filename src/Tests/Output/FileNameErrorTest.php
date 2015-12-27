@@ -15,7 +15,7 @@ namespace Spipu\Html2Pdf\Tests\Tag;
 use Spipu\Html2Pdf\Html2Pdf;
 
 /**
- * Class TagInterfaceErrorTest
+ * Class FileNameErrorTest
  */
 class FileNameErrorTest extends \PHPUnit_Framework_TestCase
 {

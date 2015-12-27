@@ -15,7 +15,7 @@ namespace Spipu\Html2Pdf\Tests\Tag;
 use Spipu\Html2Pdf\Html2Pdf;
 
 /**
- * Class TagInterfaceOkTest
+ * Class FileNameOkTest
  */
 class FileNameOkTest extends \PHPUnit_Framework_TestCase
 {

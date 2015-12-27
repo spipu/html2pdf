@@ -20,6 +20,7 @@ use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Extension\CoreExtension;
 use Spipu\Html2Pdf\Extension\ExtensionInterface;
 use Spipu\Html2Pdf\Parsing\HtmlLexer;
+use Spipu\Html2Pdf\Tag\TagInterface;
 
 require_once dirname(__FILE__) . '/config/tcpdf.config.php';
 

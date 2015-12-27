@@ -15,12 +15,12 @@ namespace Spipu\Html2Pdf\Tests\Tag;
 use Spipu\Html2Pdf\Html2Pdf;
 
 /**
- * Class TagInterfaceErrorTest
+ * Class TdTooLongTest
  */
 class TdTooLongTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * test: The tag class must implement TagInterface
+     * test
      *
      * @return void
      * @expectedException \Spipu\Html2Pdf\Exception\TableException

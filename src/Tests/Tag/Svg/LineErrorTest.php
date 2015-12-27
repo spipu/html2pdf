@@ -20,7 +20,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 class LineErrorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * test: The tag class must implement TagInterface
+     * test
      *
      * @return void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException

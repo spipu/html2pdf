@@ -22,7 +22,7 @@ class Html2PdfTest extends \PHPUnit_Framework_TestCase
 
     public function testExtensionTag()
     {
-        $tag = Phake::mock('Spipu\Html2Pdf\TagInterface');
+        $tag = Phake::mock('Spipu\Html2Pdf\Tag\TagInterface');
         Phake::when($tag)->getName()->thenReturn('test_tag');
 
         $extension = Phake::mock('Spipu\Html2Pdf\Extension\ExtensionInterface');
