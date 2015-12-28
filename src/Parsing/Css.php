@@ -12,10 +12,16 @@
 
 namespace Spipu\Html2Pdf\Parsing;
 
+use Spipu\Html2Pdf\MyPdf;
 use TCPDF;
 
 class Css
 {
+    /**
+     * @var TagParser
+     */
+    protected $tagParser;
+
     /**
      * reference to the pdf object
      * @var TCPDF
@@ -34,20 +40,20 @@ class Css
     /**
      * Constructor
      *
-     * @param  myPdf $pdf reference to the PDF $object
-     * @access public
+     * @param MyPdf     $pdf       reference to the PDF $object
+     * @param TagParser $tagParser
      */
-    public function __construct(&$pdf)
+    public function __construct(&$pdf, TagParser $tagParser)
     {
         $this->_init();
         $this->setPdfParent($pdf);
+        $this->tagParser = $tagParser;
     }
 
     /**
      * Set the $pdf parent object
      *
-     * @param  Html2Pdf &$pdf reference to the Html2Pdf parent
-     * @access public
+     * @param  MyPdf &$pdf reference to the Html2Pdf parent
      */
     public function setPdfParent(&$pdf)
     {
@@ -1900,7 +1906,7 @@ class Css
      * @access protected
      * @param  &string $code
      */
-    protected function _analyseStyle(&$code)
+    protected function _analyseStyle($code)
     {
         // clean the spaces
         $code = preg_replace('/[\s]+/', ' ', $code);
@@ -1912,7 +1918,7 @@ class Css
         preg_match_all('/([^{}]+){([^}]*)}/isU', $code, $match);
 
         // for each CSS code
-        for ($k=0; $k<count($match[0]); $k++) {
+        for ($k = 0; $k < count($match[0]); $k++) {
 
             // selectors
             $names = strtolower(trim($match[1][$k]));
@@ -1927,7 +1933,7 @@ class Css
             $css = array();
             foreach ($styles as $style) {
                 $tmp = explode(':', $style);
-                if (count($tmp)>1) {
+                if (count($tmp) > 1) {
                     $cod = $tmp[0];
                     unset($tmp[0]);
                     $tmp = implode(':', $tmp);
@@ -1943,8 +1949,8 @@ class Css
                 // clean the name
                 $name = trim($name);
 
-                // if a selector with somethink lige :hover => continue
-                if (strpos($name, ':')!==false) {
+                // if a selector with something like :hover => continue
+                if (strpos($name, ':') !== false) {
                     continue;
                 }
 
@@ -1965,10 +1971,11 @@ class Css
     /**
      * Extract the css files from a html code
      *
-     * @access public
-     * @param  string   &$html
+     * @param  string $html
+     *
+     * @return string
      */
-    public function readStyle(&$html)
+    public function extractStyle($html)
     {
         // the CSS content
         $style = ' ';
@@ -1980,28 +1987,7 @@ class Css
 
         // analyse each link tag
         foreach ($match[1] as $code) {
-            $tmp = array();
-
-            // read the attributes name=value
-            $prop = '([a-zA-Z0-9_]+)=([^"\'\s>]+)';
-            preg_match_all('/'.$prop.'/is', $code, $match);
-            for ($k=0; $k<count($match[0]); $k++) {
-                $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
-            }
-
-            // read the attributes name="value"
-            $prop = '([a-zA-Z0-9_]+)=["]([^"]*)["]';
-            preg_match_all('/'.$prop.'/is', $code, $match);
-            for ($k=0; $k<count($match[0]); $k++) {
-                $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
-            }
-
-            // read the attributes name='value'
-            $prop = "([a-zA-Z0-9_]+)=[']([^']*)[']";
-            preg_match_all('/'.$prop.'/is', $code, $match);
-            for ($k=0; $k<count($match[0]); $k++) {
-                $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
-            }
+            $tmp = $this->tagParser->extractTagAttributes($code);
 
             // if type text/css => we keep it
             if (isset($tmp['type']) && strtolower($tmp['type'])=='text/css' && isset($tmp['href'])) {
@@ -2052,5 +2038,7 @@ class Css
 
         //analyse the css content
         $this->_analyseStyle($style);
+
+        return $html;
     }
 }

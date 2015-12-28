@@ -29,26 +29,13 @@ class Html
     /**
      * main constructor
      *
-     * @param   string $encoding
-     * @access  public
+     * @param TextParser $textParser
      */
-    public function __construct($encoding = 'UTF-8')
+    public function __construct(TextParser $textParser)
     {
-        $this->textParser = new TextParser($encoding);
+        $this->textParser = $textParser;
         $this->tagParser = new TagParser($this->textParser);
         $this->code  = array();
-        $this->setEncoding($encoding);
-    }
-
-    /**
-     * change the encoding
-     *
-     * @param   string $encoding
-     * @access  public
-     */
-    public function setEncoding($encoding)
-    {
-        $this->_encoding = $encoding;
     }
 
     /**

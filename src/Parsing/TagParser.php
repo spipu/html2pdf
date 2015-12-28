@@ -193,7 +193,7 @@ class TagParser
      *
      * @return array
      */
-    protected function extractTagAttributes($code)
+    public function extractTagAttributes($code)
     {
         $param = array();
         $regexes = array(
