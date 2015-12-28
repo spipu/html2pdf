@@ -143,13 +143,13 @@ class Html2Pdf
      * @access public
      * @param  string   $orientation page orientation, same as TCPDF
      * @param  mixed    $format      The format used for pages, same as TCPDF
-     * @param  string   $langue      Lang : fr, en, it...
+     * @param  string   $lang        Lang : fr, en, it...
      * @param  boolean  $unicode     TRUE means that the input text is unicode (default = true)
      * @param  String   $encoding    charset encoding; default is UTF-8
-     * @param  array    $marges      Default margins (left, top, right, bottom)
+     * @param  array    $margins     Default margins (left, top, right, bottom)
      * @return Html2Pdf $this
      */
-    public function __construct($orientation = 'P', $format = 'A4', $langue = 'fr', $unicode = true, $encoding = 'UTF-8', $marges = array(5, 5, 5, 8))
+    public function __construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = array(5, 5, 5, 8))
     {
         // init the page number
         $this->_page         = 0;
@@ -158,7 +158,7 @@ class Html2Pdf
         // save the parameters
         $this->_orientation  = $orientation;
         $this->_format       = $format;
-        $this->_langue       = strtolower($langue);
+        $this->_langue       = strtolower($lang);
         $this->_unicode      = $unicode;
         $this->_encoding     = $encoding;
 
@@ -186,12 +186,8 @@ class Html2Pdf
         $this->_subHtml = null;
         $this->_subPart = false;
 
-        // init the marges of the page
-        if (!is_array($marges)) {
-            $marges = array($marges, $marges, $marges, $marges);
-        }
-        $this->_setDefaultMargins($marges[0], $marges[1], $marges[2], $marges[3]);
-        $this->_setMargins();
+        $this->setDefaultMargins($margins);
+        $this->setMargins();
         $this->_marges = array();
 
         // init the form's fields
@@ -613,25 +609,25 @@ class Html2Pdf
     /**
      * set the default margins of the page
      *
-     * @access protected
-     * @param  int $left   (mm, left margin)
-     * @param  int $top    (mm, top margin)
-     * @param  int $right  (mm, right margin, if null => left=right)
-     * @param  int $bottom (mm, bottom margin, if null => bottom=8mm)
+     * @param array|int $margins (mm, left top right bottom)
      */
-    protected function _setDefaultMargins($left, $top, $right = null, $bottom = null)
+    protected function setDefaultMargins($margins)
     {
-        if ($right===null) {
-            $right = $left;
-        }
-        if ($bottom===null) {
-            $bottom = 8;
+        if (!is_array($margins)) {
+            $margins = array($margins, $margins, $margins, $margins);
         }
 
-        $this->_defaultLeft   = $this->parsingCss->ConvertToMM($left.'mm');
-        $this->_defaultTop    = $this->parsingCss->ConvertToMM($top.'mm');
-        $this->_defaultRight  = $this->parsingCss->ConvertToMM($right.'mm');
-        $this->_defaultBottom = $this->parsingCss->ConvertToMM($bottom.'mm');
+        if (!isset($margins[2])) {
+            $margins[2] = $margins[0];
+        }
+        if (!isset($margins[3])) {
+            $margins[3] = 8;
+        }
+
+        $this->_defaultLeft   = $this->parsingCss->ConvertToMM($margins[0].'mm');
+        $this->_defaultTop    = $this->parsingCss->ConvertToMM($margins[1].'mm');
+        $this->_defaultRight  = $this->parsingCss->ConvertToMM($margins[2].'mm');
+        $this->_defaultBottom = $this->parsingCss->ConvertToMM($margins[3].'mm');
     }
 
     /**
@@ -686,7 +682,7 @@ class Html2Pdf
             $this->_setPageFooter();
         }
 
-        $this->_setMargins();
+        $this->setMargins();
         $this->pdf->setY($this->_margeTop);
 
         $this->_setNewPositionForNewLine($curr);
@@ -695,10 +691,8 @@ class Html2Pdf
 
     /**
      * set the real margin, using the default margins and the page margins
-     *
-     * @access protected
      */
-    protected function _setMargins()
+    protected function setMargins()
     {
         // prepare the margins
         $this->_margeLeft   = $this->_defaultLeft   + (isset($this->_background['left'])   ? $this->_background['left']   : 0);
