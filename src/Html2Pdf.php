@@ -20,6 +20,8 @@ use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Extension\CoreExtension;
 use Spipu\Html2Pdf\Extension\ExtensionInterface;
 use Spipu\Html2Pdf\Parsing\HtmlLexer;
+use Spipu\Html2Pdf\Parsing\TagParser;
+use Spipu\Html2Pdf\Parsing\TextParser;
 use Spipu\Html2Pdf\Tag\TagInterface;
 
 require_once dirname(__FILE__) . '/config/tcpdf.config.php';
@@ -169,7 +171,8 @@ class Html2Pdf
         $this->pdf = new MyPdf($orientation, 'mm', $format, $unicode, $encoding);
 
         // init the CSS parsing object
-        $this->parsingCss = new Parsing\Css($this->pdf);
+        $textParser = new TextParser($encoding);
+        $this->parsingCss = new Parsing\Css($this->pdf, new TagParser($textParser));
         $this->parsingCss->fontSet();
         $this->_defList = array();
 
@@ -182,7 +185,7 @@ class Html2Pdf
 
         $this->lexer = new HtmlLexer();
         // init the HTML parsing object
-        $this->parsingHtml = new Parsing\Html($this->_encoding);
+        $this->parsingHtml = new Parsing\Html($textParser);
         $this->_subHtml = null;
         $this->_subPart = false;
 
@@ -507,7 +510,7 @@ class Html2Pdf
         }
 
         // convert HTMl to PDF
-        $this->parsingCss->readStyle($html);
+        $html = $this->parsingCss->extractStyle($html);
         $this->parsingHtml->parse($this->lexer->tokenize($html));
         $this->_makeHTMLcode();
     }
