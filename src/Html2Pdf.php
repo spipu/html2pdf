@@ -630,10 +630,10 @@ class Html2Pdf
             $margins[3] = 8;
         }
 
-        $this->_defaultLeft   = $this->parsingCss->ConvertToMM($margins[0].'mm');
-        $this->_defaultTop    = $this->parsingCss->ConvertToMM($margins[1].'mm');
-        $this->_defaultRight  = $this->parsingCss->ConvertToMM($margins[2].'mm');
-        $this->_defaultBottom = $this->parsingCss->ConvertToMM($margins[3].'mm');
+        $this->_defaultLeft   = $this->cssConverter->ConvertToMM($margins[0].'mm');
+        $this->_defaultTop    = $this->cssConverter->ConvertToMM($margins[1].'mm');
+        $this->_defaultRight  = $this->cssConverter->ConvertToMM($margins[2].'mm');
+        $this->_defaultBottom = $this->cssConverter->ConvertToMM($margins[3].'mm');
     }
 
     /**
@@ -2426,13 +2426,13 @@ class Html2Pdf
                         $val[0] = 0.;
 
                     } else {
-                        $val[0] = $this->parsingCss->ConvertToMM($val[0], $this->_isInDraw['w']);
+                        $val[0] = $this->cssConverter->ConvertToMM($val[0], $this->_isInDraw['w']);
                     }
                     if (!isset($val[1])) {
                         $val[1] = 0.;
 
                     } else {
-                        $val[1] = $this->parsingCss->ConvertToMM($val[1], $this->_isInDraw['h']);
+                        $val[1] = $this->cssConverter->ConvertToMM($val[1], $this->_isInDraw['h']);
                     }
                     $actions[] = array(1,0,0,1,$val[0],$val[1]);
                     break;
@@ -2448,13 +2448,13 @@ class Html2Pdf
                         $val[1] = 0.;
 
                     } else {
-                        $val[1] = $this->parsingCss->ConvertToMM($val[1], $this->_isInDraw['w']);
+                        $val[1] = $this->cssConverter->ConvertToMM($val[1], $this->_isInDraw['w']);
                     }
                     if (!isset($val[2])) {
                         $val[2] = 0.;
 
                     } else {
-                        $val[2] = $this->parsingCss->ConvertToMM($val[2], $this->_isInDraw['h']);
+                        $val[2] = $this->cssConverter->ConvertToMM($val[2], $this->_isInDraw['h']);
                     }
                     if ($val[1] || $val[2]) {
                         $actions[] = array(1,0,0,1,-$val[1],-$val[2]);
@@ -2513,13 +2513,13 @@ class Html2Pdf
                         $val[4] = 0.;
 
                     } else {
-                        $val[4] = $this->parsingCss->ConvertToMM($val[4], $this->_isInDraw['w']);
+                        $val[4] = $this->cssConverter->ConvertToMM($val[4], $this->_isInDraw['w']);
                     }
                     if (!isset($val[5])) {
                         $val[5] = 0.;
 
                     } else {
-                        $val[5] = $this->parsingCss->ConvertToMM($val[5], $this->_isInDraw['h']);
+                        $val[5] = $this->cssConverter->ConvertToMM($val[5], $this->_isInDraw['h']);
                     }
                     $actions[] =$val;
                     break;
@@ -2777,12 +2777,12 @@ class Html2Pdf
                     // WARNING : if URL, "allow_url_fopen" must turned to "on" in php.ini
                     $infos=@getimagesize($background['img']);
                     if (count($infos)>1) {
-                        $imageWidth = $this->parsingCss->ConvertToMM($background['width'], $this->pdf->getW());
+                        $imageWidth = $this->cssConverter->ConvertToMM($background['width'], $this->pdf->getW());
                         $imageHeight = $imageWidth*$infos[1]/$infos[0];
 
                         $background['width'] = $imageWidth;
-                        $background['posX']  = $this->parsingCss->ConvertToMM($background['posX'], $this->pdf->getW() - $imageWidth);
-                        $background['posY']  = $this->parsingCss->ConvertToMM($background['posY'], $this->pdf->getH() - $imageHeight);
+                        $background['posX']  = $this->cssConverter->ConvertToMM($background['posX'], $this->pdf->getW() - $imageWidth);
+                        $background['posY']  = $this->cssConverter->ConvertToMM($background['posY'], $this->pdf->getH() - $imageHeight);
                     } else {
                         $background = array();
                     }
@@ -2812,10 +2812,10 @@ class Html2Pdf
             }
 
             // convert to mm
-            $background['top']    = $this->parsingCss->ConvertToMM($background['top'], $this->pdf->getH());
-            $background['bottom'] = $this->parsingCss->ConvertToMM($background['bottom'], $this->pdf->getH());
-            $background['left']   = $this->parsingCss->ConvertToMM($background['left'], $this->pdf->getW());
-            $background['right']  = $this->parsingCss->ConvertToMM($background['right'], $this->pdf->getW());
+            $background['top']    = $this->cssConverter->ConvertToMM($background['top'], $this->pdf->getH());
+            $background['bottom'] = $this->cssConverter->ConvertToMM($background['bottom'], $this->pdf->getH());
+            $background['left']   = $this->cssConverter->ConvertToMM($background['left'], $this->pdf->getW());
+            $background['right']  = $this->cssConverter->ConvertToMM($background['right'], $this->pdf->getW());
 
             // get the background color
             $res = false;
@@ -3661,11 +3661,11 @@ class Html2Pdf
         $y = $this->pdf->getY();
         $w = $this->parsingCss->value['width'];
         if (!$w) {
-            $w = $this->parsingCss->ConvertToMM('50mm');
+            $w = $this->cssConverter->ConvertToMM('50mm');
         }
         $h = $this->parsingCss->value['height'];
         if (!$h) {
-            $h = $this->parsingCss->ConvertToMM('10mm');
+            $h = $this->cssConverter->ConvertToMM('10mm');
         }
         $txt = ($param['label']!=='none' ? $this->parsingCss->value['font-size'] : false);
         $c = $this->parsingCss->value['color'];
@@ -3748,7 +3748,7 @@ class Html2Pdf
         $h = $this->parsingCss->value['height'];
         $size = max($w, $h);
         if (!$size) {
-            $size = $this->parsingCss->ConvertToMM('50mm');
+            $size = $this->cssConverter->ConvertToMM('50mm');
         }
 
         $style = array(
@@ -4091,7 +4091,7 @@ class Html2Pdf
         $param['style']['width'] = '100%';
 
         $this->parsingCss->save();
-        $this->parsingCss->value['height']=$this->parsingCss->ConvertToMM('1mm');
+        $this->parsingCss->value['height']=$this->cssConverter->ConvertToMM('1mm');
 
         $this->parsingCss->analyse('hr', $param);
         $this->parsingCss->setPosition();
@@ -4205,9 +4205,9 @@ class Html2Pdf
         $size = array('h1' => '28px', 'h2' => '24px', 'h3' => '20px', 'h4' => '16px', 'h5' => '12px', 'h6' => '9px');
         $this->parsingCss->value['margin']['l'] = 0;
         $this->parsingCss->value['margin']['r'] = 0;
-        $this->parsingCss->value['margin']['t'] = $this->parsingCss->ConvertToMM('16px');
-        $this->parsingCss->value['margin']['b'] = $this->parsingCss->ConvertToMM('16px');
-        $this->parsingCss->value['font-size'] = $this->parsingCss->ConvertToMM($size[$other]);
+        $this->parsingCss->value['margin']['t'] = $this->cssConverter->ConvertToMM('16px');
+        $this->parsingCss->value['margin']['b'] = $this->cssConverter->ConvertToMM('16px');
+        $this->parsingCss->value['font-size'] = $this->cssConverter->ConvertToMM($size[$other]);
 
         $this->parsingCss->analyse($other, $param);
         $this->parsingCss->setPosition();
@@ -5063,8 +5063,8 @@ class Html2Pdf
             }
             self::$_tables[$param['num']] = array();
             self::$_tables[$param['num']]['border']          = isset($param['border']) ? $this->parsingCss->readBorder($param['border']) : null;
-            self::$_tables[$param['num']]['cellpadding']     = $this->parsingCss->ConvertToMM(isset($param['cellpadding']) ? $param['cellpadding'] : '1px');
-            self::$_tables[$param['num']]['cellspacing']     = $this->parsingCss->ConvertToMM(isset($param['cellspacing']) ? $param['cellspacing'] : '2px');
+            self::$_tables[$param['num']]['cellpadding']     = $this->cssConverter->ConvertToMM(isset($param['cellpadding']) ? $param['cellpadding'] : '1px');
+            self::$_tables[$param['num']]['cellspacing']     = $this->cssConverter->ConvertToMM(isset($param['cellspacing']) ? $param['cellspacing'] : '2px');
             self::$_tables[$param['num']]['cases']           = array();          // properties of each TR/TD
             self::$_tables[$param['num']]['corr']            = array();          // link between TR/TD and colspan/rowspan
             self::$_tables[$param['num']]['corr_x']          = 0;                // position in 'cases'
@@ -5554,7 +5554,7 @@ class Html2Pdf
                         if (substr($total, -1)=='%' && substr($width, -1)=='%') {
                             $total = (str_replace('%', '', $total)+str_replace('%', '', $width)).'%';
                         } else {
-                            $total = ($this->parsingCss->ConvertToMM($total, $last) + $this->parsingCss->ConvertToMM($width, $last)).'mm';
+                            $total = ($this->cssConverter->ConvertToMM($total, $last) + $this->cssConverter->ConvertToMM($width, $last)).'mm';
                         }
                     }
                 }
@@ -5602,8 +5602,8 @@ class Html2Pdf
         $return = $this->parsingCss->analyse($other, $param, $legacy);
 
         if ($specialLi) {
-            $this->parsingCss->value['width']-= $this->parsingCss->ConvertToMM($this->_listeGetWidth());
-            $this->parsingCss->value['width']-= $this->parsingCss->ConvertToMM($this->_listeGetPadding());
+            $this->parsingCss->value['width']-= $this->cssConverter->ConvertToMM($this->_listeGetWidth());
+            $this->parsingCss->value['width']-= $this->cssConverter->ConvertToMM($this->_listeGetPadding());
         }
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
@@ -6412,10 +6412,10 @@ class Html2Pdf
         $styles['fill'] = null;
         $style = $this->pdf->svgSetStyle($styles);
 
-        $x1 = isset($param['x1']) ? $this->parsingCss->ConvertToMM($param['x1'], $this->_isInDraw['w']) : 0.;
-        $y1 = isset($param['y1']) ? $this->parsingCss->ConvertToMM($param['y1'], $this->_isInDraw['h']) : 0.;
-        $x2 = isset($param['x2']) ? $this->parsingCss->ConvertToMM($param['x2'], $this->_isInDraw['w']) : 0.;
-        $y2 = isset($param['y2']) ? $this->parsingCss->ConvertToMM($param['y2'], $this->_isInDraw['h']) : 0.;
+        $x1 = isset($param['x1']) ? $this->cssConverter->ConvertToMM($param['x1'], $this->_isInDraw['w']) : 0.;
+        $y1 = isset($param['y1']) ? $this->cssConverter->ConvertToMM($param['y1'], $this->_isInDraw['h']) : 0.;
+        $x2 = isset($param['x2']) ? $this->cssConverter->ConvertToMM($param['x2'], $this->_isInDraw['w']) : 0.;
+        $y2 = isset($param['y2']) ? $this->cssConverter->ConvertToMM($param['y2'], $this->_isInDraw['h']) : 0.;
         $this->pdf->svgLine($x1, $y1, $x2, $y2);
 
         $this->pdf->undoTransform();
@@ -6442,10 +6442,10 @@ class Html2Pdf
         $styles = $this->parsingCss->getSvgStyle('path', $param);
         $style = $this->pdf->svgSetStyle($styles);
 
-        $x = isset($param['x']) ? $this->parsingCss->ConvertToMM($param['x'], $this->_isInDraw['w']) : 0.;
-        $y = isset($param['y']) ? $this->parsingCss->ConvertToMM($param['y'], $this->_isInDraw['h']) : 0.;
-        $w = isset($param['w']) ? $this->parsingCss->ConvertToMM($param['w'], $this->_isInDraw['w']) : 0.;
-        $h = isset($param['h']) ? $this->parsingCss->ConvertToMM($param['h'], $this->_isInDraw['h']) : 0.;
+        $x = isset($param['x']) ? $this->cssConverter->ConvertToMM($param['x'], $this->_isInDraw['w']) : 0.;
+        $y = isset($param['y']) ? $this->cssConverter->ConvertToMM($param['y'], $this->_isInDraw['h']) : 0.;
+        $w = isset($param['w']) ? $this->cssConverter->ConvertToMM($param['w'], $this->_isInDraw['w']) : 0.;
+        $h = isset($param['h']) ? $this->cssConverter->ConvertToMM($param['h'], $this->_isInDraw['h']) : 0.;
 
         $this->pdf->svgRect($x, $y, $w, $h, $style);
 
@@ -6473,9 +6473,9 @@ class Html2Pdf
         $styles = $this->parsingCss->getSvgStyle('path', $param);
         $style = $this->pdf->svgSetStyle($styles);
 
-        $cx = isset($param['cx']) ? $this->parsingCss->ConvertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
-        $cy = isset($param['cy']) ? $this->parsingCss->ConvertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
-        $r = isset($param['r']) ? $this->parsingCss->ConvertToMM($param['r'], $this->_isInDraw['w']) : 0.;
+        $cx = isset($param['cx']) ? $this->cssConverter->ConvertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
+        $cy = isset($param['cy']) ? $this->cssConverter->ConvertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
+        $r = isset($param['r']) ? $this->cssConverter->ConvertToMM($param['r'], $this->_isInDraw['w']) : 0.;
         $this->pdf->svgEllipse($cx, $cy, $r, $r, $style);
 
         $this->pdf->undoTransform();
@@ -6502,10 +6502,10 @@ class Html2Pdf
         $styles = $this->parsingCss->getSvgStyle('path', $param);
         $style = $this->pdf->svgSetStyle($styles);
 
-        $cx = isset($param['cx']) ? $this->parsingCss->ConvertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
-        $cy = isset($param['cy']) ? $this->parsingCss->ConvertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
-        $rx = isset($param['ry']) ? $this->parsingCss->ConvertToMM($param['rx'], $this->_isInDraw['w']) : 0.;
-        $ry = isset($param['rx']) ? $this->parsingCss->ConvertToMM($param['ry'], $this->_isInDraw['h']) : 0.;
+        $cx = isset($param['cx']) ? $this->cssConverter->ConvertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
+        $cy = isset($param['cy']) ? $this->cssConverter->ConvertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
+        $rx = isset($param['ry']) ? $this->cssConverter->ConvertToMM($param['rx'], $this->_isInDraw['w']) : 0.;
+        $ry = isset($param['rx']) ? $this->cssConverter->ConvertToMM($param['ry'], $this->_isInDraw['h']) : 0.;
         $this->pdf->svgEllipse($cx, $cy, $rx, $ry, $style);
 
         $this->pdf->undoTransform();
@@ -6552,8 +6552,8 @@ class Html2Pdf
             for ($k=0; $k<count($path); $k+=2) {
                 $actions[] = array(
                     ($k ? 'L' : 'M') ,
-                    $this->parsingCss->ConvertToMM($path[$k+0], $this->_isInDraw['w']),
-                    $this->parsingCss->ConvertToMM($path[$k+1], $this->_isInDraw['h'])
+                    $this->cssConverter->ConvertToMM($path[$k+0], $this->_isInDraw['w']),
+                    $this->cssConverter->ConvertToMM($path[$k+1], $this->_isInDraw['h'])
                 );
             }
 
@@ -6604,8 +6604,8 @@ class Html2Pdf
             for ($k=0; $k<count($path); $k+=2) {
                 $actions[] = array(
                     ($k ? 'L' : 'M') ,
-                    $this->parsingCss->ConvertToMM($path[$k+0], $this->_isInDraw['w']),
-                    $this->parsingCss->ConvertToMM($path[$k+1], $this->_isInDraw['h'])
+                    $this->cssConverter->ConvertToMM($path[$k+0], $this->_isInDraw['w']),
+                    $this->cssConverter->ConvertToMM($path[$k+1], $this->_isInDraw['h'])
                 );
             }
             $actions[] = array('z');
@@ -6680,12 +6680,12 @@ class Html2Pdf
                 switch ($lastAction) {
                     case 'C':
                     case 'c':
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // x1
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+1], $this->_isInDraw['h']);    // y1
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+2], $this->_isInDraw['w']);    // x2
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+3], $this->_isInDraw['h']);    // y2
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+4], $this->_isInDraw['w']);    // x
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+5], $this->_isInDraw['h']);    // y
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // x1
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+1], $this->_isInDraw['h']);    // y1
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+2], $this->_isInDraw['w']);    // x2
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+3], $this->_isInDraw['h']);    // y2
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+4], $this->_isInDraw['w']);    // x
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+5], $this->_isInDraw['h']);    // y
                         $k+= 6;
                         break;
 
@@ -6693,22 +6693,22 @@ class Html2Pdf
                     case 'S':
                     case 'q':
                     case 's':
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // x2
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+1], $this->_isInDraw['h']);    // y2
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+2], $this->_isInDraw['w']);    // x
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+3], $this->_isInDraw['h']);    // y
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // x2
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+1], $this->_isInDraw['h']);    // y2
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+2], $this->_isInDraw['w']);    // x
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+3], $this->_isInDraw['h']);    // y
                         $k+= 4;
                         break;
 
                     case 'A':
                     case 'a':
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // rx
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+1], $this->_isInDraw['h']);    // ry
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // rx
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+1], $this->_isInDraw['h']);    // ry
                         $action[] = 1.*$path[$k+2];                                                        // angle de deviation de l'axe X
                         $action[] = ($path[$k+3]=='1') ? 1 : 0;                                            // large-arc-flag
                         $action[] = ($path[$k+4]=='1') ? 1 : 0;                                            // sweep-flag
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+5], $this->_isInDraw['w']);    // x
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+6], $this->_isInDraw['h']);    // y
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+5], $this->_isInDraw['w']);    // x
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+6], $this->_isInDraw['h']);    // y
                         $k+= 7;
                         break;
 
@@ -6718,20 +6718,20 @@ class Html2Pdf
                     case 'm':
                     case 'l':
                     case 't':
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // x
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+1], $this->_isInDraw['h']);    // y
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // x
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+1], $this->_isInDraw['h']);    // y
                         $k+= 2;
                         break;
 
                     case 'H':
                     case 'h':
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // x
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->_isInDraw['w']);    // x
                         $k+= 1;
                         break;
 
                     case 'V':
                     case 'v':
-                        $action[] = $this->parsingCss->ConvertToMM($path[$k+0], $this->_isInDraw['h']);    // y
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->_isInDraw['h']);    // y
                         $k+= 1;
                         break;
 
@@ -6798,7 +6798,7 @@ class Html2Pdf
      */
     protected function _tag_open_END_LAST_PAGE($param)
     {
-        $height = $this->parsingCss->ConvertToMM(
+        $height = $this->cssConverter->ConvertToMM(
             $param['end_height'],
             $this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()
         );

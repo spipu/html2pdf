@@ -51,10 +51,10 @@ class Css
      */
     public function __construct(&$pdf, TagParser $tagParser, CssConverter $cssConverter)
     {
+        $this->cssConverter = $cssConverter;
         $this->_init();
         $this->setPdfParent($pdf);
         $this->tagParser = $tagParser;
-        $this->cssConverter = $cssConverter;
     }
 
     /**
@@ -143,7 +143,7 @@ class Css
         $this->value['font-overline']    = false;
         $this->value['font-linethrough'] = false;
         $this->value['text-transform']   = 'none';
-        $this->value['font-size']        = $this->convertToMM('10pt');
+        $this->value['font-size']        = $this->cssConverter->convertToMM('10pt');
         $this->value['text-indent']      = 0;
         $this->value['text-align']       = 'left';
         $this->value['vertical-align']   = 'middle';
@@ -188,8 +188,8 @@ class Css
         // prepare somme values
         $border = $this->readBorder('solid 1px #000000');
         $units = array(
-            '1px' => $this->convertToMM('1px'),
-            '5px' => $this->convertToMM('5px'),
+            '1px' => $this->cssConverter->convertToMM('1px'),
+            '5px' => $this->cssConverter->convertToMM('5px'),
         );
 
 
@@ -545,7 +545,7 @@ class Css
         if (!isset($this->value['svg'])) {
             $this->value['svg'] = array(
                 'stroke'         => null,
-                'stroke-width'   => $this->convertToMM('1pt'),
+                'stroke-width'   => $this->cssConverter->convertToMM('1pt'),
                 'fill'           => null,
                 'fill-opacity'   => null,
             );
@@ -574,7 +574,7 @@ class Css
             $this->value['svg']['stroke']       = $this->cssConverter->convertToColor($styles['stroke'], $res);
         }
         if (isset($styles['stroke-width'])) {
-            $this->value['svg']['stroke-width'] = $this->convertToMM($styles['stroke-width']);
+            $this->value['svg']['stroke-width'] = $this->cssConverter->convertToMM($styles['stroke-width']);
         }
         if (isset($styles['fill'])) {
             $this->value['svg']['fill']         = $this->cssConverter->convertToColor($styles['fill'], $res);
@@ -695,7 +695,7 @@ class Css
                     break;
 
                 case 'text-indent':
-                    $this->value['text-indent'] = $this->convertToMM($val);
+                    $this->value['text-indent'] = $this->cssConverter->convertToMM($val);
                     break;
 
                 case 'text-transform':
@@ -706,7 +706,7 @@ class Css
                     break;
 
                 case 'font-size':
-                    $val = $this->convertToMM($val, $this->value['font-size']);
+                    $val = $this->cssConverter->convertToMM($val, $this->value['font-size']);
                     if ($val) {
                         $this->value['font-size'] = $val;
                     }
@@ -736,7 +736,7 @@ class Css
                     break;
 
                 case 'width':
-                    $this->value['width'] = $this->convertToMM($val, $this->getLastWidth());
+                    $this->value['width'] = $this->cssConverter->convertToMM($val, $this->getLastWidth());
                     if ($this->value['width'] && substr($val, -1)=='%') {
                         $correctWidth=true;
                     }
@@ -744,7 +744,7 @@ class Css
                     break;
 
                 case 'height':
-                    $this->value['height'] = $this->convertToMM($val, $this->getLastHeight());
+                    $this->value['height'] = $this->cssConverter->convertToMM($val, $this->getLastHeight());
                     break;
 
                 case 'line-height':
@@ -783,26 +783,26 @@ class Css
                     }
                     $val = array_values($val);
                     $this->_duplicateBorder($val);
-                    $this->value['padding']['t'] = $this->convertToMM($val[0], 0);
-                    $this->value['padding']['r'] = $this->convertToMM($val[1], 0);
-                    $this->value['padding']['b'] = $this->convertToMM($val[2], 0);
-                    $this->value['padding']['l'] = $this->convertToMM($val[3], 0);
+                    $this->value['padding']['t'] = $this->cssConverter->convertToMM($val[0], 0);
+                    $this->value['padding']['r'] = $this->cssConverter->convertToMM($val[1], 0);
+                    $this->value['padding']['b'] = $this->cssConverter->convertToMM($val[2], 0);
+                    $this->value['padding']['l'] = $this->cssConverter->convertToMM($val[3], 0);
                     break;
 
                 case 'padding-top':
-                    $this->value['padding']['t'] = $this->convertToMM($val, 0);
+                    $this->value['padding']['t'] = $this->cssConverter->convertToMM($val, 0);
                     break;
 
                 case 'padding-right':
-                    $this->value['padding']['r'] = $this->convertToMM($val, 0);
+                    $this->value['padding']['r'] = $this->cssConverter->convertToMM($val, 0);
                     break;
 
                 case 'padding-bottom':
-                    $this->value['padding']['b'] = $this->convertToMM($val, 0);
+                    $this->value['padding']['b'] = $this->cssConverter->convertToMM($val, 0);
                     break;
 
                 case 'padding-left':
-                    $this->value['padding']['l'] = $this->convertToMM($val, 0);
+                    $this->value['padding']['l'] = $this->cssConverter->convertToMM($val, 0);
                     break;
 
                 case 'margin':
@@ -821,26 +821,26 @@ class Css
                     }
                     $val = array_values($val);
                     $this->_duplicateBorder($val);
-                    $this->value['margin']['t'] = $this->convertToMM($val[0], 0);
-                    $this->value['margin']['r'] = $this->convertToMM($val[1], 0);
-                    $this->value['margin']['b'] = $this->convertToMM($val[2], 0);
-                    $this->value['margin']['l'] = $this->convertToMM($val[3], 0);
+                    $this->value['margin']['t'] = $this->cssConverter->convertToMM($val[0], 0);
+                    $this->value['margin']['r'] = $this->cssConverter->convertToMM($val[1], 0);
+                    $this->value['margin']['b'] = $this->cssConverter->convertToMM($val[2], 0);
+                    $this->value['margin']['l'] = $this->cssConverter->convertToMM($val[3], 0);
                     break;
 
                 case 'margin-top':
-                    $this->value['margin']['t'] = $this->convertToMM($val, 0);
+                    $this->value['margin']['t'] = $this->cssConverter->convertToMM($val, 0);
                     break;
 
                 case 'margin-right':
-                    $this->value['margin']['r'] = $this->convertToMM($val, 0);
+                    $this->value['margin']['r'] = $this->cssConverter->convertToMM($val, 0);
                     break;
 
                 case 'margin-bottom':
-                    $this->value['margin']['b'] = $this->convertToMM($val, 0);
+                    $this->value['margin']['b'] = $this->cssConverter->convertToMM($val, 0);
                     break;
 
                 case 'margin-left':
-                    $this->value['margin']['l'] = $this->convertToMM($val, 0);
+                    $this->value['margin']['l'] = $this->cssConverter->convertToMM($val, 0);
                     break;
 
                 case 'border':
@@ -958,7 +958,7 @@ class Css
                 case 'border-width':
                     $val = explode(' ', $val);
                     foreach ($val as $valK => $valV) {
-                            $val[$valK] = $this->convertToMM($valV, 0);
+                            $val[$valK] = $this->cssConverter->convertToMM($valV, 0);
                     }
                     $this->_duplicateBorder($val);
                     if ($val[0]) {
@@ -976,28 +976,28 @@ class Css
                     break;
 
                 case 'border-top-width':
-                    $val = $this->convertToMM($val, 0);
+                    $val = $this->cssConverter->convertToMM($val, 0);
                     if ($val) {
                         $this->value['border']['t']['width'] = $val;
                     }
                     break;
 
                 case 'border-right-width':
-                    $val = $this->convertToMM($val, 0);
+                    $val = $this->cssConverter->convertToMM($val, 0);
                     if ($val) {
                         $this->value['border']['r']['width'] = $val;
                     }
                     break;
 
                 case 'border-bottom-width':
-                    $val = $this->convertToMM($val, 0);
+                    $val = $this->cssConverter->convertToMM($val, 0);
                     if ($val) {
                         $this->value['border']['b']['width'] = $val;
                     }
                     break;
 
                 case 'border-left-width':
-                    $val = $this->convertToMM($val, 0);
+                    $val = $this->cssConverter->convertToMM($val, 0);
                     if ($val) {
                         $this->value['border']['l']['width'] = $val;
                     }
@@ -1014,7 +1014,7 @@ class Css
                     if (count($val)>2) {
                         break;
                     }
-                    $valH = $this->convertToRadius(trim($val[0]));
+                    $valH = $this->cssConverter->convertToRadius(trim($val[0]));
                     if (count($valH)<1 || count($valH)>4) {
                         break;
                     }
@@ -1028,7 +1028,7 @@ class Css
                         $valH[3] = $valH[1];
                     }
                     if (isset($val[1])) {
-                        $valV = $this->convertToRadius(trim($val[1]));
+                        $valV = $this->cssConverter->convertToRadius(trim($val[1]));
                         if (count($valV)<1 || count($valV)>4) {
                             break;
                         }
@@ -1053,7 +1053,7 @@ class Css
                     break;
 
                 case 'border-top-left-radius':
-                    $val = $this->convertToRadius($val);
+                    $val = $this->cssConverter->convertToRadius($val);
                     if (count($val)<1 || count($val)>2) {
                         break;
                     }
@@ -1061,7 +1061,7 @@ class Css
                     break;
 
                 case 'border-top-right-radius':
-                    $val = $this->convertToRadius($val);
+                    $val = $this->cssConverter->convertToRadius($val);
                     if (count($val)<1 || count($val)>2) {
                         break;
                     }
@@ -1069,7 +1069,7 @@ class Css
                     break;
 
                 case 'border-bottom-right-radius':
-                    $val = $this->convertToRadius($val);
+                    $val = $this->cssConverter->convertToRadius($val);
                     if (count($val)<1 || count($val)>2) {
                         break;
                     }
@@ -1077,7 +1077,7 @@ class Css
                     break;
 
                 case 'border-bottom-left-radius':
-                    $val = $this->convertToRadius($val);
+                    $val = $this->cssConverter->convertToRadius($val);
                     if (count($val)<1 || count($val)>2) {
                         break;
                     }
@@ -1200,7 +1200,7 @@ class Css
                     $this->value['width']-= $this->value['border']['l']['width'] + $this->value['border']['r']['width'];
                 }
                 if (in_array($tagName, array('th', 'td'))) {
-                    $this->value['width']-= $this->convertToMM(isset($param['cellspacing']) ? $param['cellspacing'] : '2px');
+                    $this->value['width']-= $this->cssConverter->convertToMM(isset($param['cellspacing']) ? $param['cellspacing'] : '2px');
                     $return = false;
                 }
                 if ($this->value['width']<0) {
@@ -1239,16 +1239,16 @@ class Css
         }
 
         if ($this->value['top']!=null) {
-            $this->value['top']     = $this->convertToMM($this->value['top'], $this->getLastHeight(true));
+            $this->value['top']     = $this->cssConverter->convertToMM($this->value['top'], $this->getLastHeight(true));
         }
         if ($this->value['bottom']!=null) {
-            $this->value['bottom']  = $this->convertToMM($this->value['bottom'], $this->getLastHeight(true));
+            $this->value['bottom']  = $this->cssConverter->convertToMM($this->value['bottom'], $this->getLastHeight(true));
         }
         if ($this->value['left']!=null) {
-            $this->value['left']    = $this->convertToMM($this->value['left'], $this->getLastWidth(true));
+            $this->value['left']    = $this->cssConverter->convertToMM($this->value['left'], $this->getLastWidth(true));
         }
         if ($this->value['right']!=null) {
-            $this->value['right']   = $this->convertToMM($this->value['right'], $this->getLastWidth(true));
+            $this->value['right']   = $this->cssConverter->convertToMM($this->value['right'], $this->getLastWidth(true));
         }
 
         if ($this->value['top'] && $this->value['bottom'] && $this->value['height']) {
@@ -1273,7 +1273,7 @@ class Css
         if ($val=='normal') {
             $val = '108%';
         }
-        return $this->convertToMM($val, $this->value['font-size']);
+        return $this->cssConverter->convertToMM($val, $this->value['font-size']);
     }
 
      /**
@@ -1487,7 +1487,7 @@ class Css
 
         // default value
         $type  = 'solid';
-        $width = $this->convertToMM('1pt');
+        $width = $this->cssConverter->convertToMM('1pt');
         $color = array(0, 0, 0);
 
         // clean up the values
@@ -1512,7 +1512,7 @@ class Css
             }
 
             // try to convert the value as a distance
-            $tmp = $this->convertToMM($value);
+            $tmp = $this->cssConverter->convertToMM($value);
 
             // if the convert is ok => it is a width
             if ($tmp!==null) {
@@ -1707,8 +1707,8 @@ class Css
             $y = '100%';
         } elseif (preg_match('/^[-]?[0-9\.]+%$/isU', $css[0])) {
             $x = $css[0];
-        } elseif ($this->convertToMM($css[0])) {
-            $x = $this->convertToMM($css[0]);
+        } elseif ($this->cssConverter->convertToMM($css[0])) {
+            $x = $this->cssConverter->convertToMM($css[0]);
         } else {
             $res = false;
         }
@@ -1726,8 +1726,8 @@ class Css
             $y = '100%';
         } elseif (preg_match('/^[-]?[0-9\.]+%$/isU', $css[1])) {
             $y = $css[1];
-        } elseif ($this->convertToMM($css[1])) {
-            $y = $this->convertToMM($css[1]);
+        } elseif ($this->cssConverter->convertToMM($css[1])) {
+            $y = $this->cssConverter->convertToMM($css[1]);
         } else {
             $res = false;
         }
@@ -1756,66 +1756,6 @@ class Css
                 return array(false, false);
         }
         return null;
-    }
-
-     /**
-     * convert a distance to mm
-     *
-     * @access public
-     * @param  string $css distance to convert
-     * @param  float  $old parent distance
-     * @return float  $value
-     */
-    public function convertToMM($css, $old = 0.)
-    {
-        $css = trim($css);
-        if (preg_match('/^[0-9\.\-]+$/isU', $css)) {
-            $css.= 'px';
-        }
-        if (preg_match('/^[0-9\.\-]+px$/isU', $css)) {
-            $css = 25.4/96. * str_replace('px', '', $css);
-        } elseif (preg_match('/^[0-9\.\-]+pt$/isU', $css)) {
-            $css = 25.4/72. * str_replace('pt', '', $css);
-        } elseif (preg_match('/^[0-9\.\-]+in$/isU', $css)) {
-            $css = 25.4 * str_replace('in', '', $css);
-        } elseif (preg_match('/^[0-9\.\-]+mm$/isU', $css)) {
-            $css = 1.*str_replace('mm', '', $css);
-        } elseif (preg_match('/^[0-9\.\-]+%$/isU', $css)) {
-            $css = 1.*$old*str_replace('%', '', $css)/100.;
-        } else {
-            $css = null;
-        }
-
-        return $css;
-    }
-
-    /**
-     * convert a css radius
-     *
-     * @access public
-     * @param  string $css
-     * @return float  $value
-     */
-    public function convertToRadius($css)
-    {
-        // explode the value
-        $css = explode(' ', $css);
-
-        foreach ($css as $k => $v) {
-            $v = trim($v);
-            if ($v) {
-                $v = $this->convertToMM($v, 0);
-                if ($v!==null) {
-                    $css[$k] = $v;
-                } else {
-                    unset($css[$k]);
-                }
-            } else {
-                unset($css[$k]);
-            }
-        }
-
-        return array_values($css);
     }
 
     /**

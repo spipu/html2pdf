@@ -24,6 +24,66 @@ class CssConverter
     }
 
     /**
+     * convert a distance to mm
+     *
+     * @param string $css distance to convert
+     * @param float  $old parent distance
+     *
+     * @return float
+     */
+    public function convertToMM($css, $old = 0.)
+    {
+        $css = trim($css);
+        if (preg_match('/^[0-9\.\-]+$/isU', $css)) {
+            $css.= 'px';
+        }
+        if (preg_match('/^[0-9\.\-]+px$/isU', $css)) {
+            $css = 25.4/96. * str_replace('px', '', $css);
+        } elseif (preg_match('/^[0-9\.\-]+pt$/isU', $css)) {
+            $css = 25.4/72. * str_replace('pt', '', $css);
+        } elseif (preg_match('/^[0-9\.\-]+in$/isU', $css)) {
+            $css = 25.4 * str_replace('in', '', $css);
+        } elseif (preg_match('/^[0-9\.\-]+mm$/isU', $css)) {
+            $css = 1.*str_replace('mm', '', $css);
+        } elseif (preg_match('/^[0-9\.\-]+%$/isU', $css)) {
+            $css = 1.*$old*str_replace('%', '', $css)/100.;
+        } else {
+            $css = null;
+        }
+
+        return $css;
+    }
+
+    /**
+     * convert a css radius
+     *
+     * @access public
+     * @param  string $css
+     * @return float  $value
+     */
+    public function convertToRadius($css)
+    {
+        // explode the value
+        $css = explode(' ', $css);
+
+        foreach ($css as $k => $v) {
+            $v = trim($v);
+            if ($v) {
+                $v = $this->convertToMM($v, 0);
+                if ($v!==null) {
+                    $css[$k] = $v;
+                } else {
+                    unset($css[$k]);
+                }
+            } else {
+                unset($css[$k]);
+            }
+        }
+
+        return array_values($css);
+    }
+
+    /**
      * convert a css color to an RGB array
      *
      * @param string   $css
