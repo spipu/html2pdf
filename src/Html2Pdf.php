@@ -121,6 +121,9 @@ class Html2Pdf
     protected $_debugStartTime   = 0;           // debug start time
     protected $_debugLastTime    = 0;           // debug stop time
 
+    /**
+     * @var Html2Pdf
+     */
     static protected $_subobj    = null;        // object html2pdf prepared in order to accelerate the creation of sub html2pdf
     static protected $_tables    = array();     // static table to prepare the nested html tables
 
@@ -1015,8 +1018,7 @@ class Html2Pdf
         }
 
         // create the sub object
-        $sub = null;
-        $this->_createSubHTML($sub);
+        $sub = $this->createSubHTML();
         $sub->_saveMargin(0, 0, $sub->pdf->getW()-$wMax);
         $sub->_isForOneLine = true;
         $sub->_parsePos = $this->_parsePos;
@@ -1105,11 +1107,9 @@ class Html2Pdf
     /**
      * create a sub Html2Pdf, to calculate the multi-tables
      *
-     * @access protected
-     * @param  &Html2Pdf $subHtml sub Html2Pdf to create
-     * @param  integer   $cellmargin if in a TD : cellmargin of this td
+     * @return Html2Pdf
      */
-    protected function _createSubHTML(&$subHtml, $cellmargin = 0)
+    protected function createSubHTML()
     {
         // prepare the subObject, if never prepare before
         if (self::$_subobj===null) {
@@ -1118,8 +1118,7 @@ class Html2Pdf
 
         // calculate the width to use
         if ($this->parsingCss->value['width']) {
-            $marge = $cellmargin*2;
-            $marge+= $this->parsingCss->value['padding']['l'] + $this->parsingCss->value['padding']['r'];
+            $marge = $this->parsingCss->value['padding']['l'] + $this->parsingCss->value['padding']['r'];
             $marge+= $this->parsingCss->value['border']['l']['width'] + $this->parsingCss->value['border']['r']['width'];
             $marge = $this->pdf->getW() - $this->parsingCss->value['width'] + $marge;
         } else {
@@ -1129,7 +1128,7 @@ class Html2Pdf
         // BUGFIX : we have to call the method, because of a bug in php 5.1.6
         self::$_subobj->pdf->getPage();
 
-        // clone the sub oject
+        // clone the sub object
         $subHtml = clone self::$_subobj;
         $subHtml->parsingCss->table = $this->parsingCss->table;
         $subHtml->parsingCss->value = $this->parsingCss->value;
@@ -1142,6 +1141,8 @@ class Html2Pdf
             $this->pdf->getMyLastPageGroup(),
             $this->pdf->getMyLastPageGroupNb()
         );
+
+        return $subHtml;
     }
 
     /**
@@ -3067,8 +3068,7 @@ class Html2Pdf
         $this->parsingCss->table                = array();
 
         // we create a sub HTML2PFDF, and we execute on it the content of the footer, to get the height of it
-        $sub = null;
-        $this->_createSubHTML($sub);
+        $sub = $this->createSubHTML();
         $sub->parsingHtml->code = $this->parsingHtml->getLevel($this->_parsePos);
         $sub->_makeHTMLcode();
         $this->pdf->setY($this->pdf->getH() - $sub->_maxY - $this->_defaultBottom - 0.01);
@@ -3130,8 +3130,7 @@ class Html2Pdf
         $this->_maxH = 0;
 
         // create a sub Html2Pdf to execute the content of the tag, to get the dimensions
-        $sub = null;
-        $this->_createSubHTML($sub);
+        $sub = $this->createSubHTML();
         $sub->parsingHtml->code = $this->parsingHtml->getLevel($this->_parsePos);
         $sub->_makeHTMLcode();
         $y = $this->pdf->getY();
@@ -3220,8 +3219,7 @@ class Html2Pdf
         $w = 0;
         $h = 0;
         if (count($level)) {
-            $sub = null;
-            $this->_createSubHTML($sub);
+            $sub = $this->createSubHTML();
             $sub->parsingHtml->code = $level;
             $sub->_makeHTMLcode();
             $w = $sub->_maxX;
@@ -3469,8 +3467,7 @@ class Html2Pdf
             if ($action['name'] == 'legend' && !$action['close']) {
                 $legendOpenPos = $tempPos;
 
-                $sub = null;
-                $this->_createSubHTML($sub);
+                $sub = $this->createSubHTML();
                 $sub->parsingHtml->code = $this->parsingHtml->getLevel($tempPos - 1);
 
                 $res = null;
@@ -5661,7 +5658,7 @@ class Html2Pdf
 
             // extract the content of the TD, and calculate his size
             $level = $this->parsingHtml->getLevel($this->_tempPos);
-            $this->_createSubHTML($this->_subHtml);
+            $this->_subHtml = $this->createSubHTML();
             $this->_subHtml->parsingHtml->code = $level;
             $this->_subHtml->_makeHTMLcode();
             $this->_tempPos+= count($level);
