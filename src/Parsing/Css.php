@@ -12,6 +12,7 @@
 
 namespace Spipu\Html2Pdf\Parsing;
 
+use Spipu\Html2Pdf\CssConverter;
 use Spipu\Html2Pdf\MyPdf;
 use TCPDF;
 
@@ -23,12 +24,16 @@ class Css
     protected $tagParser;
 
     /**
+     * @var CssConverter
+     */
+    protected $cssConverter;
+
+    /**
      * reference to the pdf object
      * @var TCPDF
      */
     protected $_pdf         = null;
 
-    protected $_htmlColor   = array(); // list of the HTML colors
     protected $_onlyLeft    = false;   // flag if we are in a sub html => only "text-align:left" is used
     protected $_defaultFont = null;    // default font to use if the asked font does not exist
 
@@ -40,14 +45,16 @@ class Css
     /**
      * Constructor
      *
-     * @param MyPdf     $pdf       reference to the PDF $object
-     * @param TagParser $tagParser
+     * @param MyPdf        $pdf reference to the PDF $object
+     * @param TagParser    $tagParser
+     * @param CssConverter $cssConverter
      */
-    public function __construct(&$pdf, TagParser $tagParser)
+    public function __construct(&$pdf, TagParser $tagParser, CssConverter $cssConverter)
     {
         $this->_init();
         $this->setPdfParent($pdf);
         $this->tagParser = $tagParser;
+        $this->cssConverter = $cssConverter;
     }
 
     /**
@@ -106,9 +113,6 @@ class Css
      */
     protected function _init()
     {
-        // get the Web Colors from TCPDF
-        $this->_htmlColor = \TCPDF_COLORS::$webcolor;
-
         // init the Style
         $this->table = array();
         $this->value = array();
@@ -567,13 +571,13 @@ class Css
         $styles = array_merge($styles, $param['style']);
 
         if (isset($styles['stroke'])) {
-            $this->value['svg']['stroke']       = $this->convertToColor($styles['stroke'], $res);
+            $this->value['svg']['stroke']       = $this->cssConverter->convertToColor($styles['stroke'], $res);
         }
         if (isset($styles['stroke-width'])) {
             $this->value['svg']['stroke-width'] = $this->convertToMM($styles['stroke-width']);
         }
         if (isset($styles['fill'])) {
-            $this->value['svg']['fill']         = $this->convertToColor($styles['fill'], $res);
+            $this->value['svg']['fill']         = $this->cssConverter->convertToColor($styles['fill'], $res);
         }
         if (isset($styles['fill-opacity'])) {
             $this->value['svg']['fill-opacity'] = 1.*$styles['fill-opacity'];
@@ -710,7 +714,7 @@ class Css
 
                 case 'color':
                     $res = null;
-                    $this->value['color'] = $this->convertToColor($val, $res);
+                    $this->value['color'] = $this->cssConverter->convertToColor($val, $res);
                     if ($tagName=='hr') {
                         $this->value['border']['l']['color'] = $this->value['color'];
                         $this->value['border']['t']['color'] = $this->value['color'];
@@ -898,7 +902,7 @@ class Css
                     $val = preg_replace('/,[\s]+/', ',', $val);
                     $val = explode(' ', $val);
                     foreach ($val as $valK => $valV) {
-                            $val[$valK] = $this->convertToColor($valV, $res);
+                            $val[$valK] = $this->cssConverter->convertToColor($valV, $res);
                         if (!$res) {
                             $val[$valK] = null;
                         }
@@ -921,7 +925,7 @@ class Css
 
                 case 'border-top-color':
                     $res = false;
-                    $val = $this->convertToColor($val, $res);
+                    $val = $this->cssConverter->convertToColor($val, $res);
                     if ($res) {
                         $this->value['border']['t']['color'] = $val;
                     }
@@ -929,7 +933,7 @@ class Css
 
                 case 'border-right-color':
                     $res = false;
-                    $val = $this->convertToColor($val, $res);
+                    $val = $this->cssConverter->convertToColor($val, $res);
                     if ($res) {
                         $this->value['border']['r']['color'] = $val;
                     }
@@ -937,7 +941,7 @@ class Css
 
                 case 'border-bottom-color':
                     $res = false;
-                    $val = $this->convertToColor($val, $res);
+                    $val = $this->cssConverter->convertToColor($val, $res);
                     if ($res) {
                         $this->value['border']['b']['color'] = $val;
                     }
@@ -945,7 +949,7 @@ class Css
 
                 case 'border-left-color':
                     $res = false;
-                    $val = $this->convertToColor($val, $res);
+                    $val = $this->cssConverter->convertToColor($val, $res);
                     if ($res) {
                         $this->value['border']['l']['color'] = $val;
                     }
@@ -1518,7 +1522,7 @@ class Css
                 $type = $value;
             // else, it could be the color
             } else {
-                $tmp = $this->convertToColor($value, $res);
+                $tmp = $this->cssConverter->convertToColor($value, $res);
                 if ($res) {
                     $color = $tmp;
                 }
@@ -1590,7 +1594,7 @@ class Css
         foreach ($css as $val) {
             // try to parse the value as a color
             $ok = false;
-            $color = $this->convertToColor($val, $ok);
+            $color = $this->cssConverter->convertToColor($val, $ok);
 
             // if ok => it is a color
             if ($ok) {
@@ -1636,7 +1640,7 @@ class Css
         if ($css=='transparent') {
             return null;
         } else {
-            return $this->convertToColor($css, $res);
+            return $this->cssConverter->convertToColor($css, $res);
         }
     }
 
@@ -1812,92 +1816,6 @@ class Css
         }
 
         return array_values($css);
-    }
-
-    /**
-     * convert a css color
-     *
-     * @access public
-     * @param  string $css
-     * @param  &boolean $res
-     * @return array (r,g, b)
-     */
-    public function convertToColor($css, &$res)
-    {
-        // prepare the value
-        $css = trim($css);
-        $res = true;
-
-        // if transparent => return null
-        if (strtolower($css)=='transparent') {
-            return array(null, null, null);
-        }
-
-        // HTML color
-        if (isset($this->_htmlColor[strtolower($css)])) {
-            $css = $this->_htmlColor[strtolower($css)];
-            $r = floatVal(hexdec(substr($css, 0, 2)));
-            $v = floatVal(hexdec(substr($css, 2, 2)));
-            $b = floatVal(hexdec(substr($css, 4, 2)));
-            return array($r, $v, $b);
-        }
-
-        // like #FFFFFF
-        if (preg_match('/^#[0-9A-Fa-f]{6}$/isU', $css)) {
-            $r = floatVal(hexdec(substr($css, 1, 2)));
-            $v = floatVal(hexdec(substr($css, 3, 2)));
-            $b = floatVal(hexdec(substr($css, 5, 2)));
-            return array($r, $v, $b);
-        }
-
-        // like #FFF
-        if (preg_match('/^#[0-9A-F]{3}$/isU', $css)) {
-            $r = floatVal(hexdec(substr($css, 1, 1).substr($css, 1, 1)));
-            $v = floatVal(hexdec(substr($css, 2, 1).substr($css, 2, 1)));
-            $b = floatVal(hexdec(substr($css, 3, 1).substr($css, 3, 1)));
-            return array($r, $v, $b);
-        }
-
-        // like rgb(100, 100, 100)
-        if (preg_match('/rgb\([\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*\)/isU', $css, $match)) {
-            $r = $this->_convertSubColor($match[1]);
-            $v = $this->_convertSubColor($match[2]);
-            $b = $this->_convertSubColor($match[3]);
-            return array($r*255., $v*255., $b*255.);
-        }
-
-        // like cmyk(100, 100, 100, 100)
-        if (preg_match('/cmyk\([\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*\)/isU', $css, $match)) {
-            $c = $this->_convertSubColor($match[1]);
-            $m = $this->_convertSubColor($match[2]);
-            $y = $this->_convertSubColor($match[3]);
-            $k = $this->_convertSubColor($match[4]);
-            return array($c*100., $m*100., $y*100., $k*100.);
-        }
-
-        $res = false;
-        return array(0., 0., 0.);
-    }
-
-    /**
-     * color value to convert
-     *
-     * @access protected
-     * @param  string $c
-     * @return float $c 0.->1.
-     */
-    protected function _convertSubColor($c)
-    {
-        if (substr($c, -1)=='%') {
-            $c = floatVal(substr($c, 0, -1))/100.;
-        } else {
-            $c = floatVal($c);
-            if ($c>1) {
-                $c = $c/255.;
-            }
-        }
-
-        return $c;
     }
 
     /**

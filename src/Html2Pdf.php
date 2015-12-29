@@ -51,6 +51,8 @@ class Html2Pdf
      */
     private $lexer;
 
+    private $cssConverter;
+
     protected $_langue           = 'fr';        // locale of the messages
     protected $_orientation      = 'P';         // page orientation : Portrait ou Landscape
     protected $_format           = 'A4';        // page format : A4, A3, ...
@@ -171,8 +173,9 @@ class Html2Pdf
         $this->pdf = new MyPdf($orientation, 'mm', $format, $unicode, $encoding);
 
         // init the CSS parsing object
+        $this->cssConverter = new CssConverter();
         $textParser = new TextParser($encoding);
-        $this->parsingCss = new Parsing\Css($this->pdf, new TagParser($textParser));
+        $this->parsingCss = new Parsing\Css($this->pdf, new TagParser($textParser), $this->cssConverter);
         $this->parsingCss->fontSet();
         $this->_defList = array();
 
@@ -2816,7 +2819,7 @@ class Html2Pdf
 
             // get the background color
             $res = false;
-            $background['color']    = isset($param['backcolor'])    ? $this->parsingCss->convertToColor($param['backcolor'], $res) : null;
+            $background['color'] = isset($param['backcolor']) ? $this->cssConverter->convertToColor($param['backcolor'], $res) : null;
             if (!$res) {
                 $background['color'] = null;
             }
