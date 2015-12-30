@@ -437,11 +437,12 @@ class Html2Pdf
      *  true  => I
      *  false => S
      *
-     * @param  string $name The name of the file when saved.
-     * @param  string $dest Destination where to send the document.
+     * @param string      $name The name of the file when saved.
+     * @param bool|string $dest Destination where to send the document.
+     *
+     * @throws Html2PdfException
      * @return string content of the PDF, if $dest=S
      * @see    TCPDF::close
-     * @access public
      */
     public function Output($name = '', $dest = false)
     {
@@ -452,7 +453,7 @@ class Html2Pdf
         if (!is_null($this->debug)) {
             $this->debug->stop();
             $this->pdf->Close();
-            exit;
+            return '';
         }
 
         // complete parameters
@@ -1282,7 +1283,7 @@ class Html2Pdf
      *
      * @param Node $action
      */
-    protected function _executeAction($action)
+    protected function _executeAction(Node $action)
     {
         $name = strtoupper($action->getName());
 
