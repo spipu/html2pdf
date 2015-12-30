@@ -309,4 +309,70 @@ class Html
         // return the extract
         return $code;
     }
+
+    /**
+     * prepare the HTML
+     *
+     * @param string $html
+     *
+     * @return string
+     */
+    public function prepareHtml($html)
+    {
+        // if it is a real html page, we have to convert it
+        if (preg_match('/<body/isU', $html)) {
+            $html = $this->getHtmlFromRealPage($html);
+        }
+
+        // replace some constants
+        $html = str_replace('[[date_y]]', date('Y'), $html);
+        $html = str_replace('[[date_m]]', date('m'), $html);
+        $html = str_replace('[[date_d]]', date('d'), $html);
+
+        $html = str_replace('[[date_h]]', date('H'), $html);
+        $html = str_replace('[[date_i]]', date('i'), $html);
+        $html = str_replace('[[date_s]]', date('s'), $html);
+
+        return $html;
+    }
+
+    /**
+     * convert the HTML of a real page, to a code adapted to Html2Pdf
+     *
+     * @param  string $html HTML code of a real page
+     * @return string HTML adapted to Html2Pdf
+     */
+    protected function getHtmlFromRealPage($html)
+    {
+        // set body tag to lower case
+        $html = str_replace('<BODY', '<body', $html);
+        $html = str_replace('</BODY', '</body', $html);
+
+        // explode from the body tag. If no body tag => end
+        $res = explode('<body', $html);
+        if (count($res)<2) {
+            return $html;
+        }
+
+        // the html content is between body tag openning and closing
+        $content = '<page'.$res[1];
+        $content = explode('</body', $content);
+        $content = $content[0].'</page>';
+
+        // extract the link tags from the original html
+        // and add them before the content
+        preg_match_all('/<link([^>]*)>/isU', $html, $match);
+        foreach ($match[0] as $src) {
+            $content = $src.'</link>'.$content;
+        }
+
+        // extract the css style tags from the original html
+        // and add them before the content
+        preg_match_all('/<style[^>]*>(.*)<\/style[^>]*>/isU', $html, $match);
+        foreach ($match[0] as $src) {
+            $content = $src.$content;
+        }
+
+        return $content;
+    }
 }

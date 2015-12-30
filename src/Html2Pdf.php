@@ -486,71 +486,53 @@ class Html2Pdf
     /**
      * convert HTML to PDF
      *
-     * @access public
-     * @param  string   $html
-     * @param  boolean  $debugVue  enable the HTML debug vue
-     * @return null
+     * @param string $html
+     *
+     * @return Html2Pdf
      */
-    public function writeHTML($html, $debugVue = false)
+    public function writeHTML($html)
     {
-        // if it is a real html page, we have to convert it
-        if (preg_match('/<body/isU', $html)) {
-            $html = $this->getHtmlFromPage($html);
-        }
-
-        $html = str_replace('[[date_y]]', date('Y'), $html);
-        $html = str_replace('[[date_m]]', date('m'), $html);
-        $html = str_replace('[[date_d]]', date('d'), $html);
-
-        $html = str_replace('[[date_h]]', date('H'), $html);
-        $html = str_replace('[[date_i]]', date('i'), $html);
-        $html = str_replace('[[date_s]]', date('s'), $html);
-
-        // If we are in HTML debug vue : display the HTML
-        if ($debugVue) {
-            return $this->_vueHTML($html);
-        }
-
-        // convert HTMl to PDF
+        $html = $this->parsingHtml->prepareHtml($html);
         $html = $this->parsingCss->extractStyle($html);
         $this->parsingHtml->parse($this->lexer->tokenize($html));
         $this->_makeHTMLcode();
+
+        return $this;
     }
 
+
     /**
-     * convert the HTML of a real page, to a code adapted to Html2Pdf
+     * Preview the HTML before conversion
      *
-     * @access public
-     * @param  string $html HTML code of a real page
-     * @return string HTML adapted to Html2Pdf
+     * @param string $html
+     *
+     * @return void
      */
-    public function getHtmlFromPage($html)
+    public function previewHTML($html)
     {
-        $html = str_replace('<BODY', '<body', $html);
-        $html = str_replace('</BODY', '</body', $html);
+        $html = $this->parsingHtml->prepareHtml($html);
 
-        // extract the content
-        $res = explode('<body', $html);
-        if (count($res)<2) {
-            return $html;
-        }
-        $content = '<page'.$res[1];
-        $content = explode('</body', $content);
-        $content = $content[0].'</page>';
+        $html = preg_replace('/<page_header([^>]*)>/isU', '<hr>Page Header : $1<hr><div$1>', $html);
+        $html = preg_replace('/<page_footer([^>]*)>/isU', '<hr>Page Footer : $1<hr><div$1>', $html);
+        $html = preg_replace('/<page([^>]*)>/isU', '<hr>Page : $1<hr><div$1>', $html);
+        $html = preg_replace('/<\/page([^>]*)>/isU', '</div><hr>', $html);
+        $html = preg_replace('/<bookmark([^>]*)>/isU', '<hr>bookmark : $1<hr>', $html);
+        $html = preg_replace('/<\/bookmark([^>]*)>/isU', '', $html);
+        $html = preg_replace('/<barcode([^>]*)>/isU', '<hr>barcode : $1<hr>', $html);
+        $html = preg_replace('/<\/barcode([^>]*)>/isU', '', $html);
+        $html = preg_replace('/<qrcode([^>]*)>/isU', '<hr>qrcode : $1<hr>', $html);
+        $html = preg_replace('/<\/qrcode([^>]*)>/isU', '', $html);
 
-        // extract the link tags
-        preg_match_all('/<link([^>]*)>/isU', $html, $match);
-        foreach ($match[0] as $src) {
-            $content = $src.'</link>'.$content;
-        }
-
-        // extract the css style tags
-        preg_match_all('/<style[^>]*>(.*)<\/style[^>]*>/isU', $html, $match);
-        foreach ($match[0] as $src) {
-            $content = $src.$content;
-        }
-
-        return $content;
+        echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>HTML View</title>
+        <meta http-equiv="Content-Type" content="text/html; charset='.$this->_encoding.'" >
+    </head>
+    <body style="padding: 10px; font-size: 10pt;font-family:    Verdana;">
+    '.$html.'
+    </body>
+</html>';
     }
 
     /**
@@ -581,38 +563,6 @@ class Html2Pdf
         $this->pdf->setMyLastPageGroupNb($myLastPageGroupNb);
         $this->pdf->setXY(0, 0);
         $this->parsingCss->fontSet();
-    }
-
-    /**
-     * display the content in HTML moden for debug
-     *
-     * @access protected
-     * @param  string $content
-     */
-    protected function _vueHTML($content)
-    {
-        $content = preg_replace('/<page_header([^>]*)>/isU', '<hr>Page Header : $1<hr><div$1>', $content);
-        $content = preg_replace('/<page_footer([^>]*)>/isU', '<hr>Page Footer : $1<hr><div$1>', $content);
-        $content = preg_replace('/<page([^>]*)>/isU', '<hr>Page : $1<hr><div$1>', $content);
-        $content = preg_replace('/<\/page([^>]*)>/isU', '</div><hr>', $content);
-        $content = preg_replace('/<bookmark([^>]*)>/isU', '<hr>bookmark : $1<hr>', $content);
-        $content = preg_replace('/<\/bookmark([^>]*)>/isU', '', $content);
-        $content = preg_replace('/<barcode([^>]*)>/isU', '<hr>barcode : $1<hr>', $content);
-        $content = preg_replace('/<\/barcode([^>]*)>/isU', '', $content);
-        $content = preg_replace('/<qrcode([^>]*)>/isU', '<hr>qrcode : $1<hr>', $content);
-        $content = preg_replace('/<\/qrcode([^>]*)>/isU', '', $content);
-
-        echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-    <head>
-        <title>HTML View</title>
-        <meta http-equiv="Content-Type" content="text/html; charset='.$this->_encoding.'" >
-    </head>
-    <body style="padding: 10px; font-size: 10pt;font-family:    Verdana;">
-    '.$content.'
-    </body>
-</html>';
-        exit;
     }
 
     /**

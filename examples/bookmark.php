@@ -5,9 +5,6 @@
  * HTML => PDF converter
  * distributed under the LGPL License
  *
- * isset($_GET['vuehtml']) is not mandatory
- * it allow to display the result in the HTML format
- *
  * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
@@ -24,7 +21,7 @@ try {
     $content = ob_get_clean();
 
     $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
-    $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+    $html2pdf->writeHTML($content);
     $html2pdf->createIndex('Sommaire', 25, 12, false, true, 1);
     $html2pdf->Output('bookmark.pdf');
 } catch (Html2PdfException $e) {

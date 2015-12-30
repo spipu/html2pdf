@@ -5,9 +5,6 @@
  * HTML => PDF converter
  * distributed under the LGPL License
  *
- * isset($_GET['vuehtml']) is not mandatory
- * it allow to display the result in the HTML format
- *
  * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2016 Laurent MINGUET
@@ -26,7 +23,7 @@ try {
     $content = '<page style="font-family: freeserif"><br />'.nl2br($content).'</page>';
 
     $html2pdf->pdf->SetDisplayMode('real');
-    $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+    $html2pdf->writeHTML($content);
     $html2pdf->Output('utf8.pdf');
 } catch (Html2PdfException $e) {
     $formatter = new ExceptionFormatter($e);
