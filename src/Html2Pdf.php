@@ -2,7 +2,7 @@
 /**
  * Html2Pdf Library - main class
  *
- * HTML => PDF convertor
+ * HTML => PDF converter
  * distributed under the LGPL License
  *
  * @package   Html2pdf

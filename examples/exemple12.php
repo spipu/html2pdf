@@ -2,7 +2,7 @@
 /**
  * Html2Pdf Library - example
  *
- * HTML => PDF convertor
+ * HTML => PDF converter
  * distributed under the LGPL License
  *
  * isset($_GET['vuehtml']) is not mandatory
