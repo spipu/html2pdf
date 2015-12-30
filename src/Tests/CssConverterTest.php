@@ -2,11 +2,10 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
-use Phake;
 use Spipu\Html2Pdf\CssConverter;
 
 /**
- * Class Html2PdfTest
+ * Class CssConverterTest
  */
 class CssConverterTest extends \PHPUnit_Framework_TestCase
 {
