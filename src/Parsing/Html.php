@@ -82,19 +82,19 @@ class Html
         $nb = count($actions);
         for ($k = 0; $k < $nb; $k++) {
             // if it is a Text
-            if ($actions[$k]['name']=='write') {
+            if ($actions[$k]->getName() =='write') {
                 // if the tag before the text is a tag to clean => ltrim on the text
-                if ($k>0 && in_array($actions[$k - 1]['name'], $tagsToClean)) {
-                    $actions[$k]['param']['txt'] = ltrim($actions[$k]['param']['txt']);
+                if ($k>0 && in_array($actions[$k - 1]->getName(), $tagsToClean)) {
+                    $actions[$k]->setParam('txt', ltrim($actions[$k]->getParam('txt')));
                 }
 
                 // if the tag after the text is a tag to clean => rtrim on the text
-                if ($k < $nb - 1 && in_array($actions[$k + 1]['name'], $tagsToClean)) {
-                    $actions[$k]['param']['txt'] = rtrim($actions[$k]['param']['txt']);
+                if ($k < $nb - 1 && in_array($actions[$k + 1]->getName(), $tagsToClean)) {
+                    $actions[$k]->setParam('txt', rtrim($actions[$k]->getParam('txt')));
                 }
 
                 // if the text is empty => remove the action
-                if (!strlen($actions[$k]['param']['txt'])) {
+                if (!strlen($actions[$k]->getParam('txt'))) {
                     unset($actions[$k]);
                 }
             }
@@ -136,53 +136,54 @@ class Html
         );
 
         // analyze the HTML code
-        $res = $this->tagParser->analyzeTag($token->getData());
+        $node = $this->tagParser->analyzeTag($token->getData());
 
         // save the current position in the HTML code
-        $res['line'] = $token->getLine();
+        $node->setLine($token->getLine());
 
         $actions = array();
         // if the tag must be closed
-        if (!in_array($res['name'], $tagsNotClosed)) {
+        if (!in_array($node->getName(), $tagsNotClosed)) {
             // if it is a closure tag
-            if ($res['close']) {
+            if ($node->isClose()) {
                 // HTML validation
                 if (count($parents) < 1) {
-                    $e = new HtmlParsingException('Too many tag closures found for ['.$res['name'].']');
-                    $e->setInvalidTag($res['name']);
-                    $e->setHtmlLine($res['line']);
+                    $e = new HtmlParsingException('Too many tag closures found for ['.$node->getName().']');
+                    $e->setInvalidTag($node->getName());
+                    $e->setHtmlLine($token->getLine());
                     throw $e;
-                } elseif (end($parents) != $res['name']) {
-                    $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$res['name'].']');
-                    $e->setInvalidTag($res['name']);
-                    $e->setHtmlLine($res['line']);
+                } elseif (end($parents) != $node->getName()) {
+                    $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$node->getName().']');
+                    $e->setInvalidTag($node->getName());
+                    $e->setHtmlLine($token->getLine());
                     throw $e;
                 } else {
                     array_pop($parents);
                 }
             } else {
                 // if it is an auto-closed tag
-                if ($res['autoclose']) {
+                if ($node->isAutoclose()) {
                     // save the opened tag
-                    $actions[] = $res;
+                    $actions[] = $node;
 
                     // prepare the closed tag
-                    $res['params'] = array();
-                    $res['close'] = true;
+                    $node = clone $node;
+                    $node->setParams(array());
+                    $node->setClose(true);
                 } else {
                     // else: add a child for validation
-                    array_push($parents, $res['name']);
+                    array_push($parents, $node->getName());
                 }
             }
 
             // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
-            if (($res['name'] == 'pre' || $res['name'] == 'code') && !$res['autoclose']) {
-                $this->tagPreIn = !$res['close'];
+            if (($node->getName() == 'pre' || $node->getName() == 'code') && !$node->isAutoclose()) {
+                $this->tagPreIn = !$node->isClose();
             }
         }
 
         // save the actions to convert
-        $actions[] = $res;
+        $actions[] = $node;
 
         return $actions;
     }
@@ -190,24 +191,14 @@ class Html
     protected function getTextAction(Token $token)
     {
         // action to use for each line of the content of a <pre> Tag
-        $tagPreBr = array(
-            'name' => 'br',
-            'close' => false,
-            'param' => array(
-                'style' => array(),
-                'num'    => 0
-            )
-        );
+        $tagPreBr = new Node('br', array('style' => array(), 'num' => 0), false);
+
         $actions = array();
 
         // if we are not in a <pre> tag
         if (!$this->tagPreIn) {
             // save the action
-            $actions[] = array(
-                'name'  => 'write',
-                'close' => false,
-                'param' => array('txt' => $this->textParser->prepareTxt($token->getData())),
-            );
+            $actions[] = new Node('write', array('txt' => $this->textParser->prepareTxt($token->getData())), false);
         } else { // else (if we are in a <pre> tag)
             // prepare the text
             $data = str_replace("\r", '', $token->getData());
@@ -221,15 +212,11 @@ class Html
 
                 // add a break line
                 if ($k > 0) {
-                    $actions[] = $tagPreBr;
+                    $actions[] = clone $tagPreBr;
                 }
 
                 // save the action
-                $actions[] = array(
-                    'name'  => 'write',
-                    'close' => false,
-                    'param' => array('txt' => $this->textParser->prepareTxt($txt, false)),
-                );
+                $actions[] = new Node('write', array('txt' => $this->textParser->prepareTxt($txt, false)), false);
             }
         }
         return $actions;
@@ -249,7 +236,7 @@ class Html
         }
 
         // the tag to detect
-        $detect = $this->code[$k]['name'];
+        $detect = $this->code[$k]->getName();
 
         // if it is a text => return
         if ($detect == 'write') {
@@ -264,23 +251,24 @@ class Html
         // while it's not ended
         while (!$end) {
             // current action
-            $row = $this->code[$k];
+            /** @var Node $node */
+            $node = $this->code[$k];
 
             // if 'write' => we add the text
-            if ($row['name']=='write') {
-                $code[] = $row;
+            if ($node->getName() == 'write') {
+                $code[] = $node;
             } else { // else, it is a html tag
                 $not = false; // flag for not taking into account the current tag
 
                 // if it is the searched tag
-                if ($row['name'] == $detect) {
+                if ($node->getName() == $detect) {
                     // if we are just at the root level => dont take it
                     if ($level == 0) {
                         $not = true;
                     }
 
                     // update the level
-                    $level+= ($row['close'] ? -1 : 1);
+                    $level += ($node->isClose() ? -1 : 1);
 
                     // if we are now at the root level => it is the end, and dont take it
                     if ($level == 0) {
@@ -291,10 +279,7 @@ class Html
 
                 // if we can take into account the current tag => save it
                 if (!$not) {
-                    if (isset($row['style']['text-align'])) {
-                        unset($row['style']['text-align']);
-                    }
-                    $code[] = $row;
+                    $code[] = $node;
                 }
             }
 
