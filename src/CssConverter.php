@@ -128,7 +128,8 @@ class CssConverter
         }
 
         // like rgb(100, 100, 100)
-        if (preg_match('/rgb\([\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*\)/isU', $css, $match)) {
+        $sub = '[\s]*([0-9%\.]+)[\s]*';
+        if (preg_match('/rgb\('.$sub.','.$sub.','.$sub.'\)/isU', $css, $match)) {
             $r = $this->convertSubColor($match[1]);
             $g = $this->convertSubColor($match[2]);
             $b = $this->convertSubColor($match[3]);
@@ -136,7 +137,8 @@ class CssConverter
         }
 
         // like cmyk(100, 100, 100, 100)
-        if (preg_match('/cmyk\([\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*,[\s]*([0-9%\.]+)[\s]*\)/isU', $css, $match)) {
+        $sub = '[\s]*([0-9%\.]+)[\s]*';
+        if (preg_match('/cmyk\('.$sub.','.$sub.','.$sub.','.$sub.'\)/isU', $css, $match)) {
             $c = $this->convertSubColor($match[1]);
             $m = $this->convertSubColor($match[2]);
             $y = $this->convertSubColor($match[3]);

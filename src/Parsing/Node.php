@@ -36,7 +36,7 @@ class Node
     /**
      * @var bool
      */
-    private $autoclose;
+    private $autoClose;
 
     /**
      * @var int
@@ -47,14 +47,14 @@ class Node
      * @param string $name
      * @param array  $params
      * @param bool   $close
-     * @param bool   $autoclose
+     * @param bool   $autoClose
      */
-    public function __construct($name, $params, $close, $autoclose = false)
+    public function __construct($name, $params, $close, $autoClose = false)
     {
         $this->name = $name;
         $this->params = $params;
         $this->close = $close;
-        $this->autoclose = $autoclose;
+        $this->autoClose = $autoClose;
     }
 
     /**
@@ -132,9 +132,9 @@ class Node
     /**
      * @return bool
      */
-    public function isAutoclose()
+    public function isAutoClose()
     {
-        return $this->autoclose;
+        return $this->autoClose;
     }
 
     /**

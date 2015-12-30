@@ -18,8 +18,19 @@ namespace Spipu\Html2Pdf\Parsing;
  */
 class Token
 {
+    /**
+     * @var string
+     */
     private $type;
+
+    /**
+     * @var string
+     */
     private $data;
+
+    /**
+     * @var int
+     */
     private $line;
 
     /**

@@ -18,13 +18,29 @@ use Spipu\Html2Pdf\Exception\HtmlParsingException;
  */
 class Html
 {
-    protected $tagParser;
-    protected $textParser;
-    protected $tagPreIn;
-    protected $_encoding = '';        // encoding
-    public $code      = array();   // parsed HTML code
-
     const HTML_TAB = '        ';
+
+    /**
+     * @var TagParser
+     */
+    protected $tagParser;
+
+    /**
+     * @var TextParser
+     */
+    protected $textParser;
+
+    /**
+     * are we in a pre ?
+     * @var boolean
+     */
+    protected $tagPreIn = false;
+
+    /**
+     * parsed HTML code
+     * @var Node[]
+     */
+    public $code = array();
 
     /**
      * main constructor
@@ -41,7 +57,7 @@ class Html
     /**
      * parse the HTML code
      *
-     * @param array $tokens A list of tokens to parse
+     * @param Token[] $tokens A list of tokens to parse
      *
      * @throws HtmlParsingException
      */
@@ -52,7 +68,10 @@ class Html
         // flag : are we in a <pre> Tag ?
         $this->tagPreIn = false;
 
-        // all the actions to do
+        /**
+         * all the actions to do
+         * @var Node[] $actions
+         */
         $actions = array();
 
         // get the actions from the html tokens
@@ -162,7 +181,7 @@ class Html
                 }
             } else {
                 // if it is an auto-closed tag
-                if ($node->isAutoclose()) {
+                if ($node->isAutoClose()) {
                     // save the opened tag
                     $actions[] = $node;
 
@@ -177,7 +196,7 @@ class Html
             }
 
             // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
-            if (($node->getName() == 'pre' || $node->getName() == 'code') && !$node->isAutoclose()) {
+            if (($node->getName() == 'pre' || $node->getName() == 'code') && !$node->isAutoClose()) {
                 $this->tagPreIn = !$node->isClose();
             }
         }
@@ -188,6 +207,13 @@ class Html
         return $actions;
     }
 
+    /**
+     * get the Text action
+     *
+     * @param Token $token
+     *
+     * @return array
+     */
     protected function getTextAction(Token $token)
     {
         // action to use for each line of the content of a <pre> Tag

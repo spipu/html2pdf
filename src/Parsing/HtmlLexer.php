@@ -40,7 +40,9 @@ class HtmlLexer
 
         // As it finds a match
         while ($offset < $length) {
-            if (strpos($html, '<!--', $offset) === $offset && preg_match($commentRegex, $html, $match, PREG_OFFSET_CAPTURE, $offset)) {
+            if (strpos($html, '<!--', $offset) === $offset
+                && preg_match($commentRegex, $html, $match, PREG_OFFSET_CAPTURE, $offset)
+            ) {
                 $line += substr_count($match[1][0], "\n");
                 $offset = $match[0][1] + strlen($match[0][0]);
                 continue;
