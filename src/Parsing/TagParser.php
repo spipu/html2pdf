@@ -33,7 +33,7 @@ class TagParser
      *
      * @param string $code HTML code to analyze
      *
-     * @return array corresponding action
+     * @return Node corresponding action
      * @throws HtmlParsingException
      */
     public function analyzeTag($code)
@@ -183,7 +183,7 @@ class TagParser
         }
 
         // return the new action to do
-        return array('name' => $name, 'close' => $close ? 1 : 0, 'autoclose' => $autoclose, 'param' => $param);
+        return new Node($name, $param, $close, $autoclose);
     }
 
     /**

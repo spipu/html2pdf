@@ -20,6 +20,7 @@ use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Extension\CoreExtension;
 use Spipu\Html2Pdf\Extension\ExtensionInterface;
 use Spipu\Html2Pdf\Parsing\HtmlLexer;
+use Spipu\Html2Pdf\Parsing\Node;
 use Spipu\Html2Pdf\Parsing\TagParser;
 use Spipu\Html2Pdf\Parsing\TextParser;
 use Spipu\Html2Pdf\Tag\TagInterface;
@@ -282,7 +283,7 @@ class Html2Pdf
      */
     protected function addTagObject(TagInterface $tagObject)
     {
-        $tagName = strtoupper($tagObject->getName());
+        $tagName = strtolower($tagObject->getName());
         $this->tagObjects[$tagName] = $tagObject;
     }
 
@@ -1025,10 +1026,10 @@ class Html2Pdf
         $sub->parsingHtml->code = $this->parsingHtml->code;
 
         // if $curr => adapt the current position of the parsing
-        if ($curr!==null && $sub->parsingHtml->code[$this->_parsePos]['name']=='write') {
-            $txt = $sub->parsingHtml->code[$this->_parsePos]['param']['txt'];
+        if ($curr !== null && $sub->parsingHtml->code[$this->_parsePos]->getName() == 'write') {
+            $txt = $sub->parsingHtml->code[$this->_parsePos]->getParam('txt');
             $txt = str_replace('[[page_cu]]', $sub->pdf->getMyNumPage($this->_page), $txt);
-            $sub->parsingHtml->code[$this->_parsePos]['param']['txt'] = substr($txt, $curr+1);
+            $sub->parsingHtml->code[$this->_parsePos]->setParam('txt', substr($txt, $curr + 1));
         } else {
             $sub->_parsePos++;
         }
@@ -1352,19 +1353,20 @@ class Html2Pdf
             $action = $this->parsingHtml->code[$this->_parsePos];
 
             // if it is a opening of table / ul / ol
-            if (in_array($action['name'], array('table', 'ul', 'ol')) && !$action['close']) {
+            if (in_array($action->getName(), array('table', 'ul', 'ol')) && !$action->isClose()) {
 
                 //  we will work as a sub HTML to calculate the size of the element
                 $this->_subPart = true;
 
                 // get the name of the opening tag
-                $tagOpen = $action['name'];
+                $tagOpen = $action->getName()
+                ;
 
                 // save the actual pos on the parsing
                 $this->_tempPos = $this->_parsePos;
 
                 // foreach elements, while we are in the opened tag
-                while (isset($this->parsingHtml->code[$this->_tempPos]) && !($this->parsingHtml->code[$this->_tempPos]['name']==$tagOpen && $this->parsingHtml->code[$this->_tempPos]['close'])) {
+                while (isset($this->parsingHtml->code[$this->_tempPos]) && !($this->parsingHtml->code[$this->_tempPos]->getName()==$tagOpen && $this->parsingHtml->code[$this->_tempPos]->isClose())) {
                     // make the action
                     $this->_executeAction($this->parsingHtml->code[$this->_tempPos]);
                     $this->_tempPos++;
@@ -1387,40 +1389,39 @@ class Html2Pdf
     /**
      * execute the action from the parsing
      *
-     * @access protected
-     * @param  array $action
+     * @param Node $action
      */
     protected function _executeAction($action)
     {
-        $action['name'] = strtoupper($action['name']);
+        $name = strtoupper($action->getName());
 
-        if ($this->_firstPage && $action['name'] !== 'PAGE' && !$action['close']) {
+        if ($this->_firstPage && $name !== 'PAGE' && !$action->isClose()) {
             $this->_setNewPage();
         }
 
         // properties of the action
-        $properties = $action['param'];
+        $properties = $action->getParams();
 
         // name of the action (old method)
-        $fnc = ($action['close'] ? '_tag_close_' : '_tag_open_').strtoupper($action['name']);
+        $fnc = ($action->isClose() ? '_tag_close_' : '_tag_open_').$name;
 
-        $tagObject = $this->getTagObject($action['name']);
+        $tagObject = $this->getTagObject($action->getName());
 
         if (!is_null($tagObject)) {
-            if ($action['close']) {
+            if ($action->isClose()) {
                 $res = $tagObject->close($properties);
             } else {
                 $res = $tagObject->open($properties);
             }
-        } elseif (is_callable(array(&$this, $fnc))) {
+        } elseif (is_callable(array($this, $fnc))) {
             $res = $this->{$fnc}($properties);
         } else {
             $e = new HtmlParsingException(
-                'The html tag ['.$action['name'].'] is not known by Html2Pdf not exists.'.
+                'The html tag ['.$action->getName().'] is not known by Html2Pdf not exists.'.
                 'You can create it and push it on the Html2Pdf GitHub project.'
             );
-            $e->setInvalidTag($action['name']);
-            $e->setHtmlLine($action['line']);
+            $e->setInvalidTag($action->getName());
+            $e->setHtmlLine($action->getLine());
             throw $e;
         }
 
@@ -2904,11 +2905,11 @@ class Html2Pdf
         $this->_subHEADER = array();
         for ($this->_parsePos; $this->_parsePos<count($this->parsingHtml->code); $this->_parsePos++) {
             $action = $this->parsingHtml->code[$this->_parsePos];
-            if ($action['name']=='page_header') {
-                $action['name']='page_header_sub';
+            if ($action->getName() == 'page_header') {
+                $action->setName('page_header_sub');
             }
             $this->_subHEADER[] = $action;
-            if (strtolower($action['name'])=='page_header_sub' && $action['close']) {
+            if (strtolower($action->getName()) == 'page_header_sub' && $action->isClose()) {
                 break;
             }
         }
@@ -2934,11 +2935,11 @@ class Html2Pdf
         $this->_subFOOTER = array();
         for ($this->_parsePos; $this->_parsePos<count($this->parsingHtml->code); $this->_parsePos++) {
             $action = $this->parsingHtml->code[$this->_parsePos];
-            if ($action['name']=='page_footer') {
-                $action['name']='page_footer_sub';
+            if ($action->getName() == 'page_footer') {
+                $action->setName('page_footer_sub');
             }
             $this->_subFOOTER[] = $action;
-            if (strtolower($action['name'])=='page_footer_sub' && $action['close']) {
+            if (strtolower($action->getName())=='page_footer_sub' && $action->isClose()) {
                 break;
             }
         }
@@ -3461,10 +3462,10 @@ class Html2Pdf
         // get height of LEGEND element and make fieldset corrections
         for ($tempPos = $this->_parsePos + 1; $tempPos<count($this->parsingHtml->code); $tempPos++) {
             $action = $this->parsingHtml->code[$tempPos];
-            if ($action['name'] == 'fieldset') {
+            if ($action->getName() == 'fieldset') {
                 break;
             }
-            if ($action['name'] == 'legend' && !$action['close']) {
+            if ($action->getName() == 'legend' && !$action->isClose()) {
                 $legendOpenPos = $tempPos;
 
                 $sub = $this->createSubHTML();
@@ -3475,7 +3476,7 @@ class Html2Pdf
                     $action = $sub->parsingHtml->code[$sub->_parsePos];
                     $sub->_executeAction($action);
 
-                    if ($action['name'] == 'legend' && $action['close']) {
+                    if ($action->getName() == 'legend' && $action->isClose()) {
                         break;
                     }
                 }
@@ -3487,9 +3488,10 @@ class Html2Pdf
 
                 $param['moveTop'] = $legendH / 2;
 
-                $this->parsingHtml->code[$legendOpenPos]['param']['moveTop'] = - ($legendH / 2 + $move);
-                $this->parsingHtml->code[$legendOpenPos]['param']['moveLeft'] = 2 - $this->parsingCss->value['border']['l']['width'] - $this->parsingCss->value['padding']['l'];
-                $this->parsingHtml->code[$legendOpenPos]['param']['moveDown'] = $move;
+                $node = $this->parsingHtml->code[$legendOpenPos];
+                $node->setParam('moveTop', - ($legendH / 2 + $move));
+                $node->setParam('moveLeft', 2 - $this->parsingCss->value['border']['l']['width'] - $this->parsingCss->value['padding']['l']);
+                $node->setParam('moveDown', $move);
                 break;
             }
         }
@@ -4648,15 +4650,12 @@ class Html2Pdf
             $tmpPos = $this->_tempPos;
             $tmpLst1 = $this->parsingHtml->code[$tmpPos+1];
             $tmpLst2 = $this->parsingHtml->code[$tmpPos+2];
-            $this->parsingHtml->code[$tmpPos+1] = array();
-            $this->parsingHtml->code[$tmpPos+1]['name']    = (isset($paramPUCE['src'])) ? 'img' : 'write';
-            $this->parsingHtml->code[$tmpPos+1]['param']    = $paramPUCE;
-            unset($this->parsingHtml->code[$tmpPos+1]['param']['style']['width']);
-            $this->parsingHtml->code[$tmpPos+1]['close']    = 0;
-            $this->parsingHtml->code[$tmpPos+2] = array();
-            $this->parsingHtml->code[$tmpPos+2]['name']    = 'li';
-            $this->parsingHtml->code[$tmpPos+2]['param']    = $paramPUCE;
-            $this->parsingHtml->code[$tmpPos+2]['close']    = 1;
+
+            $name = isset($paramPUCE['src']) ? 'img' : 'write';
+            $params = $paramPUCE;
+            unset($params['style']['width']);
+            $this->parsingHtml->code[$tmpPos+1] = new Node($name, $params, false);
+            $this->parsingHtml->code[$tmpPos+2] = new Node('li', $paramPUCE, true);
             $this->_tag_open_TD($paramPUCE, 'li_sub');
             $this->_tag_close_TD($param);
             $this->_tempPos = $tmpPos;
@@ -4766,11 +4765,11 @@ class Html2Pdf
             self::$_tables[$param['num']]['thead']['code'] = array();
             for ($pos=$this->_tempPos; $pos<count($this->parsingHtml->code); $pos++) {
                 $action = $this->parsingHtml->code[$pos];
-                if (strtolower($action['name'])=='thead') {
-                    $action['name'] = 'thead_sub';
+                if (strtolower($action->getName())=='thead') {
+                    $action->setName('thead_sub');
                 }
                 self::$_tables[$param['num']]['thead']['code'][] = $action;
-                if (strtolower($action['name'])=='thead_sub' && $action['close']) {
+                if (strtolower($action->getName())=='thead_sub' && $action->isClose()) {
                     break;
                 }
             }
@@ -4833,11 +4832,11 @@ class Html2Pdf
             self::$_tables[$param['num']]['tfoot']['code'] = array();
             for ($pos=$this->_tempPos; $pos<count($this->parsingHtml->code); $pos++) {
                 $action = $this->parsingHtml->code[$pos];
-                if (strtolower($action['name'])=='tfoot') {
-                    $action['name'] = 'tfoot_sub';
+                if (strtolower($action->getName())=='tfoot') {
+                    $action->setName('tfoot_sub');
                 }
                 self::$_tables[$param['num']]['tfoot']['code'][] = $action;
-                if (strtolower($action['name'])=='tfoot_sub' && $action['close']) {
+                if (strtolower($action->getName())=='tfoot_sub' && $action->isClose()) {
                     break;
                 }
             }
@@ -5905,7 +5904,7 @@ class Html2Pdf
         $this->_parsePos+= count($level);
         $value = isset($param['value']) ? $param['value'] : 'aut_tag_open_opt_'.(count($this->_lstSelect)+1);
 
-        $this->_lstSelect['options'][$value] = isset($level[0]['param']['txt']) ? $level[0]['param']['txt'] : '';
+        $this->_lstSelect['options'][$value] = $level[0]->getParam('txt', '');
 
         return true;
     }
@@ -6018,7 +6017,7 @@ class Html2Pdf
         $prop = $this->parsingCss->getFormStyle();
 
         $prop['multiline'] = true;
-        $prop['value'] = isset($level[0]['param']['txt']) ? $level[0]['param']['txt'] : '';
+        $prop['value'] = $level[0]->getParam('txt', '');
 
         $this->pdf->TextField($param['name'], $w, $h, $prop, array(), $x, $y);
 
