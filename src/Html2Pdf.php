@@ -23,6 +23,8 @@ use Spipu\Html2Pdf\Parsing\HtmlLexer;
 use Spipu\Html2Pdf\Parsing\TagParser;
 use Spipu\Html2Pdf\Parsing\TextParser;
 use Spipu\Html2Pdf\Tag\TagInterface;
+use Spipu\Html2Pdf\Debug\DebugInterface;
+use Spipu\Html2Pdf\Debug\Debug;
 
 require_once dirname(__FILE__) . '/config/tcpdf.config.php';
 
@@ -47,10 +49,18 @@ class Html2Pdf
     public $parsingHtml = null;
 
     /**
+     * @var Debug
+     */
+    private $debug;
+
+    /**
      * @var HtmlLexer
      */
     private $lexer;
 
+    /**
+     * @var CssConverter
+     */
     private $cssConverter;
 
     protected $_langue           = 'fr';        // locale of the messages
@@ -113,13 +123,6 @@ class Html2Pdf
     protected $_lstField         = array();     // list of the fields
     protected $_lstSelect        = array();     // list of the options of the current select
     protected $_previousCall     = null;        // last action called
-
-    protected $_debugActif       = false;       // flag : mode debug is active
-    protected $_debugOkUsage     = false;       // flag : the function memory_get_usage exist
-    protected $_debugOkPeak      = false;       // flag : the function memory_get_peak_usage exist
-    protected $_debugLevel       = 0;           // level in the debug
-    protected $_debugStartTime   = 0;           // debug start time
-    protected $_debugLastTime    = 0;           // debug stop time
 
     /**
      * @var Html2Pdf
@@ -312,21 +315,18 @@ class Html2Pdf
     /**
      * set the debug mode to On
      *
-     * @access public
+     * @param DebugInterface $debugObject
+     *
      * @return Html2Pdf $this
      */
-    public function setModeDebug()
+    public function setModeDebug(DebugInterface $debugObject = null)
     {
-        $time = microtime(true);
-
-        $this->_debugActif     = true;
-        $this->_debugOkUsage   = function_exists('memory_get_usage');
-        $this->_debugOkPeak    = function_exists('memory_get_peak_usage');
-        $this->_debugStartTime = $time;
-        $this->_debugLastTime  = $time;
-
-        $this->_DEBUG_stepline('step', 'time', 'delta', 'memory', 'peak');
-        $this->_DEBUG_add('Init debug');
+        if (is_null($debugObject)) {
+            $this->debug = new Debug();
+        } else {
+            $this->debug = $debugObject;
+        }
+        $this->debug->start();
 
         return $this;
     }
@@ -448,8 +448,8 @@ class Html2Pdf
         $this->_cleanUp();
 
         // if on debug mode
-        if ($this->_debugActif) {
-            $this->_DEBUG_add('Before output');
+        if (!is_null($this->debug)) {
+            $this->debug->stop();
             $this->pdf->Close();
             exit;
         }
@@ -722,65 +722,6 @@ class Html2Pdf
         }
     }
 
-    /**
-     * add a debug step
-     *
-     * @access protected
-     * @param  string  $name step name
-     * @param  boolean $level (true=up, false=down, null=nothing to do)
-     * @return $this
-     */
-    protected function _DEBUG_add($name, $level = null)
-    {
-        // if true : UP
-        if ($level===true) {
-            $this->_debugLevel++;
-        }
-
-        $name   = str_repeat('  ', $this->_debugLevel). $name.($level===true ? ' Begin' : ($level===false ? ' End' : ''));
-        $time  = microtime(true);
-        $usage = ($this->_debugOkUsage ? memory_get_usage() : 0);
-        $peak  = ($this->_debugOkPeak ? memory_get_peak_usage() : 0);
-
-        $this->_DEBUG_stepline(
-            $name,
-            number_format(($time - $this->_debugStartTime)*1000, 1, '.', ' ').' ms',
-            number_format(($time - $this->_debugLastTime)*1000, 1, '.', ' ').' ms',
-            number_format($usage/1024, 1, '.', ' ').' Ko',
-            number_format($peak/1024, 1, '.', ' ').' Ko'
-        );
-
-        $this->_debugLastTime = $time;
-
-        // it false : DOWN
-        if ($level===false) {
-            $this->_debugLevel--;
-        }
-
-        return $this;
-    }
-
-    /**
-     * display a debug line
-     *
-     *
-     * @access protected
-     * @param  string $name
-     * @param  string $timeTotal
-     * @param  string $timeStep
-     * @param  string $memoryUsage
-     * @param  string $memoryPeak
-     */
-    protected function _DEBUG_stepline($name, $timeTotal, $timeStep, $memoryUsage, $memoryPeak)
-    {
-        $txt = str_pad($name, 30, ' ', STR_PAD_RIGHT).
-                str_pad($timeTotal, 12, ' ', STR_PAD_LEFT).
-                str_pad($timeStep, 12, ' ', STR_PAD_LEFT).
-                str_pad($memoryUsage, 15, ' ', STR_PAD_LEFT).
-                str_pad($memoryPeak, 15, ' ', STR_PAD_LEFT);
-
-        echo '<pre style="padding:0; margin:0">'.$txt.'</pre>';
-    }
 
     /**
      * get the Min and Max X, for Y (use the float margins)
@@ -2692,8 +2633,8 @@ class Html2Pdf
         if ($this->_isForOneLine) {
             return false;
         }
-        if ($this->_debugActif) {
-            $this->_DEBUG_add('PAGE '.($this->_page+1), true);
+        if (!is_null($this->debug)) {
+            $this->debug->addStep('PAGE '.($this->_page+1), true);
         }
 
         $newPageSet= (!isset($param['pageset']) || $param['pageset']!='old');
@@ -2881,8 +2822,8 @@ class Html2Pdf
         $this->parsingCss->load();
         $this->parsingCss->fontSet();
 
-        if ($this->_debugActif) {
-            $this->_DEBUG_add('PAGE '.$this->_page, false);
+        if (!is_null($this->debug)) {
+            $this->debug->addStep('PAGE '.$this->_page, false);
         }
 
         return true;
@@ -3180,8 +3121,8 @@ class Html2Pdf
         if ($this->_isForOneLine) {
             return false;
         }
-        if ($this->_debugActif) {
-            $this->_DEBUG_add(strtoupper($other), true);
+        if (!is_null($this->debug)) {
+            $this->debug->addStep(strtoupper($other), true);
         }
 
         $this->parsingCss->save();
@@ -3574,8 +3515,8 @@ class Html2Pdf
         if ($block) {
             $this->_tag_open_BR(array());
         }
-        if ($this->_debugActif) {
-            $this->_DEBUG_add(strtoupper($other), false);
+        if (!is_null($this->debug)) {
+            $this->debug->addStep(strtoupper($other), false);
         }
 
         return true;
@@ -3704,8 +3645,8 @@ class Html2Pdf
      */
     protected function _tag_open_QRCODE($param)
     {
-        if ($this->_debugActif) {
-            $this->_DEBUG_add('QRCODE');
+        if (!is_null($this->debug)) {
+            $this->debug->addStep('QRCODE');
         }
 
         if (!isset($param['value'])) {
@@ -5055,8 +4996,8 @@ class Html2Pdf
 
         // if we are in a SUB html => prepare the properties of the table
         if ($this->_subPart) {
-            if ($this->_debugActif) {
-                $this->_DEBUG_add('Table n'.$param['num'], true);
+            if (!is_null($this->debug)) {
+                $this->debug->addStep('Table '.$param['num'], true);
             }
             self::$_tables[$param['num']] = array();
             self::$_tables[$param['num']]['border']          = isset($param['border']) ? $this->parsingCss->readBorder($param['border']) : null;
@@ -5270,8 +5211,8 @@ class Html2Pdf
 
             $this->_loadMargin();
 
-            if ($this->_debugActif) {
-                $this->_DEBUG_add('Table '.$param['num'], false);
+            if (!is_null($this->debug)) {
+                $this->debug->addStep('Table '.$param['num'], false);
             }
         }
 
@@ -6199,8 +6140,8 @@ class Html2Pdf
         if ($this->_isForOneLine) {
             return false;
         }
-        if ($this->_debugActif) {
-            $this->_DEBUG_add('DRAW', true);
+        if (!is_null($this->debug)) {
+            $this->debug->addStep('DRAW', true);
         }
 
         $this->parsingCss->save();
@@ -6379,8 +6320,8 @@ class Html2Pdf
         if ($block) {
             $this->_tag_open_BR(array());
         }
-        if ($this->_debugActif) {
-            $this->_DEBUG_add('DRAW', false);
+        if (!is_null($this->debug)) {
+            $this->debug->addStep('DRAW', false);
         }
 
         $this->_isInDraw = null;
