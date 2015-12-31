@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - parsing Html class
+ * Html2Pdf Library
  *
  * HTML => PDF converter
  * distributed under the LGPL License
@@ -21,7 +21,7 @@ class HtmlLexer
      *
      * @param string $html HTML code to tokenize
      *
-     * @return Token[]
+     * @return TokenStream
      */
     public function tokenize($html)
     {
@@ -76,6 +76,6 @@ class HtmlLexer
             $tokens[] = new Token('txt', $str);
         }
 
-        return $tokens;
+        return new TokenStream($tokens);
     }
 }

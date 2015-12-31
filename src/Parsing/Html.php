@@ -21,6 +21,11 @@ class Html
     const HTML_TAB = '        ';
 
     /**
+     * @var TokenStream
+     */
+    protected $tokenStream;
+
+    /**
      * @var TagParser
      */
     protected $tagParser;
@@ -57,12 +62,13 @@ class Html
     /**
      * parse the HTML code
      *
-     * @param Token[] $tokens A list of tokens to parse
+     * @param TokenStream $tokens A list of tokens to parse
      *
      * @throws HtmlParsingException
      */
-    public function parse($tokens)
+    public function parse(TokenStream $tokens)
     {
+        $this->tokenStream = $tokens;
         $parents = array();
 
         // flag : are we in a <pre> Tag ?
@@ -75,12 +81,13 @@ class Html
         $actions = array();
 
         // get the actions from the html tokens
-        foreach ($tokens as $token) {
+        while (($token = $this->tokenStream->current()) !== null) {
             if ($token->getType() == 'code') {
                 $actions = array_merge($actions, $this->getTagAction($token, $parents));
             } elseif ($token->getType() == 'txt') {
                 $actions = array_merge($actions, $this->getTextAction($token));
             }
+            $this->tokenStream->next();
         }
 
         // for each identified action, we have to clean up the begin and the end of the texte

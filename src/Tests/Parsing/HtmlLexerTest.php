@@ -30,14 +30,17 @@ class HtmlLexerTest extends \PHPUnit_Framework_TestCase
     public function testTokenize($html, $expectedTokens)
     {
         $lexer = new HtmlLexer();
-        $tokens = $lexer->tokenize($html);
+        $tokenStream = $lexer->tokenize($html);
 
-        $this->assertEquals(count($expectedTokens), count($tokens));
+        $this->assertEquals(count($expectedTokens), $tokenStream->count());
 
-        for ($i = 0; $i < count($tokens); $i++) {
-            $this->assertEquals($expectedTokens[$i][0], $tokens[$i]->getType());
-            $this->assertEquals($expectedTokens[$i][1], $tokens[$i]->getData());
-            $this->assertEquals($expectedTokens[$i][2], $tokens[$i]->getLine());
+        $i = 0;
+        while ($tokenStream->current() !== null) {
+            $this->assertEquals($expectedTokens[$i][0], $tokenStream->current()->getType());
+            $this->assertEquals($expectedTokens[$i][1], $tokenStream->current()->getData());
+            $this->assertEquals($expectedTokens[$i][2], $tokenStream->current()->getLine());
+            $i++;
+            $tokenStream->next();
         }
     }
 
