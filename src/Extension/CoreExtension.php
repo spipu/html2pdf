@@ -39,6 +39,7 @@ class CoreExtension implements ExtensionInterface
                 new \Spipu\Html2Pdf\Tag\Address(),
                 new \Spipu\Html2Pdf\Tag\B(),
                 new \Spipu\Html2Pdf\Tag\Big(),
+                new \Spipu\Html2Pdf\Tag\Bookmark(),
                 new \Spipu\Html2Pdf\Tag\Cite(),
                 new \Spipu\Html2Pdf\Tag\Del(),
                 new \Spipu\Html2Pdf\Tag\Em(),

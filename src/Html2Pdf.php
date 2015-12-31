@@ -309,6 +309,11 @@ class Html2Pdf
 
         $tagObject = $this->tagObjects[$tagName];
         $tagObject->setParsingCssObject($this->parsingCss);
+        $tagObject->setCssConverterObject($this->cssConverter);
+        $tagObject->setPdfObject($this->pdf);
+        if (!is_null($this->debug)) {
+            $tagObject->setDebugObject($this->debug);
+        }
 
         return $tagObject;
     }
@@ -3680,42 +3685,6 @@ class Html2Pdf
      * @return boolean
      */
     protected function _tag_close_QRCODE($param)
-    {
-        // there is nothing to do here
-
-        return true;
-    }
-
-    /**
-     * tag : BOOKMARK
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_BOOKMARK($param)
-    {
-        $titre = isset($param['title']) ? trim($param['title']) : '';
-        $level = isset($param['level']) ? floor($param['level']) : 0;
-
-        if ($level<0) {
-            $level = 0;
-        }
-        if ($titre) {
-            $this->pdf->Bookmark($titre, $level, -1);
-        }
-
-        return true;
-    }
-
-    /**
-     * tag : BOOKMARK
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_BOOKMARK($param)
     {
         // there is nothing to do here
 
