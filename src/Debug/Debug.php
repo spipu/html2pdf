@@ -1,6 +1,6 @@
 <?php
 /**
- * Html2Pdf Library - Debug
+ * Html2Pdf Library
  *
  * HTML => PDF converter
  * distributed under the LGPL License
@@ -12,6 +12,9 @@
 
 namespace Spipu\Html2Pdf\Debug;
 
+/**
+ * Class Debug
+ */
 class Debug implements DebugInterface
 {
     /**
