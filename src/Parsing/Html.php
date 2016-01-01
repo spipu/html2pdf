@@ -26,6 +26,11 @@ class Html
     protected $tokenStream;
 
     /**
+     * @var Node
+     */
+    public $root;
+
+    /**
      * @var TagParser
      */
     protected $tagParser;
@@ -69,7 +74,6 @@ class Html
     public function parse(TokenStream $tokens)
     {
         $this->tokenStream = $tokens;
-        $parents = array();
 
         // flag : are we in a <pre> Tag ?
         $this->tagPreIn = false;
@@ -80,15 +84,7 @@ class Html
          */
         $actions = array();
 
-        // get the actions from the html tokens
-        while (($token = $this->tokenStream->current()) !== null) {
-            if ($token->getType() == 'code') {
-                $actions = array_merge($actions, $this->getTagAction($token, $parents));
-            } elseif ($token->getType() == 'txt') {
-                $actions = array_merge($actions, $this->getTextAction($token));
-            }
-            $this->tokenStream->next();
-        }
+        $rootNode = $this->parseLevel();
 
         // for each identified action, we have to clean up the begin and the end of the texte
         // based on tags that surround it
@@ -104,6 +100,7 @@ class Html
             'option'
         );
 
+        /* todo manage this through nodes or delete this logic
         // foreach action
         $nb = count($actions);
         for ($k = 0; $k < $nb; $k++) {
@@ -124,23 +121,74 @@ class Html
                     unset($actions[$k]);
                 }
             }
-        }
-
-        // if we are not on the level 0 => HTML validator ERROR
-        if (count($parents)) {
-            if (count($parents)>1) {
-                $errorMsg = 'The following tags have not been closed:';
-            } else {
-                $errorMsg = 'The following tag has not been closed:';
-            }
-
-            $e = new HtmlParsingException($errorMsg.' '.implode(', ', $parents));
-            $e->setInvalidTag($parents[0]);
-            throw $e;
-        }
+        }*/
 
         // save the actions to do
         $this->code = array_values($actions);
+        $this->root = $rootNode;
+    }
+
+    /**
+     * @param Token $tokenOpen
+     *
+     * @return Node
+     * @throws HtmlParsingException
+     * @throws \Exception
+     */
+    protected function parseLevel($tokenOpen = null)
+    {
+        $tagsNotClosed = array(
+            'br', 'hr', 'img', 'col',
+            'input', 'link', // TODO option was removed, should we keep it ?
+            'circle', 'ellipse', 'path', 'rect', 'line', 'polygon', 'polyline'
+        );
+
+        if ($tokenOpen) {
+            list($nodeName, $nodeParam) = $this->tagParser->analyzeTag($tokenOpen->getData());
+            if ($tokenOpen->getType() == Token::TAG_AUTOCLOSE_TYPE || in_array($nodeName, $tagsNotClosed)) {
+                return new Node($nodeName, $nodeParam);
+            }
+        } else {
+            $nodeParam = array();
+            $nodeName = 'root';
+        }
+
+        $closed = $tokenOpen === null;
+        $nodes = array();
+        while (($token = $this->tokenStream->current()) !== null) {
+            $this->tokenStream->next();
+            if ($token->getType() == Token::TAG_OPEN_TYPE) {
+                // if tag open -> children to parse again
+                $nodes[] = $this->parseLevel($token);
+            } elseif ($token->getType() == Token::TAG_CLOSE_TYPE) {
+                list($name, $param) = $this->tagParser->analyzeTag($token->getData());
+                if ($tokenOpen && $name == $nodeName) { // if next token is close tag for $token, we got the children, exit
+                    $closed = true;
+                    break;
+                } else { // closing tag not matching
+                    throw new HtmlParsingException('Unexpected closing tag:'. $name . ' expected '. $nodeName);
+                }
+            } elseif ($token->getType() == Token::TAG_AUTOCLOSE_TYPE) {
+                $nodes[] = $this->parseLevel($token);
+            } elseif ($token->getType() == Token::TEXT_TYPE) {
+                $text = trim($token->getData());
+                if ($text == '') {
+                    continue; // TODO check if the $tokenOpen expects inline content and keep empty space in this case
+                }
+                $nodes[] = new Node('write', array('txt' => $text));
+            } else {
+                throw new HtmlParsingException('Unknown token type '.$token->getType());
+            }
+        }
+
+        if (!$closed) {
+            $errorMsg = 'The following tag has not been closed: ';
+            $e = new HtmlParsingException($errorMsg. $nodeName);
+            $e->setInvalidTag($nodeName);
+            throw $e;
+        }
+
+        return new Node($nodeName, $nodeParam, $nodes);
     }
 
     /**

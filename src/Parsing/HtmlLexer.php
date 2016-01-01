@@ -52,11 +52,19 @@ class HtmlLexer
             if ($parse[1][0]) {
                 // save the previous text if it exists
                 if ($str !== '') {
-                    $tokens[] = new Token('txt', $str);
+                    $tokens[] = new Token(Token::TEXT_TYPE, $str);
+                }
+                $tag = trim($parse[1][0]);
+                if (substr($tag, 1, 1) === '/') {
+                    $type = Token::TAG_CLOSE_TYPE;
+                } elseif (substr($tag, -2, 1) === '/') {
+                    $type = Token::TAG_AUTOCLOSE_TYPE;
+                } else {
+                    $type = Token::TAG_OPEN_TYPE;
                 }
 
                 // save the tag, with the offset
-                $tokens[] = new Token('code', trim($parse[1][0]), $line);
+                $tokens[] = new Token($type, $tag, $line);
                 $line += substr_count($parse[1][0], "\n");
 
                 // init the current text
@@ -73,7 +81,7 @@ class HtmlLexer
         }
         // if a text is present in the end, we save it
         if ($str != '') {
-            $tokens[] = new Token('txt', $str);
+            $tokens[] = new Token(Token::TEXT_TYPE, $str);
         }
 
         return new TokenStream($tokens);

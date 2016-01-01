@@ -46,7 +46,6 @@ class TagParser
             throw $e;
         }
         $close     = ($match[1] == '/' ? true : false);
-        $autoclose = preg_match('/\/>$/isU', $code);
         $name      = strtolower($match[2]);
 
         // required parameters (depends on the tag name)
@@ -183,7 +182,7 @@ class TagParser
         }
 
         // return the new action to do
-        return new Node($name, $param, $close, $autoclose);
+        return array($name, $param);
     }
 
     /**

@@ -18,6 +18,11 @@ namespace Spipu\Html2Pdf\Parsing;
  */
 class Token
 {
+    const TAG_OPEN_TYPE = 1;
+    const TAG_CLOSE_TYPE = 2;
+    const TAG_AUTOCLOSE_TYPE = 3;
+    const TEXT_TYPE = 4;
+
     /**
      * @var string
      */

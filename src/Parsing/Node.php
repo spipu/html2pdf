@@ -29,14 +29,9 @@ class Node
     private $params;
 
     /**
-     * @var bool
+     * @var array
      */
-    private $close;
-
-    /**
-     * @var bool
-     */
-    private $autoClose;
+    private $children;
 
     /**
      * @var int
@@ -46,15 +41,13 @@ class Node
     /**
      * @param string $name
      * @param array  $params
-     * @param bool   $close
-     * @param bool   $autoClose
+     * @param array  $children
      */
-    public function __construct($name, $params, $close, $autoClose = false)
+    public function __construct($name, $params, $children = array())
     {
         $this->name = $name;
         $this->params = $params;
-        $this->close = $close;
-        $this->autoClose = $autoClose;
+        $this->children = $children;
     }
 
     /**
@@ -107,34 +100,11 @@ class Node
     }
 
     /**
-     * @param array $params
+     * @return Node[]
      */
-    public function setParams($params)
+    public function getChildren()
     {
-        $this->params = $params;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isClose()
-    {
-        return $this->close;
-    }
-
-    /**
-     * @param bool $close
-     */
-    public function setClose($close)
-    {
-        $this->close = $close;
-    }
-    /**
-     * @return bool
-     */
-    public function isAutoClose()
-    {
-        return $this->autoClose;
+        return $this->children;
     }
 
     /**
