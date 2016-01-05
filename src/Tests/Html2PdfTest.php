@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Spipu\Html2Pdf\Tests;
 
