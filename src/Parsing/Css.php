@@ -674,7 +674,7 @@ class Css
                 case 'font-family':
                     $val = explode(',', $val);
                     $val = trim($val[0]);
-                    if ($val) {
+                    if ($val && $val != 'inherit') {
                         $this->value['font-family'] = $val;
                     }
                     break;
