@@ -22,7 +22,7 @@
         "squizlabs/php_codesniffer": "~2"
     },
     "suggest": {
-        "fagundes/zff-html2pdf": "zff-html2pdf module ~0.1.1, if you need to integrate Html2Pdf with Zend Framework 2 (zf2)",
+        "fagundes/zff-html2pdf": "if you need to integrate Html2Pdf with Zend Framework 2 (zf2)",
         "ext-gd": "Allows to embed images into the PDF"
     },
     "autoload": {
