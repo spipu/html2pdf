@@ -14,7 +14,6 @@ namespace Spipu\Html2Pdf\Parsing;
 
 use Spipu\Html2Pdf\CssConverter;
 use Spipu\Html2Pdf\MyPdf;
-use TCPDF;
 
 class Css
 {
@@ -29,13 +28,14 @@ class Css
     protected $cssConverter;
 
     /**
-     * reference to the pdf object
-     * @var TCPDF
+     * Reference to the pdf object
+     *
+     * @var MyPdf
      */
-    protected $_pdf         = null;
+    protected $pdf         = null;
 
-    protected $_onlyLeft    = false;   // flag if we are in a sub html => only "text-align:left" is used
-    protected $_defaultFont = null;    // default font to use if the asked font does not exist
+    protected $onlyLeft    = false; // flag if we are in a sub html => only "text-align:left" is used
+    protected $defaultFont = null;  // default font to use if the asked font does not exist
 
     public $value        = array(); // current values
     public $css          = array(); // css values
@@ -52,7 +52,7 @@ class Css
     public function __construct(&$pdf, TagParser $tagParser, CssConverter $cssConverter)
     {
         $this->cssConverter = $cssConverter;
-        $this->_init();
+        $this->init();
         $this->setPdfParent($pdf);
         $this->tagParser = $tagParser;
     }
@@ -61,57 +61,58 @@ class Css
      * Set the $pdf parent object
      *
      * @param  MyPdf &$pdf reference to the Html2Pdf parent
+     *
+     * @return void
      */
     public function setPdfParent(&$pdf)
     {
-        $this->_pdf = &$pdf;
+        $this->pdf = &$pdf;
     }
 
     /**
      * Inform that we want only "test-align:left" because we are in a sub HTML
      *
-     * @access public
+     * @return void
      */
     public function setOnlyLeft()
     {
         $this->value['text-align'] = 'left';
-        $this->_onlyLeft = true;
+        $this->onlyLeft = true;
     }
 
     /**
      * Get the vales of the parent, if exist
      *
      * @return array CSS values
-     * @access public
      */
     public function getOldValues()
     {
         return isset($this->table[count($this->table)-1]) ? $this->table[count($this->table)-1] : $this->value;
     }
 
-    /**
-    * define the Default Font to use, if the font does not exist, or if no font asked
+   /**
+    * Define the Default Font to use, if the font does not exist, or if no font asked
     *
-    * @param  string  default font-family. If null : Arial for no font asked, and error fot ont does not exist
+    * @param string  default font-family. If null : Arial for no font asked, and error fot ont does not exist
+    *
     * @return string  old default font-family
-    * @access public
     */
     public function setDefaultFont($default = null)
     {
-        $old = $this->_defaultFont;
-        $this->_defaultFont = $default;
+        $old = $this->defaultFont;
+        $this->defaultFont = $default;
         if ($default) {
             $this->value['font-family'] = $default;
         }
         return $old;
     }
 
-     /**
+    /**
      * Init the object
      *
-     * @access protected
+     * @return void
      */
-    protected function _init()
+    protected function init()
     {
         // init the Style
         $this->table = array();
@@ -125,7 +126,7 @@ class Css
     /**
      * Init the CSS Style
      *
-     * @access public
+     * @return void
      */
     public function initStyle()
     {
@@ -164,7 +165,12 @@ class Css
         $this->value['overflow']         = 'visible';
 
         $this->value['color']            = array(0, 0, 0);
-        $this->value['background']       = array('color' => null, 'image' => null, 'position' => null, 'repeat' => null);
+        $this->value['background']       = array(
+            'color'    => null,
+            'image'    => null,
+            'position' => null,
+            'repeat'   => null
+        );
         $this->value['border']           = array();
         $this->value['padding']          = array();
         $this->value['margin']           = array();
@@ -180,8 +186,9 @@ class Css
     /**
      * Init the CSS Style without legacy
      *
-     * @param  string  tag name
-     * @access public
+     * @param string tag name
+     *
+     * @return void
      */
     public function resetStyle($tagName = '')
     {
@@ -191,7 +198,6 @@ class Css
             '1px' => $this->cssConverter->convertToMM('1px'),
             '5px' => $this->cssConverter->convertToMM('5px'),
         );
-
 
         // prepare the Collapse attribute
         $collapse = isset($this->value['border']['collapse']) ? $this->value['border']['collapse'] : false;
@@ -317,7 +323,7 @@ class Css
     /**
      * Init the PDF Font
      *
-     * @access public
+     * @return void
      */
     public function fontSet()
     {
@@ -332,7 +338,7 @@ class Css
         // font style
         $style = $b.$i;
 
-        if ($this->_defaultFont) {
+        if ($this->defaultFont) {
             if ($family=='arial') {
                 $family='helvetica';
             } elseif ($family=='symbol' || $family=='zapfdingbats') {
@@ -340,8 +346,8 @@ class Css
             }
 
             $fontkey = $family.$style;
-            if (!$this->_pdf->isLoadedFont($fontkey)) {
-                $family = $this->_defaultFont;
+            if (!$this->pdf->isLoadedFont($fontkey)) {
+                $family = $this->defaultFont;
             }
         }
 
@@ -359,29 +365,29 @@ class Css
         $size = 72 * $size / 25.4;
 
         // apply the font
-        $this->_pdf->SetFont($family, $style, $this->value['mini-size']*$size);
-        $this->_pdf->setTextColorArray($this->value['color']);
+        $this->pdf->SetFont($family, $style, $this->value['mini-size']*$size);
+        $this->pdf->setTextColorArray($this->value['color']);
         if ($this->value['background']['color']) {
-            $this->_pdf->setFillColorArray($this->value['background']['color']);
+            $this->pdf->setFillColorArray($this->value['background']['color']);
         } else {
-            $this->_pdf->setFillColor(255);
+            $this->pdf->setFillColor(255);
         }
     }
 
-     /**
-     * add a level in the CSS history
+    /**
+     * Add a level in the CSS history
      *
-     * @access public
+     * @return void
      */
     public function save()
     {
         array_push($this->table, $this->value);
     }
 
-     /**
-     * remove a level in the CSS history
+    /**
+     * Remove a level in the CSS history
      *
-     * @access public
+     * @return void
      */
     public function load()
     {
@@ -390,28 +396,28 @@ class Css
         }
     }
 
-     /**
-     * restore the Y position (used after a span)
+    /**
+     * Restore the Y position (used after a span)
      *
-     * @access public
+     * @return void
      */
     public function restorePosition()
     {
-        if ($this->value['y']==$this->_pdf->getY()) {
-            $this->_pdf->setY($this->value['yc'], false);
+        if ($this->value['y']==$this->pdf->getY()) {
+            $this->pdf->setY($this->value['yc'], false);
         }
     }
 
-     /**
-     * set the New position for the current Tag
+    /**
+     * Set the New position for the current Tag
      *
-     * @access public
+     * @return void
      */
     public function setPosition()
     {
         // get the current position
-        $currentX = $this->_pdf->getX();
-        $currentY = $this->_pdf->getY();
+        $currentX = $this->pdf->getX();
+        $currentY = $this->pdf->getY();
 
         // save it
         $this->value['xc'] = $currentX;
@@ -446,8 +452,8 @@ class Css
                 $this->value['x'] = $currentX + $x;
                 $this->value['y'] = $currentY + $y;
             } else {
-                $this->value['x'] = $this->_getLastAbsoluteX()+$x;
-                $this->value['y'] = $this->_getLastAbsoluteY()+$y;
+                $this->value['x'] = $this->getLastAbsoluteX()+$x;
+                $this->value['y'] = $this->getLastAbsoluteY()+$y;
             }
         } else {
             $this->value['x'] = $currentX;
@@ -461,14 +467,13 @@ class Css
         }
 
         // save the new position
-        $this->_pdf->setXY($this->value['x'], $this->value['y']);
+        $this->pdf->setXY($this->value['x'], $this->value['y']);
     }
 
-     /**
-     * Analise the CSS style to convert it into Form style
+    /**
+     * Analyse the CSS style to convert it into Form style
      *
-     * @access public
-     * @param  array    styles
+     * @return array styles
      */
     public function getFormStyle()
     {
@@ -503,12 +508,13 @@ class Css
         return $prop;
     }
 
-     /**
+    /**
      * Analise the CSS style to convert it into SVG style
      *
-     * @access public
-     * @param  string   tag name
-     * @param  array    styles
+     * @param string tag name
+     * @param array  styles
+     *
+     * @return array svg style
      */
     public function getSvgStyle($tagName, &$param)
     {
@@ -565,7 +571,7 @@ class Css
         }
 
         // CSS style
-        $styles = $this->_getFromCSS();
+        $styles = $this->getFromCSS();
 
         // adding the style from the tag
         $styles = array_merge($styles, $param['style']);
@@ -587,12 +593,13 @@ class Css
     }
 
     /**
-     * analyse the css properties from the HTML parsing
+     * Analyse the CSS properties from the HTML parsing
      *
-     * @access public
-     * @param  string  $tagName
-     * @param  array   $param
-     * @param  array   $legacy
+     * @param string $tagName
+     * @param array  $param
+     * @param array  $legacy
+     *
+     * @return boolean
      */
     public function analyse($tagName, &$param, $legacy = null)
     {
@@ -640,7 +647,7 @@ class Css
         }
 
         // get the css styles from class
-        $styles = $this->_getFromCSS();
+        $styles = $this->getFromCSS();
 
         // merge with the css styles from tag
         $styles = array_merge($styles, $param['style']);
@@ -782,7 +789,7 @@ class Css
                         }
                     }
                     $val = array_values($val);
-                    $this->_duplicateBorder($val);
+                    $this->duplicateBorder($val);
                     $this->value['padding']['t'] = $this->cssConverter->convertToMM($val[0], 0);
                     $this->value['padding']['r'] = $this->cssConverter->convertToMM($val[1], 0);
                     $this->value['padding']['b'] = $this->cssConverter->convertToMM($val[2], 0);
@@ -820,7 +827,7 @@ class Css
                         }
                     }
                     $val = array_values($val);
-                    $this->_duplicateBorder($val);
+                    $this->duplicateBorder($val);
                     $this->value['margin']['t'] = $this->cssConverter->convertToMM($val[0], 0);
                     $this->value['margin']['r'] = $this->cssConverter->convertToMM($val[1], 0);
                     $this->value['margin']['b'] = $this->cssConverter->convertToMM($val[2], 0);
@@ -858,7 +865,7 @@ class Css
                             $val[$valK] = null;
                         }
                     }
-                    $this->_duplicateBorder($val);
+                    $this->duplicateBorder($val);
                     if ($val[0]) {
                         $this->value['border']['t']['type'] = $val[0];
                     }
@@ -907,7 +914,7 @@ class Css
                             $val[$valK] = null;
                         }
                     }
-                    $this->_duplicateBorder($val);
+                    $this->duplicateBorder($val);
                     if (is_array($val[0])) {
                         $this->value['border']['t']['color'] = $val[0];
                     }
@@ -960,7 +967,7 @@ class Css
                     foreach ($val as $valK => $valV) {
                             $val[$valK] = $this->cssConverter->convertToMM($valV, 0);
                     }
-                    $this->_duplicateBorder($val);
+                    $this->duplicateBorder($val);
                     if ($val[0]) {
                         $this->value['border']['t']['width'] = $val[0];
                     }
@@ -1185,12 +1192,15 @@ class Css
         }
 
         // force the text align to left, if asked by html2pdf
-        if ($this->_onlyLeft) {
+        if ($this->onlyLeft) {
             $this->value['text-align'] = 'left';
         }
 
         // correction on the width (quick box)
-        if ($noWidth && in_array($tagName, array('div', 'blockquote', 'fieldset')) && $this->value['position']!='absolute') {
+        if ($noWidth
+            && in_array($tagName, array('div', 'blockquote', 'fieldset'))
+            && $this->value['position']!='absolute'
+        ) {
             $this->value['width'] = $this->getLastWidth();
             $this->value['width']-= $this->value['margin']['l'] + $this->value['margin']['r'];
         } else {
@@ -1261,11 +1271,10 @@ class Css
         return $return;
     }
 
-     /**
-     * get the height of the current line
+    /**
+     * Get the height of the current line
      *
-     * @access public
-     * @return float $height in mm
+     * @return float height in mm
      */
     public function getLineHeight()
     {
@@ -1276,12 +1285,12 @@ class Css
         return $this->cssConverter->convertToMM($val, $this->value['font-size']);
     }
 
-     /**
-     * get the width of the parent
+    /**
+     * Get the width of the parent
      *
-     * @access public
      * @param  boolean $mode true => adding padding and border
-     * @return float $width in mm
+     *
+     * @return float width in mm
      */
     public function getLastWidth($mode = false)
     {
@@ -1295,15 +1304,15 @@ class Css
                 return $w;
             }
         }
-        return $this->_pdf->getW() - $this->_pdf->getlMargin() - $this->_pdf->getrMargin();
+        return $this->pdf->getW() - $this->pdf->getlMargin() - $this->pdf->getrMargin();
     }
 
-     /**
-     * get the height of the parent
+    /**
+     * Get the height of the parent
      *
-     * @access public
      * @param  boolean $mode true => adding padding and border
-     * @return float $height in mm
+     *
+     * @return float height in mm
      */
     public function getLastHeight($mode = false)
     {
@@ -1317,14 +1326,13 @@ class Css
                 return $h;
             }
         }
-        return $this->_pdf->getH() - $this->_pdf->gettMargin() - $this->_pdf->getbMargin();
+        return $this->pdf->getH() - $this->pdf->gettMargin() - $this->pdf->getbMargin();
     }
 
     /**
-     * get the value of the float property
+     * Get the value of the float property
      *
-     * @access public
-     * @return $float left/right
+     * @return string left/right
      */
     public function getFloat()
     {
@@ -1338,10 +1346,10 @@ class Css
     }
 
     /**
-     * get the last value for a specific key
+     * Get the last value for a specific key
      *
-     * @access public
      * @param  string $key
+     *
      * @return mixed
      */
     public function getLastValue($key)
@@ -1355,44 +1363,41 @@ class Css
     }
 
     /**
-     * get the last absolute X
+     * Get the last absolute X
      *
-     * @access protected
-     * @return float $x
+     * @return float x
      */
-    protected function _getLastAbsoluteX()
+    protected function getLastAbsoluteX()
     {
         for ($k=count($this->table)-1; $k>=0; $k--) {
             if ($this->table[$k]['x'] && $this->table[$k]['position']) {
                 return $this->table[$k]['x'];
             }
         }
-        return $this->_pdf->getlMargin();
+        return $this->pdf->getlMargin();
     }
 
     /**
-     * get the last absolute Y
+     * Get the last absolute Y
      *
-     * @access protected
-     * @return float $y
+     * @return float y
      */
-    protected function _getLastAbsoluteY()
+    protected function getLastAbsoluteY()
     {
         for ($k=count($this->table)-1; $k>=0; $k--) {
             if ($this->table[$k]['y'] && $this->table[$k]['position']) {
                 return $this->table[$k]['y'];
             }
         }
-        return $this->_pdf->gettMargin();
+        return $this->pdf->gettMargin();
     }
 
     /**
-     * get the CSS properties of the current tag
+     * Get the CSS properties of the current tag
      *
-     * @access protected
-     * @return array $styles
+     * @return array styles
      */
-    protected function _getFromCSS()
+    protected function getFromCSS()
     {
         // styles to apply
         $styles = array();
@@ -1409,7 +1414,7 @@ class Css
 
         // foreach selectors in the CSS files, verify if it match with the list of selectors
         foreach ($this->cssKeys as $key => $num) {
-            if ($this->_getReccursiveStyle($key, $lst)) {
+            if ($this->getReccursiveStyle($key, $lst)) {
                 $getit[$key] = $num;
             }
         }
@@ -1427,15 +1432,15 @@ class Css
     }
 
     /**
-     * identify if the selector $key match with the list of tag selectors
+     * Identify if the selector $key match with the list of tag selectors
      *
-     * @access protected
      * @param  string   $key CSS selector to analyse
      * @param  array    $lst list of the selectors of each tags
      * @param  string   $next next step of parsing the selector
+     *
      * @return boolean
      */
-    protected function _getReccursiveStyle($key, $lst, $next = null)
+    protected function getReccursiveStyle($key, $lst, $next = null)
     {
         // if next step
         if ($next!==null) {
@@ -1459,13 +1464,13 @@ class Css
             }
 
             // if the end of the key = the selector and the next step is ok => ok
-            if (substr($key, -strlen(' '.$name))==' '.$name && $this->_getReccursiveStyle($key, $lst, $name)) {
+            if (substr($key, -strlen(' '.$name))==' '.$name && $this->getReccursiveStyle($key, $lst, $name)) {
                 return true;
             }
         }
 
         // if we are not in the first step, we analyse the sub steps (the pareng tag of the current tag)
-        if ($next!==null && $this->_getReccursiveStyle($key, $lst, '')) {
+        if ($next!==null && $this->getReccursiveStyle($key, $lst, '')) {
             return true;
         }
 
@@ -1476,9 +1481,9 @@ class Css
     /**
      * Analyse a border
      *
-     * @access  public
      * @param   string $css css border properties
-     * @return  array  border properties
+     *
+     * @return  array border properties
      */
     public function readBorder($css)
     {
@@ -1539,12 +1544,13 @@ class Css
     }
 
     /**
-     * duplicate the borders if needed
+     * Duplicate the borders if needed
      *
-     * @access protected
      * @param  &array $val
+     *
+     * @return void
      */
-    protected function _duplicateBorder(&$val)
+    protected function duplicateBorder(&$val)
     {
         // 1 value => L => RTB
         if (count($val)==1) {
@@ -1564,9 +1570,10 @@ class Css
     /**
      * Analyse a background
      *
-     * @access public
      * @param  string $css css background properties
      * @param  &array $value parsed values (by reference, because, ther is a legacy of the parent CSS properties)
+     *
+     * @return void
      */
     public function convertBackground($css, &$value)
     {
@@ -1628,11 +1635,11 @@ class Css
     }
 
     /**
-     * parse a background color
+     * Parse a background color
      *
-     * @access public
      * @param  string $css
-     * @return string $value
+     *
+     * @return string|null $value
      */
     public function convertBackgroundColor($css)
     {
@@ -1645,11 +1652,11 @@ class Css
     }
 
     /**
-     * parse a background image
+     * Parse a background image
      *
-     * @access public
      * @param  string $css
-     * @return string $value
+     *
+     * @return string|null $value
      */
     public function convertBackgroundImage($css)
     {
@@ -1663,12 +1670,12 @@ class Css
     }
 
     /**
-     * parse a background position
+     * Parse a background position
      *
-     * @access public
      * @param  string $css
-     * @param  &boolean $res flag if conver is ok or not
-     * @return array ($x, $y)
+     * @param  boolean &$res flag if convert is ok or not
+     *
+     * @return array (x, y)
      */
     public function convertBackgroundPosition($css, &$res)
     {
@@ -1737,11 +1744,11 @@ class Css
     }
 
     /**
-     * parse a background repeat
+     * Parse a background repeat
      *
-     * @access public
      * @param  string $css
-     * @return string $value
+     *
+     * @return array|null background repeat as array
      */
     public function convertBackgroundRepeat($css)
     {
@@ -1759,12 +1766,13 @@ class Css
     }
 
     /**
-     * read a css content
+     * Read a css content
      *
-     * @access protected
      * @param  &string $code
+     *
+     * @return void
      */
-    protected function _analyseStyle($code)
+    protected function analyseStyle($code)
     {
         // clean the spaces
         $code = preg_replace('/[\s]+/', ' ', $code);
@@ -1873,7 +1881,7 @@ class Css
                     $content = preg_replace('/url\(([^\\\\][^)]*)\)/isU', 'url('.$urlSelf.'$1)', $content);
                     $content = preg_replace('/url\((\\\\[^)]*)\)/isU', 'url('.$urlMain.'$1)', $content);
                 } else {
-// @TODO correction on url in absolute on a local css content
+                    // @TODO correction on url in absolute on a local css content
                     // $content = preg_replace('/url\(([^)]*)\)/isU', 'url('.dirname($url).'/$1)', $content);
                 }
 
@@ -1895,7 +1903,7 @@ class Css
         }
 
         //analyse the css content
-        $this->_analyseStyle($style);
+        $this->analyseStyle($style);
 
         return $html;
     }
