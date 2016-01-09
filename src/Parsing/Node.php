@@ -107,6 +107,11 @@ class Node
         return $this->children;
     }
 
+    public function setChildren($children)
+    {
+        $this->children = $children;
+    }
+
     /**
      * @return int
      */

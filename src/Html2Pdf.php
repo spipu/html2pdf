@@ -64,6 +64,13 @@ class Html2Pdf
      */
     private $cssConverter;
 
+    /**
+     * The current Node object being processed
+     *
+     * @var Node
+     */
+    private $currentNode;
+
     protected $_langue           = 'fr';        // locale of the messages
     protected $_orientation      = 'P';         // page orientation : Portrait ou Landscape
     protected $_format           = 'A4';        // page format : A4, A3, ...
@@ -847,15 +854,7 @@ class Html2Pdf
             return false;
         }
 
-        $oldParsePos = $this->_parsePos;
-        $oldParseCode = $this->parsingHtml->code;
-
-        $this->_parsePos = 0;
-        $this->parsingHtml->code = $this->_subHEADER;
-        $this->_makeHTMLcode();
-
-        $this->_parsePos = $oldParsePos;
-        $this->parsingHtml->code = $oldParseCode;
+        $this->compile($this->_subHEADER);
     }
 
     /**
@@ -869,17 +868,9 @@ class Html2Pdf
             return false;
         }
 
-        $oldParsePos = $this->_parsePos;
-        $oldParseCode = $this->parsingHtml->code;
-
-        $this->_parsePos = 0;
-        $this->parsingHtml->code = $this->_subFOOTER;
         $this->_isInFooter = true;
-        $this->_makeHTMLcode();
+        $this->compile($this->_subFOOTER);
         $this->_isInFooter = false;
-
-        $this->_parsePos = $oldParsePos;
-        $this->parsingHtml->code = $oldParseCode;
     }
 
     /**
@@ -919,27 +910,18 @@ class Html2Pdf
         $sub = $this->createSubHTML();
         $sub->_saveMargin(0, 0, $sub->pdf->getW()-$wMax);
         $sub->_isForOneLine = true;
-        $sub->_parsePos = $this->_parsePos;
-        $sub->parsingHtml->code = $this->parsingHtml->code;
+        $sub->parsingHtml->root = $this->currentNode;
 
         // if $curr => adapt the current position of the parsing
-        if ($curr !== null && $sub->parsingHtml->code[$this->_parsePos]->getName() == 'write') {
-            $txt = $sub->parsingHtml->code[$this->_parsePos]->getParam('txt');
+        if ($curr !== null && $sub->parsingHtml->root->getName() == 'write') {
+            $txt = $sub->parsingHtml->root->getParam('txt');
             $txt = str_replace('[[page_cu]]', $sub->pdf->getMyNumPage($this->_page), $txt);
-            $sub->parsingHtml->code[$this->_parsePos]->setParam('txt', substr($txt, $curr + 1));
+            $sub->parsingHtml->root->setParam('txt', substr($txt, $curr + 1));
         } else {
-            $sub->_parsePos++;
+            $sub->parsingHtml->root = new Node('root', array(), $this->currentNode->getChildren());
         }
 
-        // for each element of the parsing => load the action
-        $res = null;
-        for ($sub->_parsePos; $sub->_parsePos<count($sub->parsingHtml->code); $sub->_parsePos++) {
-            $action = $sub->parsingHtml->code[$sub->_parsePos];
-            $res = $sub->_executeAction($action);
-            if (!$res) {
-                break;
-            }
-        }
+        $res = $sub->compile($sub->parsingHtml->root);
 
         $w = $sub->_maxX; // max width
         $h = $sub->_maxH; // max height
@@ -1242,6 +1224,33 @@ class Html2Pdf
         }
     }
 
+    protected function compile(Node $parent, $checkTable = true)
+    {
+        if ($checkTable && in_array($parent->getName(), array('table', 'ul', 'ol'))) {
+            //  we will work as a sub HTML to calculate the size of the element
+            $this->_subPart = true;
+            $this->compile($parent, false);
+            $this->_subPart = false;
+        }
+
+        $this->currentNode = $parent;
+        $result = $this->_executeAction($parent, false);
+        if ($this->_isForOneLine && !$result) {
+            return $result;
+        }
+
+        if (!$this->_subPart || $this->_isSubPart || !in_array($parent->getName(), array('td', 'li'))) { // do not process TD content in main object while in subPart mode
+            foreach ($parent->getChildren() as $node) {
+                $this->compile($node);
+            }
+        }
+
+        if ($parent->getName() !== 'write') {
+            $this->currentNode = $parent;
+            $this->_executeAction($parent, true);
+        }
+    }
+
     /**
      * execute the actions to convert the html
      *
@@ -1249,56 +1258,26 @@ class Html2Pdf
      */
     protected function _makeHTMLcode()
     {
-        // foreach elements of the parsing
-        for ($this->_parsePos=0; $this->_parsePos<count($this->parsingHtml->code); $this->_parsePos++) {
-
-            // get the action to do
-            $action = $this->parsingHtml->code[$this->_parsePos];
-
-            // if it is a opening of table / ul / ol
-            if (in_array($action->getName(), array('table', 'ul', 'ol')) && !$action->isClose()) {
-
-                //  we will work as a sub HTML to calculate the size of the element
-                $this->_subPart = true;
-
-                // get the name of the opening tag
-                $tagOpen = $action->getName()
-                ;
-
-                // save the actual pos on the parsing
-                $this->_tempPos = $this->_parsePos;
-
-                // foreach elements, while we are in the opened tag
-                while (isset($this->parsingHtml->code[$this->_tempPos]) && !($this->parsingHtml->code[$this->_tempPos]->getName()==$tagOpen && $this->parsingHtml->code[$this->_tempPos]->isClose())) {
-                    // make the action
-                    $this->_executeAction($this->parsingHtml->code[$this->_tempPos]);
-                    $this->_tempPos++;
-                }
-
-                // execute the closure of the tag
-                if (isset($this->parsingHtml->code[$this->_tempPos])) {
-                    $this->_executeAction($this->parsingHtml->code[$this->_tempPos]);
-                }
-
-                // end of the sub part
-                $this->_subPart = false;
-            }
-
-            // execute the action
-            $this->_executeAction($action);
-        }
+        $this->compile($this->parsingHtml->root);
     }
 
     /**
      * execute the action from the parsing
      *
      * @param Node $action
+     * @param bool $close
+     *
+     * @throws HtmlParsingException
+     * @return bool
      */
-    protected function _executeAction(Node $action)
+    protected function _executeAction(Node $action, $close = false)
     {
         $name = strtoupper($action->getName());
+        if ($name == 'ROOT') {
+            return true;
+        }
 
-        if ($this->_firstPage && $name !== 'PAGE' && !$action->isClose()) {
+        if ($this->_firstPage && $name !== 'PAGE' && !$close) {
             $this->_setNewPage();
         }
 
@@ -1306,21 +1285,22 @@ class Html2Pdf
         $properties = $action->getParams();
 
         // name of the action (old method)
-        $fnc = ($action->isClose() ? '_tag_close_' : '_tag_open_').$name;
+        $fnc = ($close ? '_tag_close_' : '_tag_open_').$name;
 
         $tagObject = $this->getTagObject($action->getName());
 
+        $res = true;
         if (!is_null($tagObject)) {
-            if ($action->isClose()) {
+            if ($close) {
                 $res = $tagObject->close($properties);
             } else {
                 $res = $tagObject->open($properties);
             }
         } elseif (is_callable(array($this, $fnc))) {
             $res = $this->{$fnc}($properties);
-        } else {
+        } elseif (!$close) { // consider only opening tags for errors as some tags are autoclosed
             $e = new HtmlParsingException(
-                'The html tag ['.$action->getName().'] is not known by Html2Pdf not exists.'.
+                'The html tag ['.$name.'] is not known by Html2Pdf not exists.'.
                 'You can create it and push it on the Html2Pdf GitHub project.'
             );
             $e->setInvalidTag($action->getName());
@@ -2804,7 +2784,7 @@ class Html2Pdf
         if ($this->_isForOneLine) {
             return false;
         }
-
+/*
         $this->_subHEADER = array();
         for ($this->_parsePos; $this->_parsePos<count($this->parsingHtml->code); $this->_parsePos++) {
             $action = $this->parsingHtml->code[$this->_parsePos];
@@ -2815,7 +2795,9 @@ class Html2Pdf
             if (strtolower($action->getName()) == 'page_header_sub' && $action->isClose()) {
                 break;
             }
-        }
+        }*/
+        $this->_subHEADER = $this->currentNode;
+        $this->_subHEADER->setName('page_header_sub');
 
         $this->_setPageHeader();
 
@@ -2835,6 +2817,7 @@ class Html2Pdf
             return false;
         }
 
+        /*
         $this->_subFOOTER = array();
         for ($this->_parsePos; $this->_parsePos<count($this->parsingHtml->code); $this->_parsePos++) {
             $action = $this->parsingHtml->code[$this->_parsePos];
@@ -2845,7 +2828,9 @@ class Html2Pdf
             if (strtolower($action->getName())=='page_footer_sub' && $action->isClose()) {
                 break;
             }
-        }
+        }*/
+        $this->_subFOOTER = $this->currentNode;
+        $this->_subFOOTER->setName('page_footer_sub');
 
         $this->_setPageFooter();
 
@@ -2973,7 +2958,7 @@ class Html2Pdf
 
         // we create a sub HTML2PFDF, and we execute on it the content of the footer, to get the height of it
         $sub = $this->createSubHTML();
-        $sub->parsingHtml->code = $this->parsingHtml->getLevel($this->_parsePos);
+        $sub->parsingHtml->root = new Node('root', array(), $this->currentNode->getChildren());
         $sub->_makeHTMLcode();
         $this->pdf->setY($this->pdf->getH() - $sub->_maxY - $this->_defaultBottom - 0.01);
         $this->_destroySubHTML($sub);
@@ -3035,7 +3020,7 @@ class Html2Pdf
 
         // create a sub Html2Pdf to execute the content of the tag, to get the dimensions
         $sub = $this->createSubHTML();
-        $sub->parsingHtml->code = $this->parsingHtml->getLevel($this->_parsePos);
+        $sub->parsingHtml->root = New Node('root', array(), $this->currentNode->getChildren());
         $sub->_makeHTMLcode();
         $y = $this->pdf->getY();
 
@@ -3116,20 +3101,17 @@ class Html2Pdf
         $marge['t'] = $this->parsingCss->value['border']['t']['width'] + $this->parsingCss->value['padding']['t']+0.03;
         $marge['b'] = $this->parsingCss->value['border']['b']['width'] + $this->parsingCss->value['padding']['b']+0.03;
 
-        // extract the content of the div
-        $level = $this->parsingHtml->getLevel($this->_parsePos);
-
         // create a sub Html2Pdf to get the dimensions of the content of the div
         $w = 0;
         $h = 0;
-        if (count($level)) {
-            $sub = $this->createSubHTML();
-            $sub->parsingHtml->code = $level;
-            $sub->_makeHTMLcode();
-            $w = $sub->_maxX;
-            $h = $sub->_maxY;
-            $this->_destroySubHTML($sub);
-        }
+
+        $sub = $this->createSubHTML();
+        $sub->parsingHtml->root = new Node('root', array(), $this->currentNode->getChildren());
+        $sub->_makeHTMLcode();
+        $w = $sub->_maxX;
+        $h = $sub->_maxY;
+        $this->_destroySubHTML($sub);
+
         $wReel = $w;
         $hReel = $h;
 
@@ -4514,21 +4496,17 @@ class Html2Pdf
 
         // if we are in a sub html => prepare. Else : display
         if ($this->_subPart) {
-            // TD for the puce
-            $tmpPos = $this->_tempPos;
-            $tmpLst1 = $this->parsingHtml->code[$tmpPos+1];
-            $tmpLst2 = $this->parsingHtml->code[$tmpPos+2];
-
+            // TD for the bullet point
             $name = isset($paramPUCE['src']) ? 'img' : 'write';
             $params = $paramPUCE;
             unset($params['style']['width']);
-            $this->parsingHtml->code[$tmpPos+1] = new Node($name, $params, false);
-            $this->parsingHtml->code[$tmpPos+2] = new Node('li', $paramPUCE, true);
+
+            $children = $this->currentNode->getChildren();
+            $bulletPoint = new Node($name, $params);
+            $this->currentNode->setChildren(array($bulletPoint));
             $this->_tag_open_TD($paramPUCE, 'li_sub');
             $this->_tag_close_TD($param);
-            $this->_tempPos = $tmpPos;
-            $this->parsingHtml->code[$tmpPos+1] = $tmpLst1;
-            $this->parsingHtml->code[$tmpPos+2] = $tmpLst2;
+            $this->currentNode->setChildren($children);
         } else {
             // TD for the puce
             $this->_tag_open_TD($paramPUCE, 'li_sub');
@@ -5221,19 +5199,16 @@ class Html2Pdf
                 if (count(self::$_tables[$param['num']]['tfoot']['code'])) {
                     $tmpTR = self::$_tables[$param['num']]['tr_curr'];
                     $tmpTD = self::$_tables[$param['num']]['td_curr'];
-                    $oldParsePos = $this->_parsePos;
-                    $oldParseCode = $this->parsingHtml->code;
+                    $oldParseRoot = $this->parsingHtml->root;
 
                     self::$_tables[$param['num']]['tr_curr'] = self::$_tables[$param['num']]['tfoot']['tr'][0];
                     self::$_tables[$param['num']]['td_curr'] = 0;
-                    $this->_parsePos = 0;
-                    $this->parsingHtml->code = self::$_tables[$param['num']]['tfoot']['code'];
+                    $this->parsingHtml->root = self::$_tables[$param['num']]['tfoot']['code'];
                     $this->_isInTfoot = true;
                     $this->_makeHTMLcode();
                     $this->_isInTfoot = false;
 
-                    $this->_parsePos =     $oldParsePos;
-                    $this->parsingHtml->code = $oldParseCode;
+                    $this->parsingHtml->root = $oldParseRoot;
                     self::$_tables[$param['num']]['tr_curr'] = $tmpTR;
                     self::$_tables[$param['num']]['td_curr'] = $tmpTD;
                 }
@@ -5272,19 +5247,16 @@ class Html2Pdf
                 self::$_tables[$param['num']]['new_page'] = false;
                 $tmpTR = self::$_tables[$param['num']]['tr_curr'];
                 $tmpTD = self::$_tables[$param['num']]['td_curr'];
-                $oldParsePos = $this->_parsePos;
-                $oldParseCode = $this->parsingHtml->code;
+                $oldParseRoot = $this->parsingHtml->root;
 
                 self::$_tables[$param['num']]['tr_curr'] = self::$_tables[$param['num']]['thead']['tr'][0];
                 self::$_tables[$param['num']]['td_curr'] = 0;
-                $this->_parsePos = 0;
-                $this->parsingHtml->code = self::$_tables[$param['num']]['thead']['code'];
+                $this->parsingHtml->root = self::$_tables[$param['num']]['thead']['code'];
                 $this->_isInThead = true;
                 $this->_makeHTMLcode();
                 $this->_isInThead = false;
 
-                $this->_parsePos =     $oldParsePos;
-                $this->parsingHtml->code = $oldParseCode;
+                $this->parsingHtml->root = $oldParseRoot;
                 self::$_tables[$param['num']]['tr_curr'] = $tmpTR;
                 self::$_tables[$param['num']]['td_curr'] = $tmpTD;
                 self::$_tables[$param['num']]['new_page'] = true;
@@ -5523,12 +5495,9 @@ class Html2Pdf
                 self::$_tables[$param['num']]['corr_x']++;
             }
 
-            // extract the content of the TD, and calculate his size
-            $level = $this->parsingHtml->getLevel($this->_tempPos);
             $this->_subHtml = $this->createSubHTML();
-            $this->_subHtml->parsingHtml->code = $level;
+            $this->_subHtml->parsingHtml->root = new Node('root', array(), $this->currentNode->getChildren());
             $this->_subHtml->_makeHTMLcode();
-            $this->_tempPos+= count($level);
         } else {
             // new position in the table
             self::$_tables[$param['num']]['td_curr']++;

@@ -175,7 +175,7 @@ class Html
                 if ($text == '') {
                     continue; // TODO check if the $tokenOpen expects inline content and keep empty space in this case
                 }
-                $nodes[] = new Node('write', array('txt' => $text));
+                $nodes[] = new Node('write', array('txt' => $this->textParser->prepareTxt($text)));
             } else {
                 throw new HtmlParsingException('Unknown token type '.$token->getType());
             }
