@@ -1240,8 +1240,10 @@ class Html2Pdf
         }
 
         if (!$this->_subPart || $this->_isSubPart || !in_array($parent->getName(), array('td', 'li'))) { // do not process TD content in main object while in subPart mode
-            foreach ($parent->getChildren() as $node) {
-                $this->compile($node);
+            if (!in_array($parent->getName(), array('page_header', 'page_footer'))) { // these have been compiled in _executeAction
+                foreach ($parent->getChildren() as $node) {
+                    $this->compile($node);
+                }
             }
         }
 
@@ -2796,7 +2798,7 @@ class Html2Pdf
                 break;
             }
         }*/
-        $this->_subHEADER = $this->currentNode;
+        $this->_subHEADER = clone $this->currentNode;
         $this->_subHEADER->setName('page_header_sub');
 
         $this->_setPageHeader();
@@ -2829,7 +2831,7 @@ class Html2Pdf
                 break;
             }
         }*/
-        $this->_subFOOTER = $this->currentNode;
+        $this->_subFOOTER = clone $this->currentNode;
         $this->_subFOOTER->setName('page_footer_sub');
 
         $this->_setPageFooter();
