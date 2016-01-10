@@ -77,43 +77,6 @@ class Html
 
         $rootNode = $this->parseLevel();
 
-        // for each identified action, we have to clean up the begin and the end of the texte
-        // based on tags that surround it
-
-        // list of the tags to clean
-        $tagsToClean = array(
-            'page', 'page_header', 'page_footer', 'form',
-            'table', 'thead', 'tfoot', 'tr', 'td', 'th', 'br',
-            'div', 'hr', 'p', 'ul', 'ol', 'li',
-            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-            'bookmark', 'fieldset', 'legend',
-            'draw', 'circle', 'ellipse', 'path', 'rect', 'line', 'g', 'polygon', 'polyline',
-            'option'
-        );
-
-        /* todo manage this through nodes or delete this logic
-        // foreach action
-        $nb = count($actions);
-        for ($k = 0; $k < $nb; $k++) {
-            // if it is a Text
-            if ($actions[$k]->getName() =='write') {
-                // if the tag before the text is a tag to clean => ltrim on the text
-                if ($k>0 && in_array($actions[$k - 1]->getName(), $tagsToClean)) {
-                    $actions[$k]->setParam('txt', ltrim($actions[$k]->getParam('txt')));
-                }
-
-                // if the tag after the text is a tag to clean => rtrim on the text
-                if ($k < $nb - 1 && in_array($actions[$k + 1]->getName(), $tagsToClean)) {
-                    $actions[$k]->setParam('txt', rtrim($actions[$k]->getParam('txt')));
-                }
-
-                // if the text is empty => remove the action
-                if (!strlen($actions[$k]->getParam('txt'))) {
-                    unset($actions[$k]);
-                }
-            }
-        }*/
-
         // save the actions to do
         $this->code = array_values($actions);
         $this->root = $rootNode;
@@ -165,7 +128,15 @@ class Html
                 if ($nodeName == 'pre') {
                     $nodes = array_merge($nodes, $this->preparePreChildren($token->getData()));
                 } else {
-                    $text = trim($token->getData());
+                    $text = $token->getData();
+                    if (empty($nodes)) {
+                        $previousNodeName = $nodeName;
+                    } else {
+                        $previousNode = end($nodes);
+                        $previousNodeName = $previousNode->getName();
+                    }
+                    $text = $this->cleanWhiteSpace($text, $previousNodeName);
+
                     if ($text == '') {
                         continue; // TODO check if the $tokenOpen expects inline content and keep empty space in this case
                     }
@@ -252,28 +223,37 @@ class Html
         return $actions;
     }
 
-    /**
-     * get the Text action
-     *
-     * @param Token $token
-     *
-     * @return array
-     */
-    protected function getTextAction(Token $token)
+    protected function cleanWhiteSpace($text, $previousNodeName)
     {
-        // action to use for each line of the content of a <pre> Tag
-        $tagPreBr = new Node('br', array('style' => array(), 'num' => 0));
+        $tagsToCleanSpaces = array(
+            'root',
+            'page', 'page_header', 'page_footer', 'form',
+            'table', 'thead', 'tfoot', 'tr', 'td', 'th', 'br',
+            'div', 'hr', 'p', 'ul', 'ol', 'li',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'bookmark', 'fieldset', 'legend',
+            'draw', 'circle', 'ellipse', 'path', 'rect', 'line', 'g', 'polygon', 'polyline',
+            'option'
+        );
 
-        $actions = array();
-
-        // if we are not in a <pre> tag
-        if (!$this->tagPreIn) {
-            // save the action
-            $actions[] = new Node('write', array('txt' => $this->textParser->prepareTxt($token->getData())), false);
-        } else { // else (if we are in a <pre> tag)
-            $actions = array_merge($actions, $this->preparePreChildren($token->getData()));
+        $nextToken = $this->tokenStream->current();
+        if ($nextToken === null) {
+            return rtrim($text);
         }
-        return $actions;
+
+        if ($previousNodeName !== 'write') {
+            if (in_array($previousNodeName, $tagsToCleanSpaces)) { // parent is a block to clean
+                $text = ltrim($text);
+            }
+        }
+        if ($nextToken->getType() !== Token::TEXT_TYPE) {
+            list($nextNodeName, $param) = $this->tagParser->analyzeTag($nextToken->getData());
+            if (in_array($nextNodeName, $tagsToCleanSpaces)) { // previous sibling (closed) is to clean
+                $text = ltrim($text);
+            }
+        }
+
+        return $text;
     }
 
     protected function preparePreChildren($text)
