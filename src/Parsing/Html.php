@@ -41,12 +41,6 @@ class Html
     protected $textParser;
 
     /**
-     * are we in a pre ?
-     * @var boolean
-     */
-    protected $tagPreIn = false;
-
-    /**
      * parsed HTML code
      * @var Node[]
      */
@@ -74,9 +68,6 @@ class Html
     public function parse(TokenStream $tokens)
     {
         $this->tokenStream = $tokens;
-
-        // flag : are we in a <pre> Tag ?
-        $this->tagPreIn = false;
 
         /**
          * all the actions to do
@@ -171,11 +162,15 @@ class Html
             } elseif ($token->getType() == Token::TAG_AUTOCLOSE_TYPE) {
                 $nodes[] = $this->parseLevel($token);
             } elseif ($token->getType() == Token::TEXT_TYPE) {
-                $text = trim($token->getData());
-                if ($text == '') {
-                    continue; // TODO check if the $tokenOpen expects inline content and keep empty space in this case
+                if ($nodeName == 'pre') {
+                    $nodes = array_merge($nodes, $this->preparePreChildren($token->getData()));
+                } else {
+                    $text = trim($token->getData());
+                    if ($text == '') {
+                        continue; // TODO check if the $tokenOpen expects inline content and keep empty space in this case
+                    }
+                    $nodes[] = new Node('write', array('txt' => $this->textParser->prepareTxt($text)));
                 }
-                $nodes[] = new Node('write', array('txt' => $this->textParser->prepareTxt($text)));
             } else {
                 throw new HtmlParsingException('Unknown token type '.$token->getType());
             }
@@ -249,11 +244,6 @@ class Html
                     array_push($parents, $node->getName());
                 }
             }
-
-            // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
-            if (($node->getName() == 'pre' || $node->getName() == 'code') && !$node->isAutoClose()) {
-                $this->tagPreIn = !$node->isClose();
-            }
         }
 
         // save the actions to convert
@@ -272,7 +262,7 @@ class Html
     protected function getTextAction(Token $token)
     {
         // action to use for each line of the content of a <pre> Tag
-        $tagPreBr = new Node('br', array('style' => array(), 'num' => 0), false);
+        $tagPreBr = new Node('br', array('style' => array(), 'num' => 0));
 
         $actions = array();
 
@@ -281,26 +271,36 @@ class Html
             // save the action
             $actions[] = new Node('write', array('txt' => $this->textParser->prepareTxt($token->getData())), false);
         } else { // else (if we are in a <pre> tag)
-            // prepare the text
-            $data = str_replace("\r", '', $token->getData());
-            $lines = explode("\n", $data);
-
-            // foreach line of the text
-            foreach ($lines as $k => $txt) {
-                // transform the line
-                $txt = str_replace("\t", self::HTML_TAB, $txt);
-                $txt = str_replace(' ', '&nbsp;', $txt);
-
-                // add a break line
-                if ($k > 0) {
-                    $actions[] = clone $tagPreBr;
-                }
-
-                // save the action
-                $actions[] = new Node('write', array('txt' => $this->textParser->prepareTxt($txt, false)), false);
-            }
+            $actions = array_merge($actions, $this->preparePreChildren($token->getData()));
         }
         return $actions;
+    }
+
+    protected function preparePreChildren($text)
+    {
+        $children = array();
+        $tagPreBr = new Node('br', array('style' => array(), 'num' => 0));
+
+        // prepare the text
+        $data = str_replace("\r", '', $text);
+        $lines = explode("\n", $data);
+
+        // foreach line of the text
+        foreach ($lines as $k => $txt) {
+            // transform the line
+            $txt = str_replace("\t", self::HTML_TAB, $txt);
+            $txt = str_replace(' ', '&nbsp;', $txt);
+
+            // add a break line
+            if ($k > 0) {
+                $children[] = clone $tagPreBr;
+            }
+
+            // save the action
+            $children[] = new Node('write', array('txt' => $this->textParser->prepareTxt($txt, false)));
+        }
+
+        return $children;
     }
 
     /**
