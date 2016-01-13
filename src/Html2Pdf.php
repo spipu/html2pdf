@@ -1248,7 +1248,7 @@ class Html2Pdf
         }
 
         if (!$this->_subPart || $this->_isSubPart || !in_array($parent->getName(), array('td', 'li'))) { // do not process TD content in main object while in subPart mode
-            if (!in_array($parent->getName(), array('page_header', 'page_footer'))) { // these have been compiled in _executeAction
+            if (!in_array($parent->getName(), array('page_header', 'page_footer', 'thead', 'tfoot'))) { // these have been compiled in _executeAction
                 foreach ($parent->getChildren() as $node) {
                     $this->compile($node);
                 }
@@ -4595,20 +4595,8 @@ class Html2Pdf
         // if we are in a sub part, save the number of the first TR in the thead
         if ($this->_subPart) {
             self::$_tables[$param['num']]['thead']['tr'][0] = self::$_tables[$param['num']]['tr_curr'];
-            self::$_tables[$param['num']]['thead']['code'] = array();
-            for ($pos=$this->_tempPos; $pos<count($this->parsingHtml->code); $pos++) {
-                $action = $this->parsingHtml->code[$pos];
-                if (strtolower($action->getName())=='thead') {
-                    $action->setName('thead_sub');
-                }
-                self::$_tables[$param['num']]['thead']['code'][] = $action;
-                if (strtolower($action->getName())=='thead_sub' && $action->isClose()) {
-                    break;
-                }
-            }
+            self::$_tables[$param['num']]['thead']['code'] = new Node('thead_sub', $this->currentNode->getParams(), $this->currentNode->getChildren());
         } else {
-            $level = $this->parsingHtml->getLevel($this->_parsePos);
-            $this->_parsePos+= count($level);
             self::$_tables[$param['num']]['tr_curr']+= count(self::$_tables[$param['num']]['thead']['tr']);
         }
 
@@ -4662,17 +4650,7 @@ class Html2Pdf
         // if we are in a sub part, save the number of the first TR in the tfoot
         if ($this->_subPart) {
             self::$_tables[$param['num']]['tfoot']['tr'][0] = self::$_tables[$param['num']]['tr_curr'];
-            self::$_tables[$param['num']]['tfoot']['code'] = array();
-            for ($pos=$this->_tempPos; $pos<count($this->parsingHtml->code); $pos++) {
-                $action = $this->parsingHtml->code[$pos];
-                if (strtolower($action->getName())=='tfoot') {
-                    $action->setName('tfoot_sub');
-                }
-                self::$_tables[$param['num']]['tfoot']['code'][] = $action;
-                if (strtolower($action->getName())=='tfoot_sub' && $action->isClose()) {
-                    break;
-                }
-            }
+            self::$_tables[$param['num']]['tfoot']['code'] = new Node('tfoot_sub', $this->currentNode->getParams(), $this->currentNode->getChildren());
         } else {
             $level = $this->parsingHtml->getLevel($this->_parsePos);
             $this->_parsePos+= count($level);
@@ -4919,8 +4897,8 @@ class Html2Pdf
             self::$_tables[$param['num']]['tfoot']['tr']     = array();          // list of the TRs in the tfoot
             self::$_tables[$param['num']]['thead']['height']    = 0;             // thead height
             self::$_tables[$param['num']]['tfoot']['height']    = 0;             // tfoot height
-            self::$_tables[$param['num']]['thead']['code'] = array();            // HTML content of the thead
-            self::$_tables[$param['num']]['tfoot']['code'] = array();            // HTML content of the tfoot
+            self::$_tables[$param['num']]['thead']['code'] = null;               // HTML content of the thead
+            self::$_tables[$param['num']]['tfoot']['code'] = null;               // HTML content of the tfoot
             self::$_tables[$param['num']]['cols']        = array();              // properties of the COLs
 
             $this->_saveMargin($this->pdf->getlMargin(), $this->pdf->gettMargin(), $this->pdf->getrMargin());
@@ -5064,23 +5042,18 @@ class Html2Pdf
                 self::$_tables[$param['num']]['height'][] = $height;
             }
         } else {
-            // if we have tfoor, draw it
-            if (count(self::$_tables[$param['num']]['tfoot']['code'])) {
+            // if we have tfoot, draw it
+            if (isset(self::$_tables[$param['num']]['tfoot']['code'])) {
                 $tmpTR = self::$_tables[$param['num']]['tr_curr'];
                 $tmpTD = self::$_tables[$param['num']]['td_curr'];
-                $oldParsePos = $this->_parsePos;
-                $oldParseCode = $this->parsingHtml->code;
 
                 self::$_tables[$param['num']]['tr_curr'] = self::$_tables[$param['num']]['tfoot']['tr'][0];
                 self::$_tables[$param['num']]['td_curr'] = 0;
-                $this->_parsePos = 0;
-                $this->parsingHtml->code = self::$_tables[$param['num']]['tfoot']['code'];
+                $tfootNode = self::$_tables[$param['num']]['tfoot']['code'];
                 $this->_isInTfoot = true;
-                $this->_makeHTMLcode();
+                $this->compile($tfootNode);
                 $this->_isInTfoot = false;
 
-                $this->_parsePos =     $oldParsePos;
-                $this->parsingHtml->code = $oldParseCode;
                 self::$_tables[$param['num']]['tr_curr'] = $tmpTR;
                 self::$_tables[$param['num']]['td_curr'] = $tmpTD;
             }
@@ -5182,20 +5155,18 @@ class Html2Pdf
             // if the line does not fit on the page => new page
             if (!$this->_isInTfoot && self::$_tables[$param['num']]['td_y'] + self::$_tables[$param['num']]['marge']['b'] + $ty +$hfoot> $this->pdf->getH() - $this->pdf->getbMargin()) {
 
-                // fi ther is a tfoot => draw it
-                if (count(self::$_tables[$param['num']]['tfoot']['code'])) {
+                // if there is a tfoot => draw it
+                if (isset(self::$_tables[$param['num']]['tfoot']['code'])) {
                     $tmpTR = self::$_tables[$param['num']]['tr_curr'];
                     $tmpTD = self::$_tables[$param['num']]['td_curr'];
-                    $oldParseRoot = $this->parsingHtml->root;
 
                     self::$_tables[$param['num']]['tr_curr'] = self::$_tables[$param['num']]['tfoot']['tr'][0];
                     self::$_tables[$param['num']]['td_curr'] = 0;
-                    $this->parsingHtml->root = self::$_tables[$param['num']]['tfoot']['code'];
+                    $tfootNode = self::$_tables[$param['num']]['tfoot']['code'];
                     $this->_isInTfoot = true;
-                    $this->_makeHTMLcode();
+                    $this->compile($tfootNode);
                     $this->_isInTfoot = false;
 
-                    $this->parsingHtml->root = $oldParseRoot;
                     self::$_tables[$param['num']]['tr_curr'] = $tmpTR;
                     self::$_tables[$param['num']]['td_curr'] = $tmpTD;
                 }
@@ -5230,20 +5201,18 @@ class Html2Pdf
             }
 
             // if we are in a new page, and if we have a thead => draw it
-            if (self::$_tables[$param['num']]['new_page'] && count(self::$_tables[$param['num']]['thead']['code'])) {
+            if (self::$_tables[$param['num']]['new_page'] && isset(self::$_tables[$param['num']]['thead']['code'])) {
                 self::$_tables[$param['num']]['new_page'] = false;
                 $tmpTR = self::$_tables[$param['num']]['tr_curr'];
                 $tmpTD = self::$_tables[$param['num']]['td_curr'];
-                $oldParseRoot = $this->parsingHtml->root;
 
                 self::$_tables[$param['num']]['tr_curr'] = self::$_tables[$param['num']]['thead']['tr'][0];
                 self::$_tables[$param['num']]['td_curr'] = 0;
-                $this->parsingHtml->root = self::$_tables[$param['num']]['thead']['code'];
+                $theadNode = self::$_tables[$param['num']]['thead']['code'];
                 $this->_isInThead = true;
-                $this->_makeHTMLcode();
+                $this->compile($theadNode);
                 $this->_isInThead = false;
 
-                $this->parsingHtml->root = $oldParseRoot;
                 self::$_tables[$param['num']]['tr_curr'] = $tmpTR;
                 self::$_tables[$param['num']]['td_curr'] = $tmpTD;
                 self::$_tables[$param['num']]['new_page'] = true;
@@ -5435,7 +5404,7 @@ class Html2Pdf
         if ($collapse) {
             if (!$this->_subPart) {
                 if ((self::$_tables[$param['num']]['tr_curr']>1 && !self::$_tables[$param['num']]['new_page']) ||
-                    (!$this->_isInThead && count(self::$_tables[$param['num']]['thead']['code']))
+                    (!$this->_isInThead && isset(self::$_tables[$param['num']]['thead']['code']))
                 ) {
                     $this->parsingCss->value['border']['t'] = $this->parsingCss->readBorder('none');
                 }
