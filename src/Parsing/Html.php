@@ -138,7 +138,7 @@ class Html
                     $text = $this->cleanWhiteSpace($text, $previousNodeName);
 
                     if ($text == '') {
-                        continue; // TODO check if the $tokenOpen expects inline content and keep empty space in this case
+                        continue;
                     }
                     $nodes[] = new Node('write', array('txt' => $this->textParser->prepareTxt($text)));
                 }
@@ -158,71 +158,11 @@ class Html
     }
 
     /**
-     * TODO remove the reference on the $parents variable
+     * @param string $text
+     * @param string $previousNodeName
      *
-     * @param Token $token
-     * @param array $parents
-     *
-     * @return array
-     * @throws HtmlParsingException
+     * @return string
      */
-    protected function getTagAction(Token $token, &$parents)
-    {
-        // tag that can be not closed
-        $tagsNotClosed = array(
-            'br', 'hr', 'img', 'col',
-            'input', 'link', 'option',
-            'circle', 'ellipse', 'path', 'rect', 'line', 'polygon', 'polyline'
-        );
-
-        // analyze the HTML code
-        $node = $this->tagParser->analyzeTag($token->getData());
-
-        // save the current position in the HTML code
-        $node->setLine($token->getLine());
-
-        $actions = array();
-        // if the tag must be closed
-        if (!in_array($node->getName(), $tagsNotClosed)) {
-            // if it is a closure tag
-            if ($node->isClose()) {
-                // HTML validation
-                if (count($parents) < 1) {
-                    $e = new HtmlParsingException('Too many tag closures found for ['.$node->getName().']');
-                    $e->setInvalidTag($node->getName());
-                    $e->setHtmlLine($token->getLine());
-                    throw $e;
-                } elseif (end($parents) != $node->getName()) {
-                    $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$node->getName().']');
-                    $e->setInvalidTag($node->getName());
-                    $e->setHtmlLine($token->getLine());
-                    throw $e;
-                } else {
-                    array_pop($parents);
-                }
-            } else {
-                // if it is an auto-closed tag
-                if ($node->isAutoClose()) {
-                    // save the opened tag
-                    $actions[] = $node;
-
-                    // prepare the closed tag
-                    $node = clone $node;
-                    $node->setParams(array());
-                    $node->setClose(true);
-                } else {
-                    // else: add a child for validation
-                    array_push($parents, $node->getName());
-                }
-            }
-        }
-
-        // save the actions to convert
-        $actions[] = $node;
-
-        return $actions;
-    }
-
     protected function cleanWhiteSpace($text, $previousNodeName)
     {
         $tagsToCleanSpaces = array(
@@ -256,6 +196,13 @@ class Html
         return $text;
     }
 
+    /**
+     * Prepare the text contained in a <pre> tag for formatting purposes
+     *
+     * @param string $text
+     *
+     * @return array
+     */
     protected function preparePreChildren($text)
     {
         $children = array();

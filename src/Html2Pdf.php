@@ -1224,6 +1224,14 @@ class Html2Pdf
         }
     }
 
+    /**
+     * Process a Node of the document and render it
+     *
+     * @param Node $parent
+     * @param bool $checkTable
+     *
+     * @return bool|null
+     */
     protected function compile(Node $parent, $checkTable = true)
     {
         if ($checkTable && in_array($parent->getName(), array('table', 'ul', 'ol'))) {
@@ -2786,18 +2794,7 @@ class Html2Pdf
         if ($this->_isForOneLine) {
             return false;
         }
-/*
-        $this->_subHEADER = array();
-        for ($this->_parsePos; $this->_parsePos<count($this->parsingHtml->code); $this->_parsePos++) {
-            $action = $this->parsingHtml->code[$this->_parsePos];
-            if ($action->getName() == 'page_header') {
-                $action->setName('page_header_sub');
-            }
-            $this->_subHEADER[] = $action;
-            if (strtolower($action->getName()) == 'page_header_sub' && $action->isClose()) {
-                break;
-            }
-        }*/
+
         $this->_subHEADER = clone $this->currentNode;
         $this->_subHEADER->setName('page_header_sub');
 
@@ -2819,18 +2816,6 @@ class Html2Pdf
             return false;
         }
 
-        /*
-        $this->_subFOOTER = array();
-        for ($this->_parsePos; $this->_parsePos<count($this->parsingHtml->code); $this->_parsePos++) {
-            $action = $this->parsingHtml->code[$this->_parsePos];
-            if ($action->getName() == 'page_footer') {
-                $action->setName('page_footer_sub');
-            }
-            $this->_subFOOTER[] = $action;
-            if (strtolower($action->getName())=='page_footer_sub' && $action->isClose()) {
-                break;
-            }
-        }*/
         $this->_subFOOTER = clone $this->currentNode;
         $this->_subFOOTER->setName('page_footer_sub');
 
