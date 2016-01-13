@@ -1247,10 +1247,12 @@ class Html2Pdf
             return $result;
         }
 
-        if (!$this->_subPart || $this->_isSubPart || !in_array($parent->getName(), array('td', 'li'))) { // do not process TD content in main object while in subPart mode
-            if (!in_array($parent->getName(), array('page_header', 'page_footer', 'thead', 'tfoot'))) { // these have been compiled in _executeAction
-                foreach ($parent->getChildren() as $node) {
-                    $this->compile($node);
+        if (!$this->_subPart || $this->_isSubPart || !in_array($parent->getName(), array('th', 'td', 'li'))) { // do not process TD content in main object while in subPart mode
+            if (!in_array($parent->getName(), array('thead', 'tfoot')) || $this->_subPart) { // process thead and tfoot only in subPart mode
+                if (!in_array($parent->getName(), array('page_header', 'page_footer'))) { // these have been compiled in _executeAction
+                    foreach ($parent->getChildren() as $node) {
+                        $this->compile($node);
+                    }
                 }
             }
         }
