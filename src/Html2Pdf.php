@@ -910,18 +910,18 @@ class Html2Pdf
         $sub = $this->createSubHTML();
         $sub->_saveMargin(0, 0, $sub->pdf->getW()-$wMax);
         $sub->_isForOneLine = true;
-        $sub->parsingHtml->root = $this->currentNode;
+        $node = $this->currentNode;
 
         // if $curr => adapt the current position of the parsing
-        if ($curr !== null && $sub->parsingHtml->root->getName() == 'write') {
-            $txt = $sub->parsingHtml->root->getParam('txt');
+        if ($curr !== null && $node->getName() == 'write') {
+            $txt = $node->getParam('txt');
             $txt = str_replace('[[page_cu]]', $sub->pdf->getMyNumPage($this->_page), $txt);
-            $sub->parsingHtml->root->setParam('txt', substr($txt, $curr + 1));
+            $node->setParam('txt', substr($txt, $curr + 1));
         } else {
-            $sub->parsingHtml->root = new Node('root', array(), $this->currentNode->getChildren());
+            $node = new Node('root', array(), $this->currentNode->getChildren());
         }
 
-        $res = $sub->compile($sub->parsingHtml->root);
+        $res = $sub->compile($node);
 
         $w = $sub->_maxX; // max width
         $h = $sub->_maxH; // max height
@@ -2937,8 +2937,8 @@ class Html2Pdf
 
         // we create a sub HTML2PFDF, and we execute on it the content of the footer, to get the height of it
         $sub = $this->createSubHTML();
-        $sub->parsingHtml->root = new Node('root', array(), $this->currentNode->getChildren());
-        $sub->compile($sub->parsingHtml->root);
+        $node = new Node('root', array(), $this->currentNode->getChildren());
+        $sub->compile($node);
         $this->pdf->setY($this->pdf->getH() - $sub->_maxY - $this->_defaultBottom - 0.01);
         $this->_destroySubHTML($sub);
 
@@ -2999,8 +2999,8 @@ class Html2Pdf
 
         // create a sub Html2Pdf to execute the content of the tag, to get the dimensions
         $sub = $this->createSubHTML();
-        $sub->parsingHtml->root = New Node('root', array(), $this->currentNode->getChildren());
-        $sub->compile($sub->parsingHtml->root);
+        $node = new Node('root', array(), $this->currentNode->getChildren());
+        $sub->compile($node);
         $y = $this->pdf->getY();
 
         // if the content does not fit on the page => new page
@@ -3085,8 +3085,8 @@ class Html2Pdf
         $h = 0;
 
         $sub = $this->createSubHTML();
-        $sub->parsingHtml->root = new Node('root', array(), $this->currentNode->getChildren());
-        $sub->compile($sub->parsingHtml->root);
+        $node = new Node('root', array(), $this->currentNode->getChildren());
+        $sub->compile($node);
         $w = $sub->_maxX;
         $h = $sub->_maxY;
         $this->_destroySubHTML($sub);
@@ -5444,8 +5444,8 @@ class Html2Pdf
             }
 
             $this->_subHtml = $this->createSubHTML();
-            $this->_subHtml->parsingHtml->root = new Node('root', array(), $this->currentNode->getChildren());
-            $this->_subHtml->compile($this->_subHtml->parsingHtml->root);
+            $node = new Node('root', array(), $this->currentNode->getChildren());
+            $this->_subHtml->compile($node);
         } else {
             // new position in the table
             self::$_tables[$param['num']]['td_curr']++;
