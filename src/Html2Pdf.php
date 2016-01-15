@@ -81,7 +81,6 @@ class Html2Pdf
     protected $_testIsImage      = true;        // test if the images exist or not
 
     protected $_parsePos         = 0;           // position in the parsing
-    protected $_tempPos          = 0;           // temporary position for complex table
     protected $_page             = 0;           // current page number
 
     protected $_subHtml          = null;        // sub html
@@ -509,7 +508,7 @@ class Html2Pdf
         $html = $this->parsingHtml->prepareHtml($html);
         $html = $this->parsingCss->extractStyle($html);
         $this->parsingHtml->parse($this->lexer->tokenize($html));
-        $this->compile($this->parsingHtml->root);
+        $this->compile($this->parsingHtml->getRoot());
 
         return $this;
     }

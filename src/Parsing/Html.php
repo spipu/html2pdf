@@ -28,7 +28,7 @@ class Html
     /**
      * @var Node
      */
-    public $root;
+    protected $root;
 
     /**
      * @var TagParser
@@ -56,6 +56,14 @@ class Html
         $this->textParser = $textParser;
         $this->tagParser = new TagParser($this->textParser);
         $this->code  = array();
+    }
+
+    /**
+     * @return Node
+     */
+    public function getRoot()
+    {
+        return $this->root;
     }
 
     /**
