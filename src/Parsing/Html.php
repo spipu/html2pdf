@@ -41,12 +41,6 @@ class Html
     protected $textParser;
 
     /**
-     * parsed HTML code
-     * @var Node[]
-     */
-    public $code = array();
-
-    /**
      * main constructor
      *
      * @param TextParser $textParser
@@ -55,7 +49,6 @@ class Html
     {
         $this->textParser = $textParser;
         $this->tagParser = new TagParser($this->textParser);
-        $this->code  = array();
     }
 
     /**
@@ -76,18 +69,7 @@ class Html
     public function parse(TokenStream $tokens)
     {
         $this->tokenStream = $tokens;
-
-        /**
-         * all the actions to do
-         * @var Node[] $actions
-         */
-        $actions = array();
-
-        $rootNode = $this->parseLevel();
-
-        // save the actions to do
-        $this->code = array_values($actions);
-        $this->root = $rootNode;
+        $this->root = $this->parseLevel();
     }
 
     /**

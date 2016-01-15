@@ -80,7 +80,6 @@ class Html2Pdf
     protected $_testTdInOnepage  = true;        // test of TD that can not take more than one page
     protected $_testIsImage      = true;        // test if the images exist or not
 
-    protected $_parsePos         = 0;           // position in the parsing
     protected $_page             = 0;           // current page number
 
     protected $_subHtml          = null;        // sub html
