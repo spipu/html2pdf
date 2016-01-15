@@ -3318,32 +3318,14 @@ class Html2Pdf
      */
     protected function _tag_open_FIELDSET($param)
     {
-
         $this->parsingCss->save();
         $this->parsingCss->analyse('fieldset', $param);
 
         // get height of LEGEND element and make fieldset corrections
-        for ($tempPos = $this->_parsePos + 1; $tempPos<count($this->parsingHtml->code); $tempPos++) {
-            $action = $this->parsingHtml->code[$tempPos];
-            if ($action->getName() == 'fieldset') {
-                break;
-            }
-            if ($action->getName() == 'legend' && !$action->isClose()) {
-                $legendOpenPos = $tempPos;
-
+        foreach ($this->currentNode->getChildren() as $child) {
+            if ($child->getName() == 'legend') {
                 $sub = $this->createSubHTML();
-                $sub->parsingHtml->code = $this->parsingHtml->getLevel($tempPos - 1);
-
-                $res = null;
-                for ($sub->_parsePos = 0; $sub->_parsePos<count($sub->parsingHtml->code); $sub->_parsePos++) {
-                    $action = $sub->parsingHtml->code[$sub->_parsePos];
-                    $sub->_executeAction($action);
-
-                    if ($action->getName() == 'legend' && $action->isClose()) {
-                        break;
-                    }
-                }
-
+                $sub->compile($child);
                 $legendH = $sub->_maxY;
                 $this->_destroySubHTML($sub);
 
@@ -3351,10 +3333,9 @@ class Html2Pdf
 
                 $param['moveTop'] = $legendH / 2;
 
-                $node = $this->parsingHtml->code[$legendOpenPos];
-                $node->setParam('moveTop', - ($legendH / 2 + $move));
-                $node->setParam('moveLeft', 2 - $this->parsingCss->value['border']['l']['width'] - $this->parsingCss->value['padding']['l']);
-                $node->setParam('moveDown', $move);
+                $child->setParam('moveTop', - ($legendH / 2 + $move));
+                $child->setParam('moveLeft', 2 - $this->parsingCss->value['border']['l']['width'] - $this->parsingCss->value['padding']['l']);
+                $child->setParam('moveDown', $move);
                 break;
             }
         }
@@ -4643,8 +4624,6 @@ class Html2Pdf
             self::$_tables[$param['num']]['tfoot']['tr'][0] = self::$_tables[$param['num']]['tr_curr'];
             self::$_tables[$param['num']]['tfoot']['code'] = new Node('tfoot_sub', $this->currentNode->getParams(), $this->currentNode->getChildren());
         } else {
-            $level = $this->parsingHtml->getLevel($this->_parsePos);
-            $this->_parsePos+= count($level);
             self::$_tables[$param['num']]['tr_curr']+= count(self::$_tables[$param['num']]['tfoot']['tr']);
         }
 
@@ -5684,11 +5663,10 @@ class Html2Pdf
     protected function _tag_open_OPTION($param)
     {
         // get the content of the option : it is the text of the option
-        $level = $this->parsingHtml->getLevel($this->_parsePos);
-        $this->_parsePos+= count($level);
         $value = isset($param['value']) ? $param['value'] : 'aut_tag_open_opt_'.(count($this->_lstSelect)+1);
 
-        $this->_lstSelect['options'][$value] = $level[0]->getParam('txt', '');
+        $children = $this->currentNode->getChildren();
+        $this->_lstSelect['options'][$value] = $children[0]->getParam('txt', '');
 
         return true;
     }
@@ -5790,10 +5768,6 @@ class Html2Pdf
         $fx = 0.65*$this->parsingCss->value['font-size'];
         $fy = 1.08*$this->parsingCss->value['font-size'];
 
-        // extract the content the textarea : value
-        $level = $this->parsingHtml->getLevel($this->_parsePos);
-        $this->_parsePos+= count($level);
-
         // automatic size, from cols and rows properties
         $w = $fx*(isset($param['cols']) ? $param['cols'] : 22)+1;
         $h = $fy*1.07*(isset($param['rows']) ? $param['rows'] : 3)+3;
@@ -5801,7 +5775,8 @@ class Html2Pdf
         $prop = $this->parsingCss->getFormStyle();
 
         $prop['multiline'] = true;
-        $prop['value'] = $level[0]->getParam('txt', '');
+        $children = $this->currentNode->getChildren();
+        $prop['value'] = $children[0]->getParam('txt', '');
 
         $this->pdf->TextField($param['name'], $w, $h, $prop, array(), $x, $y);
 
