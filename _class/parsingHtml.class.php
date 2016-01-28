@@ -230,13 +230,15 @@ class HTML2PDF_parsingHtml
      * prepare the text
      *
      * @param   string $txt
-     * @param   boolean $spaces true => replace multiple space+\t+\r+\n by a single space
+     * @param   boolean $spaces true => trim and replace multiple space+\t+\r+\n by a single space
      * @return  string txt
      * @access  protected
      */
     protected function _prepareTxt($txt, $spaces = true)
     {
-        if ($spaces) $txt = preg_replace('/\s+/isu', ' ', $txt);
+        if ($spaces) {
+            $txt = preg_replace('/\s+/isu', ' ', trim($txt));
+        }
         $txt = str_replace('&euro;', '€', $txt);
         $txt = html_entity_decode($txt, ENT_QUOTES, $this->_encoding);
         return $txt;
