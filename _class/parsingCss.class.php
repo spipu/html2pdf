@@ -670,8 +670,12 @@ class HTML2PDF_parsingCss
                     $noWidth = false;
                     break;
 
-                case 'height':
-                    $this->value['height'] = $this->convertToMM($val, $this->getLastHeight());
+                case 'max-width':
+                    $this->value[$nom] = $this->convertToMM($val, $this->getLastWidth());
+                    break;
+
+                case 'height': case 'max-height':
+                    $this->value[$nom] = $this->convertToMM($val, $this->getLastHeight());
                     break;
 
                 case 'line-height':
