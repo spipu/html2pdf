@@ -1,7 +1,7 @@
 Html2Pdf
 ========
 
-Latest stable release : v4.5.0 (2015-12-18)
+Latest stable release : v4.5.1 (2016-03-03)
 
 How to use:
 -----------
@@ -94,8 +94,8 @@ See on this page: http://html2pdf.fr/en/download
 Help & Support:
 ---------------
 
-For questions and bug reports, thank you to use only the support link below.
-I will answer to your questions only on it...
+For questions and bug reports, please use the GitHub issues page.
+You may also find some help of the official forum (link below).
 
 Information:
 ------------
@@ -109,10 +109,10 @@ License:
 --------
 ```
  This program is distributed under the LGPL License,
- for more information see file _LGPL.txt or
+ for more information see the LICENSE file or go to
  http://www.gnu.org/licenses/lgpl.html
 
- Copyright 2008-2015 by Laurent Minguet
+ Copyright 2008-2016 by Laurent Minguet
 ```
 
 Thanks:
