@@ -71,6 +71,31 @@ class Html2Pdf
      */
     private $currentNode;
 
+    /**
+     * The Node stack from the root object to the current Node
+     *
+     * @var array
+     */
+    private $parentNodes = array();
+    /**
+     * Index of the node being processed among its siblings
+     *
+     * @var int
+     */
+    private $childIndex = 0;
+    /**
+     * Stack of the current child indexes for each node
+     *
+     * @var array
+     */
+    private $childIndexes = array();
+    /**
+     * Check if we are currently closing a tag (i.e. inside _tag_close_* action)
+     *
+     * @var bool
+     */
+    private $isClosingTag = false;
+
     protected $_langue           = 'fr';        // locale of the messages
     protected $_orientation      = 'P';         // page orientation : Portrait ou Landscape
     protected $_format           = 'A4';        // page format : A4, A3, ...
@@ -916,7 +941,12 @@ class Html2Pdf
             $txt = str_replace('[[page_cu]]', $sub->pdf->getMyNumPage($this->_page), $txt);
             $node->setParam('txt', substr($txt, $curr + 1));
         } else {
-            $node = new Node('root', array(), $this->currentNode->getChildren());
+            if ($this->currentNode->getName() == 'br' || $this->isClosingTag) {
+                $children = array_slice(end($this->parentNodes)->getChildren(), $this->childIndex + 1);
+            } else {
+                $children = $this->currentNode->getChildren();
+            }
+            $node = new Node('root', array(), $children);
         }
 
         $res = $sub->compile($node);
@@ -1248,16 +1278,30 @@ class Html2Pdf
         if (!$this->_subPart || $this->_isSubPart || !in_array($parent->getName(), array('th', 'td', 'li'))) { // do not process TD content in main object while in subPart mode
             if (!in_array($parent->getName(), array('thead', 'tfoot')) || $this->_subPart) { // process thead and tfoot only in subPart mode
                 if (!in_array($parent->getName(), array('page_header', 'page_footer'))) { // these have been compiled in _executeAction
+                    array_push($this->parentNodes, $parent);
+                    array_push($this->childIndexes, $this->childIndex);
+                    $this->childIndex = 0;
                     foreach ($parent->getChildren() as $node) {
-                        $this->compile($node);
+                        $result = $this->compile($node);
+                        if ($this->_isForOneLine && !$result) {
+                            return $result;
+                        }
+                        $this->childIndex++;
                     }
+                    $this->childIndex = array_pop($this->childIndexes);
+                    array_pop($this->parentNodes);
                 }
             }
         }
 
         if ($parent->getName() !== 'write') {
             $this->currentNode = $parent;
-            $this->_executeAction($parent, true);
+            $this->isClosingTag = true;
+            $result = $this->_executeAction($parent, true);
+            if ($this->_isForOneLine && !$result) {
+                return $result;
+            }
+            $this->isClosingTag = false;
         }
     }
 
