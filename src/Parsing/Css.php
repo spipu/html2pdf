@@ -1499,7 +1499,7 @@ class Css
         $css = explode(' ', $css);
         foreach ($css as $k => $v) {
             $v = trim($v);
-            if ($v) {
+            if ($v !== '') {
                 $css[$k] = $v;
             } else {
                 unset($css[$k]);
