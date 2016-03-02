@@ -1,4 +1,4 @@
-HTML2PDF v4.5.0 - 2015-12-18
+HTML2PDF v4.5.1 - 2016-03-03
 ============================
 
 License:
@@ -8,7 +8,7 @@ License:
  Pour plus d'informations, reportez-vous au fichier _LGPL.txt ou à
  http://www.gnu.org/licenses/lgpl.html
  
- Copyright 2008-2015 par Laurent Minguet
+ Copyright 2008-2016 par Laurent Minguet
 ```
 
 Utilisation :
