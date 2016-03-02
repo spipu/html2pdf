@@ -1297,8 +1297,11 @@ class HTML2PDF_parsingCss
         $css = explode(' ', $css);
         foreach ($css as $k => $v) {
             $v = trim($v);
-            if ($v) $css[$k] = $v;
-            else    unset($css[$k]);
+            if ($v !== '') {
+                $css[$k] = $v;
+            } else {
+                unset($css[$k]);
+            }
         }
         $css = array_values($css);
 
