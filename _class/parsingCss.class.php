@@ -1022,6 +1022,10 @@ class HTML2PDF_parsingCss
                     $this->value[$nom] = $val;
                     break;
 
+                case 'start':
+                    $this->value[$nom] = $val;
+                break;
+
                 default:
                     break;
             }
