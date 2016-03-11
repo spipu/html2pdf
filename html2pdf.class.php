@@ -1160,7 +1160,7 @@ class HTML2PDF
      * @param  string $style : lower-alpha, ...
      * @param  string $img
      */
-    protected function _listeAddLevel($type = 'ul', $style = '', $img = null)
+    protected function _listeAddLevel($type = 'ul', $style = '', $img = null, $start = null)
     {
         // get the url of the image, if we want to use a image
         if ($img) {
@@ -1182,8 +1182,14 @@ class HTML2PDF
             else                $style = 'decimal';
         }
 
+        if (is_null($start) || (int) $start<1) {
+            $start=0;
+        } else {
+            $start--;
+        }
+
         // add the new level
-        $this->_defList[count($this->_defList)] = array('style' => $style, 'nb' => 0, 'img' => $img);
+        $this->_defList[count($this->_defList)] = array('style' => $style, 'nb' => $start, 'img' => $img);
     }
 
     /**
@@ -4446,7 +4452,8 @@ class HTML2PDF
         $this->_tag_open_TABLE($param, $other);
 
         // add a level of list
-        $this->_listeAddLevel($other, $this->parsingCss->value['list-style-type'], $this->parsingCss->value['list-style-image']);
+        $start = (isset($this->parsingCss->value['start']) ? $this->parsingCss->value['start'] : null);
+        $this->_listeAddLevel($other, $this->parsingCss->value['list-style-type'], $this->parsingCss->value['list-style-image'], $start);
 
         return true;
     }
