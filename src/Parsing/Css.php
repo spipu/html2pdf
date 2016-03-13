@@ -1176,6 +1176,10 @@ class Css
                     $this->value[$nom] = $val;
                     break;
 
+                case 'start':
+                    $this->value[$nom] = intval($val);
+                    break;
+
                 default:
                     break;
             }

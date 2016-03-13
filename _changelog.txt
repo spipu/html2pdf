@@ -9,6 +9,7 @@
     better exception management
     add unit testing
     fix a infinite loop case when reading a svg path
+    add support 'start' attribute for ordered list
 
 4.5.0 (2015-12-18)
     add tag 'end_last_page' with property 'end_height'. Update example 5 to use it
