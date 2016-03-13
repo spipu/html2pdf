@@ -1,3 +1,6 @@
+4.5.2 (XXXX-XX-XX)
+    Support 'start' attribute for ordered list
+
 4.5.1 (2016-03-03)
     Support the "inherit" value for font-family
     Allow the HTML font tag to define a color attribute
