@@ -1,7 +1,7 @@
 Html2Pdf
 ========
 
-Latest stable release : v4.5.1 (2016-03-03)
+Latest stable release : v4.6.0 (2016-03-30)
 
 How to use:
 -----------
