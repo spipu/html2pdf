@@ -611,7 +611,7 @@ class HTML2PDF_parsingCss
                 case 'font-family':
                     $val = explode(',', $val);
                     $val = trim($val[0]);
-                    if ($val && $val != 'inherit') $this->value['font-family'] = $val;
+                    if ($val && strtolower($val) != 'inherit') $this->value['font-family'] = $val;
                     break;
 
                 case 'font-weight':
