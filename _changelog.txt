@@ -1,3 +1,6 @@
+4.6.1 (2016-04-05)
+    Fix lowercase check on font-family value
+
 4.6.0 (2016-03-30)
     Support 'start' attribute for ordered list
     Enable RTL languages support
