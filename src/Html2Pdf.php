@@ -3635,8 +3635,9 @@ class Html2Pdf
         if ($param['value']==='') {
             return true;
         }
-        if (!in_array($param['ec'], array('L', 'M', 'Q', 'H'))) {
-            $param['ec'] = 'H';
+
+        if (in_array($param['ec'], array('L', 'M', 'Q', 'H'))) {
+            $param['ec'] = 'QRCODE,' . $param['ec'];
         }
 
         $this->parsingCss->save();
@@ -3667,7 +3668,7 @@ class Html2Pdf
         }
 
         if (!$this->_subPart && !$this->_isSubPart) {
-            $this->pdf->write2DBarcode($param['value'], 'QRCODE,'.$param['ec'], $x, $y, $size, $size, $style);
+            $this->pdf->write2DBarcode($param['value'], $param['ec'], $x, $y, $size, $size, $style);
         }
 
         $this->_maxX = max($this->_maxX, $x+$size);
