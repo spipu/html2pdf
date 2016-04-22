@@ -170,4 +170,203 @@ class CssConverter
 
         return $c;
     }
+
+
+    /**
+     * Analyse a background
+     *
+     * @param  string $css css background properties
+     * @param  &array $value parsed values (by reference, because, ther is a legacy of the parent CSS properties)
+     *
+     * @return void
+     */
+    public function convertBackground($css, &$value)
+    {
+        // is there a image ?
+        $text = '/url\(([^)]*)\)/isU';
+        if (preg_match($text, $css, $match)) {
+            // get the image
+            $value['image'] = $this->convertBackgroundImage($match[0]);
+
+            // remove if from the css properties
+            $css = preg_replace($text, '', $css);
+            $css = preg_replace('/[\s]+/', ' ', $css);
+        }
+
+        // protect some spaces
+        $css = preg_replace('/,[\s]+/', ',', $css);
+
+        // explode the values
+        $css = explode(' ', $css);
+
+        // background position to parse
+        $pos = '';
+
+        // foreach value
+        foreach ($css as $val) {
+            // try to parse the value as a color
+            $ok = false;
+            $color = $this->convertToColor($val, $ok);
+
+            // if ok => it is a color
+            if ($ok) {
+                $value['color'] = $color;
+                // else if transparent => no coloàr
+            } elseif ($val=='transparent') {
+                $value['color'] = null;
+                // else
+            } else {
+                // try to parse the value as a repeat
+                $repeat = $this->convertBackgroundRepeat($val);
+
+                // if ok => it is repeat
+                if ($repeat) {
+                    $value['repeat'] = $repeat;
+                    // else => it could only be a position
+                } else {
+                    $pos.= ($pos ? ' ' : '').$val;
+                }
+            }
+        }
+
+        // if we have a position to parse
+        if ($pos) {
+            // try to read it
+            $pos = $this->convertBackgroundPosition($pos, $ok);
+            if ($ok) {
+                $value['position'] = $pos;
+            }
+        }
+    }
+
+    /**
+     * Parse a background color
+     *
+     * @param  string $css
+     *
+     * @return string|null $value
+     */
+    public function convertBackgroundColor($css)
+    {
+        $res = null;
+        if ($css=='transparent') {
+            return null;
+        } else {
+            return $this->convertToColor($css, $res);
+        }
+    }
+
+    /**
+     * Parse a background image
+     *
+     * @param  string $css
+     *
+     * @return string|null $value
+     */
+    public function convertBackgroundImage($css)
+    {
+        if ($css=='none') {
+            return null;
+        } elseif (preg_match('/^url\(([^)]*)\)$/isU', $css, $match)) {
+            return $match[1];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Parse a background position
+     *
+     * @param  string $css
+     * @param  boolean &$res flag if convert is ok or not
+     *
+     * @return array (x, y)
+     */
+    public function convertBackgroundPosition($css, &$res)
+    {
+        // init the res
+        $res = false;
+
+        // explode the value
+        $css = explode(' ', $css);
+
+        // we must have 2 values. if 0 or >2 : error. if 1 => put center for 2
+        if (count($css)<2) {
+            if (!$css[0]) {
+                return null;
+            }
+            $css[1] = 'center';
+        }
+        if (count($css)>2) {
+            return null;
+        }
+
+        // prepare the values
+        $x = 0;
+        $y = 0;
+        $res = true;
+
+        // convert the first value
+        if ($css[0]=='left') {
+            $x = '0%';
+        } elseif ($css[0]=='center') {
+            $x = '50%';
+        } elseif ($css[0]=='right') {
+            $x = '100%';
+        } elseif ($css[0]=='top') {
+            $y = '0%';
+        } elseif ($css[0]=='bottom') {
+            $y = '100%';
+        } elseif (preg_match('/^[-]?[0-9\.]+%$/isU', $css[0])) {
+            $x = $css[0];
+        } elseif ($this->convertToMM($css[0])) {
+            $x = $this->convertToMM($css[0]);
+        } else {
+            $res = false;
+        }
+
+        // convert the second value
+        if ($css[1]=='left') {
+            $x = '0%';
+        } elseif ($css[1]=='right') {
+            $x = '100%';
+        } elseif ($css[1]=='top') {
+            $y = '0%';
+        } elseif ($css[1]=='center') {
+            $y = '50%';
+        } elseif ($css[1]=='bottom') {
+            $y = '100%';
+        } elseif (preg_match('/^[-]?[0-9\.]+%$/isU', $css[1])) {
+            $y = $css[1];
+        } elseif ($this->convertToMM($css[1])) {
+            $y = $this->convertToMM($css[1]);
+        } else {
+            $res = false;
+        }
+
+        // return the values
+        return array($x, $y);
+    }
+
+    /**
+     * Parse a background repeat
+     *
+     * @param  string $css
+     *
+     * @return array|null background repeat as array
+     */
+    public function convertBackgroundRepeat($css)
+    {
+        switch ($css) {
+            case 'repeat':
+                return array(true, true);
+            case 'repeat-x':
+                return array(true, false);
+            case 'repeat-y':
+                return array(false, true);
+            case 'no-repeat':
+                return array(false, false);
+        }
+        return null;
+    }
 }
