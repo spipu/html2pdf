@@ -3,6 +3,7 @@
 namespace Spipu\Html2Pdf\Css;
 
 use Spipu\Html2Pdf\Css\Selector\SelectorInterface;
+use Spipu\Html2Pdf\Html\NodeInterface;
 
 /**
  * Class Rule
@@ -17,6 +18,17 @@ class Rule
     {
         $this->text = trim($text);
         $this->selectors = $selectors;
+    }
+
+    public function match(NodeInterface $node)
+    {
+        foreach ($this->getSelectors() as $selector) {
+            $node = $selector->validate($node);
+            if (!$node) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
