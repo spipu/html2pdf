@@ -112,29 +112,4 @@ abstract class AbstractTag implements TagInterface
 
         return $this;
     }
-
-    /**
-     * get the name of the tag
-     *
-     * @return string
-     */
-    abstract public function getName();
-
-    /**
-     * Open the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
-     */
-    abstract public function open($properties);
-
-    /**
-     * Close the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
-     */
-    abstract public function close($properties);
 }

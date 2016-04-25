@@ -12,6 +12,8 @@
 
 namespace Spipu\Html2Pdf\Tag;
 
+use Spipu\Html2Pdf\Parsing\Node;
+
 /**
  * Abstract Default Tag
  * used by all the simple tags like b, u, i, ...
@@ -19,17 +21,13 @@ namespace Spipu\Html2Pdf\Tag;
 abstract class AbstractDefaultTag extends AbstractTag
 {
     /**
-     * Open the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function open($properties)
+    public function open(Node $node)
     {
         $this->parsingCss->save();
         $this->overrideStyles();
-        $this->parsingCss->analyse($this->getName(), $properties);
+        $this->parsingCss->analyse($this->getName(), $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
@@ -47,13 +45,9 @@ abstract class AbstractDefaultTag extends AbstractTag
     }
 
     /**
-     * Close the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function close($properties)
+    public function close(Node $node)
     {
         $this->parsingCss->load();
         $this->parsingCss->fontSet();

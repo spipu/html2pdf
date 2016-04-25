@@ -11,6 +11,8 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
+use Spipu\Html2Pdf\Parsing\Node;
+
 /**
  * Tag Bookmark
  */
@@ -27,14 +29,11 @@ class Bookmark extends AbstractTag
     }
 
     /**
-     * Open the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function open($properties)
+    public function open(Node $node)
     {
+        $properties = $node->getParams();
         $titre = isset($properties['title']) ? trim($properties['title']) : '';
         $level = isset($properties['level']) ? floor($properties['level']) : 0;
 
@@ -49,13 +48,9 @@ class Bookmark extends AbstractTag
     }
 
     /**
-     * Close the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function close($properties)
+    public function close(Node $node)
     {
         // there is nothing to do here
 

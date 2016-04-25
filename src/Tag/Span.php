@@ -11,6 +11,8 @@
  */
 namespace Spipu\Html2Pdf\Tag;
 
+use Spipu\Html2Pdf\Parsing\Node;
+
 /**
  * Tag Span
  */
@@ -27,16 +29,12 @@ class Span extends AbstractDefaultTag
     }
 
     /**
-     * Close the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function close($properties)
+    public function close(Node $node)
     {
         $this->parsingCss->restorePosition();
 
-        return parent::close($properties);
+        return parent::close($node);
     }
 }

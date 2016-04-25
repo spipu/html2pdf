@@ -1325,9 +1325,6 @@ class Html2Pdf
             $this->_setNewPage();
         }
 
-        // properties of the action
-        $properties = $action->getParams();
-
         // name of the action (old method)
         $fnc = ($close ? '_tag_close_' : '_tag_open_').$name;
 
@@ -1336,12 +1333,12 @@ class Html2Pdf
         $res = true;
         if (!is_null($tagObject)) {
             if ($close) {
-                $res = $tagObject->close($properties);
+                $res = $tagObject->close($action);
             } else {
-                $res = $tagObject->open($properties);
+                $res = $tagObject->open($action);
             }
         } elseif (is_callable(array($this, $fnc))) {
-            $res = $this->{$fnc}($properties);
+            $res = $this->{$fnc}($action->getParams());
         } elseif (!$close) { // consider only opening tags for errors as some tags are autoclosed
             $e = new HtmlParsingException(
                 'The html tag ['.$name.'] is not known by Html2Pdf not exists.'.

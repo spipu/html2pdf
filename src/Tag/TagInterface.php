@@ -16,6 +16,7 @@ use Spipu\Html2Pdf\CssConverter;
 use Spipu\Html2Pdf\MyPdf;
 use Spipu\Html2Pdf\Debug\DebugInterface;
 use Spipu\Html2Pdf\Parsing\Css as ParsingCss;
+use Spipu\Html2Pdf\Parsing\Node;
 
 interface TagInterface
 {
@@ -72,18 +73,18 @@ interface TagInterface
     /**
      * Open the HTML tag
      *
-     * @param array $properties properties of the HTML tag
+     * @param Node $node the HTML tag
      *
      * @return boolean
      */
-    public function open($properties);
+    public function open(Node $node);
 
     /**
      * Close the HTML tag
      *
-     * @param array $properties properties of the HTML tag
+     * @param Node $node the HTML tag
      *
      * @return boolean
      */
-    public function close($properties);
+    public function close(Node $node);
 }
