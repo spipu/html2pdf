@@ -1,6 +1,6 @@
 <?php
 
-namespace Spipu\Html2Pdf\Tests\Css;
+namespace Spipu\Html2Pdf\Tests\Css\Parser;
 
 use \Phake;
 use Spipu\Html2Pdf\Css\Selector\ChildSelector;

@@ -2,10 +2,10 @@
 
 namespace Spipu\Html2Pdf\Css;
 
-use Spipu\Html2Pdf\Css\Selector\ClassSelectorParser;
-use Spipu\Html2Pdf\Css\Selector\ChildSelectorParser;
-use Spipu\Html2Pdf\Css\Selector\IdSelectorParser;
-use Spipu\Html2Pdf\Css\Selector\SelectorParserInterface;
+use Spipu\Html2Pdf\Css\Parser\ClassSelectorParser;
+use Spipu\Html2Pdf\Css\Parser\ChildSelectorParser;
+use Spipu\Html2Pdf\Css\Parser\IdSelectorParser;
+use Spipu\Html2Pdf\Css\Parser\SelectorParserInterface;
 
 class SelectorProvider
 {

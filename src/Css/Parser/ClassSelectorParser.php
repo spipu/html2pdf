@@ -1,6 +1,8 @@
 <?php
 
-namespace Spipu\Html2Pdf\Css\Selector;
+namespace Spipu\Html2Pdf\Css\Parser;
+
+use Spipu\Html2Pdf\Css\Selector\ClassSelector;
 
 class ClassSelectorParser implements SelectorParserInterface
 {

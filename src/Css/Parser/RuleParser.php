@@ -1,6 +1,8 @@
 <?php 
 
-namespace Spipu\Html2Pdf\Css;
+namespace Spipu\Html2Pdf\Css\Parser;
+
+use Spipu\Html2Pdf\Css\SelectorProvider;
 
 /**
  * Class RuleParser

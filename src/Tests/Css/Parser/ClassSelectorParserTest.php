@@ -1,8 +1,8 @@
 <?php
 
-namespace Spipu\Html2Pdf\Tests\Css;
+namespace Spipu\Html2Pdf\Tests\Css\Parser;
 
-use Spipu\Html2Pdf\Css\Selector\ClassSelectorParser;
+use Spipu\Html2Pdf\Css\Parser\ClassSelectorParser;
 
 /**
  * Class ClassSelectorParserTest
