@@ -6,6 +6,7 @@ use Spipu\Html2Pdf\Css\Parser\ClassSelectorParser;
 use Spipu\Html2Pdf\Css\Parser\ChildSelectorParser;
 use Spipu\Html2Pdf\Css\Parser\IdSelectorParser;
 use Spipu\Html2Pdf\Css\Parser\SelectorParserInterface;
+use Spipu\Html2Pdf\Css\Parser\TagSelectorParser;
 
 class SelectorProvider
 {
@@ -18,6 +19,7 @@ class SelectorProvider
             new IdSelectorParser(),
             new ClassSelectorParser(),
             new ChildSelectorParser(),
+            new TagSelectorParser(),
         );
     }
 }

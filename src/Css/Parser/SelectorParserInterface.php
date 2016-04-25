@@ -4,10 +4,13 @@ namespace Spipu\Html2Pdf\Css\Parser;
 
 use Spipu\Html2Pdf\Css\Selector\SelectorInterface;
 
+/**
+ * Interface SelectorParserInterface
+ */
 interface SelectorParserInterface
 {
     /**
-     * @param $partial
+     * @param string $partial
      *
      * @return SelectorInterface
      */
