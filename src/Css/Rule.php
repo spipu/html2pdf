@@ -14,10 +14,13 @@ class Rule
 
     private $selectors;
 
-    public function __construct($text, $selectors)
+    private $styles;
+
+    public function __construct($text, $selectors, $styles = array())
     {
         $this->text = trim($text);
         $this->selectors = $selectors;
+        $this->styles = $styles;
     }
 
     public function match(NodeInterface $node)
@@ -37,5 +40,21 @@ class Rule
     public function getSelectors()
     {
         return $this->selectors;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStyles()
+    {
+        return $this->styles;
+    }
+
+    /**
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
     }
 }

@@ -12,7 +12,11 @@
 
 namespace Spipu\Html2Pdf\Parsing;
 
+use Spipu\Html2Pdf\Css\Parser\RuleParser;
+use Spipu\Html2Pdf\Css\Rule;
+use Spipu\Html2Pdf\Css\SelectorProvider;
 use Spipu\Html2Pdf\CssConverter;
+use Spipu\Html2Pdf\Html\NodeInterface;
 use Spipu\Html2Pdf\MyPdf;
 
 class Css
@@ -26,6 +30,11 @@ class Css
      * @var CssConverter
      */
     protected $cssConverter;
+
+    /**
+     * @var Rule[]
+     */
+    protected $cssRules = array();
 
     /**
      * Reference to the pdf object
@@ -1396,6 +1405,22 @@ class Css
         return $this->pdf->gettMargin();
     }
 
+
+    protected function getMatchingStyles(NodeInterface $node)
+    {
+        $styles = array();
+        /** @var Rule $rule */
+        foreach ($this->cssRules as $rule) {
+            if ($rule->match($node)) {
+                // $styles[] = array_merge($this->css[$rule->getText()]);
+                // should become :
+                $styles = array_merge($styles, $rule->getStyles());
+            }
+        }
+
+        return $styles;
+    }
+
     /**
      * Get the CSS properties of the current tag
      *
@@ -1619,6 +1644,18 @@ class Css
 
             // save the values for each names
             foreach ($names as $name) {
+
+                //----- NEW CONTENT
+                /** @var RuleParser $parser */
+                $parser = new RuleParser();
+                /** @var SelectorProvider $provider */
+                $provider = new SelectorProvider();
+                $selectors = $parser->parse($provider, $name);
+                $rule = new Rule($name, $selectors, $css);
+                $this->cssRules[] = $rule;
+                //----- END NEW
+
+
                 // clean the name
                 $name = trim($name);
 

@@ -14,7 +14,7 @@ class ClassSelector extends AbstractSelector
             return false;
         }
 
-        if (array_search(substr($this->getText(), 1), explode(' ', $params['class']))) {
+        if (array_search(substr($this->getText(), 1), explode(' ', $params['class'])) !== false) {
             return $node;
         }
 

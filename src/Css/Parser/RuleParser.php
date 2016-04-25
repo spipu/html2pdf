@@ -26,7 +26,7 @@ class RuleParser
                     continue (2);
                 }
             }
-            throw new \Exception('Unsupported selector');
+            throw new \Exception('Unsupported selector in "' . $text . '"');
         }
         return $selectors;
     }
