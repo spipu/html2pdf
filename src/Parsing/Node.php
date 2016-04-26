@@ -11,12 +11,14 @@
  */
 namespace Spipu\Html2Pdf\Parsing;
 
+use Spipu\Html2Pdf\Html\NodeInterface;
+
 /**
  * Class Node
  *
  * Represent an DOM node in the document
  */
-class Node
+class Node implements NodeInterface
 {
     /**
      * @var string
@@ -34,6 +36,11 @@ class Node
     private $children;
 
     /**
+     * @var Node
+     */
+    private $parent;
+
+    /**
      * @var int
      */
     private $line;
@@ -48,6 +55,11 @@ class Node
         $this->name = $name;
         $this->params = $params;
         $this->children = $children;
+        foreach ($this->children as $child) {
+            if (!$child->getParent()) {
+                $child->setParent($this);
+            }
+        }
     }
 
     /**
@@ -110,6 +122,16 @@ class Node
     public function setChildren($children)
     {
         $this->children = $children;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
     }
 
     /**

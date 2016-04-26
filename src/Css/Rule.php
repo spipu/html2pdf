@@ -25,7 +25,7 @@ class Rule
 
     public function match(NodeInterface $node)
     {
-        foreach ($this->getSelectors() as $selector) {
+        foreach (array_reverse($this->getSelectors()) as $selector) {
             $node = $selector->validate($node);
             if (!$node) {
                 return false;

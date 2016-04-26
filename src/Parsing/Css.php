@@ -612,6 +612,9 @@ class Css
      */
     public function analyse($tagName, $param, $legacy = null)
     {
+        if ($tagName instanceof NodeInterface) {
+            $styles = $this->getMatchingStyles($tagName);
+        } else {
         // prepare the informations
         $tagName = strtolower($tagName);
         $id   = isset($param['id'])   ? strtolower(trim($param['id']))    : null;
@@ -657,7 +660,7 @@ class Css
 
         // get the css styles from class
         $styles = $this->getFromCSS();
-
+        }
         // merge with the css styles from tag
         $styles = array_merge($styles, $param['style']);
         if (isset($param['allwidth']) && !isset($styles['width'])) {

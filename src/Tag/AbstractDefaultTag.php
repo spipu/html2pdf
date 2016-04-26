@@ -27,7 +27,7 @@ abstract class AbstractDefaultTag extends AbstractTag
     {
         $this->parsingCss->save();
         $this->overrideStyles();
-        $this->parsingCss->analyse($this->getName(), $node->getParams());
+        $this->parsingCss->analyse($node, $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
