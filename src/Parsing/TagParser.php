@@ -176,7 +176,7 @@ class TagParser
 
         // prepare the parameters
         if ($rawValue === false && isset($param['value'])) {
-            $param['value']  = $this->textParser->prepareTxt($param['value']);
+            $param['value']  = $this->textParser->prepareTxt($param['value'], true, true);
         }
         if (isset($param['alt'])) {
             $param['alt']    = $this->textParser->prepareTxt($param['alt']);
@@ -211,7 +211,15 @@ class TagParser
         foreach ($regexes as $regex) {
             preg_match_all('/'.$regex.'/is', $code, $match);
             for ($k = 0; $k < count($match[0]); $k++) {
-                $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
+
+                $key   = trim(strtolower($match[1][$k]));
+                $value = $match[2][$k];
+
+                if ('value' !== $key) {
+                    $value = trim($value);
+                }
+
+                $param[$key] = $value;
             }
         }
 

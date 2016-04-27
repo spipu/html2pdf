@@ -37,8 +37,12 @@ class TextParser
      * @return  string txt
      * @access  protected
      */
-    public function prepareTxt($txt, $spaces = true)
+    public function prepareTxt($txt, $spaces = true, $trim = false)
     {
+        if (true === $trim) {
+            $txt = trim($txt);
+        }
+
         if ($spaces) {
             $txt = preg_replace('/\s+/isu', ' ', $txt);
         }
