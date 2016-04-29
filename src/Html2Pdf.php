@@ -1338,7 +1338,7 @@ class Html2Pdf
                 $res = $tagObject->open($action);
             }
         } elseif (is_callable(array($this, $fnc))) {
-            $res = $this->{$fnc}($action->getParams());
+            $res = $this->{$fnc}($action);
         } elseif (!$close) { // consider only opening tags for errors as some tags are autoclosed
             $e = new HtmlParsingException(
                 'The html tag ['.$name.'] is not known by Html2Pdf not exists.'.
@@ -1448,7 +1448,7 @@ class Html2Pdf
         // if we are in a float, but if something else if on the line => Break Line
         if ($float && $this->_maxH) {
             // make the break line (false if we are in "_isForOneLine" mode)
-            if (!$this->_tag_open_BR(array())) {
+            if (!$this->_tag_open_BR()) {
                 return false;
             }
         }
@@ -2609,10 +2609,10 @@ class Html2Pdf
      * tag : PAGE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_PAGE($param)
+    protected function _tag_open_PAGE(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -2620,6 +2620,7 @@ class Html2Pdf
         if (!is_null($this->debug)) {
             $this->debug->addStep('PAGE '.($this->_page+1), true);
         }
+        $param = $node->getParams();
 
         $newPageSet= (!isset($param['pageset']) || $param['pageset']!='old');
 
@@ -2792,10 +2793,10 @@ class Html2Pdf
      * tag : PAGE
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_PAGE($param)
+    protected function _tag_close_PAGE(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -2817,10 +2818,10 @@ class Html2Pdf
      * tag : PAGE_HEADER
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_PAGE_HEADER($param)
+    protected function _tag_open_PAGE_HEADER(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -2838,10 +2839,10 @@ class Html2Pdf
      * tag : PAGE_FOOTER
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_PAGE_FOOTER($param)
+    protected function _tag_open_PAGE_FOOTER(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -2858,10 +2859,10 @@ class Html2Pdf
     /**
      * It is not a real tag. Does not use it directly
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_PAGE_HEADER_SUB($param)
+    protected function _tag_open_PAGE_HEADER_SUB(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -2895,7 +2896,7 @@ class Html2Pdf
         $this->parsingCss->table = array();
 
         $this->parsingCss->save();
-        $this->parsingCss->analyse('page_header_sub', $param);
+        $this->parsingCss->analyse('page_header_sub', $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
         $this->_setNewPositionForNewLine();
@@ -2905,10 +2906,10 @@ class Html2Pdf
     /**
      * It is not a real tag. Does not use it directly
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_PAGE_HEADER_SUB($param)
+    protected function _tag_close_PAGE_HEADER_SUB(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -2938,10 +2939,10 @@ class Html2Pdf
     /**
      * It is not a real tag. Does not use it directly
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_PAGE_FOOTER_SUB($param)
+    protected function _tag_open_PAGE_FOOTER_SUB(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -2982,7 +2983,7 @@ class Html2Pdf
         $this->_destroySubHTML($sub);
 
         $this->parsingCss->save();
-        $this->parsingCss->analyse('page_footer_sub', $param);
+        $this->parsingCss->analyse('page_footer_sub', $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
         $this->_setNewPositionForNewLine();
@@ -2993,10 +2994,10 @@ class Html2Pdf
     /**
      * It is not a real tag. Do not use it directly
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_PAGE_FOOTER_SUB($param)
+    protected function _tag_close_PAGE_FOOTER_SUB(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -3025,10 +3026,10 @@ class Html2Pdf
      * tag : NOBREAK
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_NOBREAK($param)
+    protected function _tag_open_NOBREAK(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -3060,10 +3061,10 @@ class Html2Pdf
      * tag : NOBREAK
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_NOBREAK($param)
+    protected function _tag_close_NOBREAK(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -3078,11 +3079,11 @@ class Html2Pdf
      * tag : DIV
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @param  string $other name of tag that used the div tag
      * @return boolean
      */
-    protected function _tag_open_DIV($param, $other = 'div')
+    protected function _tag_open_DIV(Node $node, $other = 'div')
     {
         if ($this->_isForOneLine) {
             return false;
@@ -3091,6 +3092,7 @@ class Html2Pdf
             $this->debug->addStep(strtoupper($other), true);
         }
 
+        $param = $node->getParams();
         $this->parsingCss->save();
         $this->parsingCss->analyse($other, $param);
         $this->parsingCss->fontSet();
@@ -3201,7 +3203,7 @@ class Html2Pdf
             if ($w < ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin()) &&
                 $this->pdf->getX() + $w>=($this->pdf->getW() - $this->pdf->getrMargin())
                 ) {
-                $this->_tag_open_BR(array());
+                $this->_tag_open_BR();
             }
 
             if (($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
@@ -3328,24 +3330,24 @@ class Html2Pdf
      * tag : BLOCKQUOTE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_BLOCKQUOTE($param)
+    protected function _tag_open_BLOCKQUOTE(Node $node)
     {
-        return $this->_tag_open_DIV($param, 'blockquote');
+        return $this->_tag_open_DIV($node, 'blockquote');
     }
 
     /**
      * tag : LEGEND
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_LEGEND($param)
+    protected function _tag_open_LEGEND(Node $node)
     {
-        return $this->_tag_open_DIV($param, 'legend');
+        return $this->_tag_open_DIV($node, 'legend');
     }
 
     /**
@@ -3353,13 +3355,13 @@ class Html2Pdf
      * mode : OPEN
      *
      * @author Pavel Kochman
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_FIELDSET($param)
+    protected function _tag_open_FIELDSET(Node $node)
     {
         $this->parsingCss->save();
-        $this->parsingCss->analyse('fieldset', $param);
+        $this->parsingCss->analyse($node, $node->getParams());
 
         // get height of LEGEND element and make fieldset corrections
         foreach ($this->currentNode->getChildren() as $child) {
@@ -3381,7 +3383,7 @@ class Html2Pdf
         }
         $this->parsingCss->load();
 
-        return $this->_tag_open_DIV($param, 'fieldset');
+        return $this->_tag_open_DIV($node, 'fieldset');
     }
 
     /**
@@ -3392,7 +3394,7 @@ class Html2Pdf
      * @param  string $other name of tag that used the div tag
      * @return boolean
      */
-    protected function _tag_close_DIV($param, $other = 'div')
+    protected function _tag_close_DIV(Node $node, $other = 'div')
     {
         if ($this->_isForOneLine) {
             return false;
@@ -3458,7 +3460,7 @@ class Html2Pdf
         $this->_loadMargin();
 
         if ($block) {
-            $this->_tag_open_BR(array());
+            $this->_tag_open_BR();
         }
         if (!is_null($this->debug)) {
             $this->debug->addStep(strtoupper($other), false);
@@ -3471,52 +3473,53 @@ class Html2Pdf
      * tag : BLOCKQUOTE
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_BLOCKQUOTE($param)
+    protected function _tag_close_BLOCKQUOTE(Node $node)
     {
-        return $this->_tag_close_DIV($param, 'blockquote');
+        return $this->_tag_close_DIV($node, 'blockquote');
     }
 
     /**
      * tag : FIELDSET
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_FIELDSET($param)
+    protected function _tag_close_FIELDSET(Node $node)
     {
-        return $this->_tag_close_DIV($param, 'fieldset');
+        return $this->_tag_close_DIV($node, 'fieldset');
     }
 
     /**
      * tag : LEGEND
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_LEGEND($param)
+    protected function _tag_close_LEGEND(Node $node)
     {
-        return $this->_tag_close_DIV($param, 'legend');
+        return $this->_tag_close_DIV($node, 'legend');
     }
 
     /**
      * tag : BARCODE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_BARCODE($param)
+    protected function _tag_open_BARCODE(Node $node)
     {
         // for  compatibility with old versions < 3.29
         $lstBarcode = array();
         $lstBarcode['UPC_A']  =    'UPCA';
         $lstBarcode['CODE39'] =    'C39';
 
+        $param = $node->getParams();
         if (!isset($param['type'])) {
             $param['type'] = 'C39';
         }
@@ -3571,10 +3574,10 @@ class Html2Pdf
      * tag : BARCODE
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_BARCODE($param)
+    protected function _tag_close_BARCODE(Node $node)
     {
         // there is nothing to do here
 
@@ -3585,15 +3588,16 @@ class Html2Pdf
      * tag : QRCODE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_QRCODE($param)
+    protected function _tag_open_QRCODE(Node $node)
     {
         if (!is_null($this->debug)) {
             $this->debug->addStep('QRCODE');
         }
 
+        $param = $node->getParams();
         if (!isset($param['value'])) {
             $param['value'] = '';
         }
@@ -3668,10 +3672,10 @@ class Html2Pdf
      * tag : QRCODE
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_QRCODE($param)
+    protected function _tag_close_QRCODE(Node $node)
     {
         // there is nothing to do here
 
@@ -3681,16 +3685,17 @@ class Html2Pdf
     /**
      * this is not a real TAG, it is just to write texts
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_WRITE($param)
+    protected function _tag_open_WRITE(Node $node)
     {
         $fill = ($this->parsingCss->value['background']['color']!==null && $this->parsingCss->value['background']['image']===null);
         if (in_array($this->parsingCss->value['id_tag'], array('fieldset', 'legend', 'div', 'table', 'tr', 'td', 'th'))) {
             $fill = false;
         }
 
+        $param = $node->getParams();
         // get the text to write
         $txt = $param['txt'];
 
@@ -3824,7 +3829,7 @@ class Html2Pdf
                 }
 
                 // automatic line break
-                $this->_tag_open_BR(array('style' => ''), $currPos);
+                $this->_tag_open_BR(null, $currPos);
 
                 // new position
                 $y = $this->pdf->getY();
@@ -3887,11 +3892,11 @@ class Html2Pdf
      * tag : BR
      * mode : OPEN
      *
-     * @param  array   $param
+     * @param  Node $node
      * @param  integer $curr real position in the html parseur (if break line in the write of a text)
      * @return boolean
      */
-    protected function _tag_open_BR($param, $curr = null)
+    protected function _tag_open_BR(Node $node = null, $curr = null)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -3915,24 +3920,25 @@ class Html2Pdf
      * tag : HR
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_HR($param)
+    protected function _tag_open_HR(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
+        $param = $node->getParams();
         $oldAlign = $this->parsingCss->value['text-align'];
         $this->parsingCss->value['text-align'] = 'left';
 
         if ($this->_maxH) {
-            $this->_tag_open_BR($param);
+            $this->_tag_open_BR();
         }
 
         $fontSize = $this->parsingCss->value['font-size'];
         $this->parsingCss->value['font-size']=$fontSize*0.5;
-        $this->_tag_open_BR($param);
+        $this->_tag_open_BR();
         $this->parsingCss->value['font-size']=$fontSize;
 
         $param['style']['width'] = '100%';
@@ -3959,10 +3965,10 @@ class Html2Pdf
         $this->parsingCss->fontSet();
 
         $this->parsingCss->value['font-size'] = 0;
-        $this->_tag_open_BR($param);
+        $this->_tag_open_BR();
 
         $this->parsingCss->value['font-size']=$fontSize*0.5;
-        $this->_tag_open_BR($param);
+        $this->_tag_open_BR();
         $this->parsingCss->value['font-size']=$fontSize;
 
         $this->parsingCss->value['text-align'] = $oldAlign;
@@ -3975,11 +3981,12 @@ class Html2Pdf
      * tag : A
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_A($param)
+    protected function _tag_open_A(Node $node)
     {
+        $param = $node->getParams();
         $this->_isInLink = str_replace('&amp;', '&', isset($param['href']) ? $param['href'] : '');
 
         if (isset($param['name'])) {
@@ -4017,10 +4024,10 @@ class Html2Pdf
      * tag : A
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_A($param)
+    protected function _tag_close_A(Node $node)
     {
         $this->_isInLink    = '';
         $this->parsingCss->load();
@@ -4033,18 +4040,18 @@ class Html2Pdf
      * tag : H1
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @param  string $other
      * @return boolean
      */
-    protected function _tag_open_H1($param, $other = 'h1')
+    protected function _tag_open_H1(Node $node, $other = 'h1')
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
         if ($this->_maxH) {
-            $this->_tag_open_BR(array());
+            $this->_tag_open_BR();
         }
         $this->parsingCss->save();
         $this->parsingCss->value['font-bold'] = true;
@@ -4056,7 +4063,7 @@ class Html2Pdf
         $this->parsingCss->value['margin']['b'] = $this->cssConverter->ConvertToMM('16px');
         $this->parsingCss->value['font-size'] = $this->cssConverter->ConvertToMM($size[$other]);
 
-        $this->parsingCss->analyse($other, $param);
+        $this->parsingCss->analyse($other, $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
         $this->_setNewPositionForNewLine();
@@ -4068,70 +4075,70 @@ class Html2Pdf
      * tag : H2
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_H2($param)
+    protected function _tag_open_H2(Node $node)
     {
-        return $this->_tag_open_H1($param, 'h2');
+        return $this->_tag_open_H1($node, 'h2');
     }
 
     /**
      * tag : H3
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_H3($param)
+    protected function _tag_open_H3(Node $node)
     {
-        return $this->_tag_open_H1($param, 'h3');
+        return $this->_tag_open_H1($node, 'h3');
     }
 
     /**
      * tag : H4
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_H4($param)
+    protected function _tag_open_H4(Node $node)
     {
-        return $this->_tag_open_H1($param, 'h4');
+        return $this->_tag_open_H1($node, 'h4');
     }
 
     /**
      * tag : H5
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_H5($param)
+    protected function _tag_open_H5(Node $node)
     {
-        return $this->_tag_open_H1($param, 'h5');
+        return $this->_tag_open_H1($node, 'h5');
     }
 
     /**
      * tag : H6
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_H6($param)
+    protected function _tag_open_H6(Node $node)
     {
-        return $this->_tag_open_H1($param, 'h6');
+        return $this->_tag_open_H1($node, 'h6');
     }
 
     /**
      * tag : H1
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_H1($param)
+    protected function _tag_close_H1(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -4155,70 +4162,70 @@ class Html2Pdf
      * tag : H2
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_H2($param)
+    protected function _tag_close_H2(Node $node)
     {
-        return $this->_tag_close_H1($param);
+        return $this->_tag_close_H1($node);
     }
 
     /**
      * tag : H3
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_H3($param)
+    protected function _tag_close_H3(Node $node)
     {
-        return $this->_tag_close_H1($param);
+        return $this->_tag_close_H1($node);
     }
 
     /**
      * tag : H4
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_H4($param)
+    protected function _tag_close_H4(Node $node)
     {
-        return $this->_tag_close_H1($param);
+        return $this->_tag_close_H1($node);
     }
 
     /**
      * tag : H5
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_H5($param)
+    protected function _tag_close_H5(Node $node)
     {
-        return $this->_tag_close_H1($param);
+        return $this->_tag_close_H1($node);
     }
 
     /**
      * tag : H6
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_H6($param)
+    protected function _tag_close_H6(Node $node)
     {
-        return $this->_tag_close_H1($param);
+        return $this->_tag_close_H1($node);
     }
 
     /**
      * tag : P
      * mode : OPEN
      *
-     * @param    array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_P($param)
+    protected function _tag_open_P(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -4226,12 +4233,12 @@ class Html2Pdf
 
         if (!in_array($this->_previousCall, array('_tag_close_P', '_tag_close_UL'))) {
             if ($this->_maxH) {
-                $this->_tag_open_BR(array());
+                $this->_tag_open_BR();
             }
         }
 
         $this->parsingCss->save();
-        $this->parsingCss->analyse('p', $param);
+        $this->parsingCss->analyse('p', $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
@@ -4259,17 +4266,17 @@ class Html2Pdf
      * tag : P
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_P($param)
+    protected function _tag_close_P(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
         if ($this->_maxH) {
-            $this->_tag_open_BR(array());
+            $this->_tag_open_BR();
         }
         $this->_isInParagraph = false;
         $this->_loadMargin();
@@ -4286,24 +4293,24 @@ class Html2Pdf
      * tag : PRE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @param  string $other
      * @return boolean
      */
-    protected function _tag_open_PRE($param, $other = 'pre')
+    protected function _tag_open_PRE(Node $node, $other = 'pre')
     {
         if ($other=='pre' && $this->_maxH) {
-            $this->_tag_open_BR(array());
+            $this->_tag_open_BR();
         }
 
         $this->parsingCss->save();
         $this->parsingCss->value['font-family'] = 'courier';
-        $this->parsingCss->analyse($other, $param);
+        $this->parsingCss->analyse($other, $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
         if ($other=='pre') {
-            return $this->_tag_open_DIV($param, $other);
+            return $this->_tag_open_DIV($node, $other);
         }
 
         return true;
@@ -4313,31 +4320,31 @@ class Html2Pdf
      * tag : CODE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_CODE($param)
+    protected function _tag_open_CODE(Node $node)
     {
-        return $this->_tag_open_PRE($param, 'code');
+        return $this->_tag_open_PRE($node, 'code');
     }
 
     /**
      * tag : PRE
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @param  string $other
      * @return boolean
      */
-    protected function _tag_close_PRE($param, $other = 'pre')
+    protected function _tag_close_PRE(Node $node, $other = 'pre')
     {
         if ($other=='pre') {
             if ($this->_isForOneLine) {
                 return false;
             }
 
-            $this->_tag_close_DIV($param, $other);
-            $this->_tag_open_BR(array());
+            $this->_tag_close_DIV($node, $other);
+            $this->_tag_open_BR();
         }
         $this->parsingCss->load();
         $this->parsingCss->fontSet();
@@ -4349,23 +4356,23 @@ class Html2Pdf
      * tag : CODE
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_CODE($param)
+    protected function _tag_close_CODE(Node $node)
     {
-        return $this->_tag_close_PRE($param, 'code');
+        return $this->_tag_close_PRE($node, 'code');
     }
 
     /**
      * tag : UL
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @param  string $other
      * @return boolean
      */
-    protected function _tag_open_UL($param, $other = 'ul')
+    protected function _tag_open_UL(Node $node, $other = 'ul')
     {
         if ($this->_isForOneLine) {
             return false;
@@ -4373,10 +4380,10 @@ class Html2Pdf
 
         if (!in_array($this->_previousCall, array('_tag_close_P', '_tag_close_UL'))) {
             if ($this->_maxH) {
-                $this->_tag_open_BR(array());
+                $this->_tag_open_BR();
             }
             if (!count($this->_defList)) {
-                $this->_tag_open_BR(array());
+                $this->_tag_open_BR();
             }
         }
 
@@ -4386,7 +4393,7 @@ class Html2Pdf
         $param['cellspacing'] = 0;
 
         // a list is like a table
-        $this->_tag_open_TABLE($param, $other);
+        $this->_tag_open_TABLE($node, $other);
 
         // add a level of list
         $start = (isset($this->parsingCss->value['start']) ? $this->parsingCss->value['start'] : null);
@@ -4399,34 +4406,34 @@ class Html2Pdf
      * tag : OL
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_OL($param)
+    protected function _tag_open_OL(Node $node)
     {
-        return $this->_tag_open_UL($param, 'ol');
+        return $this->_tag_open_UL($node, 'ol');
     }
 
     /**
      * tag : UL
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_UL($param)
+    protected function _tag_close_UL(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
-        $this->_tag_close_TABLE($param);
+        $this->_tag_close_TABLE($node);
 
         $this->_listeDelLevel();
 
         if (!$this->_subPart) {
             if (!count($this->_defList)) {
-                $this->_tag_open_BR(array());
+                $this->_tag_open_BR();
             }
         }
 
@@ -4437,22 +4444,22 @@ class Html2Pdf
      * tag : OL
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_OL($param)
+    protected function _tag_close_OL(Node $node)
     {
-        return $this->_tag_close_UL($param);
+        return $this->_tag_close_UL($node);
     }
 
     /**
      * tag : LI
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_LI($param)
+    protected function _tag_open_LI(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -4460,6 +4467,7 @@ class Html2Pdf
 
         $this->_listeAddLi();
 
+        $param = $node->getParams();
         if (!isset($param['style']['width'])) {
             $param['style']['width'] = '100%';
         }
@@ -4483,7 +4491,7 @@ class Html2Pdf
             $paramPUCE['sub_li'] = true;
         }
 
-        $this->_tag_open_TR($param, 'li');
+        $this->_tag_open_TR($node, 'li');
 
         $this->parsingCss->save();
 
@@ -4503,25 +4511,26 @@ class Html2Pdf
             $children = $this->currentNode->getChildren();
             $bulletPoint = new Node($name, $params);
             $this->currentNode->setChildren(array($bulletPoint));
-            $this->_tag_open_TD($paramPUCE, 'li_sub');
-            $this->_tag_close_TD($param);
+            $this->_tag_open_TD(new Node('td', $paramPUCE), 'li_sub');
+            $this->_tag_close_TD(new Node('td', $param));
             $this->currentNode->setChildren($children);
         } else {
             // TD for the puce
-            $this->_tag_open_TD($paramPUCE, 'li_sub');
+            $tdNode = new Node('td', $paramPUCE);
+            $this->_tag_open_TD($tdNode, 'li_sub');
             unset($paramPUCE['style']['width']);
             if (isset($paramPUCE['src'])) {
-                $this->_tag_open_IMG($paramPUCE);
+                $this->_tag_open_IMG(new Node('img', $paramPUCE));
             } else {
-                $this->_tag_open_WRITE($paramPUCE);
+                $this->_tag_open_WRITE(new Node('txt', $paramPUCE));
             }
-            $this->_tag_close_TD($paramPUCE);
+            $this->_tag_close_TD($tdNode);
         }
         $this->parsingCss->load();
 
 
         // TD for the content
-        $this->_tag_open_TD($param, 'li');
+        $this->_tag_open_TD($node, 'li');
 
         return true;
     }
@@ -4530,18 +4539,18 @@ class Html2Pdf
      * tag : LI
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_LI($param)
+    protected function _tag_close_LI(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
-        $this->_tag_close_TD($param);
+        $this->_tag_close_TD($node);
 
-        $this->_tag_close_TR($param);
+        $this->_tag_close_TR($node);
 
         return true;
     }
@@ -4550,17 +4559,17 @@ class Html2Pdf
      * tag : TBODY
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_TBODY($param)
+    protected function _tag_open_TBODY(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
         $this->parsingCss->save();
-        $this->parsingCss->analyse('tbody', $param);
+        $this->parsingCss->analyse('tbody', $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
@@ -4571,10 +4580,10 @@ class Html2Pdf
      * tag : TBODY
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_TBODY($param)
+    protected function _tag_close_TBODY(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -4590,21 +4599,22 @@ class Html2Pdf
      * tag : THEAD
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_THEAD($param)
+    protected function _tag_open_THEAD(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
         $this->parsingCss->save();
-        $this->parsingCss->analyse('thead', $param);
+        $this->parsingCss->analyse('thead', $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
         // if we are in a sub part, save the number of the first TR in the thead
+        $param = $node->getParams();
         if ($this->_subPart) {
             self::$_tables[$param['num']]['thead']['tr'][0] = self::$_tables[$param['num']]['tr_curr'];
             self::$_tables[$param['num']]['thead']['code'] = new Node('thead_sub', $this->currentNode->getParams(), $this->currentNode->getChildren());
@@ -4619,10 +4629,10 @@ class Html2Pdf
      * tag : THEAD
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_THEAD($param)
+    protected function _tag_close_THEAD(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -4633,6 +4643,7 @@ class Html2Pdf
 
         // if we are in a sub HTM, construct the list of the TR in the thead
         if ($this->_subPart) {
+            $param = $node->getParams();
             $min = self::$_tables[$param['num']]['thead']['tr'][0];
             $max = self::$_tables[$param['num']]['tr_curr']-1;
             self::$_tables[$param['num']]['thead']['tr'] = range($min, $max);
@@ -4645,21 +4656,22 @@ class Html2Pdf
      * tag : TFOOT
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_TFOOT($param)
+    protected function _tag_open_TFOOT(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
         $this->parsingCss->save();
-        $this->parsingCss->analyse('tfoot', $param);
+        $this->parsingCss->analyse('tfoot', $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
         // if we are in a sub part, save the number of the first TR in the tfoot
+        $param = $node->getParams();
         if ($this->_subPart) {
             self::$_tables[$param['num']]['tfoot']['tr'][0] = self::$_tables[$param['num']]['tr_curr'];
             self::$_tables[$param['num']]['tfoot']['code'] = new Node('tfoot_sub', $this->currentNode->getParams(), $this->currentNode->getChildren());
@@ -4674,10 +4686,10 @@ class Html2Pdf
      * tag : TFOOT
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_TFOOT($param)
+    protected function _tag_close_TFOOT(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -4688,6 +4700,7 @@ class Html2Pdf
 
         // if we are in a sub HTM, construct the list of the TR in the tfoot
         if ($this->_subPart) {
+            $param = $node->getParams();
             $min = self::$_tables[$param['num']]['tfoot']['tr'][0];
             $max = self::$_tables[$param['num']]['tr_curr']-1;
             self::$_tables[$param['num']]['tfoot']['tr'] = range($min, $max);
@@ -4699,17 +4712,17 @@ class Html2Pdf
     /**
      * It is not a real TAG, do not use it !
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_THEAD_SUB($param)
+    protected function _tag_open_THEAD_SUB(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
         $this->parsingCss->save();
-        $this->parsingCss->analyse('thead', $param);
+        $this->parsingCss->analyse('thead', $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
@@ -4719,10 +4732,10 @@ class Html2Pdf
     /**
      * It is not a real TAG, do not use it !
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_THEAD_SUB($param)
+    protected function _tag_close_THEAD_SUB(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -4737,17 +4750,17 @@ class Html2Pdf
     /**
      * It is not a real TAG, do not use it !
      *
-     * @param    array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_TFOOT_SUB($param)
+    protected function _tag_open_TFOOT_SUB(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
         $this->parsingCss->save();
-        $this->parsingCss->analyse('tfoot', $param);
+        $this->parsingCss->analyse('tfoot', $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
@@ -4757,10 +4770,10 @@ class Html2Pdf
     /**
      * It is not a real TAG, do not use it !
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_TFOOT_SUB($param)
+    protected function _tag_close_TFOOT_SUB(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -4776,13 +4789,13 @@ class Html2Pdf
      * tag : FORM
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_FORM($param)
+    protected function _tag_open_FORM(Node $node)
     {
         $this->parsingCss->save();
-        $this->parsingCss->analyse('form', $param);
+        $this->parsingCss->analyse('form', $node->getParams());
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
@@ -4795,6 +4808,7 @@ class Html2Pdf
             )
         );
 
+        $param = $node->getParams();
         $this->_isInForm = isset($param['action']) ? $param['action'] : '';
 
         return true;
@@ -4804,10 +4818,10 @@ class Html2Pdf
      * tag : FORM
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_FORM($param)
+    protected function _tag_close_FORM(Node $node)
     {
         $this->_isInForm = false;
         $this->parsingCss->load();
@@ -4820,16 +4834,16 @@ class Html2Pdf
      * tag : TABLE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_TABLE($param, $other = 'table')
+    protected function _tag_open_TABLE(Node $node, $other = 'table')
     {
         if ($this->_maxH) {
             if ($this->_isForOneLine) {
                 return false;
             }
-            $this->_tag_open_BR(array());
+            $this->_tag_open_BR();
         }
 
         if ($this->_isForOneLine) {
@@ -4839,6 +4853,7 @@ class Html2Pdf
 
         $this->_maxH = 0;
 
+        $param = $node->getParams();
         $alignObject = isset($param['align']) ? strtolower($param['align']) : 'left';
         if (isset($param['align'])) {
             unset($param['align']);
@@ -4944,15 +4959,16 @@ class Html2Pdf
      * tag : TABLE
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_TABLE($param)
+    protected function _tag_close_TABLE(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
+        $param = $node->getParams();
         $this->_maxH = 0;
 
         // if we are in a sub HTML
@@ -5101,11 +5117,12 @@ class Html2Pdf
      * tag : COL
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_COL($param)
+    protected function _tag_open_COL(Node $node)
     {
+        $param = $node->getParams();
         $span = isset($param['span']) ? $param['span'] : 1;
         for ($k=0; $k<$span; $k++) {
             self::$_tables[$param['num']]['cols'][] = $param;
@@ -5116,10 +5133,10 @@ class Html2Pdf
      * tag : COL
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_COL($param)
+    protected function _tag_close_COL(Node $node)
     {
         // there is nothing to do here
 
@@ -5130,15 +5147,16 @@ class Html2Pdf
      * tag : TR
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_TR($param, $other = 'tr')
+    protected function _tag_open_TR(Node $node, $other = 'tr')
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
+        $param = $node->getParams();
         $this->_maxH = 0;
 
         $this->parsingCss->save();
@@ -5248,15 +5266,16 @@ class Html2Pdf
      * tag : TR
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_TR($param)
+    protected function _tag_close_TR(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
+        $param = $node->getParams();
         $this->_maxH = 0;
 
         $this->parsingCss->load();
@@ -5288,17 +5307,18 @@ class Html2Pdf
      * tag : TD
      * mode : OPEN
      *
-     * @param  array $param
+     * @param Node $node
      * @param string $other
      *
      * @return boolean
      */
-    protected function _tag_open_TD($param, $other = 'td')
+    protected function _tag_open_TD(Node $node, $other = 'td')
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
+        $param = $node->getParams();
         $this->_maxH = 0;
 
         $param['cellpadding'] = self::$_tables[$param['num']]['cellpadding'].'mm';
@@ -5520,15 +5540,16 @@ class Html2Pdf
      * tag : TD
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_TD($param)
+    protected function _tag_close_TD(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
+        $param = $node->getParams();
         $this->_maxH = 0;
 
         // get the margins
@@ -5585,10 +5606,10 @@ class Html2Pdf
      * tag : TH
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_TH($param)
+    protected function _tag_open_TH(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -5597,7 +5618,7 @@ class Html2Pdf
         $this->parsingCss->save();
         $this->parsingCss->value['font-bold'] = true;
 
-        $this->_tag_open_TD($param, 'th');
+        $this->_tag_open_TD($node, 'th');
 
         return true;
     }
@@ -5606,16 +5627,16 @@ class Html2Pdf
      * tag : TH
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_TH($param)
+    protected function _tag_close_TH(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
         }
 
-        $this->_tag_close_TD($param);
+        $this->_tag_close_TD($node);
 
         $this->parsingCss->load();
 
@@ -5626,11 +5647,12 @@ class Html2Pdf
      * tag : IMG
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_IMG($param)
+    protected function _tag_open_IMG(Node $node)
     {
+        $param = $node->getParams();
         $src    = str_replace('&amp;', '&', $param['src']);
 
         $this->parsingCss->save();
@@ -5658,11 +5680,12 @@ class Html2Pdf
      * tag : SELECT
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_SELECT($param)
+    protected function _tag_open_SELECT(Node $node)
     {
+        $param = $node->getParams();
         if (!isset($param['name'])) {
             $param['name'] = 'champs_pdf_'.(count($this->_lstField)+1);
         }
@@ -5697,11 +5720,12 @@ class Html2Pdf
      * tag : OPTION
      * mode : OPEN
      *
-     * @param    array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_OPTION($param)
+    protected function _tag_open_OPTION(Node $node)
     {
+        $param = $node->getParams();
         // get the content of the option : it is the text of the option
         $value = isset($param['value']) ? $param['value'] : 'aut_tag_open_opt_'.(count($this->_lstSelect)+1);
 
@@ -5715,10 +5739,10 @@ class Html2Pdf
      * tag : OPTION
      * mode : CLOSE
      *
-     * @param    array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_OPTION($param)
+    protected function _tag_close_OPTION(Node $node)
     {
         // nothing to do here
 
@@ -5729,10 +5753,10 @@ class Html2Pdf
      * tag : SELECT
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_SELECT()
+    protected function _tag_close_SELECT(Node $node)
     {
         // position of the select
         $x = $this->pdf->getX();
@@ -5781,11 +5805,12 @@ class Html2Pdf
      * tag : TEXTAREA
      * mode : OPEN
      *
-     * @param    array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_TEXTAREA($param)
+    protected function _tag_open_TEXTAREA(Node $node)
     {
+        $param = $node->getParams();
         if (!isset($param['name'])) {
             $param['name'] = 'champs_pdf_'.(count($this->_lstField)+1);
         }
@@ -5833,10 +5858,10 @@ class Html2Pdf
      * tag : TEXTAREA
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_TEXTAREA()
+    protected function _tag_close_TEXTAREA(Node $node)
     {
         $this->parsingCss->load();
         $this->parsingCss->fontSet();
@@ -5848,11 +5873,12 @@ class Html2Pdf
      * tag : INPUT
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_INPUT($param)
+    protected function _tag_open_INPUT(Node $node)
     {
+        $param = $node->getParams();
         if (!isset($param['name'])) {
             $param['name']  = 'champs_pdf_'.(count($this->_lstField)+1);
         }
@@ -5989,10 +6015,10 @@ class Html2Pdf
      * tag : DRAW
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_DRAW($param)
+    protected function _tag_open_DRAW(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -6002,7 +6028,7 @@ class Html2Pdf
         }
 
         $this->parsingCss->save();
-        $this->parsingCss->analyse('draw', $param);
+        $this->parsingCss->analyse('draw', $node->getParams());
         $this->parsingCss->fontSet();
 
         $alignObject = null;
@@ -6023,7 +6049,7 @@ class Html2Pdf
             if ($w < ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin()) &&
                 $this->pdf->getX() + $w>=($this->pdf->getW() - $this->pdf->getrMargin())
                 ) {
-                $this->_tag_open_BR(array());
+                $this->_tag_open_BR();
             }
 
             if (($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
@@ -6126,10 +6152,10 @@ class Html2Pdf
      * tag : DRAW
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_DRAW($param)
+    protected function _tag_close_DRAW(Node $node)
     {
         if ($this->_isForOneLine) {
             return false;
@@ -6175,7 +6201,7 @@ class Html2Pdf
         $this->_loadMargin();
 
         if ($block) {
-            $this->_tag_open_BR(array());
+            $this->_tag_open_BR();
         }
         if (!is_null($this->debug)) {
             $this->debug->addStep('DRAW', false);
@@ -6190,10 +6216,10 @@ class Html2Pdf
      * tag : LINE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_LINE($param)
+    protected function _tag_open_LINE(Node $node)
     {
         if (!$this->_isInDraw) {
             $e = new HtmlParsingException('The asked [LINE] tag is not in a [DRAW] tag');
@@ -6201,6 +6227,7 @@ class Html2Pdf
             throw $e;
         }
 
+        $param = $node->getParams();
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
         $styles = $this->parsingCss->getSvgStyle('path', $param);
@@ -6221,10 +6248,10 @@ class Html2Pdf
      * tag : RECT
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_RECT($param)
+    protected function _tag_open_RECT(Node $node)
     {
         if (!$this->_isInDraw) {
             $e = new HtmlParsingException('The asked [RECT] tag is not in a [DRAW] tag');
@@ -6232,6 +6259,7 @@ class Html2Pdf
             throw $e;
         }
 
+        $param = $node->getParams();
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
         $styles = $this->parsingCss->getSvgStyle('path', $param);
@@ -6252,10 +6280,10 @@ class Html2Pdf
      * tag : CIRCLE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_CIRCLE($param)
+    protected function _tag_open_CIRCLE(Node $node)
     {
         if (!$this->_isInDraw) {
             $e = new HtmlParsingException('The asked [CIRCLE] tag is not in a [DRAW] tag');
@@ -6263,6 +6291,7 @@ class Html2Pdf
             throw $e;
         }
 
+        $param = $node->getParams();
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
         $styles = $this->parsingCss->getSvgStyle('path', $param);
@@ -6281,10 +6310,10 @@ class Html2Pdf
      * tag : ELLIPSE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_ELLIPSE($param)
+    protected function _tag_open_ELLIPSE(Node $node)
     {
         if (!$this->_isInDraw) {
             $e = new HtmlParsingException('The asked [ELLIPSE] tag is not in a [DRAW] tag');
@@ -6292,6 +6321,7 @@ class Html2Pdf
             throw $e;
         }
 
+        $param = $node->getParams();
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
         $styles = $this->parsingCss->getSvgStyle('path', $param);
@@ -6312,10 +6342,10 @@ class Html2Pdf
      * tag : POLYLINE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_POLYLINE($param)
+    protected function _tag_open_POLYLINE(Node $node)
     {
         if (!$this->_isInDraw) {
             $e = new HtmlParsingException('The asked [POLYLINE] tag is not in a [DRAW] tag');
@@ -6323,6 +6353,7 @@ class Html2Pdf
             throw $e;
         }
 
+        $param = $node->getParams();
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
         $styles = $this->parsingCss->getSvgStyle('path', $param);
@@ -6364,10 +6395,10 @@ class Html2Pdf
      * tag : POLYGON
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_POLYGON($param)
+    protected function _tag_open_POLYGON(Node $node)
     {
         if (!$this->_isInDraw) {
             $e = new HtmlParsingException('The asked [POLYGON] tag is not in a [DRAW] tag');
@@ -6375,6 +6406,7 @@ class Html2Pdf
             throw $e;
         }
 
+        $param = $node->getParams();
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
         $styles = $this->parsingCss->getSvgStyle('path', $param);
@@ -6417,10 +6449,10 @@ class Html2Pdf
      * tag : PATH
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_PATH($param)
+    protected function _tag_open_PATH(Node $node)
     {
         if (!$this->_isInDraw) {
             $e = new HtmlParsingException('The asked [PATH] tag is not in a [DRAW] tag');
@@ -6428,6 +6460,7 @@ class Html2Pdf
             throw $e;
         }
 
+        $param = $node->getParams();
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
         $styles = $this->parsingCss->getSvgStyle('path', $param);
@@ -6554,10 +6587,10 @@ class Html2Pdf
      * tag : G
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_open_G($param)
+    protected function _tag_open_G(Node $node)
     {
         if (!$this->_isInDraw) {
             $e = new HtmlParsingException('The asked [G] tag is not in a [DRAW] tag');
@@ -6565,6 +6598,7 @@ class Html2Pdf
             throw $e;
         }
 
+        $param = $node->getParams();
         $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
         $this->parsingCss->save();
         $styles = $this->parsingCss->getSvgStyle('path', $param);
@@ -6575,10 +6609,10 @@ class Html2Pdf
      * tag : G
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return boolean
      */
-    protected function _tag_close_G($param)
+    protected function _tag_close_G(Node $node)
     {
         $this->pdf->undoTransform();
         $this->parsingCss->load();
@@ -6588,11 +6622,12 @@ class Html2Pdf
      * tag : END_LAST_PAGE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  Node $node
      * @return void
      */
-    protected function _tag_open_END_LAST_PAGE($param)
+    protected function _tag_open_END_LAST_PAGE(Node $node)
     {
+        $param = $node->getParams();
         $height = $this->cssConverter->ConvertToMM(
             $param['end_height'],
             $this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()
@@ -6616,10 +6651,10 @@ class Html2Pdf
      * tag : END_LAST_PAGE
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  Node $node
      * @return void
      */
-    protected function _tag_close_END_LAST_PAGE($param)
+    protected function _tag_close_END_LAST_PAGE(Node $node)
     {
         $this->parsingCss->load();
         $this->parsingCss->fontSet();

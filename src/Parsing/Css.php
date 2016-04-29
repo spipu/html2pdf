@@ -663,7 +663,7 @@ class Css
             $styles = $this->getFromCSS();
         }
         // merge with the css styles from tag
-        $styles = array_merge($styles, $param['style']);
+        $styles = array_merge($styles, isset($param['style']) ? $param['style'] : array());
         if (isset($param['allwidth']) && !isset($styles['width'])) {
             $styles['width'] = '100%';
         }
