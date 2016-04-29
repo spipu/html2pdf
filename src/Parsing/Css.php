@@ -520,43 +520,13 @@ class Css
     /**
      * Analise the CSS style to convert it into SVG style
      *
-     * @param string tag name
-     * @param array  styles
+     * @param string $tagName
+     * @param array  $param
      *
      * @return array svg style
      */
-    public function getSvgStyle($tagName, &$param)
+    public function getSvgStyle($tagName, $param)
     {
-        // prepare
-        $tagName = strtolower($tagName);
-        $id   = isset($param['id'])   ? strtolower(trim($param['id']))   : null;
-        if (!$id) {
-            $id   = null;
-        }
-        $name = isset($param['name']) ? strtolower(trim($param['name'])) : null;
-        if (!$name) {
-            $name = null;
-        }
-
-        // read the class attribute
-        $class = array();
-        $tmp = isset($param['class']) ? strtolower(trim($param['class'])) : '';
-        $tmp = explode(' ', $tmp);
-        foreach ($tmp as $k => $v) {
-            $v = trim($v);
-            if ($v) {
-                $class[] = $v;
-            }
-        }
-
-        // identify the tag, and the direct styles
-        $this->value['id_tag'] = $tagName;
-        $this->value['id_name']   = $name;
-        $this->value['id_id']     = $id;
-        $this->value['id_class']  = $class;
-        $this->value['id_lst']    = array();
-        $this->value['id_lst'][] = '*';
-        $this->value['id_lst'][] = $tagName;
         if (!isset($this->value['svg'])) {
             $this->value['svg'] = array(
                 'stroke'         => null,
@@ -566,19 +536,7 @@ class Css
             );
         }
 
-        if (count($class)) {
-            foreach ($class as $v) {
-                $this->value['id_lst'][] = '*.'.$v;
-                $this->value['id_lst'][] = '.'.$v;
-                $this->value['id_lst'][] = $tagName.'.'.$v;
-            }
-        }
-        if ($id) {
-            $this->value['id_lst'][] = '*#'.$id;
-            $this->value['id_lst'][] = '#'.$id;
-            $this->value['id_lst'][] = $tagName.'#'.$id;
-        }
-
+        $this->prepareValueForStylesResolution($tagName, $param);
         // CSS style
         $styles = $this->getFromCSS();
 
@@ -616,49 +574,7 @@ class Css
             $styles = $this->getMatchingStyles($tagName);
             $tagName = $tagName->getName();
         } else {
-            // prepare the information
-            $tagName = strtolower($tagName);
-            $id   = isset($param['id'])   ? strtolower(trim($param['id']))    : null;
-            if (!$id) {
-                $id   = null;
-            }
-            $name = isset($param['name']) ? strtolower(trim($param['name']))  : null;
-            if (!$name) {
-                $name = null;
-            }
-
-            // get the class names to use
-            $class = array();
-            $tmp = isset($param['class']) ? strtolower(trim($param['class'])) : '';
-            $tmp = explode(' ', $tmp);
-            foreach ($tmp as $k => $v) {
-                $v = trim($v);
-                if ($v) {
-                    $class[] = $v;
-                }
-            }
-
-            // prepare the values, and the list of css tags to identify
-            $this->value['id_tag']   = $tagName;
-            $this->value['id_name']  = $name;
-            $this->value['id_id']    = $id;
-            $this->value['id_class'] = $class;
-            $this->value['id_lst']   = array();
-            $this->value['id_lst'][] = '*';
-            $this->value['id_lst'][] = $tagName;
-            if (count($class)) {
-                foreach ($class as $v) {
-                    $this->value['id_lst'][] = '*.'.$v;
-                    $this->value['id_lst'][] = '.'.$v;
-                    $this->value['id_lst'][] = $tagName.'.'.$v;
-                }
-            }
-            if ($id) {
-                $this->value['id_lst'][] = '*#'.$id;
-                $this->value['id_lst'][] = '#'.$id;
-                $this->value['id_lst'][] = $tagName.'#'.$id;
-            }
-
+            $this->prepareValueForStylesResolution($tagName, $param);
             // get the css styles from class
             $styles = $this->getFromCSS();
         }
@@ -1002,6 +918,56 @@ class Css
 
         // no corresponding found
         return false;
+    }
+
+    /**
+     * @param $tagName
+     * @param $param
+     */
+    protected function prepareValueForStylesResolution($tagName, $param)
+    {
+        // prepare the information
+        $tagName = strtolower($tagName);
+        $id   = isset($param['id'])   ? strtolower(trim($param['id']))    : null;
+        if (!$id) {
+            $id   = null;
+        }
+        $name = isset($param['name']) ? strtolower(trim($param['name']))  : null;
+        if (!$name) {
+            $name = null;
+        }
+
+        // get the class names to use
+        $class = array();
+        $tmp = isset($param['class']) ? strtolower(trim($param['class'])) : '';
+        $tmp = explode(' ', $tmp);
+        foreach ($tmp as $k => $v) {
+            $v = trim($v);
+            if ($v) {
+                $class[] = $v;
+            }
+        }
+
+        // prepare the values, and the list of css tags to identify
+        $this->value['id_tag']   = $tagName;
+        $this->value['id_name']  = $name;
+        $this->value['id_id']    = $id;
+        $this->value['id_class'] = $class;
+        $this->value['id_lst']   = array();
+        $this->value['id_lst'][] = '*';
+        $this->value['id_lst'][] = $tagName;
+        if (count($class)) {
+            foreach ($class as $v) {
+                $this->value['id_lst'][] = '*.'.$v;
+                $this->value['id_lst'][] = '.'.$v;
+                $this->value['id_lst'][] = $tagName.'.'.$v;
+            }
+        }
+        if ($id) {
+            $this->value['id_lst'][] = '*#'.$id;
+            $this->value['id_lst'][] = '#'.$id;
+            $this->value['id_lst'][] = $tagName.'#'.$id;
+        }
     }
 
     /**
