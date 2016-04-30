@@ -6372,41 +6372,6 @@ class Html2Pdf
     }
 
     /**
-     * tag : G
-     * mode : OPEN
-     *
-     * @param  Node $node
-     * @return boolean
-     */
-    protected function _tag_open_G(Node $node)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [G] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('G');
-            throw $e;
-        }
-
-        $param = $node->getParams();
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-    }
-
-    /**
-     * tag : G
-     * mode : CLOSE
-     *
-     * @param  Node $node
-     * @return boolean
-     */
-    protected function _tag_close_G(Node $node)
-    {
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
      * tag : END_LAST_PAGE
      * mode : OPEN
      *

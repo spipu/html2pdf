@@ -44,6 +44,7 @@ class SvgExtension implements ExtensionInterface
             $this->tagDefinitions = array(
                 new \Spipu\Html2Pdf\Tag\Svg\Circle(),
                 new \Spipu\Html2Pdf\Tag\Svg\Ellipse(),
+                new \Spipu\Html2Pdf\Tag\Svg\G(),
                 new \Spipu\Html2Pdf\Tag\Svg\Line(),
                 new \Spipu\Html2Pdf\Tag\Svg\Rect(),
                 new \Spipu\Html2Pdf\Tag\Svg\Polygon(),
