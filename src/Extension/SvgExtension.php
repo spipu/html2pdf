@@ -43,6 +43,7 @@ class SvgExtension implements ExtensionInterface
         if (empty($this->tagDefinitions)) {
             $this->tagDefinitions = array(
                 new \Spipu\Html2Pdf\Tag\Svg\Circle(),
+                new \Spipu\Html2Pdf\Tag\Svg\Ellipse(),
             );
 
             /** @var SvgTagInterface $tag */

@@ -66,10 +66,23 @@ class SvgDrawer
     public function ellipse($params, $styles)
     {
         $style = $this->pdf->svgSetStyle($styles);
-
         $cx = isset($params['cx']) ? $this->cssConverter->ConvertToMM($params['cx'], $this->coordinates['w']) : 0.;
         $cy = isset($params['cy']) ? $this->cssConverter->ConvertToMM($params['cy'], $this->coordinates['h']) : 0.;
-        $r = isset($params['r']) ? $this->cssConverter->ConvertToMM($params['r'], $this->coordinates['w']) : 0.;
+        $rx = isset($params['ry']) ? $this->cssConverter->ConvertToMM($params['rx'], $this->coordinates['w']) : 0.;
+        $ry = isset($params['rx']) ? $this->cssConverter->ConvertToMM($params['ry'], $this->coordinates['h']) : 0.;
+        $this->pdf->svgEllipse($cx, $cy, $rx, $ry, $style);
+    }
+
+    /**
+     * @param $params
+     * @param $styles
+     */
+    public function circle($params, $styles)
+    {
+        $style = $this->pdf->svgSetStyle($styles);
+        $cx = isset($params['cx']) ? $this->cssConverter->ConvertToMM($params['cx'], $this->coordinates['w']) : 0.;
+        $cy = isset($params['cy']) ? $this->cssConverter->ConvertToMM($params['cy'], $this->coordinates['h']) : 0.;
+        $r  = isset($params['r'])  ? $this->cssConverter->ConvertToMM($params['r'],  $this->coordinates['w']) : 0.;
         $this->pdf->svgEllipse($cx, $cy, $r, $r, $style);
     }
 }

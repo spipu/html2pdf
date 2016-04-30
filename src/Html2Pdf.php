@@ -6298,38 +6298,6 @@ class Html2Pdf
     }
 
     /**
-     * tag : ELLIPSE
-     * mode : OPEN
-     *
-     * @param  Node $node
-     * @return boolean
-     */
-    protected function _tag_open_ELLIPSE(Node $node)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [ELLIPSE] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('ELLIPSE');
-            throw $e;
-        }
-
-        $param = $node->getParams();
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $cx = isset($param['cx']) ? $this->cssConverter->ConvertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
-        $cy = isset($param['cy']) ? $this->cssConverter->ConvertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
-        $rx = isset($param['ry']) ? $this->cssConverter->ConvertToMM($param['rx'], $this->_isInDraw['w']) : 0.;
-        $ry = isset($param['rx']) ? $this->cssConverter->ConvertToMM($param['ry'], $this->_isInDraw['h']) : 0.;
-        $this->pdf->svgEllipse($cx, $cy, $rx, $ry, $style);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-
-    /**
      * tag : POLYLINE
      * mode : OPEN
      *
