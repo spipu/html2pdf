@@ -6234,38 +6234,6 @@ class Html2Pdf
     }
 
     /**
-     * tag : LINE
-     * mode : OPEN
-     *
-     * @param  Node $node
-     * @return boolean
-     */
-    protected function _tag_open_LINE(Node $node)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [LINE] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('LINE');
-            throw $e;
-        }
-
-        $param = $node->getParams();
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $styles['fill'] = null;
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $x1 = isset($param['x1']) ? $this->cssConverter->ConvertToMM($param['x1'], $this->_isInDraw['w']) : 0.;
-        $y1 = isset($param['y1']) ? $this->cssConverter->ConvertToMM($param['y1'], $this->_isInDraw['h']) : 0.;
-        $x2 = isset($param['x2']) ? $this->cssConverter->ConvertToMM($param['x2'], $this->_isInDraw['w']) : 0.;
-        $y2 = isset($param['y2']) ? $this->cssConverter->ConvertToMM($param['y2'], $this->_isInDraw['h']) : 0.;
-        $this->pdf->svgLine($x1, $y1, $x2, $y2);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
      * tag : POLYLINE
      * mode : OPEN
      *

@@ -90,6 +90,21 @@ class SvgDrawer
      * @param $params
      * @param $styles
      */
+    public function line($params, $styles)
+    {
+        $this->pdf->svgSetStyle($styles);
+
+        $x1 = isset($params['x1']) ? $this->cssConverter->ConvertToMM($params['x1'], $this->coordinates['w']) : 0.;
+        $y1 = isset($params['y1']) ? $this->cssConverter->ConvertToMM($params['y1'], $this->coordinates['h']) : 0.;
+        $x2 = isset($params['x2']) ? $this->cssConverter->ConvertToMM($params['x2'], $this->coordinates['w']) : 0.;
+        $y2 = isset($params['y2']) ? $this->cssConverter->ConvertToMM($params['y2'], $this->coordinates['h']) : 0.;
+        $this->pdf->svgLine($x1, $y1, $x2, $y2);
+    }
+
+    /**
+     * @param $params
+     * @param $styles
+     */
     public function rectangle($params, $styles)
     {
         $style = $this->pdf->svgSetStyle($styles);
