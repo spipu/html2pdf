@@ -46,6 +46,8 @@ class SvgExtension implements ExtensionInterface
                 new \Spipu\Html2Pdf\Tag\Svg\Ellipse(),
                 new \Spipu\Html2Pdf\Tag\Svg\Line(),
                 new \Spipu\Html2Pdf\Tag\Svg\Rect(),
+                new \Spipu\Html2Pdf\Tag\Svg\Polygon(),
+                new \Spipu\Html2Pdf\Tag\Svg\Polyline(),
             );
 
             /** @var SvgTagInterface $tag */

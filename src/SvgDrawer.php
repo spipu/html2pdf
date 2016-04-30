@@ -117,6 +117,55 @@ class SvgDrawer
         $this->pdf->svgRect($x, $y, $w, $h, $style);
     }
 
+    /**
+     * @param $params
+     * @param $styles
+     */
+    public function polygon($params, $styles)
+    {
+        $this->polyline($params, $styles, true);
+    }
+
+    /**
+     * @param array $params
+     * @param array $styles
+     * @param bool  $closed
+     */
+    public function polyline($params, $styles, $closed = false)
+    {
+        $style = $this->pdf->svgSetStyle($styles);
+
+        $path = isset($params['points']) ? $params['points'] : null;
+        if ($path) {
+            $path = str_replace(',', ' ', $path);
+            $path = preg_replace('/[\s]+/', ' ', trim($path));
+
+            // prepare the path
+            $path = explode(' ', $path);
+            foreach ($path as $k => $v) {
+                $path[$k] = trim($v);
+                if ($path[$k]==='') {
+                    unset($path[$k]);
+                }
+            }
+            $path = array_values($path);
+
+            $actions = array();
+            for ($k=0; $k<count($path); $k+=2) {
+                $actions[] = array(
+                    ($k ? 'L' : 'M') ,
+                    $this->cssConverter->ConvertToMM($path[$k+0], $this->coordinates['w']),
+                    $this->cssConverter->ConvertToMM($path[$k+1], $this->coordinates['h'])
+                );
+            }
+            if ($closed) {
+                $actions[] = array('z');
+            }
+
+            // drawing
+            $this->pdf->svgPolygone($actions, $style);
+        }
+    }
 
     /**
      * prepare a transform matrix for drawing a SVG graphic
