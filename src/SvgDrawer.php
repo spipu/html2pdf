@@ -168,6 +168,129 @@ class SvgDrawer
     }
 
     /**
+     * @param $params
+     * @param $styles
+     *
+     * @throws Exception\HtmlParsingException
+     */
+    public function path($params, $styles)
+    {
+        $style = $this->pdf->svgSetStyle($styles);
+
+        $path = isset($params['d']) ? $params['d'] : null;
+
+        if ($path) {
+            // prepare the path
+            $path = str_replace(',', ' ', $path);
+            $path = preg_replace('/([a-zA-Z])([0-9\.\-])/', '$1 $2', $path);
+            $path = preg_replace('/([0-9\.])([a-zA-Z])/', '$1 $2', $path);
+            $path = preg_replace('/[\s]+/', ' ', trim($path));
+            $path = preg_replace('/ ([a-z]{2})/', '$1', $path);
+
+            $path = explode(' ', $path);
+            foreach ($path as $k => $v) {
+                $path[$k] = trim($v);
+                if ($path[$k]==='') {
+                    unset($path[$k]);
+                }
+            }
+            $path = array_values($path);
+
+            // read each actions in the path
+            $actions = array();
+            $lastAction = null; // last action found
+            for ($k=0; $k<count($path); true) {
+
+                // for this actions, we can not have multi coordinate
+                if (in_array($lastAction, array('z', 'Z'))) {
+                    $lastAction = null;
+                }
+
+                // read the new action (forcing if no action before)
+                if (preg_match('/^[a-z]+$/i', $path[$k]) || $lastAction===null) {
+                    $lastAction = $path[$k];
+                    $k++;
+                }
+
+                // current action
+                $action = array();
+                $action[] = $lastAction;
+                switch ($lastAction) {
+                    case 'C':
+                    case 'c':
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->coordinates['w']);    // x1
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+1], $this->coordinates['h']);    // y1
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+2], $this->coordinates['w']);    // x2
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+3], $this->coordinates['h']);    // y2
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+4], $this->coordinates['w']);    // x
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+5], $this->coordinates['h']);    // y
+                        $k+= 6;
+                        break;
+
+                    case 'Q':
+                    case 'S':
+                    case 'q':
+                    case 's':
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->coordinates['w']);    // x2
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+1], $this->coordinates['h']);    // y2
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+2], $this->coordinates['w']);    // x
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+3], $this->coordinates['h']);    // y
+                        $k+= 4;
+                        break;
+
+                    case 'A':
+                    case 'a':
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->coordinates['w']);    // rx
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+1], $this->coordinates['h']);    // ry
+                        $action[] = 1.*$path[$k+2];                                                        // angle de deviation de l'axe X
+                        $action[] = ($path[$k+3]=='1') ? 1 : 0;                                            // large-arc-flag
+                        $action[] = ($path[$k+4]=='1') ? 1 : 0;                                            // sweep-flag
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+5], $this->coordinates['w']);    // x
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+6], $this->coordinates['h']);    // y
+                        $k+= 7;
+                        break;
+
+                    case 'M':
+                    case 'L':
+                    case 'T':
+                    case 'm':
+                    case 'l':
+                    case 't':
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->coordinates['w']);    // x
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+1], $this->coordinates['h']);    // y
+                        $k+= 2;
+                        break;
+
+                    case 'H':
+                    case 'h':
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->coordinates['w']);    // x
+                        $k+= 1;
+                        break;
+
+                    case 'V':
+                    case 'v':
+                        $action[] = $this->cssConverter->ConvertToMM($path[$k+0], $this->coordinates['h']);    // y
+                        $k+= 1;
+                        break;
+
+                    case 'z':
+                    case 'Z':
+                        break;
+
+                    default:
+                        $k+= 1;
+                        break;
+                }
+                // add the action
+                $actions[] = $action;
+            }
+
+            // drawing
+            $this->pdf->svgPolygone($actions, $style);
+        }
+    }
+
+    /**
      * prepare a transform matrix for drawing a SVG graphic
      *
      * @param string $transform
