@@ -6266,38 +6266,6 @@ class Html2Pdf
     }
 
     /**
-     * tag : RECT
-     * mode : OPEN
-     *
-     * @param  Node $node
-     * @return boolean
-     */
-    protected function _tag_open_RECT(Node $node)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [RECT] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('RECT');
-            throw $e;
-        }
-
-        $param = $node->getParams();
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $x = isset($param['x']) ? $this->cssConverter->ConvertToMM($param['x'], $this->_isInDraw['w']) : 0.;
-        $y = isset($param['y']) ? $this->cssConverter->ConvertToMM($param['y'], $this->_isInDraw['h']) : 0.;
-        $w = isset($param['w']) ? $this->cssConverter->ConvertToMM($param['w'], $this->_isInDraw['w']) : 0.;
-        $h = isset($param['h']) ? $this->cssConverter->ConvertToMM($param['h'], $this->_isInDraw['h']) : 0.;
-
-        $this->pdf->svgRect($x, $y, $w, $h, $style);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
      * tag : POLYLINE
      * mode : OPEN
      *
