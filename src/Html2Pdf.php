@@ -19,6 +19,7 @@ use Spipu\Html2Pdf\Exception\TableException;
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Extension\CoreExtension;
 use Spipu\Html2Pdf\Extension\ExtensionInterface;
+use Spipu\Html2Pdf\Extension\SvgExtension;
 use Spipu\Html2Pdf\Parsing\HtmlLexer;
 use Spipu\Html2Pdf\Parsing\Node;
 use Spipu\Html2Pdf\Parsing\TagParser;
@@ -63,6 +64,11 @@ class Html2Pdf
      * @var CssConverter
      */
     private $cssConverter;
+
+    /**
+     * @var SvgDrawer
+     */
+    private $svgDrawer;
 
     /**
      * The current Node object being processed
@@ -236,7 +242,9 @@ class Html2Pdf
         // init the form's fields
         $this->_lstField = array();
 
+        $this->svgDrawer = new SvgDrawer($this->pdf, $this->cssConverter);
         $this->addExtension(new CoreExtension());
+        $this->addExtension(new SvgExtension($this->svgDrawer));
 
         return $this;
     }
@@ -6135,11 +6143,21 @@ class Html2Pdf
         $this->pdf->setXY($x, $y);
 
         // we are in a draw tag
+        // legacy setting
         $this->_isInDraw = array(
             'x' => $x,
             'y' => $y,
             'w' => $overW,
             'h' => $overH,
+        );
+
+        $this->svgDrawer->startDrawing(
+            array(
+                'x' => $x,
+                'y' => $y,
+                'w' => $overW,
+                'h' => $overH,
+            )
         );
 
         // init the translate matrix : (0,0) => ($x, $y)
@@ -6207,7 +6225,10 @@ class Html2Pdf
             $this->debug->addStep('DRAW', false);
         }
 
+        // legacy
         $this->_isInDraw = null;
+
+        $this->svgDrawer->stopDrawing();
 
         return true;
     }
@@ -6271,36 +6292,6 @@ class Html2Pdf
         $h = isset($param['h']) ? $this->cssConverter->ConvertToMM($param['h'], $this->_isInDraw['h']) : 0.;
 
         $this->pdf->svgRect($x, $y, $w, $h, $style);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
-     * tag : CIRCLE
-     * mode : OPEN
-     *
-     * @param  Node $node
-     * @return boolean
-     */
-    protected function _tag_open_CIRCLE(Node $node)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [CIRCLE] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('CIRCLE');
-            throw $e;
-        }
-
-        $param = $node->getParams();
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $cx = isset($param['cx']) ? $this->cssConverter->ConvertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
-        $cy = isset($param['cy']) ? $this->cssConverter->ConvertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
-        $r = isset($param['r']) ? $this->cssConverter->ConvertToMM($param['r'], $this->_isInDraw['w']) : 0.;
-        $this->pdf->svgEllipse($cx, $cy, $r, $r, $style);
 
         $this->pdf->undoTransform();
         $this->parsingCss->load();
