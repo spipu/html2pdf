@@ -601,7 +601,7 @@ class Css
      *
      * @return boolean
      */
-    public function analyse($tagName, &$param, $legacy = null)
+    public function analyse($tagName, $param, $legacy = null)
     {
         // prepare the informations
         $tagName = strtolower($tagName);

@@ -13,6 +13,7 @@
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
 use Spipu\Html2Pdf\Parsing\HtmlLexer;
+use Spipu\Html2Pdf\Parsing\Token;
 
 /**
  * Class HtmlLexerTest
@@ -30,14 +31,17 @@ class HtmlLexerTest extends \PHPUnit_Framework_TestCase
     public function testTokenize($html, $expectedTokens)
     {
         $lexer = new HtmlLexer();
-        $tokens = $lexer->tokenize($html);
+        $tokenStream = $lexer->tokenize($html);
 
-        $this->assertEquals(count($expectedTokens), count($tokens));
+        $this->assertEquals(count($expectedTokens), $tokenStream->count());
 
-        for ($i = 0; $i < count($tokens); $i++) {
-            $this->assertEquals($expectedTokens[$i][0], $tokens[$i]->getType());
-            $this->assertEquals($expectedTokens[$i][1], $tokens[$i]->getData());
-            $this->assertEquals($expectedTokens[$i][2], $tokens[$i]->getLine());
+        $i = 0;
+        while ($tokenStream->current() !== null) {
+            $this->assertEquals($expectedTokens[$i][0], $tokenStream->current()->getType());
+            $this->assertEquals($expectedTokens[$i][1], $tokenStream->current()->getData());
+            $this->assertEquals($expectedTokens[$i][2], $tokenStream->current()->getLine());
+            $i++;
+            $tokenStream->next();
         }
     }
 
@@ -52,18 +56,18 @@ class HtmlLexerTest extends \PHPUnit_Framework_TestCase
             array(
                 '<p>test</p>',
                 array(
-                    array('code', '<p>', 1),
-                    array('txt', 'test', -1),
-                    array('code', '</p>', 1),
+                    array(Token::TAG_OPEN_TYPE, '<p>', 1),
+                    array(Token::TEXT_TYPE, 'test', -1),
+                    array(Token::TAG_CLOSE_TYPE, '</p>', 1),
                 )
             ),
             array(
                 "<a><!-- comment -->\n<b><c>",
                 array(
-                    array('code', '<a>', 1),
-                    array('txt', "\n", -1),
-                    array('code', '<b>', 2),
-                    array('code', '<c>', 2),
+                    array(Token::TAG_OPEN_TYPE, '<a>', 1),
+                    array(Token::TEXT_TYPE, "\n", -1),
+                    array(Token::TAG_OPEN_TYPE, '<b>', 2),
+                    array(Token::TAG_OPEN_TYPE, '<c>', 2),
                 )
             )
         );

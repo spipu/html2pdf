@@ -33,6 +33,6 @@ class Html2PdfTest extends \PHPUnit_Framework_TestCase
         $this->html2pdf->writeHTML('<test_tag/>');
 
         Phake::verify($tag)->open;
-        Phake::verify($tag, Phake::times(2))->close; // TODO Html2Pdf should probably call this only one time
+        Phake::verify($tag, Phake::times(1))->close;
     }
 }

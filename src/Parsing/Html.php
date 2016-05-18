@@ -21,6 +21,16 @@ class Html
     const HTML_TAB = '        ';
 
     /**
+     * @var TokenStream
+     */
+    protected $tokenStream;
+
+    /**
+     * @var Node
+     */
+    protected $root;
+
+    /**
      * @var TagParser
      */
     protected $tagParser;
@@ -31,18 +41,6 @@ class Html
     protected $textParser;
 
     /**
-     * are we in a pre ?
-     * @var boolean
-     */
-    protected $tagPreIn = false;
-
-    /**
-     * parsed HTML code
-     * @var Node[]
-     */
-    public $code = array();
-
-    /**
      * main constructor
      *
      * @param TextParser $textParser
@@ -51,43 +49,114 @@ class Html
     {
         $this->textParser = $textParser;
         $this->tagParser = new TagParser($this->textParser);
-        $this->code  = array();
+    }
+
+    /**
+     * @return Node
+     */
+    public function getRoot()
+    {
+        return $this->root;
     }
 
     /**
      * parse the HTML code
      *
-     * @param Token[] $tokens A list of tokens to parse
+     * @param TokenStream $tokens A list of tokens to parse
      *
      * @throws HtmlParsingException
      */
-    public function parse($tokens)
+    public function parse(TokenStream $tokens)
     {
-        $parents = array();
+        $this->tokenStream = $tokens;
+        $this->root = $this->parseLevel();
+    }
 
-        // flag : are we in a <pre> Tag ?
-        $this->tagPreIn = false;
+    /**
+     * @param Token $tokenOpen
+     *
+     * @return Node
+     * @throws HtmlParsingException
+     * @throws \Exception
+     */
+    protected function parseLevel($tokenOpen = null)
+    {
+        $tagsNotClosed = array(
+            'br', 'hr', 'img', 'col',
+            'input', 'link', // TODO option was removed, should we keep it ?
+            'circle', 'ellipse', 'path', 'rect', 'line', 'polygon', 'polyline'
+        );
 
-        /**
-         * all the actions to do
-         * @var Node[] $actions
-         */
-        $actions = array();
+        if ($tokenOpen) {
+            list($nodeName, $nodeParam) = $this->tagParser->analyzeTag($tokenOpen->getData());
+            if ($tokenOpen->getType() == Token::TAG_AUTOCLOSE_TYPE || in_array($nodeName, $tagsNotClosed)) {
+                return new Node($nodeName, $nodeParam);
+            }
+        } else {
+            $nodeParam = array();
+            $nodeName = 'root';
+        }
 
-        // get the actions from the html tokens
-        foreach ($tokens as $token) {
-            if ($token->getType() == 'code') {
-                $actions = array_merge($actions, $this->getTagAction($token, $parents));
-            } elseif ($token->getType() == 'txt') {
-                $actions = array_merge($actions, $this->getTextAction($token));
+        $closed = $tokenOpen === null;
+        $nodes = array();
+        while (($token = $this->tokenStream->current()) !== null) {
+            $this->tokenStream->next();
+            if ($token->getType() == Token::TAG_OPEN_TYPE) {
+                // if tag open -> children to parse again
+                $nodes[] = $this->parseLevel($token);
+            } elseif ($token->getType() == Token::TAG_CLOSE_TYPE) {
+                list($name, $param) = $this->tagParser->analyzeTag($token->getData());
+                if ($tokenOpen && $name == $nodeName) { // if next token is close tag for $token, we got the children, exit
+                    $closed = true;
+                    break;
+                } else { // closing tag not matching
+                    throw new HtmlParsingException('Unexpected closing tag:'. $name . ' expected '. $nodeName);
+                }
+            } elseif ($token->getType() == Token::TAG_AUTOCLOSE_TYPE) {
+                $nodes[] = $this->parseLevel($token);
+            } elseif ($token->getType() == Token::TEXT_TYPE) {
+                if ($nodeName == 'pre') {
+                    $nodes = array_merge($nodes, $this->preparePreChildren($token->getData()));
+                } else {
+                    $text = $token->getData();
+                    if (empty($nodes)) {
+                        $previousNodeName = $nodeName;
+                    } else {
+                        $previousNode = end($nodes);
+                        $previousNodeName = $previousNode->getName();
+                    }
+                    $text = $this->cleanWhiteSpace($text, $previousNodeName);
+
+                    if ($text == '') {
+                        continue;
+                    }
+                    $nodes[] = new Node('write', array('txt' => $this->textParser->prepareTxt($text)));
+                }
+            } else {
+                throw new HtmlParsingException('Unknown token type '.$token->getType());
             }
         }
 
-        // for each identified action, we have to clean up the begin and the end of the texte
-        // based on tags that surround it
+        if (!$closed) {
+            $errorMsg = 'The following tag has not been closed: ';
+            $e = new HtmlParsingException($errorMsg. $nodeName);
+            $e->setInvalidTag($nodeName);
+            throw $e;
+        }
 
-        // list of the tags to clean
-        $tagsToClean = array(
+        return new Node($nodeName, $nodeParam, $nodes);
+    }
+
+    /**
+     * @param string $text
+     * @param string $previousNodeName
+     *
+     * @return string
+     */
+    protected function cleanWhiteSpace($text, $previousNodeName)
+    {
+        $tagsToCleanSpaces = array(
+            'root',
             'page', 'page_header', 'page_footer', 'form',
             'table', 'thead', 'tfoot', 'tr', 'td', 'th', 'br',
             'div', 'hr', 'p', 'ul', 'ol', 'li',
@@ -97,228 +166,58 @@ class Html
             'option'
         );
 
-        // foreach action
-        $nb = count($actions);
-        for ($k = 0; $k < $nb; $k++) {
-            // if it is a Text
-            if ($actions[$k]->getName() =='write') {
-                // if the tag before the text is a tag to clean => ltrim on the text
-                if ($k>0 && in_array($actions[$k - 1]->getName(), $tagsToClean)) {
-                    $actions[$k]->setParam('txt', ltrim($actions[$k]->getParam('txt')));
-                }
+        $nextToken = $this->tokenStream->current();
+        if ($nextToken === null) {
+            return rtrim($text);
+        }
 
-                // if the tag after the text is a tag to clean => rtrim on the text
-                if ($k < $nb - 1 && in_array($actions[$k + 1]->getName(), $tagsToClean)) {
-                    $actions[$k]->setParam('txt', rtrim($actions[$k]->getParam('txt')));
-                }
-
-                // if the text is empty => remove the action
-                if (!strlen($actions[$k]->getParam('txt'))) {
-                    unset($actions[$k]);
-                }
+        if ($previousNodeName !== 'write') {
+            if (in_array($previousNodeName, $tagsToCleanSpaces)) { // parent is a block to clean
+                $text = ltrim($text);
+            }
+        }
+        if ($nextToken->getType() !== Token::TEXT_TYPE) {
+            list($nextNodeName, $param) = $this->tagParser->analyzeTag($nextToken->getData());
+            if (in_array($nextNodeName, $tagsToCleanSpaces)) { // previous sibling (closed) is to clean
+                $text = ltrim($text);
             }
         }
 
-        // if we are not on the level 0 => HTML validator ERROR
-        if (count($parents)) {
-            if (count($parents)>1) {
-                $errorMsg = 'The following tags have not been closed:';
-            } else {
-                $errorMsg = 'The following tag has not been closed:';
-            }
-
-            $e = new HtmlParsingException($errorMsg.' '.implode(', ', $parents));
-            $e->setInvalidTag($parents[0]);
-            throw $e;
-        }
-
-        // save the actions to do
-        $this->code = array_values($actions);
+        return $text;
     }
 
     /**
-     * TODO remove the reference on the $parents variable
+     * Prepare the text contained in a <pre> tag for formatting purposes
      *
-     * @param Token $token
-     * @param array $parents
-     *
-     * @return array
-     * @throws HtmlParsingException
-     */
-    protected function getTagAction(Token $token, &$parents)
-    {
-        // tag that can be not closed
-        $tagsNotClosed = array(
-            'br', 'hr', 'img', 'col',
-            'input', 'link', 'option',
-            'circle', 'ellipse', 'path', 'rect', 'line', 'polygon', 'polyline'
-        );
-
-        // analyze the HTML code
-        $node = $this->tagParser->analyzeTag($token->getData());
-
-        // save the current position in the HTML code
-        $node->setLine($token->getLine());
-
-        $actions = array();
-        // if the tag must be closed
-        if (!in_array($node->getName(), $tagsNotClosed)) {
-            // if it is a closure tag
-            if ($node->isClose()) {
-                // HTML validation
-                if (count($parents) < 1) {
-                    $e = new HtmlParsingException('Too many tag closures found for ['.$node->getName().']');
-                    $e->setInvalidTag($node->getName());
-                    $e->setHtmlLine($token->getLine());
-                    throw $e;
-                } elseif (end($parents) != $node->getName()) {
-                    $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$node->getName().']');
-                    $e->setInvalidTag($node->getName());
-                    $e->setHtmlLine($token->getLine());
-                    throw $e;
-                } else {
-                    array_pop($parents);
-                }
-            } else {
-                // if it is an auto-closed tag
-                if ($node->isAutoClose()) {
-                    // save the opened tag
-                    $actions[] = $node;
-
-                    // prepare the closed tag
-                    $node = clone $node;
-                    $node->setParams(array());
-                    $node->setClose(true);
-                } else {
-                    // else: add a child for validation
-                    array_push($parents, $node->getName());
-                }
-            }
-
-            // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
-            if (($node->getName() == 'pre' || $node->getName() == 'code') && !$node->isAutoClose()) {
-                $this->tagPreIn = !$node->isClose();
-            }
-        }
-
-        // save the actions to convert
-        $actions[] = $node;
-
-        return $actions;
-    }
-
-    /**
-     * get the Text action
-     *
-     * @param Token $token
+     * @param string $text
      *
      * @return array
      */
-    protected function getTextAction(Token $token)
+    protected function preparePreChildren($text)
     {
-        // action to use for each line of the content of a <pre> Tag
-        $tagPreBr = new Node('br', array('style' => array(), 'num' => 0), false);
+        $children = array();
+        $tagPreBr = new Node('br', array('style' => array(), 'num' => 0));
 
-        $actions = array();
+        // prepare the text
+        $data = str_replace("\r", '', $text);
+        $lines = explode("\n", $data);
 
-        // if we are not in a <pre> tag
-        if (!$this->tagPreIn) {
+        // foreach line of the text
+        foreach ($lines as $k => $txt) {
+            // transform the line
+            $txt = str_replace("\t", self::HTML_TAB, $txt);
+            $txt = str_replace(' ', '&nbsp;', $txt);
+
+            // add a break line
+            if ($k > 0) {
+                $children[] = clone $tagPreBr;
+            }
+
             // save the action
-            $actions[] = new Node('write', array('txt' => $this->textParser->prepareTxt($token->getData())), false);
-        } else { // else (if we are in a <pre> tag)
-            // prepare the text
-            $data = str_replace("\r", '', $token->getData());
-            $lines = explode("\n", $data);
-
-            // foreach line of the text
-            foreach ($lines as $k => $txt) {
-                // transform the line
-                $txt = str_replace("\t", self::HTML_TAB, $txt);
-                $txt = str_replace(' ', '&nbsp;', $txt);
-
-                // add a break line
-                if ($k > 0) {
-                    $actions[] = clone $tagPreBr;
-                }
-
-                // save the action
-                $actions[] = new Node('write', array('txt' => $this->textParser->prepareTxt($txt, false)), false);
-            }
-        }
-        return $actions;
-    }
-
-    /**
-     * get a full level of HTML, between an opening and closing corresponding
-     *
-     * @param   integer $k
-     * @return  array   actions
-     */
-    public function getLevel($k)
-    {
-        // if the code does not exist => return empty
-        if (!isset($this->code[$k])) {
-            return array();
+            $children[] = new Node('write', array('txt' => $this->textParser->prepareTxt($txt, false)));
         }
 
-        // the tag to detect
-        $detect = $this->code[$k]->getName();
-
-        // if it is a text => return
-        if ($detect == 'write') {
-            return array($this->code[$k]);
-        }
-
-        //
-        $level = 0;      // depth level
-        $end = false;    // end of the search
-        $code = array(); // extract code
-
-        // while it's not ended
-        while (!$end) {
-            // current action
-            /** @var Node $node */
-            $node = $this->code[$k];
-
-            // if 'write' => we add the text
-            if ($node->getName() == 'write') {
-                $code[] = $node;
-            } else { // else, it is a html tag
-                $not = false; // flag for not taking into account the current tag
-
-                // if it is the searched tag
-                if ($node->getName() == $detect) {
-                    // if we are just at the root level => dont take it
-                    if ($level == 0) {
-                        $not = true;
-                    }
-
-                    // update the level
-                    $level += ($node->isClose() ? -1 : 1);
-
-                    // if we are now at the root level => it is the end, and dont take it
-                    if ($level == 0) {
-                        $not = true;
-                        $end = true;
-                    }
-                }
-
-                // if we can take into account the current tag => save it
-                if (!$not) {
-                    $code[] = $node;
-                }
-            }
-
-            // it continues as long as there has code to analyze
-            if (isset($this->code[$k + 1])) {
-                $k++;
-            } else {
-                $end = true;
-            }
-        }
-
-        // return the extract
-        return $code;
+        return $children;
     }
 
     /**

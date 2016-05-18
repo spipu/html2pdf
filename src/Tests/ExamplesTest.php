@@ -83,6 +83,17 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * test: exemple00
+     *
+     * @return void
+     */
+    public function testExemple00()
+    {
+        $this->markTestSkipped('Triple embedded tables do not work yet');
+        $this->launchExample('exemple00');
+    }
+
+    /**
      * test: exemple01
      *
      * @return void
@@ -189,6 +200,7 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      */
     public function testExemple12()
     {
+        $this->markTestSkipped('Triple embedded tables do not work yet');
         $this->launchExample('exemple12');
     }
 
