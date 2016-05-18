@@ -4487,6 +4487,10 @@ class Html2Pdf
 
         $inf = $this->_listeGetLi();
         if ($inf[0]) {
+            if ($inf[0] == 'zapfdingbats') {
+                // ensure the correct icon is used despite external css rules
+                $paramPUCE['style']['text-transform']  = 'lowercase';
+            }
             $paramPUCE['style']['font-family']     = $inf[0];
             $paramPUCE['style']['text-align']      = 'li_right';
             $paramPUCE['style']['vertical-align']  = 'top';
