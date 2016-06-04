@@ -160,7 +160,7 @@ class Html2Pdf
      * @param  array    $margins     Default margins (left, top, right, bottom)
      * @return Html2Pdf $this
      */
-    public function __construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = array(5, 5, 5, 8))
+    public function __construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = array(5, 5, 5, 8), $pdfa = false)
     {
         // init the page number
         $this->_page         = 0;
@@ -177,7 +177,7 @@ class Html2Pdf
         Locale::load($this->_langue);
 
         // create the  myPdf object
-        $this->pdf = new MyPdf($orientation, 'mm', $format, $unicode, $encoding);
+        $this->pdf = new MyPdf($orientation, 'mm', $format, $unicode, $encoding, false, $pdfa);
 
         // init the CSS parsing object
         $this->cssConverter = new CssConverter();

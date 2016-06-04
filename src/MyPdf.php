@@ -44,11 +44,12 @@ class MyPdf extends \TCPDF
         $format = 'A4',
         $unicode = true,
         $encoding = 'UTF-8',
-        $diskcache = false
+        $diskcache = false,
+    	$pdfa = false
     ) {
     
         // call the parent constructor
-        parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache);
+        parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 
         // init the specific parameters used by Html2Pdf
         $this->SetCreator(PDF_CREATOR);
