@@ -1303,7 +1303,7 @@ class MyPdf extends \TCPDF
      * @param array $color color of the foreground
      * @access public
      */
-    public function myBarcode($code, $type, $x, $y, $w, $h, $labelFontsize, $color)
+    public function myBarcode($code, $type, $x, $y, $w, $h, $labelFontsize, $color, $dimension = '1D')
     {
         // the style of the barcode
         $style = array(
@@ -1314,7 +1314,12 @@ class MyPdf extends \TCPDF
         );
 
         // build the barcode
-        $this->write1DBarcode($code, $type, $x, $y, $w, $h, '', $style, 'N');
+        if ($dimension == '2D') {
+            // PDF417, DATAMATRIX ...
+            $this->write2DBarcode($code, $type, $x, $y, $w, $h, '', $style, 'N');
+        } else {
+            $this->write1DBarcode($code, $type, $x, $y, $w, $h, '', $style, 'N');
+        }
 
         // it Label => add the FontSize to the height
         if ($labelFontsize) {
