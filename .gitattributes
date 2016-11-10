@@ -1,0 +1,6 @@
+/examples/ export-ignore
+/test/ export-ignore
+/.* export-ignore
+/README.md export-ignore
+/phpunit.xml export-ignore
+/_changelog.txt export-ignore
