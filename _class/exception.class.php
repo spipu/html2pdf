@@ -32,52 +32,52 @@ class HTML2PDF_exception extends exception
         switch($err)
         {
             case 1: // Unsupported tag
-                $msg = (HTML2PDF_locale::get('err01'));
+                $msg = HTML2PDF_locale::get('err01');
                 $msg = str_replace('[[OTHER]]', $other, $msg);
                 $this->_tag = $other;
                 break;
 
             case 2: // too long sentence
-                $msg = (HTML2PDF_locale::get('err02'));
+                $msg = HTML2PDF_locale::get('err02');
                 $msg = str_replace('[[OTHER_0]]', $other[0], $msg);
                 $msg = str_replace('[[OTHER_1]]', $other[1], $msg);
                 $msg = str_replace('[[OTHER_2]]', $other[2], $msg);
                 break;
 
             case 3: // closing tag in excess
-                $msg = (HTML2PDF_locale::get('err03'));
+                $msg = HTML2PDF_locale::get('err03');
                 $msg = str_replace('[[OTHER]]', $other, $msg);
                 $this->_tag = $other;
                 break;
 
             case 4: // tags closed in the wrong order
-                $msg = (HTML2PDF_locale::get('err04'));
+                $msg = HTML2PDF_locale::get('err04');
                 $msg = str_replace('[[OTHER]]', print_r($other, true), $msg);
                 break;
 
             case 5: // unclosed tag
-                $msg = (HTML2PDF_locale::get('err05'));
+                $msg = HTML2PDF_locale::get('err05');
                 $msg = str_replace('[[OTHER]]', print_r($other, true), $msg);
                 break;
 
             case 6: // image can not be loaded
-                $msg = (HTML2PDF_locale::get('err06'));
+                $msg = HTML2PDF_locale::get('err06');
                 $msg = str_replace('[[OTHER]]', $other, $msg);
                 $this->_image = $other;
                 break;
 
             case 7: // too big TD content
-                $msg = (HTML2PDF_locale::get('err07'));
+                $msg = HTML2PDF_locale::get('err07');
                 break;
 
             case 8: // SVG tag not in DRAW tag
-                $msg = (HTML2PDF_locale::get('err08'));
+                $msg = HTML2PDF_locale::get('err08');
                 $msg = str_replace('[[OTHER]]', $other, $msg);
                 $this->_tag = $other;
                 break;
 
             case 9: // deprecated
-                $msg = (HTML2PDF_locale::get('err09'));
+                $msg = HTML2PDF_locale::get('err09');
                 $msg = str_replace('[[OTHER_0]]', $other[0], $msg);
                 $msg = str_replace('[[OTHER_1]]', $other[1], $msg);
                 $this->_tag = $other[0];
