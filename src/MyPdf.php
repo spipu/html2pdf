@@ -46,7 +46,7 @@ class MyPdf extends \TCPDF
         $encoding = 'UTF-8',
         $diskcache = false
     ) {
-    
+
         // call the parent constructor
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache);
 
@@ -260,12 +260,12 @@ class MyPdf extends \TCPDF
         $cornerBL = null,
         $cornerBR = null
     ) {
-    
+
         // init the path
         $path = '';
 
         // if we have the position and the size of the rectangle, we can proceed
-        if ($x!==null && $y!==null && $w!==null && $h!==null) {
+        if ($x !== null && $y !== null && $w !== null && $h !== null) {
             // the positions of the rectangle's corners
             $x1 = $x*$this->k;
             $y1 = ($this->h-$y)*$this->k;
@@ -728,9 +728,9 @@ class MyPdf extends \TCPDF
         $y4=$y+$h;
 
         // get the Closing operator from the PDF Style
-        if ($style=='F') {
+        if ($style === 'F') {
             $op='f';
-        } elseif ($style=='FD' || $style=='DF') {
+        } elseif ($style === 'FD' || $style === 'DF') {
             $op='B';
         } else {
             $op='S';
@@ -778,9 +778,9 @@ class MyPdf extends \TCPDF
     public function svgEllipse($x0, $y0, $rx, $ry, $style)
     {
         // get the Closing operator from the PDF Style
-        if ($style=='F') {
+        if ($style === 'F') {
             $op='f';
-        } elseif ($style=='FD' || $style=='DF') {
+        } elseif ($style === 'FD' || $style === 'DF') {
             $op='B';
         } else {
             $op='S';
@@ -801,9 +801,9 @@ class MyPdf extends \TCPDF
     public function svgPolygone($actions, $style)
     {
         // get the Closing operator from the PDF Style
-        if ($style=='F') {
+        if ($style === 'F') {
             $op='f';
-        } elseif ($style=='FD' || $style=='DF') {
+        } elseif ($style === 'FD' || $style === 'DF') {
             $op='B';
         } else {
             $op='S';
@@ -1054,7 +1054,7 @@ class MyPdf extends \TCPDF
         $drawFirst = true,
         $trans = false
     ) {
-    
+
         // if we want the no trigo direction : add 2PI to the begin angle, to invert the direction
         if (!$direction) {
             $angleBegin+= M_PI*2.;
@@ -1152,7 +1152,7 @@ class MyPdf extends \TCPDF
         $v['D'] = $v['dXr']*$v['dXr'] + $v['dYr']*$v['dYr'];
 
         // if |vector| is Null, or if |vector| > 2 : impossible to make a arc => Line
-        if ($v['D']==0 || $v['D']>4) {
+        if ($v['D'] == 0 || $v['D']>4) {
             $this->_Line($x2, $y2, $trans);
             return false;
         }
@@ -1348,7 +1348,7 @@ class MyPdf extends \TCPDF
         $page = null,
         $fontName = 'helvetica'
     ) {
-    
+
         // bookmark the Title if wanted
         if ($bookmarkTitle) {
             $this->Bookmark($titre, 0, -1);
@@ -1420,7 +1420,7 @@ class MyPdf extends \TCPDF
      */
     public function getMyAliasNbPages()
     {
-        if ($this->_myLastPageGroupNb==0) {
+        if ($this->_myLastPageGroupNb == 0) {
             return $this->getAliasNbPages();
         } else {
             $old = $this->currpagegroup;
@@ -1441,11 +1441,11 @@ class MyPdf extends \TCPDF
      */
     public function getMyNumPage($page = null)
     {
-        if ($page===null) {
+        if ($page === null) {
             $page = $this->page;
         }
 
-        if ($this->_myLastPageGroupNb==0) {
+        if ($this->_myLastPageGroupNb == 0) {
             return $page;
         } else {
             return $page-$this->_myLastPageGroup;

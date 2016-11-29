@@ -44,7 +44,7 @@ class Locale
      */
     public static function load($code)
     {
-        if (self::$directory===null) {
+        if (self::$directory === null) {
             self::$directory = __DIR__ . '/locale/';
         }
 
