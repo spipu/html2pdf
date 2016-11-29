@@ -464,13 +464,12 @@ class Html2Pdf
         // complete parameters
         if ($dest === false) {
             $dest = 'I';
-        }
-        if ($dest === true) {
+        } elseif ($dest === true) {
             $dest = 'S';
-        }
-        if ($dest === '') {
+        } elseif ($dest === '') {
             $dest = 'I';
         }
+
         if ($name == '') {
             $name='document.pdf';
         }
@@ -720,8 +719,7 @@ class Html2Pdf
         // update the top float margin
         if ($float === 'left'  && $oldTop[0]<$xRight) {
             $oldTop[0] = $xRight;
-        }
-        if ($float === 'right' && $oldTop[1]>$xLeft) {
+        } elseif ($float === 'right' && $oldTop[1]>$xLeft) {
             $oldTop[1] = $xLeft;
         }
 
@@ -738,8 +736,7 @@ class Html2Pdf
             }
             if ($float === 'left' && $this->_pageMarges[$mY][0]<$xRight) {
                 unset($this->_pageMarges[$mY]);
-            }
-            if ($float === 'right' && $this->_pageMarges[$mY][1]>$xLeft) {
+            } elseif ($float === 'right' && $this->_pageMarges[$mY][1]>$xLeft) {
                 unset($this->_pageMarges[$mY]);
             }
         }
@@ -2556,18 +2553,13 @@ class Html2Pdf
                 $param['orientation'] = strtolower($param['orientation']);
                 if ($param['orientation'] === 'p') {
                     $orientation = 'P';
-                }
-                if ($param['orientation'] === 'portrait') {
+                } elseif ($param['orientation'] === 'portrait') {
                     $orientation = 'P';
-                }
-
-                if ($param['orientation'] === 'l') {
+                } elseif ($param['orientation'] === 'l') {
                     $orientation = 'L';
-                }
-                if ($param['orientation'] === 'paysage') {
+                } elseif ($param['orientation'] === 'paysage') {
                     $orientation = 'L';
-                }
-                if ($param['orientation'] === 'landscape') {
+                } elseif ($param['orientation'] === 'landscape') {
                     $orientation = 'L';
                 }
             }
@@ -3393,7 +3385,6 @@ class Html2Pdf
             default:
                 break;
         }
-
 
         if ($this->parsingCss->value['position'] !== 'absolute') {
             $this->pdf->setXY($x+$w, $y);

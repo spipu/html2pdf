@@ -203,15 +203,7 @@ class MyPdf extends \TCPDF
      */
     public function isLoadedFont($fontKey)
     {
-        if (isset($this->fonts[$fontKey])) {
-            return true;
-        }
-
-        if (isset($this->CoreFonts[$fontKey])) {
-            return true;
-        }
-
-        return false;
+        return isset($this->fonts[$fontKey]) || isset($this->CoreFonts[$fontKey]);
     }
 
     /**

@@ -249,8 +249,7 @@ class Css
         if ($tagName === 'p') {
             $this->value['margin']['t'] = null;
             $this->value['margin']['b'] = null;
-        }
-        if ($tagName === 'blockquote') {
+        } elseif ($tagName === 'blockquote') {
             $this->value['margin']['t'] = 3;
             $this->value['margin']['r'] = 3;
             $this->value['margin']['b'] = 3;
