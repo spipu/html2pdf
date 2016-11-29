@@ -1104,7 +1104,8 @@ class HTML2PDF_parsingCss
      */
     public function getLastWidth($mode = false)
     {
-        for ($k=count($this->table)-1; $k>=0; $k--) {
+        $amountInTable = count($this->table) - 1;
+        for ($k= $amountInTable; $k>=0; $k--) {
             if ($this->table[$k]['width']) {
                 $w = $this->table[$k]['width'];
                 if ($mode) {
@@ -1126,7 +1127,8 @@ class HTML2PDF_parsingCss
      */
     public function getLastHeight($mode = false)
     {
-        for ($k=count($this->table)-1; $k>=0; $k--) {
+        $amountInTable = count($this->table) - 1;
+        for ($k= $amountInTable; $k>=0; $k--) {
             if ($this->table[$k]['height']) {
                 $h = $this->table[$k]['height'];
                 if ($mode) {
@@ -1177,7 +1179,8 @@ class HTML2PDF_parsingCss
      */
     protected function _getLastAbsoluteX()
     {
-        for ($k=count($this->table)-1; $k>=0; $k--) {
+        $amountInTable = count($this->table) - 1;
+        for ($k= $amountInTable; $k>=0; $k--) {
             if ($this->table[$k]['x'] && $this->table[$k]['position']) return $this->table[$k]['x'];
         }
         return $this->_pdf->getlMargin();
@@ -1191,7 +1194,8 @@ class HTML2PDF_parsingCss
      */
     protected function _getLastAbsoluteY()
     {
-        for ($k=count($this->table)-1; $k>=0; $k--) {
+        $amountInTable = count($this->table) - 1;
+        for ($k= $amountInTable; $k>=0; $k--) {
             if ($this->table[$k]['y'] && $this->table[$k]['position']) return $this->table[$k]['y'];
         }
         return $this->_pdf->gettMargin();
@@ -1214,7 +1218,8 @@ class HTML2PDF_parsingCss
         // get the list of the selectors of each tags
         $lst = array();
         $lst[] = $this->value['id_lst'];
-        for ($i=count($this->table)-1; $i>=0; $i--) {
+        $amountInTable = count($this->table) - 1;
+        for ($i= $amountInTable; $i>=0; $i--) {
             $lst[] = $this->table[$i]['id_lst'];
         }
 
@@ -1680,7 +1685,8 @@ class HTML2PDF_parsingCss
         preg_match_all('/([^{}]+){([^}]*)}/isU', $code, $match);
 
         // for each CSS code
-        for ($k=0; $k<count($match[0]); $k++) {
+        $amountMatches = count($match[0]);
+        for ($k=0; $k< $amountMatches; $k++) {
 
             // selectors
             $names = strtolower(trim($match[1][$k]));
@@ -1748,21 +1754,24 @@ class HTML2PDF_parsingCss
             // read the attributes name=value
             $prop = '([a-zA-Z0-9_]+)=([^"\'\s>]+)';
             preg_match_all('/'.$prop.'/is', $code, $match);
-            for ($k=0; $k<count($match[0]); $k++) {
+            $amountMatches = count($match[0]);
+            for ($k=0; $k< $amountMatches; $k++) {
                 $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
             }
 
             // read the attributes name="value"
             $prop = '([a-zA-Z0-9_]+)=["]([^"]*)["]';
             preg_match_all('/'.$prop.'/is', $code, $match);
-            for ($k=0; $k<count($match[0]); $k++) {
+            $amountMatches = count($match[0]);
+            for ($k=0; $k< $amountMatches; $k++) {
                 $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
             }
 
             // read the attributes name='value'
             $prop = "([a-zA-Z0-9_]+)=[']([^']*)[']";
             preg_match_all('/'.$prop.'/is', $code, $match);
-            for ($k=0; $k<count($match[0]); $k++) {
+            $amountMatches = count($match[0]);
+            for ($k=0; $k< $amountMatches; $k++) {
                 $tmp[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
             }
 
