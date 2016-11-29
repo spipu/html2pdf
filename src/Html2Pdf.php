@@ -1770,130 +1770,139 @@ class Html2Pdf
         // draw the radius bottom-left
         if (is_array($outBL) && ($testBb || $testBl)) {
             if ($inBL) {
-                $courbe = array();
-                $courbe[] = $x+$outBL[0];
-                $courbe[] = $y+$h;
-                $courbe[] = $x;
-                $courbe[] = $y+$h-$outBL[1];
-                $courbe[] = $x+$outBL[0];
-                $courbe[] = $y+$h-$border['b']['width'];
-                $courbe[] = $x+$border['l']['width'];
-                $courbe[] = $y+$h-$outBL[1];
-                $courbe[] = $x+$outBL[0];
-                $courbe[] = $y+$h-$outBL[1];
+                $curve = array(
+                    $x+$outBL[0],
+                    $y+$h,
+                    $x,
+                    $y+$h-$outBL[1],
+                    $x+$outBL[0],
+                    $y+$h-$border['b']['width'],
+                    $x+$border['l']['width'],
+                    $y+$h-$outBL[1],
+                    $x+$outBL[0],
+                    $y+$h-$outBL[1]
+                );
             } else {
-                $courbe = array();
-                $courbe[] = $x+$outBL[0];
-                $courbe[] = $y+$h;
-                $courbe[] = $x;
-                $courbe[] = $y+$h-$outBL[1];
-                $courbe[] = $x+$border['l']['width'];
-                $courbe[] = $y+$h-$border['b']['width'];
-                $courbe[] = $x+$outBL[0];
-                $courbe[] = $y+$h-$outBL[1];
+                $curve = array(
+                    $x+$outBL[0],
+                    $y+$h,
+                    $x,
+                    $y+$h-$outBL[1],
+                    $x+$border['l']['width'],
+                    $y+$h-$border['b']['width'],
+                    $x+$outBL[0],
+                    $y+$h-$outBL[1]
+                );
             }
-            $this->_drawCurve($courbe, $border['l']['color']);
+            $this->_drawCurve($curve, $border['l']['color']);
         }
 
         // draw the radius left-top
         if (is_array($outTL) && ($testBt || $testBl)) {
             if ($inTL) {
-                $courbe = array();
-                $courbe[] = $x;
-                $courbe[] = $y+$outTL[1];
-                $courbe[] = $x+$outTL[0];
-                $courbe[] = $y;
-                $courbe[] = $x+$border['l']['width'];
-                $courbe[] = $y+$outTL[1];
-                $courbe[] = $x+$outTL[0];
-                $courbe[] = $y+$border['t']['width'];
-                $courbe[] = $x+$outTL[0];
-                $courbe[] = $y+$outTL[1];
+                $curve = array(
+                    $x,
+                    $y+$outTL[1],
+                    $x+$outTL[0],
+                    $y,
+                    $x+$border['l']['width'],
+                    $y+$outTL[1],
+                    $x+$outTL[0],
+                    $y+$border['t']['width'],
+                    $x+$outTL[0],
+                    $y+$outTL[1]
+                );
             } else {
-                $courbe = array();
-                $courbe[] = $x;
-                $courbe[] = $y+$outTL[1];
-                $courbe[] = $x+$outTL[0];
-                $courbe[] = $y;
-                $courbe[] = $x+$border['l']['width'];
-                $courbe[] = $y+$border['t']['width'];
-                $courbe[] = $x+$outTL[0];
-                $courbe[] = $y+$outTL[1];
+                $curve = array(
+                    $x,
+                    $y+$outTL[1],
+                    $x+$outTL[0],
+                    $y,
+                    $x+$border['l']['width'],
+                    $y+$border['t']['width'],
+                    $x+$outTL[0],
+                    $y+$outTL[1]
+                );
             }
-            $this->_drawCurve($courbe, $border['t']['color']);
+            $this->_drawCurve($curve, $border['t']['color']);
         }
 
         // draw the radius top-right
         if (is_array($outTR) && ($testBt || $testBr)) {
             if ($inTR) {
-                $courbe = array();
-                $courbe[] = $x+$w-$outTR[0];
-                $courbe[] = $y;
-                $courbe[] = $x+$w;
-                $courbe[] = $y+$outTR[1];
-                $courbe[] = $x+$w-$outTR[0];
-                $courbe[] = $y+$border['t']['width'];
-                $courbe[] = $x+$w-$border['r']['width'];
-                $courbe[] = $y+$outTR[1];
-                $courbe[] = $x+$w-$outTR[0];
-                $courbe[] = $y+$outTR[1];
+                $curve = array(
+                    $x+$w-$outTR[0],
+                    $y,
+                    $x+$w,
+                    $y+$outTR[1],
+                    $x+$w-$outTR[0],
+                    $y+$border['t']['width'],
+                    $x+$w-$border['r']['width'],
+                    $y+$outTR[1],
+                    $x+$w-$outTR[0],
+                    $y+$outTR[1]
+                );
             } else {
-                $courbe = array();
-                $courbe[] = $x+$w-$outTR[0];
-                $courbe[] = $y;
-                $courbe[] = $x+$w;
-                $courbe[] = $y+$outTR[1];
-                $courbe[] = $x+$w-$border['r']['width'];
-                $courbe[] = $y+$border['t']['width'];
-                $courbe[] = $x+$w-$outTR[0];
-                $courbe[] = $y+$outTR[1];
+                $curve = array(
+                    $x+$w-$outTR[0],
+                    $y,
+                    $x+$w,
+                    $y+$outTR[1],
+                    $x+$w-$border['r']['width'],
+                    $y+$border['t']['width'],
+                    $x+$w-$outTR[0],
+                    $y+$outTR[1]
+                );
             }
-            $this->_drawCurve($courbe, $border['r']['color']);
+            $this->_drawCurve($curve, $border['r']['color']);
         }
 
         // draw the radius right-bottom
         if (is_array($outBR) && ($testBb || $testBr)) {
             if ($inBR) {
-                $courbe = array();
-                $courbe[] = $x+$w;
-                $courbe[] = $y+$h-$outBR[1];
-                $courbe[] = $x+$w-$outBR[0];
-                $courbe[] = $y+$h;
-                $courbe[] = $x+$w-$border['r']['width'];
-                $courbe[] = $y+$h-$outBR[1];
-                $courbe[] = $x+$w-$outBR[0];
-                $courbe[] = $y+$h-$border['b']['width'];
-                $courbe[] = $x+$w-$outBR[0];
-                $courbe[] = $y+$h-$outBR[1];
+                $curve = array(
+                    $x+$w,
+                    $y+$h-$outBR[1],
+                    $x+$w-$outBR[0],
+                    $y+$h,
+                    $x+$w-$border['r']['width'],
+                    $y+$h-$outBR[1],
+                    $x+$w-$outBR[0],
+                    $y+$h-$border['b']['width'],
+                    $x+$w-$outBR[0],
+                    $y+$h-$outBR[1]
+                );
             } else {
-                $courbe = array();
-                $courbe[] = $x+$w;
-                $courbe[] = $y+$h-$outBR[1];
-                $courbe[] = $x+$w-$outBR[0];
-                $courbe[] = $y+$h;
-                $courbe[] = $x+$w-$border['r']['width'];
-                $courbe[] = $y+$h-$border['b']['width'];
-                $courbe[] = $x+$w-$outBR[0];
-                $courbe[] = $y+$h-$outBR[1];
+                $curve = array(
+                    $x+$w,
+                    $y+$h-$outBR[1],
+                    $x+$w-$outBR[0],
+                    $y+$h,
+                    $x+$w-$border['r']['width'],
+                    $y+$h-$border['b']['width'],
+                    $x+$w-$outBR[0],
+                    $y+$h-$outBR[1]
+                );
             }
-            $this->_drawCurve($courbe, $border['b']['color']);
+            $this->_drawCurve($curve, $border['b']['color']);
         }
 
         // draw the left border
         if ($testBl) {
-            $pt = array();
-            $pt[] = $x;
-            $pt[] = $y+$h;
-            $pt[] = $x;
-            $pt[] = $y+$h-$border['b']['width'];
-            $pt[] = $x;
-            $pt[] = $y+$border['t']['width'];
-            $pt[] = $x;
-            $pt[] = $y;
-            $pt[] = $x+$border['l']['width'];
-            $pt[] = $y+$border['t']['width'];
-            $pt[] = $x+$border['l']['width'];
-            $pt[] = $y+$h-$border['b']['width'];
+            $pt = array(
+                $x,
+                $y+$h,
+                $x,
+                $y+$h-$border['b']['width'],
+                $x,
+                $y+$border['t']['width'],
+                $x,
+                $y,
+                $x+$border['l']['width'],
+                $y+$border['t']['width'],
+                $x+$border['l']['width'],
+                $y+$h-$border['b']['width']
+            );
 
             $bord = 3;
             if (is_array($outBL)) {
@@ -1921,19 +1930,20 @@ class Html2Pdf
 
         // draw the top border
         if ($testBt) {
-            $pt = array();
-            $pt[] = $x;
-            $pt[] = $y;
-            $pt[] = $x+$border['l']['width'];
-            $pt[] = $y;
-            $pt[] = $x+$w-$border['r']['width'];
-            $pt[] = $y;
-            $pt[] = $x+$w;
-            $pt[] = $y;
-            $pt[] = $x+$w-$border['r']['width'];
-            $pt[] = $y+$border['t']['width'];
-            $pt[] = $x+$border['l']['width'];
-            $pt[] = $y+$border['t']['width'];
+            $pt = array(
+                $x,
+                $y,
+                $x+$border['l']['width'],
+                $y,
+                $x+$w-$border['r']['width'],
+                $y,
+                $x+$w,
+                $y,
+                $x+$w-$border['r']['width'],
+                $y+$border['t']['width'],
+                $x+$border['l']['width'],
+                $y+$border['t']['width']
+            );
 
             $bord = 3;
             if (is_array($outTL)) {
@@ -1961,19 +1971,20 @@ class Html2Pdf
 
         // draw the right border
         if ($testBr) {
-            $pt = array();
-            $pt[] = $x+$w;
-            $pt[] = $y;
-            $pt[] = $x+$w;
-            $pt[] = $y+$border['t']['width'];
-            $pt[] = $x+$w;
-            $pt[] = $y+$h-$border['b']['width'];
-            $pt[] = $x+$w;
-            $pt[] = $y+$h;
-            $pt[] = $x+$w-$border['r']['width'];
-            $pt[] = $y+$h-$border['b']['width'];
-            $pt[] = $x+$w-$border['r']['width'];
-            $pt[] = $y+$border['t']['width'];
+            $pt = array(
+                $x+$w,
+                $y,
+                $x+$w,
+                $y+$border['t']['width'],
+                $x+$w,
+                $y+$h-$border['b']['width'],
+                $x+$w,
+                $y+$h,
+                $x+$w-$border['r']['width'],
+                $y+$h-$border['b']['width'],
+                $x+$w-$border['r']['width'],
+                $y+$border['t']['width']
+            );
 
             $bord = 3;
             if (is_array($outTR)) {
@@ -2001,19 +2012,20 @@ class Html2Pdf
 
         // draw the bottom border
         if ($testBb) {
-            $pt = array();
-            $pt[] = $x+$w;
-            $pt[] = $y+$h;
-            $pt[] = $x+$w-$border['r']['width'];
-            $pt[] = $y+$h;
-            $pt[] = $x+$border['l']['width'];
-            $pt[] = $y+$h;
-            $pt[] = $x;
-            $pt[] = $y+$h;
-            $pt[] = $x+$border['l']['width'];
-            $pt[] = $y+$h-$border['b']['width'];
-            $pt[] = $x+$w-$border['r']['width'];
-            $pt[] = $y+$h-$border['b']['width'];
+            $pt = array(
+                $x+$w,
+                $y+$h,
+                $x+$w-$border['r']['width'],
+                $y+$h,
+                $x+$border['l']['width'],
+                $y+$h,
+                $x,
+                $y+$h,
+                $x+$border['l']['width'],
+                $y+$h-$border['b']['width'],
+                $x+$w-$border['r']['width'],
+                $y+$h-$border['b']['width']
+            );
 
             $bord = 3;
             if (is_array($outBL)) {
@@ -2085,74 +2097,15 @@ class Html2Pdf
 
             // clean the end of the line, if radius
             if ($radius == 1) {
-                $tmp = array();
-                $tmp[]=$pt[0];
-                $tmp[]=$pt[1];
-                $tmp[]=$pt[2];
-                $tmp[]=$pt[3];
-                $tmp[]=$pt[8];
-                $tmp[]=$pt[9];
-                $this->pdf->Polygon($tmp, 'F');
-
-                $tmp = array();
-                $tmp[]=$pt[2];
-                $tmp[]=$pt[3];
-                $tmp[]=$pt[4];
-                $tmp[]=$pt[5];
-                $tmp[]=$pt[6];
-                $tmp[]=$pt[7];
-                $tmp[]=$pt[8];
-                $tmp[]=$pt[9];
-                $pt = $tmp;
+                $this->pdf->Polygon(array($pt[0], $pt[1], $pt[2], $pt[3], $pt[8], $pt[9]), 'F');
+                $pt = array($pt[2], $pt[3], $pt[4], $pt[5], $pt[6], $pt[7], $pt[8], $pt[9]);
             } elseif ($radius == 2) {
-                $tmp = array();
-                $tmp[]=$pt[2];
-                $tmp[]=$pt[3];
-                $tmp[]=$pt[4];
-                $tmp[]=$pt[5];
-                $tmp[]=$pt[6];
-                $tmp[]=$pt[7];
-                $this->pdf->Polygon($tmp, 'F');
-
-                $tmp = array();
-                $tmp[]=$pt[0];
-                $tmp[]=$pt[1];
-                $tmp[]=$pt[2];
-                $tmp[]=$pt[3];
-                $tmp[]=$pt[6];
-                $tmp[]=$pt[7];
-                $tmp[]=$pt[8];
-                $tmp[]=$pt[9];
-                $pt = $tmp;
+                $this->pdf->Polygon(array($pt[2], $pt[3], $pt[4], $pt[5], $pt[6], $pt[7]), 'F');
+                $pt = array($pt[0], $pt[1], $pt[2], $pt[3], $pt[4], $pt[5], $pt[6], $pt[7], $pt[8], $pt[9]);
             } elseif ($radius == 3) {
-                $tmp = array();
-                $tmp[]=$pt[0];
-                $tmp[]=$pt[1];
-                $tmp[]=$pt[2];
-                $tmp[]=$pt[3];
-                $tmp[]=$pt[10];
-                $tmp[]=$pt[11];
-                $this->pdf->Polygon($tmp, 'F');
-
-                $tmp = array();
-                $tmp[]=$pt[4];
-                $tmp[]=$pt[5];
-                $tmp[]=$pt[6];
-                $tmp[]=$pt[7];
-                $tmp[]=$pt[8];
-                $tmp[]=$pt[9];
-                $this->pdf->Polygon($tmp, 'F');
-
-                $tmp = array();
-                $tmp[]=$pt[2];
-                $tmp[]=$pt[3];
-                $tmp[]=$pt[4];
-                $tmp[]=$pt[5];
-                $tmp[]=$pt[8];
-                $tmp[]=$pt[9];
-                $tmp[]=$pt[10];
-                $tmp[]=$pt[11];
-                $pt = $tmp;
+                $this->pdf->Polygon(array($pt[0], $pt[1], $pt[2], $pt[3], $pt[10], $pt[11]), 'F');
+                $this->pdf->Polygon(array($pt[4], $pt[5], $pt[6], $pt[7], $pt[8], $pt[9]), 'F');
+                $pt = array($pt[2], $pt[3], $pt[4], $pt[5], $pt[8], $pt[9], $pt[10], $pt[11]);
             }
 
             // horisontal or vertical line
@@ -2202,28 +2155,10 @@ class Html2Pdf
                         $ly2 = $l;
                     }
 
-                    $tmp = array();
-                    $tmp[] = $x1+$lx1;
-                    $tmp[] = $y1+$ly1;
-                    $tmp[] = $x1+$lx2;
-                    $tmp[] = $y1+$ly2;
-                    $tmp[] = $x2+$lx2;
-                    $tmp[] = $y2+$ly2;
-                    $tmp[] = $x2+$lx1;
-                    $tmp[] = $y2+$ly1;
-                    $this->pdf->Polygon($tmp, 'F');
+                    $this->pdf->Polygon(array($x1+$lx1, $y1+$ly1, $x1+$lx2, $y1+$ly2, $x2+$lx2, $y2+$ly2, $x2+$lx1, $y2+$ly1), 'F');
 
-                    if ($j>0) {
-                        $tmp = array();
-                        $tmp[] = $x1-$lx1;
-                        $tmp[] = $y1-$ly1;
-                        $tmp[] = $x1-$lx2;
-                        $tmp[] = $y1-$ly2;
-                        $tmp[] = $x2-$lx2;
-                        $tmp[] = $y2-$ly2;
-                        $tmp[] = $x2-$lx1;
-                        $tmp[] = $y2-$ly1;
-                        $this->pdf->Polygon($tmp, 'F');
+                    if ($j > 0) {
+                        $this->pdf->Polygon(array($x1-$lx1, $y1-$ly1, $x1-$lx2, $y1-$ly2, $x2-$lx2, $y2-$ly2, $x2-$lx1, $y2-$ly1), 'F');
                     }
                 }
             }
@@ -2660,20 +2595,17 @@ class Html2Pdf
                 // convert the positions
                 if ($background['posX'] === 'left') {
                     $background['posX'] = '0%';
-                }
-                if ($background['posX'] === 'center') {
+                } elseif ($background['posX'] === 'center') {
                     $background['posX'] = '50%';
-                }
-                if ($background['posX'] === 'right') {
+                } elseif ($background['posX'] === 'right') {
                     $background['posX'] = '100%';
                 }
+
                 if ($background['posY'] === 'top') {
                     $background['posY'] = '0%';
-                }
-                if ($background['posY'] === 'middle') {
+                } elseif ($background['posY'] === 'middle') {
                     $background['posY'] = '50%';
-                }
-                if ($background['posY'] === 'bottom') {
+                } elseif ($background['posY'] === 'bottom') {
                     $background['posY'] = '100%';
                 }
 
@@ -2681,7 +2613,7 @@ class Html2Pdf
                     // get the size of the image
                     // WARNING : if URL, "allow_url_fopen" must turned to "on" in php.ini
                     $infos=@getimagesize($background['img']);
-                    if (count($infos)>1) {
+                    if (count($infos) > 1) {
                         $imageWidth = $this->cssConverter->ConvertToMM($background['width'], $this->pdf->getW());
                         $imageHeight = $imageWidth*$infos[1]/$infos[0];
 
@@ -2865,16 +2797,17 @@ class Html2Pdf
         }
 
         // save the current stat
-        $this->_subSTATES = array();
-        $this->_subSTATES['x']  = $this->pdf->getX();
-        $this->_subSTATES['y']  = $this->pdf->getY();
-        $this->_subSTATES['s']  = $this->parsingCss->value;
-        $this->_subSTATES['t']  = $this->parsingCss->table;
-        $this->_subSTATES['ml'] = $this->_margeLeft;
-        $this->_subSTATES['mr'] = $this->_margeRight;
-        $this->_subSTATES['mt'] = $this->_margeTop;
-        $this->_subSTATES['mb'] = $this->_margeBottom;
-        $this->_subSTATES['mp'] = $this->_pageMarges;
+        $this->_subSTATES = array(
+            'x'  => $this->pdf->getX(),
+            'y'  => $this->pdf->getY(),
+            's'  => $this->parsingCss->value,
+            't'  => $this->parsingCss->table,
+            'ml' => $this->_margeLeft,
+            'mr' => $this->_margeRight,
+            'mt' => $this->_margeTop,
+            'mb' => $this->_margeBottom,
+            'mp' => $this->_pageMarges
+        );
 
         // new stat for the header
         $this->_pageMarges = array();
@@ -2945,16 +2878,17 @@ class Html2Pdf
         }
 
         // save the current stat
-        $this->_subSTATES = array();
-        $this->_subSTATES['x']    = $this->pdf->getX();
-        $this->_subSTATES['y']    = $this->pdf->getY();
-        $this->_subSTATES['s']    = $this->parsingCss->value;
-        $this->_subSTATES['t']    = $this->parsingCss->table;
-        $this->_subSTATES['ml']    = $this->_margeLeft;
-        $this->_subSTATES['mr']    = $this->_margeRight;
-        $this->_subSTATES['mt']    = $this->_margeTop;
-        $this->_subSTATES['mb']    = $this->_margeBottom;
-        $this->_subSTATES['mp']    = $this->_pageMarges;
+        $this->_subSTATES = array(
+            'x'  => $this->pdf->getX(),
+            'y'  => $this->pdf->getY(),
+            's'  => $this->parsingCss->value,
+            't'  => $this->parsingCss->table,
+            'ml' => $this->_margeLeft,
+            'mr' => $this->_margeRight,
+            'mt' => $this->_margeTop,
+            'mb' => $this->_margeBottom,
+            'mp' => $this->_pageMarges
+        );
 
         // new stat for the footer
         $this->_pageMarges  = array();
@@ -3110,11 +3044,13 @@ class Html2Pdf
             $alignObject = 'center';
         }
 
-        $marge = array();
-        $marge['l'] = $this->parsingCss->value['border']['l']['width'] + $this->parsingCss->value['padding']['l']+0.03;
-        $marge['r'] = $this->parsingCss->value['border']['r']['width'] + $this->parsingCss->value['padding']['r']+0.03;
-        $marge['t'] = $this->parsingCss->value['border']['t']['width'] + $this->parsingCss->value['padding']['t']+0.03;
-        $marge['b'] = $this->parsingCss->value['border']['b']['width'] + $this->parsingCss->value['padding']['b']+0.03;
+        $marge = array(
+            'l' => $this->parsingCss->value['border']['l']['width'] + $this->parsingCss->value['padding']['l']+0.03,
+            'r' => $this->parsingCss->value['border']['r']['width'] + $this->parsingCss->value['padding']['r']+0.03,
+            't' => $this->parsingCss->value['border']['t']['width'] + $this->parsingCss->value['padding']['t']+0.03,
+            'b' => $this->parsingCss->value['border']['b']['width'] + $this->parsingCss->value['padding']['b']+0.03
+        );
+
 
         // extract the content of the div
         $level = $this->parsingHtml->getLevel($this->_parsePos);
@@ -3260,11 +3196,12 @@ class Html2Pdf
             $this->parsingCss->value['background']
         );
 
-        $marge = array();
-        $marge['l'] = $this->parsingCss->value['border']['l']['width'] + $this->parsingCss->value['padding']['l']+0.03;
-        $marge['r'] = $this->parsingCss->value['border']['r']['width'] + $this->parsingCss->value['padding']['r']+0.03;
-        $marge['t'] = $this->parsingCss->value['border']['t']['width'] + $this->parsingCss->value['padding']['t']+0.03;
-        $marge['b'] = $this->parsingCss->value['border']['b']['width'] + $this->parsingCss->value['padding']['b']+0.03;
+        $marge = array(
+            'l' => $this->parsingCss->value['border']['l']['width'] + $this->parsingCss->value['padding']['l']+0.03,
+            'r' => $this->parsingCss->value['border']['r']['width'] + $this->parsingCss->value['padding']['r']+0.03,
+            't' => $this->parsingCss->value['border']['t']['width'] + $this->parsingCss->value['padding']['t']+0.03,
+            'b' => $this->parsingCss->value['border']['b']['width'] + $this->parsingCss->value['padding']['b']+0.03
+        );
 
         $this->parsingCss->value['width'] -= $marge['l']+$marge['r'];
         $this->parsingCss->value['height']-= $marge['t']+$marge['b'];
@@ -3358,7 +3295,6 @@ class Html2Pdf
      */
     protected function _tag_open_FIELDSET($param)
     {
-
         $this->parsingCss->save();
         $this->parsingCss->analyse('fieldset', $param);
 
@@ -3429,11 +3365,12 @@ class Html2Pdf
             $this->pdf->stopTransform();
         }
 
-        $marge = array();
-        $marge['l'] = $this->parsingCss->value['border']['l']['width'] + $this->parsingCss->value['padding']['l']+0.03;
-        $marge['r'] = $this->parsingCss->value['border']['r']['width'] + $this->parsingCss->value['padding']['r']+0.03;
-        $marge['t'] = $this->parsingCss->value['border']['t']['width'] + $this->parsingCss->value['padding']['t']+0.03;
-        $marge['b'] = $this->parsingCss->value['border']['b']['width'] + $this->parsingCss->value['padding']['b']+0.03;
+        $marge = array(
+            'l' => $this->parsingCss->value['border']['l']['width'] + $this->parsingCss->value['padding']['l']+0.03,
+            'r' => $this->parsingCss->value['border']['r']['width'] + $this->parsingCss->value['padding']['r']+0.03,
+            't' => $this->parsingCss->value['border']['t']['width'] + $this->parsingCss->value['padding']['t']+0.03,
+            'b' => $this->parsingCss->value['border']['b']['width'] + $this->parsingCss->value['padding']['b']+0.03
+        );
 
         $x = $this->parsingCss->value['x'];
         $y = $this->parsingCss->value['y'];
@@ -3654,9 +3591,9 @@ class Html2Pdf
         }
 
         $style = array(
-                'fgcolor' => $this->parsingCss->value['color'],
-                'bgcolor' => $this->parsingCss->value['background']['color'],
-            );
+            'fgcolor' => $this->parsingCss->value['color'],
+            'bgcolor' => $this->parsingCss->value['background']['color'],
+        );
 
         if ($borders) {
             $style['border'] = true;
@@ -4837,10 +4774,10 @@ class Html2Pdf
 
         $this->pdf->setFormDefaultProp(
             array(
-                'lineWidth'=>1,
-                'borderStyle'=>'solid',
-                'fillColor'=>array(220, 220, 255),
-                'strokeColor'=>array(128, 128, 200)
+                'lineWidth'   => 1,
+                'borderStyle' => 'solid',
+                'fillColor'   => array(220, 220, 255),
+                'strokeColor' => array(128, 128, 200)
             )
         );
 
@@ -5458,11 +5395,12 @@ class Html2Pdf
             }
 
             if (self::$_tables[$param['num']]['border']) {
-                $legacy['border'] = array();
-                $legacy['border']['l'] = self::$_tables[$param['num']]['border'];
-                $legacy['border']['t'] = self::$_tables[$param['num']]['border'];
-                $legacy['border']['r'] = self::$_tables[$param['num']]['border'];
-                $legacy['border']['b'] = self::$_tables[$param['num']]['border'];
+                $legacy['border'] = array(
+                    'l' => self::$_tables[$param['num']]['border'],
+                    't' => self::$_tables[$param['num']]['border'],
+                    'r' => self::$_tables[$param['num']]['border'],
+                    'b' => self::$_tables[$param['num']]['border']
+                );
             }
         }
         $return = $this->parsingCss->analyse($other, $param, $legacy);
@@ -5493,11 +5431,12 @@ class Html2Pdf
         }
 
         // margins of the table
-        $marge = array();
-        $marge['t'] = $this->parsingCss->value['padding']['t']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['t']['width'];
-        $marge['r'] = $this->parsingCss->value['padding']['r']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['r']['width'];
-        $marge['b'] = $this->parsingCss->value['padding']['b']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['b']['width'];
-        $marge['l'] = $this->parsingCss->value['padding']['l']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['l']['width'];
+        $marge = array(
+            't' => $this->parsingCss->value['padding']['t']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['t']['width'],
+            'r' => $this->parsingCss->value['padding']['r']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['r']['width'],
+            'b' => $this->parsingCss->value['padding']['b']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['b']['width'],
+            'l' => $this->parsingCss->value['padding']['l']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['l']['width']
+        );
 
         // if we are in a sub HTML
         if ($this->_subPart) {
@@ -5612,7 +5551,7 @@ class Html2Pdf
         // if we are in a sub HTML
         if ($this->_subPart) {
 
-            // it msut take only one page
+            // it must take only one page
             if ($this->_testTdInOnepage && $this->_subHtml->pdf->getPage()>1) {
                 throw new TableException('The content of the TD tag does not fit on only one page');
             }
@@ -5646,7 +5585,6 @@ class Html2Pdf
 
         return true;
     }
-
 
     /**
      * tag : TH
@@ -5747,11 +5685,12 @@ class Html2Pdf
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
-        $this->_lstSelect = array();
-        $this->_lstSelect['name']    = $param['name'];
-        $this->_lstSelect['multi']    = isset($param['multiple']) ? true : false;
-        $this->_lstSelect['size']    = isset($param['size']) ? $param['size'] : 1;
-        $this->_lstSelect['options']    = array();
+        $this->_lstSelect = array(
+            'name'    => $param['name'],
+            'multi'   => isset($param['multiple']) ? true : false,
+            'size'    => isset($param['size']) ? $param['size'] : 1,
+            'options' => array()
+        );
 
         if ($this->_lstSelect['multi'] && $this->_lstSelect['size']<3) {
             $this->_lstSelect['size'] = 3;
@@ -6147,11 +6086,12 @@ class Html2Pdf
             $this->parsingCss->value['background']
         );
 
-        $marge = array();
-        $marge['l'] = $this->parsingCss->value['border']['l']['width'];
-        $marge['r'] = $this->parsingCss->value['border']['r']['width'];
-        $marge['t'] = $this->parsingCss->value['border']['t']['width'];
-        $marge['b'] = $this->parsingCss->value['border']['b']['width'];
+        $marge = array(
+            'l' => $this->parsingCss->value['border']['l']['width'],
+            'r' => $this->parsingCss->value['border']['r']['width'],
+            't' => $this->parsingCss->value['border']['t']['width'],
+            'b' => $this->parsingCss->value['border']['b']['width']
+        );
 
         $this->parsingCss->value['width'] -= $marge['l']+$marge['r'];
         $this->parsingCss->value['height']-= $marge['t']+$marge['b'];
@@ -6214,11 +6154,12 @@ class Html2Pdf
         $this->_maxY = $this->parsingCss->value['old_maxY'];
         $this->_maxH = $this->parsingCss->value['old_maxH'];
 
-        $marge = array();
-        $marge['l'] = $this->parsingCss->value['border']['l']['width'];
-        $marge['r'] = $this->parsingCss->value['border']['r']['width'];
-        $marge['t'] = $this->parsingCss->value['border']['t']['width'];
-        $marge['b'] = $this->parsingCss->value['border']['b']['width'];
+        $marge = array(
+            'l' => $this->parsingCss->value['border']['l']['width'],
+            'r' => $this->parsingCss->value['border']['r']['width'],
+            't' => $this->parsingCss->value['border']['t']['width'],
+            'b' => $this->parsingCss->value['border']['b']['width']
+        );
 
         $x = $this->parsingCss->value['x'];
         $y = $this->parsingCss->value['y'];
