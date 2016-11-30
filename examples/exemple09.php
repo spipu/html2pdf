@@ -19,7 +19,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
     $generate = isset($_GET['make_pdf']);
     $nom = isset($_GET['nom']) ? $_GET['nom'] : 'inconnu';
     $url = dirname($_SERVER['REQUEST_URI']);
-    if (substr($url, 0, 7)!=='http://') {
+    if (substr($url, 0, 7) !== 'http://') {
         $url = 'http://'.$_SERVER['HTTP_HOST'].$url;
     }
 } else {

@@ -105,7 +105,7 @@ class Debug implements DebugInterface
     public function addStep($name, $level = null)
     {
         // if true : UP
-        if ($level===true) {
+        if ($level === true) {
             $this->level++;
         }
 
@@ -115,7 +115,7 @@ class Debug implements DebugInterface
         $name  =
             str_repeat('  ', $this->level).
             $name.
-            ($level===true ? ' Begin' : ($level===false ? ' End' : ''));
+            ($level === true ? ' Begin' : ($level === false ? ' End' : ''));
 
         $this->displayLine(
             $name,
@@ -128,7 +128,7 @@ class Debug implements DebugInterface
         $this->lastTime = $time;
 
         // it false : DOWN
-        if ($level===false) {
+        if ($level === false) {
             $this->level--;
         }
 

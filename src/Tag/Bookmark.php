@@ -35,14 +35,14 @@ class Bookmark extends AbstractTag
      */
     public function open($properties)
     {
-        $titre = isset($properties['title']) ? trim($properties['title']) : '';
+        $title = isset($properties['title']) ? trim($properties['title']) : '';
         $level = isset($properties['level']) ? floor($properties['level']) : 0;
 
         if ($level < 0) {
             $level = 0;
         }
-        if ($titre) {
-            $this->pdf->Bookmark($titre, $level, -1);
+        if ($title) {
+            $this->pdf->Bookmark($title, $level, -1);
         }
 
         return true;
