@@ -201,7 +201,7 @@ class Css
 
         // prepare the Collapse attribute
         $collapse = isset($this->value['border']['collapse']) ? $this->value['border']['collapse'] : false;
-        if (!in_array($tagName, array('tr', 'td', 'th', 'thead', 'tbody', 'tfoot'))) {
+        if (!in_array($tagName, array('tr', 'td', 'th', 'thead', 'tbody', 'tfoot'), true)) {
             $collapse = false;
         }
 
@@ -235,22 +235,21 @@ class Css
         );
 
         // specific values for some tags
-        if (!in_array($tagName, array('h1', 'h2', 'h3', 'h4', 'h5', 'h6'))) {
+        if (!in_array($tagName, array('h1', 'h2', 'h3', 'h4', 'h5', 'h6'), true)) {
             $this->value['margin'] = array('t'=>0,'r'=>0,'b'=>0,'l'=>0);
         }
 
-        if (in_array($tagName, array('input', 'select', 'textarea'))) {
+        if (in_array($tagName, array('input', 'select', 'textarea'), true)) {
             $this->value['border']['t'] = null;
             $this->value['border']['r'] = null;
             $this->value['border']['b'] = null;
             $this->value['border']['l'] = null;
         }
 
-        if ($tagName=='p') {
+        if ($tagName === 'p') {
             $this->value['margin']['t'] = null;
             $this->value['margin']['b'] = null;
-        }
-        if ($tagName=='blockquote') {
+        } elseif ($tagName === 'blockquote') {
             $this->value['margin']['t'] = 3;
             $this->value['margin']['r'] = 3;
             $this->value['margin']['b'] = 3;
@@ -258,11 +257,11 @@ class Css
         }
         $this->value['margin-auto'] = false;
 
-        if (in_array($tagName, array('blockquote', 'div', 'fieldset'))) {
+        if (in_array($tagName, array('blockquote', 'div', 'fieldset'), true)) {
             $this->value['vertical-align'] = 'top';
         }
 
-        if (in_array($tagName, array('fieldset', 'legend'))) {
+        if (in_array($tagName, array('fieldset', 'legend'), true)) {
             $this->value['border'] = array(
                 't' => $border,
                 'r' => $border,
@@ -278,12 +277,12 @@ class Css
             );
         }
 
-        if (in_array($tagName, array('ul', 'li'))) {
+        if (in_array($tagName, array('ul', 'li'), true)) {
             $this->value['list-style-type']  = '';
             $this->value['list-style-image'] = '';
         }
 
-        if (!in_array($tagName, array('tr', 'td'))) {
+        if (!in_array($tagName, array('tr', 'td'), true)) {
             $this->value['padding'] = array(
                 't' => 0,
                 'r' => 0,
@@ -299,7 +298,7 @@ class Css
             );
         }
 
-        if ($tagName=='hr') {
+        if ($tagName === 'hr') {
             $this->value['border'] = array(
                 't' => $border,
                 'r' => $border,
@@ -339,21 +338,21 @@ class Css
         $style = $b.$i;
 
         if ($this->defaultFont) {
-            if ($family=='arial') {
+            if ($family === 'arial') {
                 $family='helvetica';
-            } elseif ($family=='symbol' || $family=='zapfdingbats') {
+            } elseif ($family === 'symbol' || $family === 'zapfdingbats') {
                 $style='';
             }
 
-            $fontkey = $family.$style;
-            if (!$this->pdf->isLoadedFont($fontkey)) {
+            $fontKey = $family.$style;
+            if (!$this->pdf->isLoadedFont($fontKey)) {
                 $family = $this->defaultFont;
             }
         }
 
-        if ($family=='arial') {
+        if ($family === 'arial') {
             $family='helvetica';
-        } elseif ($family=='symbol' || $family=='zapfdingbats') {
+        } elseif ($family === 'symbol' || $family === 'zapfdingbats') {
             $style='';
         }
 
@@ -366,11 +365,11 @@ class Css
 
         // apply the font
         $this->pdf->SetFont($family, $style, $this->value['mini-size']*$size);
-        $this->pdf->setTextColorArray($this->value['color']);
+        $this->pdf->SetTextColorArray($this->value['color']);
         if ($this->value['background']['color']) {
-            $this->pdf->setFillColorArray($this->value['background']['color']);
+            $this->pdf->SetFillColorArray($this->value['background']['color']);
         } else {
-            $this->pdf->setFillColor(255);
+            $this->pdf->SetFillColor(255);
         }
     }
 
@@ -403,8 +402,8 @@ class Css
      */
     public function restorePosition()
     {
-        if ($this->value['y']==$this->pdf->getY()) {
-            $this->pdf->setY($this->value['yc'], false);
+        if ($this->value['y'] == $this->pdf->GetY()) {
+            $this->pdf->SetY($this->value['yc'], false);
         }
     }
 
@@ -416,15 +415,15 @@ class Css
     public function setPosition()
     {
         // get the current position
-        $currentX = $this->pdf->getX();
-        $currentY = $this->pdf->getY();
+        $currentX = $this->pdf->GetX();
+        $currentY = $this->pdf->GetY();
 
         // save it
         $this->value['xc'] = $currentX;
         $this->value['yc'] = $currentY;
 
-        if ($this->value['position']=='relative' || $this->value['position']=='absolute') {
-            if ($this->value['right']!==null) {
+        if ($this->value['position'] === 'relative' || $this->value['position'] === 'absolute') {
+            if ($this->value['right'] !== null) {
                 $x = $this->getLastWidth(true) - $this->value['right'] - $this->value['width'];
                 if ($this->value['margin']['r']) {
                     $x-= $this->value['margin']['r'];
@@ -436,7 +435,7 @@ class Css
                 }
             }
 
-            if ($this->value['bottom']!==null) {
+            if ($this->value['bottom'] !== null) {
                 $y = $this->getLastHeight(true) - $this->value['bottom'] - $this->value['height'];
                 if ($this->value['margin']['b']) {
                     $y-= $this->value['margin']['b'];
@@ -448,7 +447,7 @@ class Css
                 }
             }
 
-            if ($this->value['position']=='relative') {
+            if ($this->value['position'] === 'relative') {
                 $this->value['x'] = $currentX + $x;
                 $this->value['y'] = $currentY + $y;
             } else {
@@ -467,7 +466,7 @@ class Css
         }
 
         // save the new position
-        $this->pdf->setXY($this->value['x'], $this->value['y']);
+        $this->pdf->SetXY($this->value['x'], $this->value['y']);
     }
 
     /**
@@ -477,9 +476,9 @@ class Css
      */
     public function getFormStyle()
     {
-        $prop = array();
-
-        $prop['alignment'] = $this->value['text-align'];
+        $prop = array(
+            'alignment' => $this->value['text-align']
+        );
 
         if (isset($this->value['background']['color']) && is_array($this->value['background']['color'])) {
             $prop['fillColor'] = $this->value['background']['color'];
@@ -675,6 +674,8 @@ class Css
         $correctWidth = false;
         $noWidth = true;
 
+        $stylesSolidDottedDashed = array('solid', 'dotted', 'dashed');
+        
         // read all the css styles
         foreach ($styles as $nom => $val) {
             switch ($nom) {
@@ -687,18 +688,18 @@ class Css
                     break;
 
                 case 'font-weight':
-                    $this->value['font-bold'] = ($val=='bold');
+                    $this->value['font-bold'] = ($val === 'bold');
                     break;
 
                 case 'font-style':
-                    $this->value['font-italic'] = ($val=='italic');
+                    $this->value['font-italic'] = ($val === 'italic');
                     break;
 
                 case 'text-decoration':
                     $val = explode(' ', $val);
-                    $this->value['font-underline']   = (in_array('underline', $val));
-                    $this->value['font-overline']    = (in_array('overline', $val));
-                    $this->value['font-linethrough'] = (in_array('line-through', $val));
+                    $this->value['font-underline']   = in_array('underline', $val, true);
+                    $this->value['font-overline']    = in_array('overline', $val, true);
+                    $this->value['font-linethrough'] = in_array('line-through', $val, true);
                     break;
 
                 case 'text-indent':
@@ -706,7 +707,7 @@ class Css
                     break;
 
                 case 'text-transform':
-                    if (!in_array($val, array('none', 'capitalize', 'uppercase', 'lowercase'))) {
+                    if (!in_array($val, array('none', 'capitalize', 'uppercase', 'lowercase'), true)) {
                         $val = 'none';
                     }
                     $this->value['text-transform']  = $val;
@@ -722,7 +723,7 @@ class Css
                 case 'color':
                     $res = null;
                     $this->value['color'] = $this->cssConverter->convertToColor($val, $res);
-                    if ($tagName=='hr') {
+                    if ($tagName === 'hr') {
                         $this->value['border']['l']['color'] = $this->value['color'];
                         $this->value['border']['t']['color'] = $this->value['color'];
                         $this->value['border']['r']['color'] = $this->value['color'];
@@ -732,7 +733,7 @@ class Css
 
                 case 'text-align':
                     $val = strtolower($val);
-                    if (!in_array($val, array('left', 'right', 'center', 'justify', 'li_right'))) {
+                    if (!in_array($val, array('left', 'right', 'center', 'justify', 'li_right'), true)) {
                         $val = 'left';
                     }
                     $this->value['text-align'] = $val;
@@ -744,7 +745,7 @@ class Css
 
                 case 'width':
                     $this->value['width'] = $this->cssConverter->convertToMM($val, $this->getLastWidth());
-                    if ($this->value['width'] && substr($val, -1)=='%') {
+                    if ($this->value['width'] && substr($val, -1) === '%') {
                         $correctWidth=true;
                     }
                     $noWidth = false;
@@ -772,7 +773,7 @@ class Css
                     break;
 
                 case 'overflow':
-                    if (!in_array($val, array('visible', 'hidden'))) {
+                    if (!in_array($val, array('visible', 'hidden'), true)) {
                         $val = 'visible';
                     }
                     $this->value['overflow'] = $val;
@@ -813,7 +814,7 @@ class Css
                     break;
 
                 case 'margin':
-                    if ($val=='auto') {
+                    if ($val === 'auto') {
                         $this->value['margin-auto'] = true;
                         break;
                     }
@@ -861,7 +862,7 @@ class Css
                 case 'border-style':
                     $val = explode(' ', $val);
                     foreach ($val as $valK => $valV) {
-                        if (!in_array($valV, array('solid', 'dotted', 'dashed'))) {
+                        if (!in_array($valV, $stylesSolidDottedDashed, true)) {
                             $val[$valK] = null;
                         }
                     }
@@ -881,25 +882,25 @@ class Css
                     break;
 
                 case 'border-top-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    if (in_array($val, $stylesSolidDottedDashed, true)) {
                         $this->value['border']['t']['type'] = $val;
                     }
                     break;
 
                 case 'border-right-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    if (in_array($val, $stylesSolidDottedDashed, true)) {
                         $this->value['border']['r']['type'] = $val;
                     }
                     break;
 
                 case 'border-bottom-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    if (in_array($val, $stylesSolidDottedDashed, true)) {
                         $this->value['border']['b']['type'] = $val;
                     }
                     break;
 
                 case 'border-left-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    if (in_array($val, $stylesSolidDottedDashed, true)) {
                         $this->value['border']['l']['type'] = $val;
                     }
                     break;
@@ -1011,18 +1012,18 @@ class Css
                     break;
 
                 case 'border-collapse':
-                    if ($tagName=='table') {
-                        $this->value['border']['collapse'] = ($val=='collapse');
+                    if ($tagName === 'table') {
+                        $this->value['border']['collapse'] = ($val === 'collapse');
                     }
                     break;
 
                 case 'border-radius':
                     $val = explode('/', $val);
-                    if (count($val)>2) {
+                    if (count($val) > 2) {
                         break;
                     }
                     $valH = $this->cssConverter->convertToRadius(trim($val[0]));
-                    if (count($valH)<1 || count($valH)>4) {
+                    if (count($valH) < 1 || count($valH) > 4) {
                         break;
                     }
                     if (!isset($valH[1])) {
@@ -1036,7 +1037,7 @@ class Css
                     }
                     if (isset($val[1])) {
                         $valV = $this->cssConverter->convertToRadius(trim($val[1]));
-                        if (count($valV)<1 || count($valV)>4) {
+                        if (count($valV) < 1 || count($valV) > 4) {
                             break;
                         }
                         if (!isset($valV[1])) {
@@ -1061,7 +1062,7 @@ class Css
 
                 case 'border-top-left-radius':
                     $val = $this->cssConverter->convertToRadius($val);
-                    if (count($val)<1 || count($val)>2) {
+                    if (count($val) < 1 || count($val) > 2) {
                         break;
                     }
                     $this->value['border']['radius']['tl'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
@@ -1069,7 +1070,7 @@ class Css
 
                 case 'border-top-right-radius':
                     $val = $this->cssConverter->convertToRadius($val);
-                    if (count($val)<1 || count($val)>2) {
+                    if (count($val) < 1 || count($val) > 2) {
                         break;
                     }
                     $this->value['border']['radius']['tr'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
@@ -1077,7 +1078,7 @@ class Css
 
                 case 'border-bottom-right-radius':
                     $val = $this->cssConverter->convertToRadius($val);
-                    if (count($val)<1 || count($val)>2) {
+                    if (count($val) < 1 || count($val) > 2) {
                         break;
                     }
                     $this->value['border']['radius']['br'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
@@ -1085,7 +1086,7 @@ class Css
 
                 case 'border-bottom-left-radius':
                     $val = $this->cssConverter->convertToRadius($val);
-                    if (count($val)<1 || count($val)>2) {
+                    if (count($val) < 1 || count($val) > 2) {
                         break;
                     }
                     $this->value['border']['radius']['bl'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
@@ -1129,9 +1130,9 @@ class Css
                     break;
 
                 case 'position':
-                    if ($val=='absolute') {
+                    if ($val === 'absolute') {
                         $this->value['position'] = 'absolute';
-                    } elseif ($val=='relative') {
+                    } elseif ($val === 'relative') {
                         $this->value['position'] = 'relative';
                     } else {
                         $this->value['position'] = null;
@@ -1139,9 +1140,9 @@ class Css
                     break;
 
                 case 'float':
-                    if ($val=='left') {
+                    if ($val === 'left') {
                         $this->value['float'] = 'left';
-                    } elseif ($val=='right') {
+                    } elseif ($val === 'right') {
                         $this->value['float'] = 'right';
                     } else {
                         $this->value['float'] = null;
@@ -1149,11 +1150,11 @@ class Css
                     break;
 
                 case 'display':
-                    if ($val=='inline') {
+                    if ($val === 'inline') {
                         $this->value['display'] = 'inline';
-                    } elseif ($val=='block') {
+                    } elseif ($val === 'block') {
                         $this->value['display'] = 'block';
-                    } elseif ($val=='none') {
+                    } elseif ($val === 'none') {
                         $this->value['display'] = 'none';
                     } else {
                         $this->value['display'] = null;
@@ -1170,14 +1171,14 @@ class Css
                 case 'list-style':
                 case 'list-style-type':
                 case 'list-style-image':
-                    if ($nom=='list-style') {
+                    if ($nom === 'list-style') {
                         $nom = 'list-style-type';
                     }
                     $this->value[$nom] = $val;
                     break;
 
                 case 'start':
-                    $this->value[$nom] = intval($val);
+                    $this->value[$nom] = (int)$val;
                     break;
 
                 default:
@@ -1188,10 +1189,10 @@ class Css
         $return = true;
 
         // only for P tag
-        if ($this->value['margin']['t']===null) {
+        if ($this->value['margin']['t'] === null) {
             $this->value['margin']['t'] = $this->value['font-size'];
         }
-        if ($this->value['margin']['b']===null) {
+        if ($this->value['margin']['b'] === null) {
             $this->value['margin']['b'] = $this->value['font-size'];
         }
 
@@ -1202,18 +1203,18 @@ class Css
 
         // correction on the width (quick box)
         if ($noWidth
-            && in_array($tagName, array('div', 'blockquote', 'fieldset'))
-            && $this->value['position']!='absolute'
+            && in_array($tagName, array('div', 'blockquote', 'fieldset'), true)
+            && $this->value['position'] !== 'absolute'
         ) {
             $this->value['width'] = $this->getLastWidth();
             $this->value['width']-= $this->value['margin']['l'] + $this->value['margin']['r'];
         } else {
             if ($correctWidth) {
-                if (!in_array($tagName, array('table', 'div', 'blockquote', 'fieldset', 'hr'))) {
+                if (!in_array($tagName, array('table', 'div', 'blockquote', 'fieldset', 'hr'), true)) {
                     $this->value['width']-= $this->value['padding']['l'] + $this->value['padding']['r'];
                     $this->value['width']-= $this->value['border']['l']['width'] + $this->value['border']['r']['width'];
                 }
-                if (in_array($tagName, array('th', 'td'))) {
+                if (in_array($tagName, array('th', 'td'), true)) {
                     $this->value['width']-= $this->cssConverter->convertToMM(isset($param['cellspacing']) ? $param['cellspacing'] : '2px');
                     $return = false;
                 }
@@ -1283,7 +1284,7 @@ class Css
     public function getLineHeight()
     {
         $val = $this->value['line-height'];
-        if ($val=='normal') {
+        if ($val === 'normal') {
             $val = '108%';
         }
         return $this->cssConverter->convertToMM($val, $this->value['font-size']);
@@ -1298,7 +1299,7 @@ class Css
      */
     public function getLastWidth($mode = false)
     {
-        for ($k=count($this->table)-1; $k>=0; $k--) {
+        for ($k=count($this->table)-1; $k >= 0; $k--) {
             if ($this->table[$k]['width']) {
                 $w = $this->table[$k]['width'];
                 if ($mode) {
@@ -1320,7 +1321,7 @@ class Css
      */
     public function getLastHeight($mode = false)
     {
-        for ($k=count($this->table)-1; $k>=0; $k--) {
+        for ($k=count($this->table)-1; $k >= 0; $k--) {
             if ($this->table[$k]['height']) {
                 $h = $this->table[$k]['height'];
                 if ($mode) {
@@ -1340,10 +1341,9 @@ class Css
      */
     public function getFloat()
     {
-        if ($this->value['float']=='left') {
+        if ($this->value['float'] === 'left') {
             return 'left';
-        }
-        if ($this->value['float']=='right') {
+        } elseif ($this->value['float'] === 'right') {
             return 'right';
         }
         return null;
@@ -1373,7 +1373,7 @@ class Css
      */
     protected function getLastAbsoluteX()
     {
-        for ($k=count($this->table)-1; $k>=0; $k--) {
+        for ($k=count($this->table)-1; $k >= 0; $k--) {
             if ($this->table[$k]['x'] && $this->table[$k]['position']) {
                 return $this->table[$k]['x'];
             }
@@ -1388,7 +1388,7 @@ class Css
      */
     protected function getLastAbsoluteY()
     {
-        for ($k=count($this->table)-1; $k>=0; $k--) {
+        for ($k=count($this->table)-1; $k >= 0; $k--) {
             if ($this->table[$k]['y'] && $this->table[$k]['position']) {
                 return $this->table[$k]['y'];
             }
@@ -1412,7 +1412,7 @@ class Css
         // get the list of the selectors of each tags
         $lst = array();
         $lst[] = $this->value['id_lst'];
-        for ($i=count($this->table)-1; $i>=0; $i--) {
+        for ($i=count($this->table)-1; $i >= 0; $i--) {
             $lst[] = $this->table[$i]['id_lst'];
         }
 
@@ -1447,7 +1447,7 @@ class Css
     protected function getReccursiveStyle($key, $lst, $next = null)
     {
         // if next step
-        if ($next!==null) {
+        if ($next !== null) {
             // we remove this step
             if ($next) {
                 $key = trim(substr($key, 0, -strlen($next)));
@@ -1463,18 +1463,18 @@ class Css
         // for each selector of the current step
         foreach ($lst[0] as $name) {
             // if selector = key => ok
-            if ($key==$name) {
+            if ($key == $name) {
                 return true;
             }
 
             // if the end of the key = the selector and the next step is ok => ok
-            if (substr($key, -strlen(' '.$name))==' '.$name && $this->getReccursiveStyle($key, $lst, $name)) {
+            if (substr($key, -strlen(' '.$name)) == ' '.$name && $this->getReccursiveStyle($key, $lst, $name)) {
                 return true;
             }
         }
 
         // if we are not in the first step, we analyse the sub steps (the pareng tag of the current tag)
-        if ($next!==null && $this->getReccursiveStyle($key, $lst, '')) {
+        if ($next !== null && $this->getReccursiveStyle($key, $lst, '')) {
             return true;
         }
 
@@ -1511,12 +1511,14 @@ class Css
         }
         $css = array_values($css);
 
+        $stylesSolidDottedDashedDouble = array('solid', 'dotted', 'dashed', 'double');
+        
         // read the values
         $res = null;
         foreach ($css as $value) {
 
             // if no border => return none
-            if ($value=='none' || $value=='hidden') {
+            if ($value === 'none' || $value === 'hidden') {
                 return $none;
             }
 
@@ -1524,10 +1526,10 @@ class Css
             $tmp = $this->cssConverter->convertToMM($value);
 
             // if the convert is ok => it is a width
-            if ($tmp!==null) {
+            if ($tmp !== null) {
                 $width = $tmp;
             // else, it could be the type
-            } elseif (in_array($value, array('solid', 'dotted', 'dashed', 'double'))) {
+            } elseif (in_array($value, $stylesSolidDottedDashedDouble, true)) {
                 $type = $value;
             // else, it could be the color
             } else {
@@ -1557,16 +1559,16 @@ class Css
     protected function duplicateBorder(&$val)
     {
         // 1 value => L => RTB
-        if (count($val)==1) {
+        if (count($val) === 1) {
             $val[1] = $val[0];
             $val[2] = $val[0];
             $val[3] = $val[0];
         // 2 values => L => R & T => B
-        } elseif (count($val)==2) {
+        } elseif (count($val) === 2) {
             $val[2] = $val[0];
             $val[3] = $val[1];
         // 3 values => T => B
-        } elseif (count($val)==3) {
+        } elseif (count($val) === 3) {
             $val[3] = $val[1];
         }
     }
@@ -1591,7 +1593,8 @@ class Css
         preg_match_all('/([^{}]+){([^}]*)}/isU', $code, $match);
 
         // for each CSS code
-        for ($k = 0; $k < count($match[0]); $k++) {
+        $amountMatches = count($match[0]);
+        for ($k = 0; $k < $amountMatches; $k++) {
 
             // selectors
             $names = strtolower(trim($match[1][$k]));
@@ -1663,7 +1666,7 @@ class Css
             $tmp = $this->tagParser->extractTagAttributes($code);
 
             // if type text/css => we keep it
-            if (isset($tmp['type']) && strtolower($tmp['type'])=='text/css' && isset($tmp['href'])) {
+            if (isset($tmp['type']) && strtolower($tmp['type']) === 'text/css' && isset($tmp['href'])) {
 
                 // get the href
                 $url = $tmp['href'];
@@ -1672,7 +1675,7 @@ class Css
                 $content = @file_get_contents($url);
 
                 // if "http://" in the url
-                if (strpos($url, 'http://')!==false) {
+                if (strpos($url, 'http://') !== false) {
 
                     // get the domain "http://xxx/"
                     $url = str_replace('http://', '', $url);
