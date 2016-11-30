@@ -201,7 +201,7 @@ class Css
 
         // prepare the Collapse attribute
         $collapse = isset($this->value['border']['collapse']) ? $this->value['border']['collapse'] : false;
-        if (!in_array($tagName, array('tr', 'td', 'th', 'thead', 'tbody', 'tfoot'))) {
+        if (!in_array($tagName, array('tr', 'td', 'th', 'thead', 'tbody', 'tfoot'), true)) {
             $collapse = false;
         }
 
@@ -235,11 +235,11 @@ class Css
         );
 
         // specific values for some tags
-        if (!in_array($tagName, array('h1', 'h2', 'h3', 'h4', 'h5', 'h6'))) {
+        if (!in_array($tagName, array('h1', 'h2', 'h3', 'h4', 'h5', 'h6'), true)) {
             $this->value['margin'] = array('t'=>0,'r'=>0,'b'=>0,'l'=>0);
         }
 
-        if (in_array($tagName, array('input', 'select', 'textarea'))) {
+        if (in_array($tagName, array('input', 'select', 'textarea'), true)) {
             $this->value['border']['t'] = null;
             $this->value['border']['r'] = null;
             $this->value['border']['b'] = null;
@@ -257,11 +257,11 @@ class Css
         }
         $this->value['margin-auto'] = false;
 
-        if (in_array($tagName, array('blockquote', 'div', 'fieldset'))) {
+        if (in_array($tagName, array('blockquote', 'div', 'fieldset'), true)) {
             $this->value['vertical-align'] = 'top';
         }
 
-        if (in_array($tagName, array('fieldset', 'legend'))) {
+        if (in_array($tagName, array('fieldset', 'legend'), true)) {
             $this->value['border'] = array(
                 't' => $border,
                 'r' => $border,
@@ -277,12 +277,12 @@ class Css
             );
         }
 
-        if (in_array($tagName, array('ul', 'li'))) {
+        if (in_array($tagName, array('ul', 'li'), true)) {
             $this->value['list-style-type']  = '';
             $this->value['list-style-image'] = '';
         }
 
-        if (!in_array($tagName, array('tr', 'td'))) {
+        if (!in_array($tagName, array('tr', 'td'), true)) {
             $this->value['padding'] = array(
                 't' => 0,
                 'r' => 0,
@@ -674,6 +674,8 @@ class Css
         $correctWidth = false;
         $noWidth = true;
 
+        $stylesSolidDottedDashed = array('solid', 'dotted', 'dashed');
+        
         // read all the css styles
         foreach ($styles as $nom => $val) {
             switch ($nom) {
@@ -695,9 +697,9 @@ class Css
 
                 case 'text-decoration':
                     $val = explode(' ', $val);
-                    $this->value['font-underline']   = (in_array('underline', $val));
-                    $this->value['font-overline']    = (in_array('overline', $val));
-                    $this->value['font-linethrough'] = (in_array('line-through', $val));
+                    $this->value['font-underline']   = in_array('underline', $val, true);
+                    $this->value['font-overline']    = in_array('overline', $val, true);
+                    $this->value['font-linethrough'] = in_array('line-through', $val, true);
                     break;
 
                 case 'text-indent':
@@ -705,7 +707,7 @@ class Css
                     break;
 
                 case 'text-transform':
-                    if (!in_array($val, array('none', 'capitalize', 'uppercase', 'lowercase'))) {
+                    if (!in_array($val, array('none', 'capitalize', 'uppercase', 'lowercase'), true)) {
                         $val = 'none';
                     }
                     $this->value['text-transform']  = $val;
@@ -731,7 +733,7 @@ class Css
 
                 case 'text-align':
                     $val = strtolower($val);
-                    if (!in_array($val, array('left', 'right', 'center', 'justify', 'li_right'))) {
+                    if (!in_array($val, array('left', 'right', 'center', 'justify', 'li_right'), true)) {
                         $val = 'left';
                     }
                     $this->value['text-align'] = $val;
@@ -771,7 +773,7 @@ class Css
                     break;
 
                 case 'overflow':
-                    if (!in_array($val, array('visible', 'hidden'))) {
+                    if (!in_array($val, array('visible', 'hidden'), true)) {
                         $val = 'visible';
                     }
                     $this->value['overflow'] = $val;
@@ -860,7 +862,7 @@ class Css
                 case 'border-style':
                     $val = explode(' ', $val);
                     foreach ($val as $valK => $valV) {
-                        if (!in_array($valV, array('solid', 'dotted', 'dashed'))) {
+                        if (!in_array($valV, $stylesSolidDottedDashed, true)) {
                             $val[$valK] = null;
                         }
                     }
@@ -880,25 +882,25 @@ class Css
                     break;
 
                 case 'border-top-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    if (in_array($val, $stylesSolidDottedDashed, true)) {
                         $this->value['border']['t']['type'] = $val;
                     }
                     break;
 
                 case 'border-right-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    if (in_array($val, $stylesSolidDottedDashed, true)) {
                         $this->value['border']['r']['type'] = $val;
                     }
                     break;
 
                 case 'border-bottom-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    if (in_array($val, $stylesSolidDottedDashed, true)) {
                         $this->value['border']['b']['type'] = $val;
                     }
                     break;
 
                 case 'border-left-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    if (in_array($val, $stylesSolidDottedDashed, true)) {
                         $this->value['border']['l']['type'] = $val;
                     }
                     break;
@@ -1201,18 +1203,18 @@ class Css
 
         // correction on the width (quick box)
         if ($noWidth
-            && in_array($tagName, array('div', 'blockquote', 'fieldset'))
+            && in_array($tagName, array('div', 'blockquote', 'fieldset'), true)
             && $this->value['position'] !== 'absolute'
         ) {
             $this->value['width'] = $this->getLastWidth();
             $this->value['width']-= $this->value['margin']['l'] + $this->value['margin']['r'];
         } else {
             if ($correctWidth) {
-                if (!in_array($tagName, array('table', 'div', 'blockquote', 'fieldset', 'hr'))) {
+                if (!in_array($tagName, array('table', 'div', 'blockquote', 'fieldset', 'hr'), true)) {
                     $this->value['width']-= $this->value['padding']['l'] + $this->value['padding']['r'];
                     $this->value['width']-= $this->value['border']['l']['width'] + $this->value['border']['r']['width'];
                 }
-                if (in_array($tagName, array('th', 'td'))) {
+                if (in_array($tagName, array('th', 'td'), true)) {
                     $this->value['width']-= $this->cssConverter->convertToMM(isset($param['cellspacing']) ? $param['cellspacing'] : '2px');
                     $return = false;
                 }
@@ -1509,6 +1511,8 @@ class Css
         }
         $css = array_values($css);
 
+        $stylesSolidDottedDashedDouble = array('solid', 'dotted', 'dashed', 'double');
+        
         // read the values
         $res = null;
         foreach ($css as $value) {
@@ -1525,7 +1529,7 @@ class Css
             if ($tmp !== null) {
                 $width = $tmp;
             // else, it could be the type
-            } elseif (in_array($value, array('solid', 'dotted', 'dashed', 'double'))) {
+            } elseif (in_array($value, $stylesSolidDottedDashedDouble, true)) {
                 $type = $value;
             // else, it could be the color
             } else {

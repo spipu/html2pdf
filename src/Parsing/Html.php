@@ -103,12 +103,12 @@ class Html
             // if it is a Text
             if ($actions[$k]->getName() === 'write') {
                 // if the tag before the text is a tag to clean => ltrim on the text
-                if ($k>0 && in_array($actions[$k - 1]->getName(), $tagsToClean)) {
+                if ($k>0 && in_array($actions[$k - 1]->getName(), $tagsToClean, true)) {
                     $actions[$k]->setParam('txt', ltrim($actions[$k]->getParam('txt')));
                 }
 
                 // if the tag after the text is a tag to clean => rtrim on the text
-                if ($k < $nb - 1 && in_array($actions[$k + 1]->getName(), $tagsToClean)) {
+                if ($k < $nb - 1 && in_array($actions[$k + 1]->getName(), $tagsToClean, true)) {
                     $actions[$k]->setParam('txt', rtrim($actions[$k]->getParam('txt')));
                 }
 
@@ -161,19 +161,23 @@ class Html
         $node->setLine($token->getLine());
 
         $actions = array();
+        
+        $nodeName        = $node->getName();
+        $nodeIsAutoClose = $node->isAutoClose();
+        
         // if the tag must be closed
-        if (!in_array($node->getName(), $tagsNotClosed)) {
+        if (!in_array($nodeName, $tagsNotClosed, true)) {
             // if it is a closure tag
             if ($node->isClose()) {
                 // HTML validation
                 if (count($parents) < 1) {
-                    $e = new HtmlParsingException('Too many tag closures found for ['.$node->getName().']');
-                    $e->setInvalidTag($node->getName());
+                    $e = new HtmlParsingException('Too many tag closures found for ['.$nodeName.']');
+                    $e->setInvalidTag($nodeName);
                     $e->setHtmlLine($token->getLine());
                     throw $e;
-                } elseif (end($parents) != $node->getName()) {
-                    $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$node->getName().']');
-                    $e->setInvalidTag($node->getName());
+                } elseif (end($parents) !== $nodeName) {
+                    $e = new HtmlParsingException('Tags are closed in a wrong order for ['.$nodeName.']');
+                    $e->setInvalidTag($nodeName);
                     $e->setHtmlLine($token->getLine());
                     throw $e;
                 } else {
@@ -181,7 +185,7 @@ class Html
                 }
             } else {
                 // if it is an auto-closed tag
-                if ($node->isAutoClose()) {
+                if ($nodeIsAutoClose) {
                     // save the opened tag
                     $actions[] = $node;
 
@@ -191,12 +195,12 @@ class Html
                     $node->setClose(true);
                 } else {
                     // else: add a child for validation
-                    array_push($parents, $node->getName());
+                    array_push($parents, $nodeName);
                 }
             }
 
             // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
-            if (($node->getName() === 'pre' || $node->getName() === 'code') && !$node->isAutoClose()) {
+            if (($nodeName === 'pre' || $nodeName === 'code') && !$nodeIsAutoClose) {
                 $this->tagPreIn = !$node->isClose();
             }
         }

@@ -182,7 +182,7 @@ class CssConverter
      */
     public function convertBackground($css, &$value)
     {
-        // is there a image ?
+        // is there an image ?
         $text = '/url\(([^)]*)\)/isU';
         if (preg_match($text, $css, $match)) {
             // get the image
@@ -249,11 +249,7 @@ class CssConverter
     public function convertBackgroundColor($css)
     {
         $res = null;
-        if ($css === 'transparent') {
-            return null;
-        } else {
-            return $this->convertToColor($css, $res);
-        }
+        return $css === 'transparent' ? null : $this->convertToColor($css, $res);
     }
 
     /**

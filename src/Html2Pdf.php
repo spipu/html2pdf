@@ -476,7 +476,7 @@ class Html2Pdf
 
         // clean up the destination
         $dest = strtoupper($dest);
-        if (!in_array($dest, array('I', 'D', 'F', 'S', 'FI','FD'))) {
+        if (!in_array($dest, array('I', 'D', 'F', 'S', 'FI','FD'), true)) {
             $dest = 'I';
         }
 
@@ -1201,10 +1201,10 @@ class Html2Pdf
         }
 
         // prepare the datas
-        if (!in_array($type, array('ul', 'ol'))) {
+        if (!in_array($type, array('ul', 'ol'), true)) {
             $type = 'ul';
         }
-        if (!in_array($style, array('lower-alpha', 'upper-alpha', 'upper-roman', 'lower-roman', 'decimal', 'square', 'circle', 'disc', 'none'))) {
+        if (!in_array($style, array('lower-alpha', 'upper-alpha', 'upper-roman', 'lower-roman', 'decimal', 'square', 'circle', 'disc', 'none'), true)) {
             $style = '';
         }
 
@@ -1257,7 +1257,7 @@ class Html2Pdf
             $actionName = $action->getName();
 
             // if it is a opening of table / ul / ol
-            if (in_array($actionName, $tagsTableUlOl) && !$action->isClose()) {
+            if (in_array($actionName, $tagsTableUlOl, true) && !$action->isClose()) {
                 //  we will work as a sub HTML to calculate the size of the element
                 $this->_subPart = true;
 
@@ -2668,10 +2668,10 @@ class Html2Pdf
                 foreach ($lst as $key => $val) {
                     $lst[$key] = trim(strtolower($val));
                 }
-                $page    = in_array('page', $lst);
-                $date    = in_array('date', $lst);
-                $hour    = in_array('heure', $lst);
-                $form    = in_array('form', $lst);
+                $page    = in_array('page', $lst, true);
+                $date    = in_array('date', $lst, true);
+                $hour    = in_array('heure', $lst, true);
+                $form    = in_array('form', $lst, true);
             } else {
                 $page    = null;
                 $date    = null;
@@ -3020,7 +3020,7 @@ class Html2Pdf
         $this->parsingCss->fontSet();
 
         // for fieldset and legend
-        if (in_array($other, array('fieldset', 'legend'))) {
+        if (in_array($other, array('fieldset', 'legend'), true)) {
             if (isset($param['moveTop'])) {
                 $this->parsingCss->value['margin']['t']    += $param['moveTop'];
             }
@@ -3564,7 +3564,7 @@ class Html2Pdf
         if ($param['value'] === '') {
             return true;
         }
-        if (!in_array($param['ec'], array('L', 'M', 'Q', 'H'))) {
+        if (!in_array($param['ec'], array('L', 'M', 'Q', 'H'), true)) {
             $param['ec'] = 'H';
         }
 
@@ -3635,7 +3635,7 @@ class Html2Pdf
     protected function _tag_open_WRITE($param)
     {
         $fill = ($this->parsingCss->value['background']['color'] !== null && $this->parsingCss->value['background']['image'] === null);
-        if (in_array($this->parsingCss->value['id_tag'], array('fieldset', 'legend', 'div', 'table', 'tr', 'td', 'th'))) {
+        if (in_array($this->parsingCss->value['id_tag'], array('fieldset', 'legend', 'div', 'table', 'tr', 'td', 'th'), true)) {
             $fill = false;
         }
 
@@ -4172,7 +4172,7 @@ class Html2Pdf
             return false;
         }
 
-        if (!in_array($this->_previousCall, array('_tag_close_P', '_tag_close_UL'))) {
+        if (!in_array($this->_previousCall, array('_tag_close_P', '_tag_close_UL'), true)) {
             if ($this->_maxH) {
                 $this->_tag_open_BR(array());
             }
@@ -4319,7 +4319,7 @@ class Html2Pdf
             return false;
         }
 
-        if (!in_array($this->_previousCall, array('_tag_close_P', '_tag_close_UL'))) {
+        if (!in_array($this->_previousCall, array('_tag_close_P', '_tag_close_UL'), true)) {
             if ($this->_maxH) {
                 $this->_tag_open_BR(array());
             }
@@ -4821,7 +4821,7 @@ class Html2Pdf
         if (isset($param['align'])) {
             unset($param['align']);
         }
-        if (!in_array($alignObject, array('left', 'center', 'right'))) {
+        if (!in_array($alignObject, array('left', 'center', 'right'), true)) {
             $alignObject = 'left';
         }
 
@@ -5870,7 +5870,7 @@ class Html2Pdf
         $param['type'] = strtolower($param['type']);
 
         // the type must be valid
-        if (!in_array($param['type'], array('text', 'checkbox', 'radio', 'hidden', 'submit', 'reset', 'button'))) {
+        if (!in_array($param['type'], array('text', 'checkbox', 'radio', 'hidden', 'submit', 'reset', 'button'), true)) {
             $param['type'] = 'text';
         }
 
@@ -6461,10 +6461,11 @@ class Html2Pdf
             $actions = array();
             $action = array();
             $lastAction = null; // last action found
-            for ($k=0; $k < count($path); true) {
+            $amountPaths = count($path);
+            for ($k=0; $k < $amountPaths; true) {
 
                 // for this actions, we can not have multi coordonate
-                if (in_array($lastAction, array('z', 'Z'))) {
+                if (in_array($lastAction, array('z', 'Z'), true)) {
                     $lastAction = null;
                 }
 
