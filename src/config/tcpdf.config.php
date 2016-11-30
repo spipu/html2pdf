@@ -69,8 +69,8 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
      * Installation path of tcpdf with composer.
      */
     $vendorFolders = array(
-        dirname(dirname(dirname(__FILE__))) . '/vendor/',
-        dirname(dirname(dirname(__FILE__))) . '/../../',
+        dirname(dirname(__DIR__)) . '/vendor/',
+        dirname(dirname(__DIR__)) . '/../../',
     );
     foreach ($vendorFolders as $vendorFolder) {
         if (file_exists($vendorFolder.'autoload.php')) {
