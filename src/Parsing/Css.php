@@ -344,8 +344,8 @@ class Css
                 $style='';
             }
 
-            $fontkey = $family.$style;
-            if (!$this->pdf->isLoadedFont($fontkey)) {
+            $fontKey = $family.$style;
+            if (!$this->pdf->isLoadedFont($fontKey)) {
                 $family = $this->defaultFont;
             }
         }
@@ -365,11 +365,11 @@ class Css
 
         // apply the font
         $this->pdf->SetFont($family, $style, $this->value['mini-size']*$size);
-        $this->pdf->setTextColorArray($this->value['color']);
+        $this->pdf->SetTextColorArray($this->value['color']);
         if ($this->value['background']['color']) {
-            $this->pdf->setFillColorArray($this->value['background']['color']);
+            $this->pdf->SetFillColorArray($this->value['background']['color']);
         } else {
-            $this->pdf->setFillColor(255);
+            $this->pdf->SetFillColor(255);
         }
     }
 
@@ -402,8 +402,8 @@ class Css
      */
     public function restorePosition()
     {
-        if ($this->value['y'] == $this->pdf->getY()) {
-            $this->pdf->setY($this->value['yc'], false);
+        if ($this->value['y'] == $this->pdf->GetY()) {
+            $this->pdf->SetY($this->value['yc'], false);
         }
     }
 
@@ -415,8 +415,8 @@ class Css
     public function setPosition()
     {
         // get the current position
-        $currentX = $this->pdf->getX();
-        $currentY = $this->pdf->getY();
+        $currentX = $this->pdf->GetX();
+        $currentY = $this->pdf->GetY();
 
         // save it
         $this->value['xc'] = $currentX;
@@ -466,7 +466,7 @@ class Css
         }
 
         // save the new position
-        $this->pdf->setXY($this->value['x'], $this->value['y']);
+        $this->pdf->SetXY($this->value['x'], $this->value['y']);
     }
 
     /**
@@ -476,9 +476,9 @@ class Css
      */
     public function getFormStyle()
     {
-        $prop = array();
-
-        $prop['alignment'] = $this->value['text-align'];
+        $prop = array(
+            'alignment' => $this->value['text-align']
+        );
 
         if (isset($this->value['background']['color']) && is_array($this->value['background']['color'])) {
             $prop['fillColor'] = $this->value['background']['color'];
@@ -1178,7 +1178,7 @@ class Css
                     break;
 
                 case 'start':
-                    $this->value[$nom] = intval($val);
+                    $this->value[$nom] = (int)$val;
                     break;
 
                 default:
@@ -1593,7 +1593,8 @@ class Css
         preg_match_all('/([^{}]+){([^}]*)}/isU', $code, $match);
 
         // for each CSS code
-        for ($k = 0; $k < count($match[0]); $k++) {
+        $amountMatches = count($match[0]);
+        for ($k = 0; $k < $amountMatches; $k++) {
 
             // selectors
             $names = strtolower(trim($match[1][$k]));
