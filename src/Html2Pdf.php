@@ -1243,30 +1243,32 @@ class Html2Pdf
      * execute the actions to convert the html
      *
      * @access protected
+     * @throws \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     protected function _makeHTMLcode()
     {
         // foreach elements of the parsing
-        for ($this->_parsePos=0; $this->_parsePos < count($this->parsingHtml->code); $this->_parsePos++) {
+        $amountHtmlCodes = count($this->parsingHtml->code);
+        $tagsTableUlOl   = array('table', 'ul', 'ol');
+        for ($this->_parsePos=0; $this->_parsePos < $amountHtmlCodes; $this->_parsePos++) {
 
             // get the action to do
-            $action = $this->parsingHtml->code[$this->_parsePos];
+            $action     = $this->parsingHtml->code[$this->_parsePos];
+            $actionName = $action->getName();
 
             // if it is a opening of table / ul / ol
-            if (in_array($action->getName(), array('table', 'ul', 'ol')) && !$action->isClose()) {
-
+            if (in_array($actionName, $tagsTableUlOl) && !$action->isClose()) {
                 //  we will work as a sub HTML to calculate the size of the element
                 $this->_subPart = true;
 
                 // get the name of the opening tag
-                $tagOpen = $action->getName()
-                ;
+                $tagOpen = $actionName;
 
                 // save the actual pos on the parsing
                 $this->_tempPos = $this->_parsePos;
 
                 // foreach elements, while we are in the opened tag
-                while (isset($this->parsingHtml->code[$this->_tempPos]) && !($this->parsingHtml->code[$this->_tempPos]->getName() == $tagOpen && $this->parsingHtml->code[$this->_tempPos]->isClose())) {
+                while (isset($this->parsingHtml->code[$this->_tempPos]) && !($this->parsingHtml->code[$this->_tempPos]->getName() === $tagOpen && $this->parsingHtml->code[$this->_tempPos]->isClose())) {
                     // make the action
                     $this->_executeAction($this->parsingHtml->code[$this->_tempPos]);
                     $this->_tempPos++;
@@ -1290,12 +1292,16 @@ class Html2Pdf
      * execute the action from the parsing
      *
      * @param Node $action
+     * @return bool
+     * @throws HtmlParsingException
      */
     protected function _executeAction(Node $action)
     {
-        $name = strtoupper($action->getName());
+        $actionName      = $action->getName();
+        $actionNameUpper = strtoupper($actionName);
+        $isClose         = $action->isClose();
 
-        if ($this->_firstPage && $name !== 'PAGE' && !$action->isClose()) {
+        if ($this->_firstPage && $actionNameUpper !== 'PAGE' && !$isClose) {
             $this->_setNewPage();
         }
 
@@ -1303,25 +1309,20 @@ class Html2Pdf
         $properties = $action->getParams();
 
         // name of the action (old method)
-        $fnc = ($action->isClose() ? '_tag_close_' : '_tag_open_').$name;
+        $fnc = ($isClose ? '_tag_close_' : '_tag_open_').$actionNameUpper;
 
-        $tagObject = $this->getTagObject($action->getName());
+        $tagObject = $this->getTagObject($actionName);
 
         if (!is_null($tagObject)) {
-            if ($action->isClose()) {
-                $res = $tagObject->close($properties);
-            } else {
-                $res = $tagObject->open($properties);
-            }
+            $res = $isClose ? $tagObject->close($properties) : $tagObject->open($properties);
         } elseif (is_callable(array($this, $fnc))) {
             $res = $this->{$fnc}($properties);
         } else {
             $e = new HtmlParsingException(
-                'The html tag ['.$action->getName().'] is not known by Html2Pdf not exists.'.
+                'The html tag ['.$actionName.'] is not known by Html2Pdf not exists.'.
                 'You can create it and push it on the Html2Pdf GitHub project.'
             );
-            $e->setInvalidTag($action->getName());
-            $e->setHtmlLine($action->getLine());
+            $e->setInvalidTag($actionName)->setHtmlLine($action->getLine());
             throw $e;
         }
 
@@ -5314,14 +5315,14 @@ class Html2Pdf
         // get the properties of the TD
         $x = self::$_tables[$param['num']]['td_curr'];
         $y = self::$_tables[$param['num']]['tr_curr']-1;
-        $colspan = isset($param['colspan']) ? $param['colspan'] : 1;
-        $rowspan = isset($param['rowspan']) ? $param['rowspan'] : 1;
+        $colSpan = isset($param['colspan']) ? $param['colspan'] : 1;
+        $rowSpan = isset($param['rowspan']) ? $param['rowspan'] : 1;
 
         // flag for collapse table
         $collapse = false;
 
         // specific treatment for TD and TH
-        if (in_array($other, array('td', 'th'))) {
+        if (in_array($other, array('td', 'th'), true)) {
             // id of the column
             $numCol = isset(self::$_tables[$param['num']]['cases'][$y][$x]['Xr']) ? self::$_tables[$param['num']]['cases'][$y][$x]['Xr'] : self::$_tables[$param['num']]['corr_x'];
 
@@ -5332,9 +5333,10 @@ class Html2Pdf
 
                 // for colspans => we get all the needed widths
                 $colParam['style']['width'] = array();
-                for ($k=0; $k<$colspan; $k++) {
-                    if (isset(self::$_tables[$param['num']]['cols'][$numCol+$k]['style']['width'])) {
-                        $colParam['style']['width'][] = self::$_tables[$param['num']]['cols'][$numCol+$k]['style']['width'];
+                for ($k=0; $k<$colSpan; $k++) {
+                    $columnIndex = $numCol+$k;
+                    if (isset(self::$_tables[$param['num']]['cols'][$columnIndex]['style']['width'])) {
+                        $colParam['style']['width'][] = self::$_tables[$param['num']]['cols'][$columnIndex]['style']['width'];
                     }
                 }
 
@@ -5348,7 +5350,7 @@ class Html2Pdf
                         if (substr($total, -1) === '%' && substr($width, -1) === '%') {
                             $total = (str_replace('%', '', $total)+str_replace('%', '', $width)).'%';
                         } else {
-                            $total = ($this->cssConverter->ConvertToMM($total, $last) + $this->cssConverter->ConvertToMM($width, $last)).'mm';
+                            $total = ($this->cssConverter->convertToMM($total, $last) + $this->cssConverter->convertToMM($width, $last)).'mm';
                         }
                     }
                 }
@@ -5359,7 +5361,6 @@ class Html2Pdf
                 } else {
                     unset($colParam['style']['width']);
                 }
-
 
                 // merge the styles of the COL and the TD
                 $param['style'] = array_merge($colParam['style'], $param['style']);
@@ -5377,7 +5378,7 @@ class Html2Pdf
 
         // legacy for TD and TH
         $legacy = null;
-        if (in_array($other, array('td', 'th'))) {
+        if (in_array($other, array('td', 'th'), true)) {
             $legacy = array();
 
             $old = $this->parsingCss->getLastValue('background');
@@ -5397,20 +5398,19 @@ class Html2Pdf
         $return = $this->parsingCss->analyse($other, $param, $legacy);
 
         if ($specialLi) {
-            $this->parsingCss->value['width']-= $this->cssConverter->ConvertToMM($this->_listeGetWidth());
-            $this->parsingCss->value['width']-= $this->cssConverter->ConvertToMM($this->_listeGetPadding());
+            $this->parsingCss->value['width']-= $this->cssConverter->convertToMM($this->_listeGetWidth());
+            $this->parsingCss->value['width']-= $this->cssConverter->convertToMM($this->_listeGetPadding());
         }
         $this->parsingCss->setPosition();
         $this->parsingCss->fontSet();
 
         // if table collapse => modify the borders
         if ($collapse) {
-            if (!$this->_subPart) {
-                if ((self::$_tables[$param['num']]['tr_curr']>1 && !self::$_tables[$param['num']]['new_page']) ||
-                    (!$this->_isInThead && count(self::$_tables[$param['num']]['thead']['code']))
-                ) {
-                    $this->parsingCss->value['border']['t'] = $this->parsingCss->readBorder('none');
-                }
+            if (!$this->_subPart
+                && (   (self::$_tables[$param['num']]['tr_curr']>1 && !self::$_tables[$param['num']]['new_page'])
+                    || (!$this->_isInThead && count(self::$_tables[$param['num']]['thead']['code'])))
+            ){
+                $this->parsingCss->value['border']['t'] = $this->parsingCss->readBorder('none');
             }
 
             if (self::$_tables[$param['num']]['td_curr']>0) {
@@ -5422,35 +5422,37 @@ class Html2Pdf
         }
 
         // margins of the table
+        $cellspacingWidth = 0.5*self::$_tables[$param['num']]['cellspacing'];
         $marge = array(
-            't' => $this->parsingCss->value['padding']['t']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['t']['width'],
-            'r' => $this->parsingCss->value['padding']['r']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['r']['width'],
-            'b' => $this->parsingCss->value['padding']['b']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['b']['width'],
-            'l' => $this->parsingCss->value['padding']['l']+0.5*self::$_tables[$param['num']]['cellspacing']+$this->parsingCss->value['border']['l']['width']
+            't' => $this->parsingCss->value['padding']['t']+$cellspacingWidth+$this->parsingCss->value['border']['t']['width'],
+            'r' => $this->parsingCss->value['padding']['r']+$cellspacingWidth+$this->parsingCss->value['border']['r']['width'],
+            'b' => $this->parsingCss->value['padding']['b']+$cellspacingWidth+$this->parsingCss->value['border']['b']['width'],
+            'l' => $this->parsingCss->value['padding']['l']+$cellspacingWidth+$this->parsingCss->value['border']['l']['width']
         );
 
         // if we are in a sub HTML
         if ($this->_subPart) {
             // new position in the table
             self::$_tables[$param['num']]['td_curr']++;
-            self::$_tables[$param['num']]['cases'][$y][$x] = array();
-            self::$_tables[$param['num']]['cases'][$y][$x]['w'] = 0;
-            self::$_tables[$param['num']]['cases'][$y][$x]['h'] = 0;
-            self::$_tables[$param['num']]['cases'][$y][$x]['dw'] = 0;
-            self::$_tables[$param['num']]['cases'][$y][$x]['colspan'] = $colspan;
-            self::$_tables[$param['num']]['cases'][$y][$x]['rowspan'] = $rowspan;
-            self::$_tables[$param['num']]['cases'][$y][$x]['Xr'] = self::$_tables[$param['num']]['corr_x'];
-            self::$_tables[$param['num']]['cases'][$y][$x]['Yr'] = self::$_tables[$param['num']]['corr_y'];
+            self::$_tables[$param['num']]['cases'][$y][$x] = array(
+                'w'       => 0,
+                'h'       => 0,
+                'dw'      => 0,
+                'colspan' => $colSpan,
+                'rowspan' => $rowSpan,
+                'Xr'      => self::$_tables[$param['num']]['corr_x'],
+                'Yr'      => self::$_tables[$param['num']]['corr_y']
+            );
 
             // prepare the mapping for rowspan and colspan
-            for ($j=0; $j<$rowspan; $j++) {
-                for ($i=0; $i<$colspan; $i++) {
+            for ($j=0; $j<$rowSpan; $j++) {
+                for ($i=0; $i<$colSpan; $i++) {
                     self::$_tables[$param['num']]['corr']
                         [self::$_tables[$param['num']]['corr_y']+$j]
-                        [self::$_tables[$param['num']]['corr_x']+$i] = ($i+$j>0) ? '' : array($x,$y,$colspan,$rowspan);
+                        [self::$_tables[$param['num']]['corr_x']+$i] = ($i+$j>0) ? '' : array($x, $y, $colSpan, $rowSpan);
                 }
             }
-            self::$_tables[$param['num']]['corr_x']+= $colspan;
+            self::$_tables[$param['num']]['corr_x']+= $colSpan;
             while (isset(self::$_tables[$param['num']]['corr'][self::$_tables[$param['num']]['corr_y']][self::$_tables[$param['num']]['corr_x']])) {
                 self::$_tables[$param['num']]['corr_x']++;
             }
