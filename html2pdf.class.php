@@ -3199,62 +3199,9 @@ class HTML2PDF
      */
     protected function _tag_open_QRCODE($param)
     {
-        if ($this->_testIsDeprecated && (isset($param['size']) || isset($param['noborder'])))
-            throw new HTML2PDF_exception(9, array('QRCODE', 'size, noborder'));
-
-        if ($this->_debugActif) $this->_DEBUG_add('QRCODE');
-
-        if (!isset($param['value']))                     $param['value'] = '';
-        if (!isset($param['ec']))                        $param['ec'] = 'H';
-        if (!isset($param['style']['color']))            $param['style']['color'] = '#000000';
-        if (!isset($param['style']['background-color'])) $param['style']['background-color'] = '#FFFFFF';
-        if (isset($param['style']['border'])) {
-            $borders = $param['style']['border']!='none';
-            unset($param['style']['border']);
-        } else {
-            $borders = true;
-        }
-
-        if ($param['value']==='') return true;
-        if (!in_array($param['ec'], array('L', 'M', 'Q', 'H'))) $param['ec'] = 'H';
-
-        $this->parsingCss->save();
-        $this->parsingCss->analyse('qrcode', $param);
-        $this->parsingCss->setPosition();
-        $this->parsingCss->fontSet();
-
-        $x = $this->pdf->getX();
-        $y = $this->pdf->getY();
-        $w = $this->parsingCss->value['width'];
-        $h = $this->parsingCss->value['height'];
-        $size = max($w, $h); if (!$size) $size = $this->parsingCss->ConvertToMM('50mm');
-
-        $style = array(
-                'fgcolor' => $this->parsingCss->value['color'],
-                'bgcolor' => $this->parsingCss->value['background']['color'],
-            );
-
-        if ($borders) {
-            $style['border'] = true;
-            $style['padding'] = 'auto';
-        } else {
-            $style['border'] = false;
-            $style['padding'] = 0;
-        }
-
-        if (!$this->_subPart && !$this->_isSubPart) {
-            $this->pdf->write2DBarcode($param['value'], 'QRCODE,'.$param['ec'], $x, $y, $size, $size, $style);
-        }
-
-        $this->_maxX = max($this->_maxX, $x+$size);
-        $this->_maxY = max($this->_maxY, $y+$size);
-        $this->_maxH = max($this->_maxH, $size);
-        $this->_maxE++;
-
-        $this->pdf->setX($x+$size);
-
-        $this->parsingCss->load();
-        $this->parsingCss->fontSet();
+        
+        $param['type']='QRCODE';
+        $this->_tag_open_2DBARCODE($param);
 
         return true;
     }
