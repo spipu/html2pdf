@@ -517,6 +517,8 @@ class HTML2PDF
         $content = preg_replace('/<\/barcode([^>]*)>/isU', '', $content);
         $content = preg_replace('/<qrcode([^>]*)>/isU', '<hr>qrcode : $1<hr>', $content);
         $content = preg_replace('/<\/qrcode([^>]*)>/isU', '', $content);
+        $content = preg_replace('/<2dbarcode([^>]*)>/isU', '<hr>2dbarcode : $1<hr>', $content);
+        $content = preg_replace('/<\/2dbarcode([^>]*)>/isU', '', $content);
 
         echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -3265,6 +3267,89 @@ class HTML2PDF
      * @return boolean
      */
     protected function _tag_close_QRCODE($param)
+    {
+        // there is nothing to do here
+
+        return true;
+    }
+    
+    /**
+     * tag : 2DBARCODE
+     * mode : OPEN
+     *
+     * @param  array $param
+     * @return boolean
+     */
+    protected function _tag_open_2DBARCODE($param)
+    { 
+        if ($this->_testIsDeprecated && (isset($param['size']) || isset($param['noborder'])))
+            throw new HTML2PDF_exception(9, array('2DBARCODE', 'size, noborder'));
+
+        if ($this->_debugActif) $this->_DEBUG_add('2DBARCODE');
+
+        if (!isset($param['value']))                     $param['value'] = '';
+        if (!isset($param['ec']))                        $param['ec'] = 'H';
+        if (!isset($param['style']['color']))            $param['style']['color'] = '#000000';
+        if (!isset($param['style']['background-color'])) $param['style']['background-color'] = '#FFFFFF';
+        if (isset($param['style']['border'])) {
+            $borders = $param['style']['border']!='none';
+            unset($param['style']['border']);
+        } else {
+            $borders = true;
+        }
+
+        if ($param['value']==='') return true;
+        if (!in_array($param['ec'], array('L', 'M', 'Q', 'H'))) $param['ec'] = 'H';
+
+        $this->parsingCss->save();
+        $this->parsingCss->analyse('2dbarcode', $param);
+        $this->parsingCss->setPosition();
+        $this->parsingCss->fontSet();
+
+        $x = $this->pdf->getX();
+        $y = $this->pdf->getY();
+        $w = $this->parsingCss->value['width'];
+        $h = $this->parsingCss->value['height'];
+        $size = max($w, $h); if (!$size) $size = $this->parsingCss->ConvertToMM('50mm');
+
+        $style = array(
+                'fgcolor' => $this->parsingCss->value['color'],
+                'bgcolor' => $this->parsingCss->value['background']['color'],
+            );
+
+        if ($borders) {
+            $style['border'] = true;
+            $style['padding'] = 'auto';
+        } else {
+            $style['border'] = false;
+            $style['padding'] = 0;
+        }
+
+        if (!$this->_subPart && !$this->_isSubPart) {
+            $this->pdf->write2DBarcode($param['value'], $param['type'], $x, $y, $size, $size, $style);
+        }
+
+        $this->_maxX = max($this->_maxX, $x+$size);
+        $this->_maxY = max($this->_maxY, $y+$size);
+        $this->_maxH = max($this->_maxH, $size);
+        $this->_maxE++;
+
+        $this->pdf->setX($x+$size);
+
+        $this->parsingCss->load();
+        $this->parsingCss->fontSet();
+        
+        return true;
+    }
+
+    /**
+     * tag : 2DBARCODE
+     * mode : CLOSE
+     *
+     * @param  array $param
+     * @return boolean
+     */
+    protected function _tag_close_2DBARCODE($param)
     {
         // there is nothing to do here
 
