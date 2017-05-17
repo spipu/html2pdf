@@ -4,7 +4,7 @@
 
 ### Requirements
 
-HTML2PDF works with PHP 5.3.2 and above.
+HTML2PDF works with PHP 5.4 and above.
 
 ### Installation
 
