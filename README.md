@@ -26,7 +26,7 @@ You can support this project by making a [donation](http://html2pdf.fr/en/donate
 
 ## License
 
-This program is distributed under the OSL License. For more information see the [./LICENCE.md](./LICENCE.md) file.
+This program is distributed under the OSL License. For more information see the [./LICENSE.md](./LICENSE.md) file.
 
 Copyright 2008-2017 by Laurent Minguet
 
