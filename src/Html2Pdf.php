@@ -151,17 +151,25 @@ class Html2Pdf
     /**
      * class constructor
      *
-     * @access public
-     * @param  string   $orientation page orientation, same as TCPDF
-     * @param  mixed    $format      The format used for pages, same as TCPDF
-     * @param  string   $lang        Lang : fr, en, it...
-     * @param  boolean  $unicode     TRUE means that the input text is unicode (default = true)
-     * @param  String   $encoding    charset encoding; default is UTF-8
-     * @param  array    $margins     Default margins (left, top, right, bottom)
+     * @param string  $orientation page orientation, same as TCPDF
+     * @param mixed   $format      The format used for pages, same as TCPDF
+     * @param string  $lang        Lang : fr, en, it...
+     * @param boolean $unicode     TRUE means that the input text is unicode (default = true)
+     * @param String  $encoding    charset encoding; default is UTF-8
+     * @param array   $margins     Default margins (left, top, right, bottom)
+     * @param boolean $pdfa        If TRUE set the document to PDF/A mode.
+     * 
      * @return Html2Pdf $this
      */
-    public function __construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = array(5, 5, 5, 8))
-    {
+    public function __construct(
+        $orientation = 'P',
+        $format = 'A4',
+        $lang = 'fr',
+        $unicode = true,
+        $encoding = 'UTF-8',
+        $margins = array(5, 5, 5, 8),
+        $pdfa = false
+    ) {
         // init the page number
         $this->_page         = 0;
         $this->_firstPage    = true;
@@ -172,12 +180,13 @@ class Html2Pdf
         $this->_langue       = strtolower($lang);
         $this->_unicode      = $unicode;
         $this->_encoding     = $encoding;
+        $this->_pdfa         = $pdfa;
 
         // load the Locale
         Locale::load($this->_langue);
 
         // create the  myPdf object
-        $this->pdf = new MyPdf($orientation, 'mm', $format, $unicode, $encoding);
+        $this->pdf = new MyPdf($orientation, 'mm', $format, $unicode, $encoding, false, $pdfa);
 
         // init the CSS parsing object
         $this->cssConverter = new CssConverter();
@@ -984,7 +993,8 @@ class Html2Pdf
             $this->_langue,
             $this->_unicode,
             $this->_encoding,
-            array($this->_defaultLeft,$this->_defaultTop,$this->_defaultRight,$this->_defaultBottom)
+            array($this->_defaultLeft,$this->_defaultTop,$this->_defaultRight,$this->_defaultBottom),
+            $this->_pdfa
         );
 
         // init
