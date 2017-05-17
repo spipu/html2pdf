@@ -13,4 +13,3 @@
 # Composer
 /bin/
 /vendor/
-/composer.lock
