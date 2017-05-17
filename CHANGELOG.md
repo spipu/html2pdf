@@ -4,16 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-  * improve string handling for UTF8
-  * PHP 5.4 compatibility
-  * Using Namespaces
-  * all the classes have moved
-  * all the classes have been renamed
-  * new tag structure : one class per tag
-  * better exception management
+  * change PHP 5.4 compatibility
+  * change Using Namespaces
+  * change all the classes have moved
+  * change all the classes have been renamed
+  * change new tag structure : one class per tag
+  * add improve string handling for UTF8
+  * add better exception management
   * add unit testing
-  * fix a infinite loop case when reading a svg path
   * add support 'start' attribute for ordered list
+  * fix a infinite loop case when reading a svg path
+  * fix issue from https://github.com/spipu/html2pdf/pull/177
 
 ## [4.6.0] - 2016-03-30
 
