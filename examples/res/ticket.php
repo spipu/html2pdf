@@ -1,7 +1,7 @@
 <?php
     $num = 'CMD01-'.date('ymd');
     $nom = 'DUPONT Alphonse';
-    $date = '01/01/2012';
+    $date = '31/12/'.date('Y');
 ?>
 <style type="text/css">
 <!--

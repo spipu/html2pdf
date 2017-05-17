@@ -32,7 +32,7 @@
                     page [[page_cu]]/[[page_nb]]
                 </td>
                 <td style="width: 33%; text-align: right">
-                    &copy;Spipu 2008-2015
+                    &copy;Spipu 2008-<?php echo date('Y'); ?>
                 </td>
             </tr>
         </table>
