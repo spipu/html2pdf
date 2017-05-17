@@ -2604,7 +2604,7 @@ class Html2Pdf
         $resetPageNumber = (isset($param['pagegroup']) && $param['pagegroup']=='new');
 
         if (array_key_exists('hideheader', $param) && $param['hideheader']!='false' && !empty($param['hideheader'])) {
-            $this->_hideHeader = (array) array_merge($this->_hideHeader, split(',', $param['hideheader']));
+            $this->_hideHeader = (array) array_merge($this->_hideHeader, preg_split('/,/', $param['hideheader']));
         }
 
         $this->_maxH = 0;
