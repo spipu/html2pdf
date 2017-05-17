@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
   * add better exception management
   * add unit testing
   * add support 'start' attribute for ordered list
+  * add russian language https://github.com/spipu/html2pdf/pull/131
   * fix a infinite loop case when reading a svg path
   * fix issue from https://github.com/spipu/html2pdf/pull/177
   * fix issue from https://github.com/spipu/html2pdf/pull/163
