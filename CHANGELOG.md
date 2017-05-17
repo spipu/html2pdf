@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
   * add unit testing
   * add support 'start' attribute for ordered list
   * add russian language https://github.com/spipu/html2pdf/pull/131
+  * add Dimension-Parameter on barcode (for PDF417, Datamatrix = 2D) https://github.com/spipu/html2pdf/pull/127
   * fix a infinite loop case when reading a svg path
   * fix issue from https://github.com/spipu/html2pdf/pull/177
   * fix issue from https://github.com/spipu/html2pdf/pull/163

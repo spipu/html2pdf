@@ -1301,6 +1301,7 @@ class MyPdf extends \TCPDF
      * @param int $h height in user units
      * @param int $labelFontsize of the Test Label. If false : no Label
      * @param array $color color of the foreground
+     * @param string $dimension 1D or 2D
      * @access public
      */
     public function myBarcode($code, $type, $x, $y, $w, $h, $labelFontsize, $color, $dimension = '1D')
