@@ -55,6 +55,20 @@ class Html
     }
 
     /**
+     * Get the list of the codes, but cloned
+     *
+     * @return Node[]
+     */
+    public function getCloneCodes()
+    {
+        $codes = array();
+        foreach ($this->code as $key => $code) {
+            $codes[$key] = clone $code;
+        }
+        return $codes;
+    }
+
+    /**
      * parse the HTML code
      *
      * @param Token[] $tokens A list of tokens to parse

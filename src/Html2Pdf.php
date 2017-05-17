@@ -920,7 +920,7 @@ class Html2Pdf
         $sub->_saveMargin(0, 0, $sub->pdf->getW()-$wMax);
         $sub->_isForOneLine = true;
         $sub->_parsePos = $this->_parsePos;
-        $sub->parsingHtml->code = $this->parsingHtml->code;
+        $sub->parsingHtml->code = $this->parsingHtml->getCloneCodes();
 
         // if $curr => adapt the current position of the parsing
         if ($curr !== null && $sub->parsingHtml->code[$this->_parsePos]->getName() == 'write') {
