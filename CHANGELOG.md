@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [5.0.0] - Unreleased
 
   * change PHP 5.4 compatibility
   * change Using Namespaces
