@@ -1262,8 +1262,7 @@ class Html2Pdf
                 $this->_subPart = true;
 
                 // get the name of the opening tag
-                $tagOpen = $action->getName()
-                ;
+                $tagOpen = $action->getName();
 
                 // save the actual pos on the parsing
                 $this->_tempPos = $this->_parsePos;
@@ -4636,7 +4635,7 @@ class Html2Pdf
             self::$_tables[$param['num']]['thead']['tr'][0] = self::$_tables[$param['num']]['tr_curr'];
             self::$_tables[$param['num']]['thead']['code'] = array();
             for ($pos=$this->_tempPos; $pos<count($this->parsingHtml->code); $pos++) {
-                $action = $this->parsingHtml->code[$pos];
+                $action = clone $this->parsingHtml->code[$pos];
                 if (strtolower($action->getName())=='thead') {
                     $action->setName('thead_sub');
                 }
@@ -4703,7 +4702,7 @@ class Html2Pdf
             self::$_tables[$param['num']]['tfoot']['tr'][0] = self::$_tables[$param['num']]['tr_curr'];
             self::$_tables[$param['num']]['tfoot']['code'] = array();
             for ($pos=$this->_tempPos; $pos<count($this->parsingHtml->code); $pos++) {
-                $action = $this->parsingHtml->code[$pos];
+                $action = clone $this->parsingHtml->code[$pos];
                 if (strtolower($action->getName())=='tfoot') {
                     $action->setName('tfoot_sub');
                 }
