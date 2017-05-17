@@ -251,9 +251,9 @@ class CssConverter
         $res = null;
         if ($css=='transparent') {
             return null;
-        } else {
-            return $this->convertToColor($css, $res);
         }
+
+        return $this->convertToColor($css, $res);
     }
 
     /**
@@ -267,11 +267,13 @@ class CssConverter
     {
         if ($css=='none') {
             return null;
-        } elseif (preg_match('/^url\(([^)]*)\)$/isU', $css, $match)) {
-            return $match[1];
-        } else {
-            return null;
         }
+
+        if (preg_match('/^url\(([^)]*)\)$/isU', $css, $match)) {
+            return $match[1];
+        }
+
+        return null;
     }
 
     /**
