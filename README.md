@@ -8,7 +8,7 @@ HTML2PDF works with PHP 5.3.2 and above.
 
 ### Installation
 
-This package **must** be installed in your project through composer.
+This package **must** be installed in your project through **composer**.
 
 ```
 composer require spipu/html2pdf
