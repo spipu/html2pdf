@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [5.0.0] - Unreleased
 
+  * change licence to OSL-3.0
   * change PHP 5.4 compatibility
   * change Using Namespaces
   * change all the classes have moved

@@ -3,7 +3,7 @@
  * Html2Pdf Library - main class
  *
  * HTML => PDF converter
- * distributed under the LGPL License
+ * distributed under the OSL-3.0 License
  *
  * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>

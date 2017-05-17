@@ -51,7 +51,7 @@
     <div class="note">
         Html2Pdf est un convertisseur de code HTML vers PDF écrit en PHP5, utilisant la librairie <a href="http://tcpdf.org">TCPDF.</a><br>
         <br>
-        Il permet la conversion d'HTML et d'xHTML valide au format PDF, et est distribué sous licence LGPL.<br>
+        Il permet la conversion d'HTML et d'xHTML valide au format PDF, et est distribué sous licence OSL-3.0.<br>
         <br>
         Cette librairie a été conçue pour gérer principalement les TABLE imbriquées afin de générer des factures, bon de livraison, et autres documents officiels.<br>
         <br>
