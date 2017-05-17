@@ -1,10 +1,6 @@
-Html2Pdf
-========
+# Html2Pdf
 
-Latest stable release : v4.6.0 (2016-03-30)
-
-How to use:
------------
+## How to use:
 
 ### Requirements
 
@@ -12,13 +8,13 @@ HTML2PDF works with PHP 5.3.2 and above.
 
 ### Installation
 
-This package can be installed in your project through composer.
+This package **must** be installed in your project through composer.
 
 ```
 composer require spipu/html2pdf
 ```
 
-If you wish to try html2pdf outside a main project, you can just clone the project and run composer:
+If you want to try html2pdf outside a main project, you can just clone the project and run composer:
 
 ```
 git clone https://github.com/spipu/html2pdf.git
@@ -86,39 +82,18 @@ It is activated by adding the following command just after the contructor (see E
     * Values : 0, 90, 180, 270
     * Works only on div (cf example 8)
 
-Change log:
------------
+## Change log
 
-See on this page: http://html2pdf.fr/en/download
+See the [./CHANGELOG.md](./CHANGELOG.md) file
 
-Help & Support:
----------------
+## Help & Support
 
 For questions and bug reports, please use the GitHub issues page.
-You may also find some help of the official forum (link below).
 
-Information:
-------------
+## License
 
-* Programmer: Spipu
-* Web Site  : http://html2pdf.fr/
-* Wiki      : http://html2pdf.fr/en/wiki
-* Support   : http://html2pdf.fr/en/forum
+See the [./LICENCE.md](./LICENCE.md) file
 
-License:
---------
-```
- This program is distributed under the LGPL License,
- for more information see the LICENSE file or go to
- http://www.gnu.org/licenses/lgpl.html
+This program is distributed under the OSL License. For more information see the LICENSE.md file
 
- Copyright 2008-2016 by Laurent Minguet
-```
-
-Thanks:
--------
-
- * Olivier Plathey: for have made FPDF
- * Nicola Asuni: for the changes he has agreed to make to TCPDF
- * yAronet: for hosting support forum
- * Everyone who helped me to develop this library and to bring the texts
+Copyright 2008-2017 by Laurent Minguet
