@@ -3552,6 +3552,10 @@ class Html2Pdf
         if (isset($lstBarcode[$param['type']])) {
             $param['type'] = $lstBarcode[$param['type']];
         }
+        if (!isset($param['dimension'])) {
+            $param['dimension'] = '1D';
+        }
+ 
 
         $this->parsingCss->save();
         $this->parsingCss->analyse('barcode', $param);
@@ -3570,7 +3574,7 @@ class Html2Pdf
         }
         $txt = ($param['label']!=='none' ? $this->parsingCss->value['font-size'] : false);
         $c = $this->parsingCss->value['color'];
-        $infos = $this->pdf->myBarcode($param['value'], $param['type'], $x, $y, $w, $h, $txt, $c);
+        $infos = $this->pdf->myBarcode($param['value'], $param['type'], $x, $y, $w, $h, $txt, $c, $param['dimension']);
 
         $this->_maxX = max($this->_maxX, $x+$infos[0]);
         $this->_maxY = max($this->_maxY, $y+$infos[1]);
