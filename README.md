@@ -24,7 +24,7 @@ composer install
 
 ### Recommendations
    
- * Look at the examples provided to see how it works.
+ * Look at the [documentation](./doc/) and the [examples](./examples/) to see how it works.
 
  * It is very important to provide valid HTML 4.01 to the converter,
    but only what is in the `<body>`. Use the `<page>` tag. 
@@ -52,31 +52,31 @@ It is activated by adding the following command just after the contructor (see E
 
 * Some specific tags have been introduced:
 
-  * `<page></page>`  (CF Exemple 7 & wiki)
+  * `<page></page>`  (CF Exemple 7)
     * Determines the orientation, margins left, right, top and bottom, the background image
     * and the background color of a page, its size and position, the footer.
     * It is also possible to keep the header and footer of the previous pages,
-    * through the attribut `pageset="old"` (see Example 3 & 4 & wiki)
+    * through the attribut `pageset="old"` (see Example 3 & 4)
 
-  * `<page_header></page_header>` (CF Example 3 & wiki)
+  * `<page_header></page_header>` (CF Example 3)
 
-  * `<page_footer></page_footer>` (CF Example 3 & wiki)
+  * `<page_footer></page_footer>` (CF Example 3)
 
-  * `<nobreak></nobreak>` (CF wiki)
+  * `<nobreak></nobreak>`
     * Used to force the display of a section on the same page.
     * If this section does not fit into the rest of the page, a page break is done before.
 
-  * `<barcode></barcode>`  (CF Examples 0 & 9 & wiki)
+  * `<barcode></barcode>`  (CF Examples 0 & 9)
     * Can insert barcodes in pdfs, CF Examples 0 and 9
     * the possible types of codebar are alls of TCPDF
 
-  * `<qrcode></qrcode>` (CF Example 13 & wiki)
+  * `<qrcode></qrcode>` (CF Example 13)
     * can insert QRcode 2D barcodes
     * (QR Code is registered trademark of DENSO WAVE INCORPORATED | http://www.denso-wave.com/qrcode/)
 
-  * `<bookmark></bookmark>` (CF Examples 7 & About & wiki)
+  * `<bookmark></bookmark>` (CF Examples 7 & About)
     * Can insert bookmark in pdfs, CF Example 7 and About.
-    * It is also possible to automatically create an index at the end of document (CF Example About & wiki)
+    * It is also possible to automatically create an index at the end of document (CF Example About)
 
   * css property `rotate`:
     * Values : 0, 90, 180, 270
