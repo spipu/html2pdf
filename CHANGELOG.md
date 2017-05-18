@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
   * fix issue from https://github.com/spipu/html2pdf/pull/177
   * fix issue from https://github.com/spipu/html2pdf/pull/163
   * fix bug on div position https://github.com/spipu/html2pdf/issues/73
+  * fix margin-bottom on table https://github.com/spipu/html2pdf/issues/108
 
 ## [4.6.0] - 2016-03-30
 

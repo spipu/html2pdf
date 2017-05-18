@@ -5167,6 +5167,8 @@ class Html2Pdf
                 $y = self::$_tables[$param['num']]['curr_y'];
             }
 
+            $y+= $this->parsingCss->value['margin']['b'];
+
             $this->_maxX = max($this->_maxX, $x);
             $this->_maxY = max($this->_maxY, $y);
 
