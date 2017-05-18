@@ -3167,8 +3167,8 @@ class Html2Pdf
             $overW = null;
             $overH = null;
             $overflow = false;
-            $this->parsingCss->value['width']    = max($w, $this->parsingCss->value['width']);
-            $this->parsingCss->value['height']    = max($h, $this->parsingCss->value['height']);
+            $this->parsingCss->value['width']  = max($w, $this->parsingCss->value['width']);
+            $this->parsingCss->value['height'] = max($h, $this->parsingCss->value['height']);
         }
 
         switch ($this->parsingCss->value['rotate']) {
@@ -3215,17 +3215,28 @@ class Html2Pdf
                 break;
         }
 
+        $maxW = ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin());
+        $maxH = ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin());
+        $maxX = ($this->pdf->getW() - $this->pdf->getrMargin());
+        $maxY = ($this->pdf->getH() - $this->pdf->getbMargin());
+        $endX = ($this->pdf->getX() + $w);
+        $endY = ($this->pdf->getY() + $h);
+
+        $w = round($w, 6);
+        $h = round($h, 6);
+        $maxW = round($maxW, 6);
+        $maxH = round($maxH, 6);
+        $maxX = round($maxX, 6);
+        $maxY = round($maxY, 6);
+        $endX = round($endX, 6);
+        $endY = round($endY, 6);
+
         if (!$this->parsingCss->value['position']) {
-            if ($w < ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin()) &&
-                $this->pdf->getX() + $w>=($this->pdf->getW() - $this->pdf->getrMargin())
-                ) {
+            if ($w < $maxW && $endX >= $maxX) {
                 $this->_tag_open_BR(array());
             }
 
-            if (($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
-                    ($this->pdf->getY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
-                    !$this->_isInOverflow
-                ) {
+            if ($h < $maxH && $endY >= $maxY && !$this->_isInOverflow) {
                 $this->_setNewPage();
             }
 
