@@ -124,6 +124,13 @@ class TagParser
                     }
                     $param[$key] = $val;
                     break;
+
+                case 'color':
+                    if ($name === 'font') {
+                        unset($param[$key]);
+                        $param['style'] .= 'color: '.$val.'; ';
+                    }
+                    break;
             }
         }
 
