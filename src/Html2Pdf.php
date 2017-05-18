@@ -117,6 +117,7 @@ class Html2Pdf
     protected $_background       = array();     // background informations
 
     protected $_hideHeader       = array();     // array : list of pages which the header gonna be hidden
+    protected $_hideFooter       = array();     // array : list of pages which the footer gonna be hidden
     protected $_firstPage        = true;        // flag : first page
     protected $_defList          = array();     // table to save the stats of the tags UL and OL
 
@@ -875,6 +876,10 @@ class Html2Pdf
     protected function _setPageFooter()
     {
         if (!count($this->_subFOOTER)) {
+            return false;
+        }
+
+        if (in_array($this->pdf->getPage(), $this->_hideFooter)) {
             return false;
         }
 
@@ -2615,6 +2620,10 @@ class Html2Pdf
 
         if (array_key_exists('hideheader', $param) && $param['hideheader']!='false' && !empty($param['hideheader'])) {
             $this->_hideHeader = (array) array_merge($this->_hideHeader, explode(',', $param['hideheader']));
+        }
+
+        if (array_key_exists('hidefooter', $param) && $param['hidefooter']!='false' && !empty($param['hidefooter'])) {
+            $this->_hideFooter = (array) array_merge($this->_hideFooter, explode(',', $param['hidefooter']));
         }
 
         $this->_maxH = 0;

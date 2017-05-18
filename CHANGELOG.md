@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
   * add Dimension-Parameter on barcode (for PDF417, Datamatrix = 2D) https://github.com/spipu/html2pdf/pull/127
   * add `pdfa` parameter on Html2Pdf constructor https://github.com/spipu/html2pdf/pull/122
   * add new documentation folder `./doc/`
+  * add new attribute to page tag `hidefooter` which accepts a list of pages that gonna skip footer https://github.com/spipu/html2pdf/issues/162
   * fix a infinite loop case when reading a svg path
   * fix issue from https://github.com/spipu/html2pdf/pull/177
   * fix issue from https://github.com/spipu/html2pdf/pull/163

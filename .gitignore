@@ -8,7 +8,8 @@
 /.idea
 
 # Examples
-/test/*.pdf
+/test/*
+!/test/generate.sh
 
 # Composer
 /bin/
