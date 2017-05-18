@@ -1,0 +1,436 @@
+<style type="text/css">
+    .TL {
+        top: 5.5mm;
+        left: 5mm;
+    }
+
+    .TR {
+        top: 5.5mm;
+        right: 5mm;
+    }
+
+    .BL {
+        bottom: 5.5mm;
+        left: 5mm;
+    }
+
+    .BR {
+        bottom: 5.5mm;
+        right: 5mm;
+    }
+
+    .label {
+        width: 99mm;
+        height: 142mm;
+        border: 0.15mm dotted #000000;
+        border-radius: 2mm;
+        position: absolute;
+        font-family: swiss721;
+    }
+
+    .txt {
+        position: absolute;
+        font-family: swiss721;
+    }
+
+    .cb1 {
+        position: absolute;
+        left: 1mm;
+        top: 2mm;
+        width: 98mm;
+        height: 1mm;
+        background-color: #000000;
+    }
+
+    .cb2 {
+        position: absolute;
+        left: 1mm;
+        top: 15mm;
+        width: 98mm;
+        height: 0.5mm;
+        background-color: #000000;
+    }
+
+    .cb3 {
+        position: absolute;
+        left: 1mm;
+        top: 27.5mm;
+        width: 98mm;
+        height: 0.5mm;
+        background-color: #000000;
+    }
+
+    .cb4 {
+        position: absolute;
+        left: 1mm;
+        top: 56mm;
+        width: 98mm;
+        height: 0.5mm;
+        background-color: #000000;
+    }
+
+    .l1 {
+        position: absolute;
+        left: 1mm;
+        top: 62.5mm;
+        width: 97.2mm;
+        height: 0.25mm;
+        background-color: #000000;
+    }
+
+    .l2 {
+        position: absolute;
+        left: 1mm;
+        top: 90mm;
+        width: 81.5mm;
+        height: 0.25mm;
+        background-color: #000000;
+    }
+
+    .l3 {
+        position: absolute;
+        left: 1mm;
+        top: 119mm;
+        width: 81.5mm;
+        height: 0.25mm;
+        background-color: #000000;
+    }
+
+    .l4 {
+        position: absolute;
+        left: 1mm;
+        top: 134.5mm;
+        width: 97.2mm;
+        height: 0.25mm;
+        background-color: #000000;
+    }
+
+    .l5 {
+        position: absolute;
+        left: 1mm;
+        top: 62.5mm;
+        width: 0.25mm;
+        height: 72mm;
+        background-color: #000000;
+    }
+
+    .l6 {
+        position: absolute;
+        left: 82.5mm;
+        top: 62.5mm;
+        width: 0.25mm;
+        height: 72mm;
+        background-color: #000000;
+    }
+
+    .l7 {
+        position: absolute;
+        left: 98mm;
+        top: 62.5mm;
+        width: 0.25mm;
+        height: 72mm;
+        background-color: #000000;
+    }
+
+    .t110 {
+        text-transform: uppercase;
+        left: 4mm;
+        top: 4.5mm;
+        font-size: 28pt;
+    }
+
+    .t320 {
+        text-transform: uppercase;
+        left: 4mm;
+        top: 18mm;
+        font-size: 22pt;
+    }
+
+    .t8951 {
+        left: 24mm;
+        top: 16mm;
+        font-size: 6.5pt;
+    }
+
+    .t330 {
+        text-transform: uppercase;
+        left: 24mm;
+        top: 21mm;
+        font-size: 12pt;
+    }
+
+    .t500 {
+        text-transform: uppercase;
+        left: 4mm;
+        top: 56mm;
+        font-size: 10pt;
+    }
+
+    .t540 {
+        text-transform: uppercase;
+        left: 23mm;
+        top: 59mm;
+        font-size: 6pt;
+    }
+
+    .t541 {
+        text-transform: uppercase;
+        left: 36mm;
+        top: 59mm;
+        font-size: 6pt;
+    }
+
+    .t530 {
+        text-transform: uppercase;
+        left: 44mm;
+        top: 57mm;
+        font-size: 14pt;
+    }
+
+    .t8904 {
+        text-transform: uppercase;
+        left: 64mm;
+        top: 59mm;
+        font-size: 6pt;
+    }
+
+    .t8952 {
+        left: 47mm;
+        top: 16mm;
+        font-size: 6.5pt;
+    }
+
+    .t8913 {
+        text-transform: uppercase;
+        left: 47mm;
+        top: 21mm;
+        font-family: courier;
+        font-size: 12pt;
+        font-weight: bold;
+    }
+
+    .t101 {
+        text-transform: uppercase;
+        left: 71.5mm;
+        top: 2mm;
+        font-size: 28pt;
+        background-color: #000000;
+        color: #FFFFFF;
+        padding: 2.5mm 4mm 0mm 4mm;
+    }
+
+    .t100, .t105 {
+        left: 56mm;
+        top: 4.5mm;
+        font-size: 28pt;
+    }
+
+    .t310 {
+        text-transform: uppercase;
+        left: 31mm;
+        top: 2mm;
+        font-size: 28pt;
+        background-color: #000000;
+        color: #FFFFFF;
+        padding: 2.5mm 2mm 0mm 2mm;
+    }
+
+    .t8700 {
+        text-transform: uppercase;
+        left: 4mm;
+        top: 57mm;
+        font-size: 14pt;
+    }
+
+    .matrice {
+        left: 28.5mm;
+        top: 10mm;
+        width: 42mm;
+        height: 42mm;
+        position: absolute;
+    }
+
+    .t8903 {
+        left: 78mm;
+        top: 32mm;
+        width: 19mm;
+        height: 19mm;
+        position: absolute;
+    }
+
+    .qrtl {
+        position: absolute;
+        top: 29mm;
+        left: 1mm;
+        border-left: 1mm solid #000000;
+        border-top: 1mm solid #000000;
+        width: 8mm;
+        height: 6mm;
+    }
+
+    .qrtr {
+        position: absolute;
+        top: 29mm;
+        left: 17mm;
+        border-right: 1mm solid #000000;
+        border-top: 1mm solid #000000;
+        width: 8mm;
+        height: 6mm;
+    }
+
+    .qrbr {
+        position: absolute;
+        top: 47mm;
+        left: 17mm;
+        border-right: 1mm solid #000000;
+        border-bottom: 1mm solid #000000;
+        width: 8mm;
+        height: 6mm;
+    }
+
+    .qrbl {
+        position: absolute;
+        top: 47mm;
+        left: 1mm;
+        border-left: 1mm solid #000000;
+        border-bottom: 1mm solid #000000;
+        width: 8mm;
+        height: 6mm;
+    }
+
+    .t859 {
+        text-transform: uppercase;
+        right: 18mm;
+        bottom: 49mm;
+        font-size: 6pt;
+    }
+
+    .t860 {
+        text-transform: uppercase;
+        left: 3mm;
+        bottom: 45mm;
+        font-size: 11pt;
+    }
+
+    .t861 {
+        text-transform: uppercase;
+        left: 3mm;
+        bottom: 41.5mm;
+        font-size: 8pt;
+    }
+
+    .t862 {
+        text-transform: uppercase;
+        left: 3mm;
+        bottom: 38mm;
+        font-size: 8pt;
+    }
+
+    .t863 {
+        text-transform: uppercase;
+        left: 3mm;
+        bottom: 32mm;
+        font-size: 11pt;
+    }
+
+    .t100-2 {
+        text-transform: uppercase;
+        left: 3mm;
+        bottom: 27mm;
+        font-size: 8pt;
+    }
+
+    .t330-2 {
+        text-transform: uppercase;
+        left: 12mm;
+        bottom: 27mm;
+        font-size: 8pt;
+    }
+
+    .t864 {
+        text-transform: uppercase;
+        left: 25mm;
+        bottom: 27mm;
+        font-size: 8pt;
+    }
+
+    .txt-exp {
+        rotate: -90;
+        font-size: 6pt;
+        position: absolute;
+        text-transform: uppercase;
+    }
+
+    .t8915 {
+        left: 93mm;
+        bottom: 30mm;
+    }
+
+    .t8914 {
+        left: 93mm;
+        bottom: 16mm;
+    }
+
+    .t810 {
+        left: 95mm;
+        bottom: 76mm;
+    }
+
+    .t820 {
+        left: 88mm;
+        bottom: 76mm;
+    }
+
+    .t821 {
+        left: 84mm;
+        bottom: 76mm;
+    }
+
+    .t822 {
+        left: 84mm;
+        bottom: 71mm;
+    }
+
+    .t823 {
+        left: 84mm;
+        bottom: 64mm;
+    }
+
+</style>
+
+
+<page backtop="0mm" backbottom="0mm" backleft="0mm" backright="0mm">
+    <div class="label TL">
+        <div class="l1"></div>
+        <div class="l2"></div>
+        <div class="l3"></div>
+        <div class="l4"></div>
+        <div class="l5"></div>
+        <div class="l6"></div>
+        <div class="l7"></div>
+
+        <qrcode style="border:none;" class="matrice" ec="DATAMATRIX" rawValue="true" value="<?php echo $rescueMatrix; ?>"></qrcode>
+
+        <!-- DESTINATAIRE -->
+
+        <div class="t860 txt">John Doe</div>
+        <div class="t861 txt">BAT F</div>
+        <div class="t862 txt">hall 37</div>
+        <div class="t863 txt">42 RUE DE L'EMPIRE</div>
+        <div class="t100-2 txt">FR</div>
+        <div class="t330-2 txt">57185</div>
+        <div class="t864 txt">ETOILE NOIR</div>
+        <div class="t859 txt">ref: 45694</div>
+
+        <!-- EXPEDITEUR -->
+
+        <div class="t8915 txt-exp">Client<br /><?php echo $T8915;?></div> <!-- code client -->
+        <div class="t8914 txt-exp">ContactId<br /><?php echo $T8914;?></div> <!-- contact id -->
+
+        <div class="t810 txt-exp">IT COMPUTING</div>
+        <div class="t820 txt-exp">42 rue du colonel</div>
+        <div class="t821 txt-exp">LU</div>
+        <div class="t822 txt-exp">3636</div>
+        <div class="t823 txt-exp">KAYL</div>
+    </div>
+</page>

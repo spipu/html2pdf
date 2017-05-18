@@ -64,6 +64,8 @@ class TagParser
         // compliance of each parameter
         $color  = "#000000";
         $border = null;
+        $rawValue = false;
+
         foreach ($param as $key => $val) {
             switch ($key) {
                 case 'width':
@@ -124,6 +126,10 @@ class TagParser
                     }
                     $param[$key] = $val;
                     break;
+
+                case 'rawvalue':
+                    $rawValue = ($val == 'true');
+                    break;
             }
         }
 
@@ -169,8 +175,8 @@ class TagParser
         }
 
         // prepare the parameters
-        if (isset($param['value'])) {
-            $param['value']  = $this->textParser->prepareTxt($param['value']);
+        if ($rawValue === false && isset($param['value'])) {
+            $param['value']  = $this->textParser->prepareTxt($param['value'], true, true);
         }
         if (isset($param['alt'])) {
             $param['alt']    = $this->textParser->prepareTxt($param['alt']);
@@ -205,7 +211,15 @@ class TagParser
         foreach ($regexes as $regex) {
             preg_match_all('/'.$regex.'/is', $code, $match);
             for ($k = 0; $k < count($match[0]); $k++) {
-                $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
+
+                $key   = trim(strtolower($match[1][$k]));
+                $value = $match[2][$k];
+
+                if ('value' !== $key) {
+                    $value = trim($value);
+                }
+
+                $param[$key] = $value;
             }
         }
 
