@@ -5,11 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [5.0.0] - Unreleased
 
   * change licence to OSL-3.0
-  * change PHP 5.4 compatibility
+  * change PHP minimum compatibility to 5.4
   * change Using Namespaces
   * change all the classes have moved
   * change all the classes have been renamed
   * change new tag structure : one class per tag
+  * add PHP 7.0 and 7.1 compatibility
   * add improve string handling for UTF8
   * add better exception management
   * add unit testing
