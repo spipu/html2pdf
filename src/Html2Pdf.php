@@ -1419,20 +1419,37 @@ class Html2Pdf
         $imageWidth = $infos[0]/$this->pdf->getK();
         $imageHeight = $infos[1]/$this->pdf->getK();
 
+        $ratio = $imageWidth / $imageHeight;
+
         // calculate the size from the css style
         if ($this->parsingCss->value['width'] && $this->parsingCss->value['height']) {
             $w = $this->parsingCss->value['width'];
             $h = $this->parsingCss->value['height'];
         } elseif ($this->parsingCss->value['width']) {
             $w = $this->parsingCss->value['width'];
-            $h = $imageHeight*$w/$imageWidth;
+            $h = $w / $ratio;
         } elseif ($this->parsingCss->value['height']) {
             $h = $this->parsingCss->value['height'];
-            $w = $imageWidth*$h/$imageHeight;
+            $w = $h * $ratio;
         } else {
             // convert px to pt
             $w = 72./96.*$imageWidth;
             $h = 72./96.*$imageHeight;
+        }
+
+        if (isset($this->parsingCss->value['max-width']) && $this->parsingCss->value['max-width'] < $w) {
+            $w = $this->parsingCss->value['max-width'];
+            if (!$this->parsingCss->value['height']) {
+                // reprocess the height if not constrained
+                $h = $w / $ratio;
+            }
+        }
+        if (isset($this->parsingCss->value['max-height']) && $this->parsingCss->value['max-height'] < $h) {
+            $h = $this->parsingCss->value['max-height'];
+            if (!$this->parsingCss->value['width']) {
+                // reprocess the width if not constrained
+                $w = $h * $ratio;
+            }
         }
 
         // are we in a float

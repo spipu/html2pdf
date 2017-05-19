@@ -751,8 +751,13 @@ class Css
                     $noWidth = false;
                     break;
 
+                case 'max-width':
+                    $this->value[$nom] = $this->cssConverter->convertToMM($val, $this->getLastWidth());
+                    break;
+
                 case 'height':
-                    $this->value['height'] = $this->cssConverter->convertToMM($val, $this->getLastHeight());
+                case 'max-height':
+                    $this->value[$nom] = $this->cssConverter->convertToMM($val, $this->getLastHeight());
                     break;
 
                 case 'line-height':
