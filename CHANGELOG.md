@@ -27,11 +27,15 @@ All notable changes to this project will be documented in this file.
   * fix margin-bottom on table https://github.com/spipu/html2pdf/issues/108
   * fix position of fallback image
 
+## [4.6.1] - 2016-xx-xx
+
+  * fix css font-family management on inherit value
+
 ## [4.6.0] - 2016-03-30
 
-  * Support 'start' attribute for ordered list
-  * Enable RTL languages support
-  * Add a fallback support for images
+  * add Support 'start' attribute for ordered list
+  * add Enable RTL languages support
+  * add fallback support for images
 
 ## [4.5.1] - 2016-03-03
 
