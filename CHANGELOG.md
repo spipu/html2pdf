@@ -19,11 +19,13 @@ All notable changes to this project will be documented in this file.
   * add `pdfa` parameter on Html2Pdf constructor https://github.com/spipu/html2pdf/pull/122
   * add new documentation folder `./doc/`
   * add new attribute to page tag `hidefooter` which accepts a list of pages that gonna skip footer https://github.com/spipu/html2pdf/issues/162
+  * add protection on the fallback image if it does not exist
   * fix a infinite loop case when reading a svg path
   * fix issue from https://github.com/spipu/html2pdf/pull/177
   * fix issue from https://github.com/spipu/html2pdf/pull/163
   * fix bug on div position https://github.com/spipu/html2pdf/issues/73
   * fix margin-bottom on table https://github.com/spipu/html2pdf/issues/108
+  * fix position of fallback image
 
 ## [4.6.0] - 2016-03-30
 

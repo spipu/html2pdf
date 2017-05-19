@@ -72,6 +72,7 @@ class Html2Pdf
 
     protected $_testTdInOnepage  = true;        // test of TD that can not take more than one page
     protected $_testIsImage      = true;        // test if the images exist or not
+    protected $_fallbackImage    = null;        // fallback image to use in img tags
 
     protected $_parsePos         = 0;           // position in the parsing
     protected $_tempPos          = 0;           // temporary position for complex table
@@ -386,6 +387,20 @@ class Html2Pdf
     {
         $this->_defaultFont = $default;
         $this->parsingCss->setDefaultFont($default);
+
+        return $this;
+    }
+
+    /**
+     * Set a fallback image
+     *
+     * @param string $fallback Path or URL to the fallback image
+     *
+     * @return $this
+     */
+    public function setFallbackImage($fallback)
+    {
+        $this->_fallbackImage = $fallback;
 
         return $this;
     }
@@ -1006,6 +1021,7 @@ class Html2Pdf
         self::$_subobj->setTestTdInOnePage($this->_testTdInOnepage);
         self::$_subobj->setTestIsImage($this->_testIsImage);
         self::$_subobj->setDefaultFont($this->_defaultFont);
+        self::$_subobj->setFallbackImage($this->_fallbackImage);
         self::$_subobj->parsingCss->css            = &$this->parsingCss->css;
         self::$_subobj->parsingCss->cssKeys        = &$this->parsingCss->cssKeys;
         self::$_subobj->extensions                 = $this->extensions;
@@ -1410,9 +1426,21 @@ class Html2Pdf
                 throw $e;
             }
 
-            // else, display a gray rectangle
+            // display a gray rectangle
             $src = null;
             $infos = array(16, 16);
+
+            // if we have a fallback Image, we use it
+            if ($this->_fallbackImage) {
+                $src = $this->_fallbackImage;
+                $infos = @getimagesize($src);
+
+                if (count($infos)<2) {
+                    $e = new ImageException('Unable to get the size of the fallback image ['.$src.']');
+                    $e->setImage($src);
+                    throw $e;
+                }
+            }
         }
 
         // convert the size of the image in the unit of the PDF
