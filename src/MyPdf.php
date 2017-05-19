@@ -587,29 +587,41 @@ class MyPdf extends \TCPDF
     }
 
     /**
-     * we redifine the original SetX method, because we don't want the automatic treatment.
-     * It is Html2Pdf that make the treatment
+     * we redefine the original SetX method, because we don't want the automatic treatment.
+     * It is Html2Pdf that make the treatment.
+     * If language is RTL direction this method will call to parent (TCPDF class).
      *
      * @param float   $x
-     * @param boolean $rtloff NOT USED
+     * @param boolean $rtloff
      * @access public
      */
     public function SetX($x, $rtloff = false)
     {
+        if (!$rtloff && $this->rtl) {
+            parent::SetX($x, $rtloff);
+            return;
+        }
+
         $this->x=$x;
     }
 
     /**
-     * we redifine the original SetY method, because we don't want the automatic treatment.
-     * It is Html2Pdf that make the treatment
+     * we redefine the original SetY method, because we don't want the automatic treatment.
+     * It is Html2Pdf that make the treatment.
+     * If language is RTL direction this method will call to parent (TCPDF class).
      *
      * @param float   $y
      * @param boolean $resetx Reset the X position
-     * @param boolean $rtloff NOT USED
+     * @param boolean $rtloff
      * @access public
      */
     public function SetY($y, $resetx = true, $rtloff = false)
     {
+        if (!$rtloff && $this->rtl) {
+            parent::SetY($y, $resetx, $rtloff);
+            return;
+        }
+
         if ($resetx) {
             $this->x=$this->lMargin;
         }
@@ -618,16 +630,22 @@ class MyPdf extends \TCPDF
     }
 
     /**
-     * we redifine the original SetXY method, because we don't want the automatic treatment.
-     * It is Html2Pdf that make the treatment
+     * we redefine the original SetXY method, because we don't want the automatic treatment.
+     * It is Html2Pdf that make the treatment.
+     * If language is RTL direction this method will call to parent (TCPDF class).
      *
      * @param integer $x
      * @param integer $y
-     * @param boolean $rtloff NOT USED
+     * @param boolean $rtloff
      * @access public
      */
     public function SetXY($x, $y, $rtloff = false)
     {
+        if (!$rtloff && $this->rtl) {
+            parent::SetXY($x, $y, $rtloff);
+            return;
+        }
+
         $this->x=$x;
         $this->y=$y;
     }
