@@ -1,6 +1,12 @@
 HTML2PDF v4.6.1 - 2016-04-05
 ============================
 
+**WARNING**
+
+This branch is **depreacated**.
+No more fix will be done on it.
+No more Pull Request will be accepted on it.
+
 License:
 --------
 ```
