@@ -11,15 +11,15 @@ Variable | Default value |Description
 $orientation | P | The default page orientation, can be P (portrait) or L (landscape)
 $format | A4 | The default page format used for pages. The list of the available value are [here](https://github.com/tecnickcom/TCPDF/blob/master/include/tcpdf_static.php#L2097). You can also give a array with 2 values the width and the height in mm.
 $lang | fr | Language to use, for some minor translations. The list of the available languages are [here](https://github.com/spipu/html2pdf/tree/master/src/locale)
-$unicode | true | TRUE means that the input text is unicode
-$encoding |UTF-8 | charset encoding
+$unicode | true | means that the input HTML string is unicode
+$encoding |UTF-8 | charset encoding of the input HTML string
 $margins | array(5, 5, 5, 8) | Main margins of the page (left, top, right, bottom)
 $pdfa | false | If TRUE set the document to PDF/A mode
 
 In most of the case, you will juste use the 3 first parameters :
 
 ```php
-$html2pdf = new \Spipu\Html2Pdf\Html2Pdf('P', 'A4', 'en');`
+$html2pdf = new \Spipu\Html2Pdf\Html2Pdf('P', 'A4', 'en');
 ```
 
 ## Convert the HTML
