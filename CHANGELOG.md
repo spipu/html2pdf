@@ -27,9 +27,9 @@ All notable changes to this project will be documented in this file.
   * fix margin-bottom on table https://github.com/spipu/html2pdf/issues/108
   * fix position of fallback image
 
-## [4.6.1] - 2016-xx-xx
+## [4.6.1] - 2016-04-05
 
-  * fix css font-family management on inherit value
+  * fix css font-family lowercase check on inherit value
 
 ## [4.6.0] - 2016-03-30
 
