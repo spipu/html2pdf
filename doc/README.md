@@ -1,6 +1,7 @@
 # Html2Pdf Documentation
 
   * [How to Install Html2Pdf](./install.md)
+  * [Basic Usage](./basic.md)
 
 @todo import all the wiki here
 
