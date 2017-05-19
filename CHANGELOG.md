@@ -19,7 +19,6 @@ All notable changes to this project will be documented in this file.
   * add `pdfa` parameter on Html2Pdf constructor https://github.com/spipu/html2pdf/pull/122
   * add new documentation folder `./doc/`
   * add new attribute to page tag `hidefooter` which accepts a list of pages that gonna skip footer https://github.com/spipu/html2pdf/issues/162
-  * add attribute color on font tag (from #20393a0aae5b58c99e38b86693acf6ff69ebc03a)
   * fix a infinite loop case when reading a svg path
   * fix issue from https://github.com/spipu/html2pdf/pull/177
   * fix issue from https://github.com/spipu/html2pdf/pull/163
