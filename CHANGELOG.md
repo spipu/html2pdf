@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
   * fix bug on div position https://github.com/spipu/html2pdf/issues/73
   * fix margin-bottom on table https://github.com/spipu/html2pdf/issues/108
   * fix position of fallback image
+  * fix li bullet points altered by uppercase styles 
 
 ## [4.6.1] - 2016-04-05
 
