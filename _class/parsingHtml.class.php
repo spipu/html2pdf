@@ -98,7 +98,7 @@ class HTML2PDF_parsingHtml
         // foreach part of the HTML code
         foreach ($parts as $part) {
             // if it is a tag code
-            if ($part[0] == 'code') {
+            if ($part[0] === 'code') {
                 // analyze the HTML code
                 $res = $this->_analyzeCode($part[1]);
 
@@ -135,7 +135,7 @@ class HTML2PDF_parsingHtml
                         }
 
                         // if it is a <pre> tag (or <code> tag) not auto-closed => update the flag
-                        if (($res['name'] == 'pre' || $res['name'] == 'code') && !$res['autoclose']) {
+                        if (($res['name'] === 'pre' || $res['name'] === 'code') && !$res['autoclose']) {
                             $tagPreIn = !$res['close'];
                         }
                     }
@@ -147,7 +147,7 @@ class HTML2PDF_parsingHtml
                 }
             }
             // if it is text
-            if ($part[0] == 'txt') {
+            if ($part[0] === 'txt') {
                 // if we are not in a <pre> tag
                 if (!$tagPreIn) {
                     // save the action
@@ -201,7 +201,7 @@ class HTML2PDF_parsingHtml
         $nb = count($actions);
         for ($k = 0; $k < $nb; $k++) {
             // if it is a Text
-            if ($actions[$k]['name']=='write') {
+            if ($actions[$k]['name'] === 'write') {
                 // if the tag before the text is a tag to clean => ltrim on the text
                 if ($k>0 && in_array($actions[$k - 1]['name'], $tagsToClean))
                     $actions[$k]['param']['txt'] = ltrim($actions[$k]['param']['txt']);
@@ -303,39 +303,42 @@ class HTML2PDF_parsingHtml
         if (!preg_match('/'.$tag.'/isU', $code, $match)) {
             return null;
         }
-        $close     = ($match[1] == '/' ? true : false);
+        $close     = $match[1] === '/';
         $autoclose = preg_match('/\/>$/isU', $code);
         $name      = strtolower($match[2]);
 
         // required parameters (depends on the tag name)
         $param    = array();
         $param['style'] = '';
-        if ($name == 'img') {
+        if ($name === 'img') {
             $param['alt'] = '';
             $param['src'] = '';
         }
-        if ($name == 'a') {
+        if ($name === 'a') {
             $param['href'] = '';
         }
 
         // read the parameters : name=value
         $prop = '([a-zA-Z0-9_]+)=([^"\'\s>]+)';
         preg_match_all('/'.$prop.'/is', $code, $match);
-        for ($k = 0; $k < count($match[0]); $k++) {
+        $amountMatches = count($match[0]);
+        for ($k = 0; $k < $amountMatches; $k++) {
             $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
         }
 
         // read the parameters : name="value"
         $prop = '([a-zA-Z0-9_]+)=["]([^"]*)["]';
         preg_match_all('/'.$prop.'/is', $code, $match);
-        for ($k = 0; $k < count($match[0]); $k++) {
+        $amountMatches = count($match[0]);
+        for ($k = 0; $k < $amountMatches; $k++) {
             $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
         }
 
         // read the parameters : name='value'
         $prop = "([a-zA-Z0-9_]+)=[']([^']*)[']";
         preg_match_all('/'.$prop.'/is', $code, $match);
-        for ($k = 0; $k < count($match[0]); $k++) {
+        $amountMatches = count($match[0]);
+        for ($k = 0; $k < $amountMatches; $k++) {
             $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
         }
 
@@ -405,7 +408,7 @@ class HTML2PDF_parsingHtml
                     $param[$key] = $val;
                     break;
                 case 'color':
-                    if ($name == 'font') {
+                    if ($name === 'font') {
                         $param['style'] .= 'color: ' . $val . ';';
                     }
                     break;
@@ -477,7 +480,7 @@ class HTML2PDF_parsingHtml
         $detect = $this->code[$k]['name'];
 
         // if it is a text => return
-        if ($detect == 'write') {
+        if ($detect === 'write') {
             return array($this->code[$k]);
         }
 
@@ -492,7 +495,7 @@ class HTML2PDF_parsingHtml
             $row = $this->code[$k];
 
             // if 'write' => we add the text
-            if ($row['name']=='write') {
+            if ($row['name'] === 'write') {
                 $code[] = $row;
             } else { // else, it is a html tag
                 $not = false; // flag for not taking into account the current tag

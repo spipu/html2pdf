@@ -88,19 +88,19 @@ class HTML2PDF_myPdf extends TCPDF
         // prepare the text from the tranlated text
         $txt = '';
         if ($this->_footerParam['form']) {
-            $txt = (HTML2PDF_locale::get('pdf05'));
+            $txt = HTML2PDF_locale::get('pdf05');
         }
         if ($this->_footerParam['date'] && $this->_footerParam['hour']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf03'));
+            $txt.= ($txt ? ' - ' : '').HTML2PDF_locale::get('pdf03');
         }
         if ($this->_footerParam['date'] && !$this->_footerParam['hour']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf01'));
+            $txt.= ($txt ? ' - ' : '').HTML2PDF_locale::get('pdf01');
         }
         if (!$this->_footerParam['date'] && $this->_footerParam['hour']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf02'));
+            $txt.= ($txt ? ' - ' : '').HTML2PDF_locale::get('pdf02');
         }
         if ($this->_footerParam['page']) {
-            $txt.= ($txt ? ' - ' : '').(HTML2PDF_locale::get('pdf04'));
+            $txt.= ($txt ? ' - ' : '').HTML2PDF_locale::get('pdf04');
         }
 
         if (strlen($txt)>0) {
@@ -731,8 +731,8 @@ class HTML2PDF_myPdf extends TCPDF
         $y4=$y+$h;
 
         // get the Closing operator from the PDF Style
-        if($style=='F') $op='f';
-        elseif($style=='FD' || $style=='DF') $op='B';
+        if($style === 'F') $op='f';
+        elseif($style === 'FD' || $style === 'DF') $op='B';
         else $op='S';
 
         // drawing
@@ -777,8 +777,8 @@ class HTML2PDF_myPdf extends TCPDF
     public function svgEllipse($x0, $y0, $rx, $ry, $style)
     {
         // get the Closing operator from the PDF Style
-        if($style=='F') $op='f';
-        elseif($style=='FD' || $style=='DF') $op='B';
+        if($style === 'F') $op='f';
+        elseif($style === 'FD' || $style === 'DF') $op='B';
         else $op='S';
 
         // drawing
@@ -796,8 +796,8 @@ class HTML2PDF_myPdf extends TCPDF
     public function svgPolygone($actions, $style)
     {
         // get the Closing operator from the PDF Style
-        if($style=='F') $op='f';
-        elseif($style=='FD' || $style=='DF') $op='B';
+        if($style === 'F') $op='f';
+        elseif($style === 'FD' || $style === 'DF') $op='B';
         else $op='S';
 
         // To save the First action and the last point
@@ -1171,7 +1171,7 @@ class HTML2PDF_myPdf extends TCPDF
         else        $m = array(1,0,0,1,0,0);
 
         // apply the Transformation Matrix
-        list($x,$y) = array(($x*$m[0]+$y*$m[2]+$m[4]),($x*$m[1]+$y*$m[3]+$m[5]));
+        list($x,$y) = array($x*$m[0]+$y*$m[2]+$m[4], $x*$m[1]+$y*$m[3]+$m[5]);
 
         // if true => convert into PDF unit
         if ($trans) {
@@ -1237,7 +1237,7 @@ class HTML2PDF_myPdf extends TCPDF
         // the style of the barcode
         $style = array(
             'position' => 'S',
-            'text' => ($labelFontsize ? true : false),
+            'text' => $labelFontsize ? true : false,
             'fgcolor' => $color,
             'bgcolor' => false,
         );
@@ -1246,7 +1246,7 @@ class HTML2PDF_myPdf extends TCPDF
         $this->write1DBarcode($code, $type, $x, $y, $w, $h, '', $style, 'N');
 
         // it Label => add the FontSize to the height
-        if ($labelFontsize) $h+= ($labelFontsize);
+        if ($labelFontsize) $h+= $labelFontsize;
 
         // return the size of the barcode
         return array($w, $h);
