@@ -3487,6 +3487,11 @@ class Html2Pdf
      */
     protected function _tag_close_DIV($param, $other = 'div')
     {
+        if ($this->parsingCss->value['page-break-after'] == "always"){
+            $this->_setNewPage(null, '', null, $this->_defaultTop);
+            $this->parsingCss->setPosition();
+        }
+        
         if ($this->_isForOneLine) {
             return false;
         }
