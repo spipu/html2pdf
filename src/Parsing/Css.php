@@ -181,6 +181,8 @@ class Css
 
         $this->value['xc'] = null;
         $this->value['yc'] = null;
+        
+        $this->value['page-break-after'] = null;
     }
 
     /**
@@ -1184,6 +1186,10 @@ class Css
 
                 case 'start':
                     $this->value[$nom] = intval($val);
+                    break;
+                    
+                case 'page-break-after':
+                    $this->value[$nom] = $val;
                     break;
 
                 default:
