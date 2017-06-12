@@ -146,8 +146,52 @@ class Html
             throw $e;
         }
 
+        $this->verifyMustContain($actions, 'thead', 'tr');
+        $this->verifyMustContain($actions, 'tfoot', 'tr');
+
         // save the actions to do
         $this->code = array_values($actions);
+    }
+
+    /**
+     * Verify some tags that must contain other tags
+     *
+     * @param Node[] $actions
+     * @param string $mainTag
+     * @param string $mustTag
+     *
+     * @return bool
+     * @throws HtmlParsingException
+     */
+    protected function verifyMustContain(&$actions, $mainTag, $mustTag)
+    {
+        $inMainTag = 0;
+        $foundMustTag = false;
+
+        foreach ($actions as $action) {
+            if ($action->getName() == $mainTag && !$action->isClose()) {
+                $inMainTag++;
+                $foundMustTag = false;
+            }
+
+            if ($action->getName() == $mustTag && $inMainTag > 0) {
+                $foundMustTag = true;
+            }
+
+            if ($action->getName() == $mainTag && $action->isClose()) {
+                if (!$foundMustTag) {
+                    $exception = new HtmlParsingException(
+                        "The tag [$mainTag] must contain at least one tag [$mustTag]"
+                    );
+                    $exception->setInvalidTag($action->getName());
+                    $exception->setHtmlLine($action->getLine());
+                    throw $exception;
+                }
+                $inMainTag--;
+            }
+        }
+
+        return true;
     }
 
     /**

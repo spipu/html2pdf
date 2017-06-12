@@ -203,6 +203,16 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * test: exemple14
+     *
+     * @return void
+     */
+    public function testExemple14()
+    {
+        $this->launchExample('exemple14');
+    }
+
+    /**
      * test: forms
      *
      * @return void

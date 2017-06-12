@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
   * add new documentation folder `./doc/`
   * add new attribute to page tag `hidefooter` which accepts a list of pages that gonna skip footer https://github.com/spipu/html2pdf/issues/162
   * add protection on the fallback image if it does not exist
+  * add protection on thead and tfoot tags: they must contain at least one tr tag
   * fix a infinite loop case when reading a svg path
   * fix issue from https://github.com/spipu/html2pdf/pull/177
   * fix issue from https://github.com/spipu/html2pdf/pull/163
