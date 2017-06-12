@@ -1,0 +1,5 @@
+"pdf01","Dokument generert [[date_y]]-[[date_m]]-[[date_d]]"
+"pdf02","Dokument generert kl [[date_h]]:[[date_i]]"
+"pdf03","Dokument generert [[date_y]]-[[date_m]]-[[date_d]] kl [[date_h]]:[[date_i]]"
+"pdf04","Side [[page_cu]]/[[page_nb]]"
+"pdf05","Skjemaene krever Adobe Reader 9"
