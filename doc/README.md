@@ -43,7 +43,7 @@ old wiki: http://wiki.spipu.net/doku.php?id=html2pdf:en:v4:accueil
      * `<qrcode></qrcode>` (CF Example 13)
     
         * can insert QRcode 2D barcodes
-        * (QR Code is registered trademark of DENSO WAVE INCORPORATED | http://www.denso-wave.com/qrcode/)
+        * (QR Code is registered trademark of DENSO WAVE INCORPORATED)
 
      * `<bookmark></bookmark>` (CF Examples 7 & About)
     
