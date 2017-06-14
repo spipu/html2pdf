@@ -124,11 +124,10 @@ Furthermore, if the summary is more than one page, you must have provided the ne
 ```
 
 ```php
-<?php
-    $html2pdf = new Spipu\Html2Pdf\Html2Pdf('P','A4','en');
-    $html2pdf->writeHTML($html);
-    $html2pdf->createIndex('Summary', 25, 12, true, true);
-    $html2pdf->Output();
+$html2pdf = new Spipu\Html2Pdf\Html2Pdf('P','A4','en');
+$html2pdf->writeHTML($html);
+$html2pdf->createIndex('Summary', 25, 12, true, true);
+$html2pdf->Output();
 ```
 
 ## Example with automatic index on specific page
@@ -218,9 +217,8 @@ Furthermore, if the summary is more than one page, you must have provided the ne
 ```
 
 ```php
-<?php
-    $html2pdf = new Spipu\Html2Pdf\Html2Pdf('P','A4','en');
-    $html2pdf->writeHTML($html);
-    $html2pdf->createIndex('Summary', 25, 12, false, true, 1);
-    $html2pdf->Output(');
+$html2pdf = new Spipu\Html2Pdf\Html2Pdf('P','A4','en');
+$html2pdf->writeHTML($html);
+$html2pdf->createIndex('Summary', 25, 12, false, true, 1);
+$html2pdf->Output();
 ```
