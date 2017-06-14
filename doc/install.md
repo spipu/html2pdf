@@ -31,7 +31,6 @@ composer require spipu/html2pdf
 Here is a HelloWorld example, that you can put on the root folder of your project.
 
 ```php
-<?php
 require __DIR__.'/vendor/autoload.php';
 
 use Spipu\Html2Pdf\Html2Pdf;
