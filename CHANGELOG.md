@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
   * change all the classes have moved
   * change all the classes have been renamed
   * change new tag structure : one class per tag
+  * change output method does not allow bool value on `$dest` parameter anymore
   * add PHP 7.0 and 7.1 compatibility
   * add improve string handling for UTF8
   * add better exception management
@@ -29,7 +30,8 @@ All notable changes to this project will be documented in this file.
   * fix bug on div position https://github.com/spipu/html2pdf/issues/73
   * fix margin-bottom on table https://github.com/spipu/html2pdf/issues/108
   * fix position of fallback image
-  * fix li bullet points altered by uppercase styles 
+  * fix li bullet points altered by uppercase styles
+  * fix save PDF file on server https://github.com/spipu/html2pdf/issues/164
 
 ## [4.6.1] - 2016-04-05
 

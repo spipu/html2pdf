@@ -461,20 +461,19 @@ class Html2Pdf
      *  I : send the file inline to the browser (default). The plug-in is used if available. The name given by name is used when one selects the "Save as" option on the link generating the PDF.
      *  D : send to the browser and force a file download with the name given by name.
      *  F : save to a local server file with the name given by name.
-     *  S : return the document as a string. name is ignored.
+     *  S : return the document as a string (name is ignored).
      *  FI: equivalent to F + I option
      *  FD: equivalent to F + D option
-     *  true  => I
-     *  false => S
+     *  E : return the document as base64 mime multi-part email attachment (RFC 2045)
      *
-     * @param string      $name The name of the file when saved.
-     * @param bool|string $dest Destination where to send the document.
+     * @param string $name The name of the file when saved.
+     * @param string $dest Destination where to send the document.
      *
      * @throws Html2PdfException
      * @return string content of the PDF, if $dest=S
      * @see    TCPDF::close
      */
-    public function Output($name = '', $dest = false)
+    public function Output($name = 'document.pdf', $dest = 'I')
     {
         // close the pdf and clean up
         $this->_cleanUp();
@@ -486,29 +485,22 @@ class Html2Pdf
             return '';
         }
 
-        // complete parameters
-        if ($dest===false) {
-            $dest = 'I';
-        }
-        if ($dest===true) {
-            $dest = 'S';
-        }
-        if ($dest==='') {
-            $dest = 'I';
-        }
-        if ($name=='') {
-            $name='document.pdf';
-        }
-
-        // clean up the destination
+        //Normalize parameters
         $dest = strtoupper($dest);
-        if (!in_array($dest, array('I', 'D', 'F', 'S', 'FI','FD'))) {
-            $dest = 'I';
+        if (!in_array($dest, array('I', 'D', 'F', 'S', 'FI','FD', 'E'))) {
+            throw new Html2PdfException('The output destination mode ['.$dest.'] is invalid');
         }
 
         // the name must be a PDF name
         if (strtolower(substr($name, -4))!='.pdf') {
             throw new Html2PdfException('The output document name ['.$name.'] is not a PDF name');
+        }
+
+        // if save on server: it must be an absolute path
+        if ($dest[0] == 'F') {
+            if (!in_array($name, array('/', '\\'))) {
+                $name = getcwd() . DIRECTORY_SEPARATOR . $name;
+            }
         }
 
         // call the output of TCPDF
