@@ -2,6 +2,7 @@
 
   * [How to Install Html2Pdf](./install.md)
   * [Basic Usage](./basic.md)
+  * [Barcodes](./barcodes.md)
 
 @todo import all the wiki here
 
