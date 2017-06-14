@@ -4,7 +4,7 @@
 
 You can directly add bar codes, by directly inserting the barcode tag in the HTML to convert :
 
-```
+```html
 <barcode type="EAN13" dimension="1D" value="45" label="label" style="width:30mm; height:6mm; color: #770000; font-size: 4mm"></barcode>
 ```
 
@@ -72,7 +72,7 @@ RAW2| RAW MODE
 
 You can directly add bar-codes to two-dimensional QR-Code, by inserting the tag QRcode directly in the HTML to convert:
 
-```
+```html
 <qrcode value="Value to Coder" ec="H" style="width: 50mm; background-color: white; color: black;"></qrcode>
 ```
 

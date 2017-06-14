@@ -22,7 +22,7 @@ If you do not understand why, it is because you have not read the Composer docum
 
 You have just to launch the following command on the root folder of your project:
 
-```
+```bash
 composer require spipu/html2pdf
 ```
 
@@ -30,7 +30,7 @@ composer require spipu/html2pdf
 
 Here is a HelloWorld example, that you can put on the root folder of your project.
 
-```
+```php
 <?php
 require __DIR__.'/vendor/autoload.php';
 
