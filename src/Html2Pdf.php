@@ -3597,11 +3597,6 @@ class Html2Pdf
      */
     protected function _tag_open_BARCODE($param)
     {
-        // for  compatibility with old versions < 3.29
-        $lstBarcode = array();
-        $lstBarcode['UPC_A']  =    'UPCA';
-        $lstBarcode['CODE39'] =    'C39';
-
         if (!isset($param['type'])) {
             $param['type'] = 'C39';
         }
@@ -3616,13 +3611,9 @@ class Html2Pdf
         }
 
         $param['type'] = strtoupper($param['type']);
-        if (isset($lstBarcode[$param['type']])) {
-            $param['type'] = $lstBarcode[$param['type']];
-        }
         if (!isset($param['dimension'])) {
             $param['dimension'] = '1D';
         }
- 
 
         $this->parsingCss->save();
         $this->parsingCss->analyse('barcode', $param);

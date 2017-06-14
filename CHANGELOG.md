@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
   * fix position of fallback image
   * fix li bullet points altered by uppercase styles
   * fix save PDF file on server https://github.com/spipu/html2pdf/issues/164
+  * remove old barcode type compatibility
 
 ## [4.6.1] - 2016-04-05
 
