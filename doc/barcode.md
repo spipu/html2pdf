@@ -17,7 +17,7 @@ Attribute| Default | Description
 dimension | 1D | create a 1D or 2D barcode
 type| C39 | type of barcode to use
 value| 0 | value to convert into barcode
-label| label | indicates that the label must be present below the bar code (label) or not (none) (non-mandatory, default: label)
+label| label | indicates that the label must be present below the bar code (label) or not (none) (not required)
 style| | sets the color for the bar, its width and height (without the label) and the size of the label if it is displayed (not required)
 
 ### 1D types

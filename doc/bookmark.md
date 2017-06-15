@@ -39,7 +39,7 @@ $fontName | helvetica | font name to use
 
 **IMPORTANT**:
 If you want the summary index on a specific page (using $onPage) you must have anticipated this page during the creation of HTML (see example below).
-Furthermore, if the summary is more than one page, you must have provided the necessary space...
+Furthermore, if the summary index takes more than one page, you must have provided the necessary number of pages...
 
 ## Example with automatic index on last page
 
