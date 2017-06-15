@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.0.0] - Unreleased
+## [5.0.0] - 2017-06-15
 
 **BREAK COMPATIBILITY**
 
-This new version is not compatibile with the 4.x.x version.
+This new version is not compatible with the 4.x.x version.
 
 Lots of classes / methods have been renamed, moved, deleted, exploded.
 
