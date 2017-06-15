@@ -1,5 +1,7 @@
 # Html2Pdf Documentation
 
+## Documentation
+
   * [How to Install Html2Pdf](./install.md)
   * [Basic Usage](./basic.md)
   * [Barcode](./barcode.md)
@@ -7,10 +9,6 @@
   * [Font](./font.md)
   * [Useful Methods](./methods.md)
   * [Tcpdf Methods](./tcpdf_methods.md)
-
-@todo import all the wiki here
-
-old wiki: http://wiki.spipu.net/doku.php?id=html2pdf:en:v4:accueil
 
 ## Recommandations
    
