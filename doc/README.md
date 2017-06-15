@@ -4,6 +4,8 @@
 
   * [How to Install Html2Pdf](./install.md)
   * [Basic Usage](./basic.md)
+  * [Page and Margin](./page.md)
+  * [Output](./output.md)
   * [Barcode](./barcode.md)
   * [Bookmark](./bookmark.md)
   * [Font](./font.md)
