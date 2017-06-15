@@ -106,8 +106,29 @@ It can contain any valid HTML.
 
 It is **REQUIRED** to specify the top margin, using the `backtop` attribute on the `<page>` tag.
 
-You can use ̀`css` and `class` attribute on this specific tag.
+You can use `css` and `class` attribute on this specific tag.
 
 ## Margin Explanation
 
-http://wiki.spipu.net/doku.php?id=html2pdf:en:v4:margins
+Here's a little explanation of different margins:
+
+```php
+<?php ob_start(); ?> 
+<page backtop="7mm" backbottom="7mm" backleft="10mm" backright="10mm"> 
+    <page_header> 
+         Page Header 
+    </page_header> 
+    <page_footer> 
+         Page Footer 
+    </page_footer> 
+
+    Page Content 
+</page> 
+<?php 
+
+$pdf = new \Spipu\Html2Pdf\Html2Pdf('P','A4','en', false, 'UTF-8', array(mL, mT, mR, mB)); 
+$pdf->writeHTML(ob_get_clean()); 
+$pdf->Output(); 
+```
+
+![Margins](res/margins.jpg "Margins")
