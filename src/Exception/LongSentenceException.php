@@ -104,7 +104,7 @@ class LongSentenceException extends Html2PdfException
     }
 
     /**
-     * get the image in error
+     * get the length
      *
      * @return string
      */
