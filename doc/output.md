@@ -34,13 +34,13 @@ $html2pdf->output('my_doc.pdf', 'D');
 ### Write the contents of a PDF file on the server
 
 ```php
-$html2pdf->Output('/absolute/path/file_xxxx.pdf', 'F');
+$html2pdf->output('/absolute/path/file_xxxx.pdf', 'F');
 ```
 
 ### Retrieve the contents of the PDF and then do whatever you want
 
 ```php
-$pdfContent = $html2pdf->Output('', 'S');
+$pdfContent = $html2pdf->output('', 'S');
 ```
 
 Then, you can send it by email, using a Bin Attachment document.
