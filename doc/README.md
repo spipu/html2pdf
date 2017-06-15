@@ -12,7 +12,8 @@
 
 ## Recommandations
    
-  * It is very important to provide valid HTML 4.01 to the converter, but only what is in the `<body>`. Use the `<page>` tag. 
+  * It is very important to provide valid HTML 4.01 to the converter, but only what is in the `<body>`.
+  * Use the `<page>` tag. Does not use the `<html>` or `<body>` tag.
   * for borders: it is advised that they are like `solid 1mm #000000`
   * for padding, they are applicable only on tags `table`, `th`, `td`, `div`, `li`
   * A default font can be specified, if the requested font does not exist or if no font is specified: `$html2pdf->setDefaultFont('Arial');`
