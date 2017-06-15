@@ -8,7 +8,7 @@ https://tcpdf.org/docs/fonts/
 
 ## Adding new font
 
-To use this new font, you must add to Html2Pdf, by using the following method:
+To use this new font, you must add it to Html2Pdf, by using the following method:
 
 ```php
 $html2pdf->addFont($family, $style, $file);
