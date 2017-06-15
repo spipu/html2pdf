@@ -8,11 +8,11 @@ All the specific Html2Pdf exceptions are under the namespace `\Spipu\Html2Pdf\Ex
 
 Exception|Error Code|Additional Info|Description
 ---------|----------|---------------|-----------
-Html2PdfException | 0 | | Can be used for every generic error during the process
-HtmlParsingException | 1 | <ul><li>getInvalidTag</li><li>getHtmlLine</li></ul> | Can occur if the html is no valid
-ImageException | 2 | <ul><li>getImage</li></ul> | Can occur if the asked image does not exist
-LongSentenceException | 3 | <ul><li>getSentence</li><li>getWidthBox</li><li>getLength</li></ul> | Can occur is a sentence is too long and does not fit in the current box
-TableException | 4 | | Can occur if the content of a TD does not fit on only one page
+Html2PdfException | 0 | | Occurs for every generic error during the process
+HtmlParsingException | 1 | <ul><li>getInvalidTag</li><li>getHtmlLine</li></ul> | Occurs if the html is no valid
+ImageException | 2 | <ul><li>getImage</li></ul> | Occurs if the asked image does not exist
+LongSentenceException | 3 | <ul><li>getSentence</li><li>getWidthBox</li><li>getLength</li></ul> | Occurs is a sentence is too long and does not fit in the current box
+TableException | 4 | | Occurs if the content of a TD does not fit on only one page
 
 ## Exception Format
 
