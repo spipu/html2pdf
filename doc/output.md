@@ -25,12 +25,6 @@ $html2pdf->output();
 $html2pdf->output('my_doc.pdf'); 
 ```
 
-or
-
-```php
-$html2pdf->output('my_doc.pdf' , 'I'); 
-```
-
 ### Forcing the download of PDF via web browser, with a specific name
 
 ```php
