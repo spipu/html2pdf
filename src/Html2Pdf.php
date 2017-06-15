@@ -265,7 +265,8 @@ class Html2Pdf
      */
     public function addExtension(ExtensionInterface $extension)
     {
-        $this->extensions[$extension->getName()] = $extension;
+        $name = strtolower($extension->getName());
+        $this->extensions[$name] = $extension;
     }
 
     /**
