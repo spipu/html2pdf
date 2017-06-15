@@ -1,5 +1,7 @@
 # Bookmark
 
+[back](./README.md)
+
 ## tag bookmark
 
 You can add automatic bookmark,  by directly inserting the bookmark tag in the HTML to convert :
@@ -221,3 +223,5 @@ $html2pdf->writeHTML($html);
 $html2pdf->createIndex('Summary', 25, 12, false, true, 1);
 $html2pdf->output();
 ```
+
+[back](./README.md)

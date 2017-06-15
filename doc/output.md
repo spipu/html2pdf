@@ -1,5 +1,7 @@
 # Output
 
+[back](./README.md)
+
 The main method to use is `output`.
  
 It takes two not required parameters.
@@ -44,3 +46,5 @@ $pdfContent = $html2pdf->output('', 'S');
 ```
 
 Then, you can send it by email, using a Bin Attachment document.
+
+[back](./README.md)

@@ -1,5 +1,7 @@
 # Useful Methods
 
+[back](./README.md)
+
 ## Image Must Exist
 
 By default, if you try to use an image that Html2Pdf can not read, it will throw an `ImageException`.
@@ -59,3 +61,5 @@ You can get the current Html2Pdf version with the following methods:
 $html2pdf->getVersion();
 $html2pdf->getVersionAsArray();
 ```
+
+[back](./README.md)

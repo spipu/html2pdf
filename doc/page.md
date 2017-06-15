@@ -1,5 +1,7 @@
 # Page Management
 
+[back](./README.md)
+
 To facilitate the layout, three specific tags have been added:
  
   * `<page>`
@@ -132,3 +134,5 @@ $pdf->Output();
 ```
 
 ![Margins](res/margins.jpg "Margins")
+
+[back](./README.md)

@@ -1,5 +1,7 @@
 # How to Install Html2Pdf
 
+[back](./README.md)
+
 ## Composer and Packagist
 
 You must use Composer to install Html2Pdf.
@@ -58,5 +60,5 @@ To deliver you app on a server, you have to (on you dev environement) :
   * Zip all
 
 That's all, you have a beautifull package that can be deliver on a server !
-  
- 
+
+[back](./README.md)

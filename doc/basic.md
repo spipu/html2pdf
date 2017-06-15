@@ -1,10 +1,12 @@
 # Basic Usage
 
+[back](./README.md)
+
 ## PHP Constructor
 
 The main class of this library is `\Spipu\Html2Pdf\Html2Pdf`.
 
-The PHP constructor take the following parameters:
+The PHP constructor takes the following parameters:
 
 Variable | Default value |Description
 ---------|---------------|--------------
@@ -13,10 +15,10 @@ $format | A4 | The default page format used for pages. The list of the available
 $lang | fr | Language to use, for some minor translations. The list of the available languages are [here](https://github.com/spipu/html2pdf/tree/master/src/locale)
 $unicode | true | means that the input HTML string is unicode
 $encoding |UTF-8 | charset encoding of the input HTML string
-$margins | array(5, 5, 5, 8) | Main margins of the page (left, top, right, bottom)
+$margins | array(5, 5, 5, 8) | Main margins of the page (left, top, right, bottom) in mm
 $pdfa | false | If TRUE set the document to PDF/A mode
 
-In most of the case, you will juste use the 3 first parameters :
+In most of the case, you will just use the 3 first parameters :
 
 ```php
 $html2pdf = new \Spipu\Html2Pdf\Html2Pdf('P', 'A4', 'en');
@@ -69,3 +71,5 @@ $html2pdf = new \Spipu\Html2Pdf\Html2Pdf('P', 'A4', 'en');
 $html2pdf->writeHTML('<h1>HelloWorld</h1>This is my first page');
 $html2pdf->output();
 ```
+
+[back](./README.md)

@@ -1,4 +1,4 @@
-# Extensions
+# SVG tags
 
 [back](./README.md)
 

@@ -1,22 +1,24 @@
 # BarCode
 
+[back](./README.md)
+
 ## tag barcode
 
-You can directly add bar codes, by directly inserting the barcode tag in the HTML to convert :
+You can add barcode, by directly inserting the `<barcode>` tag in the HTML to convert :
 
 ```html
-<barcode type="EAN13" dimension="1D" value="45" label="label" style="width:30mm; height:6mm; color: #770000; font-size: 4mm"></barcode>
+<barcode dimension="1D" type="EAN13" value="45" label="label" style="width:30mm; height:6mm; color: #770000; font-size: 4mm"></barcode>
 ```
 
 ### attributes
 
 Attribute| Default | Description
 ---------|---------|-------------
+dimension | 1D | create a 1D or 2D barcode
 type| C39 | type of barcode to use
 value| 0 | value to convert into barcode
 label| label | indicates that the label must be present below the bar code (label) or not (none) (non-mandatory, default: label)
 style| | sets the color for the bar, its width and height (without the label) and the size of the label if it is displayed (not required)
-dimension | 1D | create a 1D or 2D barcode
 
 ### 1D types
 
@@ -83,3 +85,5 @@ Attribute| Default | Description
 value| | value to convert into barcode
 ec| H | level of error correction (L, M, Q, H)
 style| | sets the width, color, background-color, and border of the qrcode
+
+[back](./README.md)

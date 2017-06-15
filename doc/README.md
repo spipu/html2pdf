@@ -1,5 +1,6 @@
 # Html2Pdf Documentation
 
+
 ## Documentation
 
   * [How to Install Html2Pdf](./install.md)
@@ -9,7 +10,9 @@
   * [Barcode](./barcode.md)
   * [Bookmark](./bookmark.md)
   * [Font](./font.md)
+  * [SVG](./svg.md)
   * [Extensions](./extension.md)
+  * [Exceptions](./exception.md)
   * [Useful Methods](./methods.md)
   * [Tcpdf Methods](./tcpdf_methods.md)
 

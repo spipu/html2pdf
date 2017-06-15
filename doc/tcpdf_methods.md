@@ -1,5 +1,7 @@
 # TCPDF Methods
 
+[back](./README.md)
+
 All the TCPDF methods can be used, by using the `pdf` property:
 
 ```php
@@ -42,3 +44,5 @@ $html2pdf->output();
 ## Document Protection
 
 http://wiki.spipu.net/doku.php?id=html2pdf:en:v4:protect
+
+[back](./README.md)
