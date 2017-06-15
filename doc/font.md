@@ -33,7 +33,7 @@ You have just to se the new font family name in your css.
 
 ## Setting the default font
 
-You can set the default font to use with the method `setDefaultFont`:
+You can set the default font to use with the following method:
 
 ```php
 $html2pdf->setDefaultFont($default);
