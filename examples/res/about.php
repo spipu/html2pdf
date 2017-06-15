@@ -237,6 +237,6 @@
         <li>Elle ne permet généralement pas la conversion directe d'une page HTML en PDF, ni la conversion du résultat d'un WYSIWYG en PDF.</li>
         <li>Cette librairie est là pour faciliter la génération de documents PDF, pas pour convertir n'importe quelle page HTML.</li>
         <li>Les formulaires ne marchent pas avec tous les viewers PDFs...</li>
-        <li>Lisez bien le wiki : <a href="http://wiki.spipu.net/doku.php?id=html2pdf:Accueil">http://wiki.spipu.net/doku.php?id=html2pdf:Accueil</a>.</li>
+        <li>Lisez bien la documentation : <a href="https://github.com/spipu/html2pdf/blob/master/doc/README.md">https://github.com/spipu/html2pdf/blob/master/doc/README.md</a>.</li>
     </ul>
 </page>
