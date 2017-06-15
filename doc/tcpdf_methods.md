@@ -1,6 +1,6 @@
-# Useful Methods
+# TCPDF Methods
 
-All the Tcpdf methods can be used, by using the `pdf` property:
+All the TCPDF methods can be used, by using the `pdf` property:
 
 ```php
 $html2pdf->pdf->...
