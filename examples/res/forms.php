@@ -26,7 +26,7 @@ input, textarea, select
     font-size: 11pt;
 }
 </style>
-<page footer="form">
+<page footer="form,date,time">
     <h1>Test de formulaire</h1><br>
     <br>
     <form action="<?php echo $url; ?>">

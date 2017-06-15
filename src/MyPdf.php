@@ -70,18 +70,18 @@ class MyPdf extends \TCPDF
      *
      * @param boolean $page display the page number
      * @param boolean $date display the date
-     * @param boolean $hour display the hour
+     * @param boolean $time display the time
      * @param boolean $form display a warning abour forms
      * @access public
      */
-    public function SetMyFooter($page = false, $date = false, $hour = false, $form = false)
+    public function SetMyFooter($page = false, $date = false, $time = false, $form = false)
     {
         $page    = ($page ? true : false);
         $date    = ($date ? true : false);
-        $hour    = ($hour ? true : false);
+        $time    = ($time ? true : false);
         $form    = ($form ? true : false);
 
-        $this->_footerParam = array('page' => $page, 'date' => $date, 'hour' => $hour, 'form' => $form);
+        $this->_footerParam = array('page' => $page, 'date' => $date, 'time' => $time, 'form' => $form);
     }
 
     /**
@@ -97,13 +97,13 @@ class MyPdf extends \TCPDF
         if ($this->_footerParam['form']) {
             $txt = (Locale::get('pdf05'));
         }
-        if ($this->_footerParam['date'] && $this->_footerParam['hour']) {
+        if ($this->_footerParam['date'] && $this->_footerParam['time']) {
             $txt.= ($txt ? ' - ' : '').(Locale::get('pdf03'));
         }
-        if ($this->_footerParam['date'] && !$this->_footerParam['hour']) {
+        if ($this->_footerParam['date'] && !$this->_footerParam['time']) {
             $txt.= ($txt ? ' - ' : '').(Locale::get('pdf01'));
         }
-        if (!$this->_footerParam['date'] && $this->_footerParam['hour']) {
+        if (!$this->_footerParam['date'] && $this->_footerParam['time']) {
             $txt.= ($txt ? ' - ' : '').(Locale::get('pdf02'));
         }
         if ($this->_footerParam['page']) {

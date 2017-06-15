@@ -2805,15 +2805,15 @@ class Html2Pdf
                 }
                 $page    = in_array('page', $lst);
                 $date    = in_array('date', $lst);
-                $hour    = in_array('heure', $lst);
+                $time    = in_array('time', $lst);
                 $form    = in_array('form', $lst);
             } else {
                 $page    = null;
                 $date    = null;
-                $hour    = null;
+                $time    = null;
                 $form    = null;
             }
-            $this->pdf->SetMyFooter($page, $date, $hour, $form);
+            $this->pdf->SetMyFooter($page, $date, $time, $form);
         // else => we use the last page set used
         } else {
             $this->parsingCss->save();

@@ -18,6 +18,7 @@ Lots of classes / methods have been renamed, moved, deleted, exploded.
   * change new tag structure : one class per tag
   * change output method does not allow bool value on `$dest` parameter anymore
   * change output method has been renamed from `Output` to `output`
+  * change values for the footer`attribute` of the `page` tag
   * add PHP 7.0 and 7.1 compatibility
   * add improve string handling for UTF8
   * add better exception management
