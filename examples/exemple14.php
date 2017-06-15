@@ -24,7 +24,7 @@ try {
     $html2pdf->setTestIsImage(false);
     $html2pdf->setFallbackImage('./res/off.png');
     $html2pdf->writeHTML($content);
-    $html2pdf->Output('exemple14.pdf');
+    $html2pdf->output('exemple14.pdf');
 } catch (Html2PdfException $e) {
     $formatter = new ExceptionFormatter($e);
     echo $formatter->getHtmlMessage();

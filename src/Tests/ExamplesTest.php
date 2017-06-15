@@ -48,8 +48,8 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
         $content = 'use Spipu\Html2Pdf\Html2Pdf; '.$content;
 
         // get the output
-        $regexp = '/\$html2pdf->Output\(([^\)]*)\);/';
-        $replace = 'return $html2pdf->Output(\'test.pdf\', \'S\');';
+        $regexp = '/\$html2pdf->output\(([^\)]*)\);/';
+        $replace = 'return $html2pdf->output(\'test.pdf\', \'S\');';
         $content = preg_replace($regexp, $replace, $content);
 
         // execute

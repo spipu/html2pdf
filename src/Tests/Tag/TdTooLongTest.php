@@ -36,6 +36,6 @@ class TdTooLongTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<table><tr><td style="width: 28mm">'.$sentences.'</td></tr></table>');
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 }

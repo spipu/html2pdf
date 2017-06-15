@@ -22,7 +22,7 @@ try {
 
     $html2pdf = new Html2Pdf('P', 'A4', 'fr');
     $html2pdf->writeHTML($content);
-    $html2pdf->Output('exemple06.pdf');
+    $html2pdf->output('exemple06.pdf');
 } catch (Html2PdfException $e) {
     $formatter = new ExceptionFormatter($e);
     echo $formatter->getHtmlMessage();

@@ -68,7 +68,7 @@ if ($generate) {
     try {
         $html2pdf = new Html2Pdf('P', 'A4', 'fr');
         $html2pdf->writeHTML($content);
-        $html2pdf->Output('exemple09.pdf');
+        $html2pdf->output('exemple09.pdf');
         exit;
     } catch (Html2PdfException $e) {
         $formatter = new ExceptionFormatter($e);

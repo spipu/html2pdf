@@ -23,7 +23,7 @@ try {
     $html2pdf = new Html2Pdf('P', 'A4', 'fr');
     $html2pdf->pdf->SetDisplayMode('fullpage');
     $html2pdf->writeHTML($content);
-    $html2pdf->Output('svg_tree.pdf');
+    $html2pdf->output('svg_tree.pdf');
 } catch (Html2PdfException $e) {
     $formatter = new ExceptionFormatter($e);
     echo $formatter->getHtmlMessage();

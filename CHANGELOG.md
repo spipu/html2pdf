@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
   * change all the classes have been renamed
   * change new tag structure : one class per tag
   * change output method does not allow bool value on `$dest` parameter anymore
+  * change output method has been renamed from `Output` to `output`
   * add PHP 7.0 and 7.1 compatibility
   * add improve string handling for UTF8
   * add better exception management

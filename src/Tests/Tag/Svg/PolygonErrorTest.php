@@ -30,6 +30,6 @@ class PolygonErrorTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<polygon />');
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 }

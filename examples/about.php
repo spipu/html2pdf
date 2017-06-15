@@ -25,7 +25,7 @@ try {
 
     $html2pdf->writeHTML($content);
     $html2pdf->createIndex('Sommaire', 30, 12, false, true, 2);
-    $html2pdf->Output('about.pdf');
+    $html2pdf->output('about.pdf');
 } catch (Html2PdfException $e) {
     $formatter = new ExceptionFormatter($e);
     echo $formatter->getHtmlMessage();

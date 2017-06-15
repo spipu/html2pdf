@@ -30,6 +30,6 @@ class SrcErrorTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('Hello World <img src="'.dirname(__FILE__).'/res/wrong.png" />');
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 }

@@ -30,6 +30,6 @@ class BackgroundErrorTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<div style="background-image: url('.dirname(__FILE__).'/res/wrong.png)">Hello World</div>');
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 }

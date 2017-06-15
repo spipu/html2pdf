@@ -29,7 +29,7 @@ class BackgroundOkTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<div style="background-image: url('.dirname(__FILE__).'/res/logo.png)">Hello World</div>');
-        $result = $object->Output('test.pdf', 'S');
+        $result = $object->output('test.pdf', 'S');
 
         $this->assertContains('PhpUnit Test', $result);
     }

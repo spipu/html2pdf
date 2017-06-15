@@ -23,7 +23,7 @@ try {
     $html2pdf = new Html2Pdf('L', 'A4', 'fr', true, 'UTF-8', 10);
     $html2pdf->pdf->SetDisplayMode('fullpage');
     $html2pdf->writeHTML($content);
-    $html2pdf->Output('regle.pdf');
+    $html2pdf->output('regle.pdf');
 } catch (Html2PdfException $e) {
     $formatter = new ExceptionFormatter($e);
     echo $formatter->getHtmlMessage();

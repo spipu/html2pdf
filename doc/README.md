@@ -9,6 +9,7 @@
   * [Barcode](./barcode.md)
   * [Bookmark](./bookmark.md)
   * [Font](./font.md)
+  * [Extensions](./extension.md)
   * [Useful Methods](./methods.md)
   * [Tcpdf Methods](./tcpdf_methods.md)
 

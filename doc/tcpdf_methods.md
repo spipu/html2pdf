@@ -14,7 +14,7 @@ You can change how your PDF document will be displayed, with the `SetDisplayMode
 $html2pdf = new \Spipu\Html2Pdf\Html2Pdf('P', 'A4', 'en');
 $html2pdf->pdf->SetDisplayMode('fullpage');
 $html2pdf->writeHTML($htmlContent);
-$html2pdf->Output();
+$html2pdf->output();
 ```
 
 The parameters are:
@@ -36,7 +36,7 @@ $html2pdf->pdf->SetTitle('My Pdf Document');
 $html2pdf->pdf->SetSubject('it will be about something important');
 $html2pdf->pdf->SetKeywords('example, keywords, others');
 $html2pdf->writeHTML($htmlContent);
-$html2pdf->Output();
+$html2pdf->output();
 ```
 
 ## Document Protection

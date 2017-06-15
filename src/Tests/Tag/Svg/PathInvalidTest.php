@@ -37,6 +37,6 @@ class PathInvalidTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML($html);
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 }

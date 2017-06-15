@@ -30,7 +30,7 @@ class ParsingTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<bad_tag>Hello World</bad_tag>');
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 
     /**
@@ -44,7 +44,7 @@ class ParsingTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<i><u>Hello</u></i></b>');
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 
     /**
@@ -58,7 +58,7 @@ class ParsingTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<b><u><i>Hello</u></i></b>');
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 
     /**
@@ -72,7 +72,7 @@ class ParsingTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<b><i>Hello</i>');
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 
     /**
@@ -86,6 +86,6 @@ class ParsingTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<az1-r_h>Hello</az1-r_h>');
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 }

@@ -24,7 +24,7 @@ try {
 
     $html2pdf->pdf->SetDisplayMode('real');
     $html2pdf->writeHTML($content);
-    $html2pdf->Output('utf8.pdf');
+    $html2pdf->output('utf8.pdf');
 } catch (Html2PdfException $e) {
     $formatter = new ExceptionFormatter($e);
     echo $formatter->getHtmlMessage();

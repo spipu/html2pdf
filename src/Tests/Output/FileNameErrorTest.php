@@ -30,6 +30,6 @@ class FileNameErrorTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML('<p>Hello World</p>');
-        $object->Output('test.bad', 'S');
+        $object->output('test.bad', 'S');
     }
 }

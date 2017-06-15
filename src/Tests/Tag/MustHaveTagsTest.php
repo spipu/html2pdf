@@ -34,7 +34,7 @@ class MustHaveTagsTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML($html);
-        $result = $object->Output('test.pdf', 'S');
+        $result = $object->output('test.pdf', 'S');
 
         $this->assertNotEmpty($result);
     }
@@ -55,7 +55,7 @@ class MustHaveTagsTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML($html);
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 
     /**
@@ -74,6 +74,6 @@ class MustHaveTagsTest extends \PHPUnit_Framework_TestCase
         $object = new Html2Pdf();
         $object->pdf->SetTitle('PhpUnit Test');
         $object->writeHTML($html);
-        $object->Output('test.pdf', 'S');
+        $object->output('test.pdf', 'S');
     }
 }

@@ -473,7 +473,7 @@ class Html2Pdf
      * @return string content of the PDF, if $dest=S
      * @see    TCPDF::close
      */
-    public function Output($name = 'document.pdf', $dest = 'I')
+    public function output($name = 'document.pdf', $dest = 'I')
     {
         // close the pdf and clean up
         $this->_cleanUp();
@@ -536,14 +536,19 @@ class Html2Pdf
     {
         $html = $this->parsingHtml->prepareHtml($html);
 
+        $html = preg_replace('/<page([^>]*)>/isU', '<hr>Page : $1<hr><div$1>', $html);
         $html = preg_replace('/<page_header([^>]*)>/isU', '<hr>Page Header : $1<hr><div$1>', $html);
         $html = preg_replace('/<page_footer([^>]*)>/isU', '<hr>Page Footer : $1<hr><div$1>', $html);
-        $html = preg_replace('/<page([^>]*)>/isU', '<hr>Page : $1<hr><div$1>', $html);
         $html = preg_replace('/<\/page([^>]*)>/isU', '</div><hr>', $html);
+        $html = preg_replace('/<\/page_header([^>]*)>/isU', '</div><hr>', $html);
+        $html = preg_replace('/<\/page_footer([^>]*)>/isU', '</div><hr>', $html);
+
         $html = preg_replace('/<bookmark([^>]*)>/isU', '<hr>bookmark : $1<hr>', $html);
         $html = preg_replace('/<\/bookmark([^>]*)>/isU', '', $html);
+
         $html = preg_replace('/<barcode([^>]*)>/isU', '<hr>barcode : $1<hr>', $html);
         $html = preg_replace('/<\/barcode([^>]*)>/isU', '', $html);
+
         $html = preg_replace('/<qrcode([^>]*)>/isU', '<hr>qrcode : $1<hr>', $html);
         $html = preg_replace('/<\/qrcode([^>]*)>/isU', '', $html);
 
