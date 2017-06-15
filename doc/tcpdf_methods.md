@@ -43,6 +43,20 @@ $html2pdf->output();
 
 ## Document Protection
 
-http://wiki.spipu.net/doku.php?id=html2pdf:en:v4:protect
+You can protect your PDF document, with the `setProtection` method:
+
+```php
+$html2pdf->pdf->SetProtection($permissions, $userPass, $ownerPass, $mode, $pubkeys);
+```
+
+The parameters are:
+
+Parameter| Default | Description
+---------|---------|-------------
+$permissions | | the set of permissions (specify the ones you want to block):<ul><li>print : Print the document;</li><li>modify : Modify the contents of the document by operations other than those controlled by 'fill-forms', 'extract' and 'assemble';</li><li>copy : Copy or otherwise extract text and graphics from the document;</li><li>annot-forms : Add or modify text annotations, fill in interactive form fields, and, if 'modify' is also set, create or modify interactive form fields (including signature fields);</li><li>fill-forms : Fill in existing interactive form fields (including signature fields), even if 'annot-forms' is not specified;</li><li>extract : Extract text and graphics (in support of accessibility to users with disabilities or for other purposes);</li><li>assemble : Assemble the document (insert, rotate, or delete pages and create bookmarks or thumbnail images), even if 'modify' is not set;</li><li>print-high : Print the document to a representation from which a faithful digital copy of the PDF content could be generated. When this is not set, printing is limited to a low-level representation of the appearance, possibly of degraded quality.</li><li>owner : (inverted logic - only for public-key) when set permits change of encryption and enables all other permissions.</li></ul>
+$userPass | '' | user password. Empty by default.
+$ownerPass | null | owner password. If not specified, a random value is used.
+$mode | 0 | encryption strength: 0 = RC4 40 bit; 1 = RC4 128 bit; 2 = AES 128 bit; 3 = AES 256 bit.
+$pubkeys | null| array of recipients containing public-key certificates ('c') and permissions ('p'). For example: array(array('c' => 'file://../examples/data/cert/tcpdf.crt', 'p' => array('print')))
 
 [back](./README.md)

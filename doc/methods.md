@@ -9,7 +9,7 @@ By default, if you try to use an image that Html2Pdf can not read, it will throw
 You can disable this test with the following method:
 
 ```php
-$html2pdf->setTestTdInOnePage(false);
+$html2pdf->setTestIsImage(false);
 ```
 
 If you disable the test, and if an image does not exist, it will display a 16x16 grey square instead.
@@ -41,7 +41,7 @@ Rather than disabling this test it is better to break the TD content in smaller 
 
 ## Debug Mode
 
-You can enable a debug mode wy using the following method:
+You can enable a debug mode by using the following method:
 
 ```php
 $html2pdf->setModeDebug();

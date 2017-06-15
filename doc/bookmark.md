@@ -4,7 +4,7 @@
 
 ## tag bookmark
 
-You can add automatic bookmark,  by directly inserting the bookmark tag in the HTML to convert :
+You can add automatic bookmark,  by directly inserting the `<bookmark>` tag in the HTML to convert :
 
 ```html
 <bookmark title="My Title" level="0" ></bookmark>
@@ -15,11 +15,11 @@ You can add automatic bookmark,  by directly inserting the bookmark tag in the H
 Attribute| Default | Description
 ---------|---------|-------------
 title | | Title of the bookmark
-level | 0 | Level of the bookmark, must be a positive integer. Level 0 in the main level
+level | 0 | Level of the bookmark, must be a positive integer. Level 0 is the main level
 
 ## Page Index
 
-You can add an index (summary) of all bookmarks automatically inserted through the following function : 
+You can insert an index (summary) of all bookmarks automatically, using the following function : 
 
 ```php
 $html2pdf->createIndex($titre, $sizeTitle, $sizeBookmark, $bookmarkTitle, $displayPage, $onPage, $fontName);
