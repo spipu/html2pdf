@@ -54,7 +54,7 @@ The main method to use is `output`.
  
 It takes two not required parameters. You can find more information on the [output](output.md) documentation.
 
-If you do not dive any parameters, it will send the PDF file to the browser, to display it.
+If you do not give any parameters, it will send the PDF file to the browser, to display it.
 
 ```php
 $html2pdf->output();
