@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [5.0.0] - Unreleased
 
+**BREAK COMPATIBILITY**
+
+This new version is not compatibile with the 4.x.x version.
+
+Lots of classes / methods have been renamed, moved, deleted, exploded.
+
   * change licence to OSL-3.0
   * change PHP minimum compatibility to 5.4
   * change Using Namespaces
