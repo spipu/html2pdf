@@ -112,8 +112,7 @@ You can use `css` and `class` attribute on this specific tag.
 
 Here's a little explanation of different margins:
 
-```php
-<?php ob_start(); ?> 
+```html
 <page backtop="7mm" backbottom="7mm" backleft="10mm" backright="10mm"> 
     <page_header> 
          Page Header 
@@ -124,10 +123,11 @@ Here's a little explanation of different margins:
 
     Page Content 
 </page> 
-<?php 
+```
 
+```php
 $pdf = new \Spipu\Html2Pdf\Html2Pdf('P','A4','en', false, 'UTF-8', array(mL, mT, mR, mB)); 
-$pdf->writeHTML(ob_get_clean()); 
+$pdf->writeHTML($htmlContent); 
 $pdf->Output(); 
 ```
 
