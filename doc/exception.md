@@ -16,7 +16,7 @@ TableException | 4 | | Occurs if the content of a TD does not fit on only one pa
 
 ## Exception Format
 
-An exception formatter can be used to display the exceptions `\Spipu\Html2Pdf\Exception\ExceptionFormatter`.
+An exception formatter can be used to display the exceptions: `\Spipu\Html2Pdf\Exception\ExceptionFormatter`.
 
 It takes the current exception as a parameter of the constructor.
 
