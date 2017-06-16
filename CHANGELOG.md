@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.1] - 2017-06-15
+
+  * fix issue #200 pb with absolute path when saving the pdf file on server 
+
 ## [5.0.0] - 2017-06-15
 
 **BREAK COMPATIBILITY**
