@@ -183,6 +183,7 @@ class Css
         $this->value['yc'] = null;
 
         $this->value['page-break-before'] = null;
+        $this->value['page-break-inside'] = null;
         $this->value['page-break-after']  = null;
     }
 
@@ -1189,6 +1190,7 @@ class Css
                     $this->value[$nom] = intval($val);
                     break;
                 case 'page-break-before':
+                case 'page-break-inside':
                 case 'page-break-after':
                     $this->value[$nom] = $val;
                     break;
