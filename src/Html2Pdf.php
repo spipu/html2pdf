@@ -232,7 +232,7 @@ class Html2Pdf
         return array(
             'major'     => 5,
             'minor'     => 0,
-            'revision'  => 2,
+            'revision'  => 1,
         );
     }
 
@@ -3140,6 +3140,11 @@ class Html2Pdf
      */
     protected function _tag_open_DIV($param, $other = 'div')
     {
+        if ($this->parsingCss->value['page-break-before'] == "always") {
+              $this->_setNewPage(null, '', null, $this->_defaultTop);
+              $this->parsingCss->setPosition();
+        }
+
         if ($this->_isForOneLine) {
             return false;
         }
@@ -3549,6 +3554,12 @@ class Html2Pdf
         if ($block) {
             $this->_tag_open_BR(array());
         }
+
+        if ($this->parsingCss->value['page-break-after'] == "always") {
+              $this->_setNewPage(null, '', null, $this->_defaultTop);
+              $this->parsingCss->setPosition();
+        }
+
         if (!is_null($this->debug)) {
             $this->debug->addStep(strtoupper($other), false);
         }
