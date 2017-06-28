@@ -3145,9 +3145,31 @@ class Html2Pdf
               $this->parsingCss->setPosition();
         }
 
+        if ($this->parsingCss->value['page-break-inside'] == "avoid") {
+            $this->_maxH = 0;
+
+            // create a sub HTML2PDF to execute the content of the tag, to get the dimensions
+            $sub = $this->createSubHTML();
+            $sub->parsingHtml->code = $this->parsingHtml->getLevel($this->_parsePos);
+            $sub->_makeHTMLcode();
+            $y = $this->pdf->getY();
+
+            // if the content does not fit on the page => new page
+            if (
+                $sub->_maxY < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) &&
+                $y + $sub->_maxY>=($this->pdf->getH() - $this->pdf->getbMargin())
+            ) {
+                $this->_setNewPage(null, '', null, $this->_defaultTop);
+            }
+
+            // destroy the sub HTML2PDF
+            $this->_destroySubHTML($sub);
+        }
+
         if ($this->_isForOneLine) {
             return false;
         }
+
         if (!is_null($this->debug)) {
             $this->debug->addStep(strtoupper($other), true);
         }
