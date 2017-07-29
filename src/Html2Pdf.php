@@ -160,7 +160,7 @@ class Html2Pdf
      * @param String  $encoding    charset encoding; default is UTF-8
      * @param array   $margins     Default margins (left, top, right, bottom)
      * @param boolean $pdfa        If TRUE set the document to PDF/A mode.
-     * 
+     *
      * @return Html2Pdf $this
      */
     public function __construct(
@@ -498,8 +498,12 @@ class Html2Pdf
         }
 
         // if save on server: it must be an absolute path
-        if ($dest[0] == 'F' && $name[0] !== DIRECTORY_SEPARATOR) {
-            $name = getcwd() . DIRECTORY_SEPARATOR . $name;
+        if ($dest[0] == 'F') {
+            $isWindowsPath = preg_match("/[A-Z]:\\\\/", $name);
+            // If windows is not saving on a remote file server
+            if($name[0] !== DIRECTORY_SEPARATOR &&  $isWindowsPath === false ){
+                $name = getcwd() . DIRECTORY_SEPARATOR . $name;
+            }
         }
 
         // call the output of TCPDF
