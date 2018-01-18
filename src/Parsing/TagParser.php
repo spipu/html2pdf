@@ -45,17 +45,17 @@ class TagParser
             $e->setInvalidTag($code);
             throw $e;
         }
-        $close     = ($match[1] == '/' ? true : false);
+        $close     = ($match[1] === '/' ? true : false);
         $autoclose = preg_match('/\/>$/isU', $code);
         $name      = strtolower($match[2]);
 
         // required parameters (depends on the tag name)
         $defaultParams = array();
         $defaultParams['style'] = '';
-        if ($name == 'img') {
+        if ($name === 'img') {
             $defaultParams['alt'] = '';
             $defaultParams['src'] = '';
-        } elseif ($name == 'a') {
+        } elseif ($name === 'a') {
             $defaultParams['href'] = '';
         }
 

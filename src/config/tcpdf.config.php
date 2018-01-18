@@ -94,7 +94,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
     // Automatic calculation for the following K_PATH_URL constant
     $k_path_url = $k_path_main; // default value for console mode
     if (isset($_SERVER['HTTP_HOST']) and (!empty($_SERVER['HTTP_HOST']))) {
-        if (isset($_SERVER['HTTPS']) and (!empty($_SERVER['HTTPS'])) and strtolower($_SERVER['HTTPS'])!='off') {
+        if (isset($_SERVER['HTTPS']) and (!empty($_SERVER['HTTPS'])) and strtolower($_SERVER['HTTPS']) !== 'off') {
             $k_path_url = 'https://';
         } else {
             $k_path_url = 'http://';

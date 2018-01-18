@@ -72,7 +72,7 @@ class HtmlLexer
             unset($parse);
         }
         // if a text is present in the end, we save it
-        if ($str != '') {
+        if ($str !== '') {
             $tokens[] = new Token('txt', $str);
         }
 

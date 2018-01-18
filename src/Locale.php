@@ -44,7 +44,7 @@ class Locale
      */
     public static function load($code)
     {
-        if (self::$directory===null) {
+        if (self::$directory === null) {
             self::$directory = __DIR__ . '/locale/';
         }
 
@@ -75,7 +75,7 @@ class Locale
         $handle = fopen($file, 'r');
         while (!feof($handle)) {
             $line = fgetcsv($handle);
-            if (count($line)!=2) {
+            if (count($line) !=2) {
                 continue;
             }
             self::$list[trim($line[0])] = trim($line[1]);
