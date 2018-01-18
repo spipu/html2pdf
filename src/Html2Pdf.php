@@ -270,6 +270,15 @@ class Html2Pdf
     }
 
     /**
+     * Get the number of pages
+     * @return int
+     */
+    public function getNbPages()
+    {
+        return $this->_page;
+    }
+
+    /**
      * Initialize the registered extensions
      *
      * @throws Html2PdfException
@@ -3147,6 +3156,7 @@ class Html2Pdf
         if ($this->_isForOneLine) {
             return false;
         }
+
         if (!is_null($this->debug)) {
             $this->debug->addStep(strtoupper($other), true);
         }
@@ -3275,6 +3285,10 @@ class Html2Pdf
         $maxY = round($maxY, 6);
         $endX = round($endX, 6);
         $endY = round($endY, 6);
+
+        if ($this->parsingCss->value['page-break-before'] == "always") {
+            $this->_setNewPage();
+        }
 
         if (!$this->parsingCss->value['position']) {
             if ($w < $maxW && $endX >= $maxX) {
@@ -3544,15 +3558,19 @@ class Html2Pdf
             $this->_loadMax();
         }
 
-        $block = ($this->parsingCss->value['display']!='inline' && $this->parsingCss->value['position']!='absolute');
+        $newLineAfter = ($this->parsingCss->value['display']!='inline' && $this->parsingCss->value['position']!='absolute');
+        $newPageAfter = ($this->parsingCss->value['page-break-after'] == "always");
 
         $this->parsingCss->load();
         $this->parsingCss->fontSet();
         $this->_loadMargin();
 
-        if ($block) {
+        if ($newPageAfter) {
+            $this->_setNewPage();
+        } elseif ($newLineAfter) {
             $this->_tag_open_BR(array());
         }
+
         if (!is_null($this->debug)) {
             $this->debug->addStep(strtoupper($other), false);
         }
