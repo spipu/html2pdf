@@ -1,0 +1,5 @@
+"pdf01","Dokument wygenerowany dnia [[date_y]]-[[date_m]]-[[date_d]]"
+"pdf02","Dokument wygenerowany o [[date_h]]:[[date_i]]"
+"pdf03","Dokument wygenerowany dnia [[date_y]]-[[date_m]]-[[date_d]] o [[date_h]]:[[date_i]]"
+"pdf04","Strona [[page_cu]]/[[page_nb]]"
+"pdf05","Formularze wymagają użycia programu Adobe Reader 9"
