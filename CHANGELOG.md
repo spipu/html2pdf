@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.3](https://github.com/spipu/html2pdf/compare/v5.0.2...master) - unreleased
+
+  * Add support of css page-break-before:always and page-break-after:always, based on PR #190
+  * Add support of css page-break-inside:avoid, based on NOBREAK tag
+
 ## [5.0.2](https://github.com/spipu/html2pdf/compare/v5.0.1...master) - unreleased
 
   * fix changelog file
