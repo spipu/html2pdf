@@ -29,7 +29,7 @@ class DebugTest extends \PHPUnit_Framework_TestCase
     {
         $html = '<p>First Tag</p>';
         $html.= '<div>Second Tag</div>';
-        $html.= '<p>Third Tag</p>';
+        $html.= '<b>Third Tag</b>';
 
         // prepare the Html2Pdf object
         $object = new Html2Pdf();
@@ -55,7 +55,7 @@ class DebugTest extends \PHPUnit_Framework_TestCase
     {
         $html = '<p>First Tag</p>';
         $html.= '<div>Second Tag</div>';
-        $html.= '<p>Third Tag</p>';
+        $html.= '<b>Third Tag</b>';
 
         // Prepare debug object, without html output
         $debug = new Debug(false);
