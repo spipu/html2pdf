@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
   * add support of css `page-break-before:always` and `page-break-after:always` on `DIV` tag, based on PR #190 and PR #204
   * add no-html mode for debug output
+  * add php 7.2 compatibility
   * fix lots of bad method names and minor improvements, from PR #147
   * fix changelog file
   

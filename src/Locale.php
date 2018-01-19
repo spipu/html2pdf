@@ -12,7 +12,7 @@
 
 namespace Spipu\Html2Pdf;
 
-use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Exception\LocaleException;
 
 class Locale
 {
@@ -40,7 +40,7 @@ class Locale
      * @param  string $code
      *
      * @return void
-     * @throws Html2PdfException
+     * @throws LocaleException
      */
     public static function load($code)
     {
@@ -53,7 +53,7 @@ class Locale
 
         // must be [a-z-0-9]
         if (!preg_match('/^([a-z0-9]+)$/isU', $code)) {
-            throw new Html2PdfException('language code ['.self::$code.'] invalid.');
+            throw new LocaleException('language code ['.self::$code.'] invalid.');
         }
 
         // save the code
@@ -64,7 +64,7 @@ class Locale
 
         // the file must exist
         if (!is_file($file)) {
-            throw new Html2PdfException(
+            throw new LocaleException(
                 'language code ['.self::$code.'] unknown. '.
                 'You can create the translation file ['.$file.'] and push it on the Html2Pdf GitHub project.'
             );
@@ -75,7 +75,7 @@ class Locale
         $handle = fopen($file, 'r');
         while (!feof($handle)) {
             $line = fgetcsv($handle);
-            if (count($line) !=2) {
+            if (!is_array($line) || count($line) !=2) {
                 continue;
             }
             self::$list[trim($line[0])] = trim($line[1]);
