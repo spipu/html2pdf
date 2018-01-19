@@ -76,6 +76,20 @@ class ParsingTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * test: The following tags have not been closed
+     *
+     * @return void
+     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
+     */
+    public function testNotClosedMore()
+    {
+        $object = new Html2Pdf();
+        $object->pdf->SetTitle('PhpUnit Test');
+        $object->writeHTML('<b><u><i>Hello</i>');
+        $object->output('test.pdf', 'S');
+    }
+
+    /**
      * test: The HTML tag code provided is invalid
      *
      * @return void

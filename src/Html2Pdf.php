@@ -127,6 +127,8 @@ class Html2Pdf
     protected $_lstSelect        = array();     // list of the options of the current select
     protected $_previousCall     = null;        // last action called
 
+    protected $_sentenceMaxLines = 1000;        // max number of lines for a sentence
+
     /**
      * @var Html2Pdf
      */
@@ -258,6 +260,30 @@ class Html2Pdf
         $this->parsingHtml = clone $this->parsingHtml;
         $this->parsingCss = clone $this->parsingCss;
         $this->parsingCss->setPdfParent($this->pdf);
+    }
+
+    /**
+     * Set the max number of lines for a sentence
+     *
+     * @param int $nbLines
+     *
+     * @return $this
+     */
+    public function setSentenceMaxLines($nbLines)
+    {
+        $this->_sentenceMaxLines = (int) $nbLines;
+
+        return $this;
+    }
+
+    /**
+     * Get the max number of lines for a sentence
+     *
+     * @return int
+     */
+    public function getSentenceMaxLines()
+    {
+        return $this->_sentenceMaxLines;
     }
 
     /**
@@ -1033,6 +1059,7 @@ class Html2Pdf
         );
 
         // init
+        self::$_subobj->setSentenceMaxLines($this->_sentenceMaxLines);
         self::$_subobj->setTestTdInOnePage($this->_testTdInOnepage);
         self::$_subobj->setTestIsImage($this->_testIsImage);
         self::$_subobj->setDefaultFont($this->_defaultFont);
@@ -3964,14 +3991,16 @@ class Html2Pdf
                     }
                 }
 
-                // if more than 10000 line => error
+                // if more than X line => error
                 $nb++;
-                if ($nb>10000) {
+                if ($nb > $this->_sentenceMaxLines) {
                     $txt = '';
                     foreach ($words as $k => $word) {
                         $txt.= ($k ? ' ' : '').$word[0];
                     }
-                    $e = new LongSentenceException('The current sentence takes more than 1000 lines is the current box');
+                    $e = new LongSentenceException(
+                        'The current sentence takes more than '.$this->_sentenceMaxLines.' lines is the current box'
+                    );
                     $e->setSentence($txt);
                     $e->setWidthBox($right-$left);
                     $e->setLength($w);
