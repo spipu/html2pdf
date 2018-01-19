@@ -10,7 +10,7 @@
  * @copyright 2017 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\Tag;
+namespace Spipu\Html2Pdf\Tests\Debug;
 
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Debug\Debug;

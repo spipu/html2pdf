@@ -1394,7 +1394,7 @@ class Html2Pdf
             $res = $this->{$fnc}($properties);
         } else {
             $e = new HtmlParsingException(
-                'The html tag ['.$action->getName().'] is not known by Html2Pdf not exists.'.
+                'The html tag ['.$action->getName().'] is not known by Html2Pdf. '.
                 'You can create it and push it on the Html2Pdf GitHub project.'
             );
             $e->setInvalidTag($action->getName());

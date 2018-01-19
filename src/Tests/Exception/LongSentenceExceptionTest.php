@@ -10,15 +10,14 @@
  * @copyright 2017 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\Tag;
+namespace Spipu\Html2Pdf\Tests\Exception;
 
 use Spipu\Html2Pdf\Html2Pdf;
-use Spipu\Html2Pdf\Exception\LongSentenceException;
 
 /**
  * Class DebugTest
  */
-class LongSentenceTest extends \PHPUnit_Framework_TestCase
+class LongSentenceExceptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * test LongSentence Exception
@@ -35,14 +34,10 @@ class LongSentenceTest extends \PHPUnit_Framework_TestCase
         }
         $html = '<page backleft="0" backright="200mm"style="font-size: 1mm">'.$bigSentence.'</page>';
 
-        try {
-            $object = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', [0, 0, 0, 0]);
-            $object->pdf->SetTitle('PhpUnit Test');
-            $object->setSentenceMaxLines(100);
-            $object->writeHTML($html);
-            $object->output('test.pdf', 'S');
-        } catch (LongSentenceException $e) {
-            throw $e;
-        }
+        $object = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', [0, 0, 0, 0]);
+        $object->pdf->SetTitle('PhpUnit Test');
+        $object->setSentenceMaxLines(100);
+        $object->writeHTML($html);
+        $object->output('test.pdf', 'S');
     }
 }
