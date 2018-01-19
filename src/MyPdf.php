@@ -95,19 +95,19 @@ class MyPdf extends \TCPDF
         // prepare the text from the tranlated text
         $txt = '';
         if ($this->_footerParam['form']) {
-            $txt = (Locale::get('pdf05'));
+            $txt = Locale::get('pdf05');
         }
         if ($this->_footerParam['date'] && $this->_footerParam['time']) {
-            $txt.= ($txt ? ' - ' : '').(Locale::get('pdf03'));
+            $txt.= ($txt ? ' - ' : '').Locale::get('pdf03');
         }
         if ($this->_footerParam['date'] && !$this->_footerParam['time']) {
-            $txt.= ($txt ? ' - ' : '').(Locale::get('pdf01'));
+            $txt.= ($txt ? ' - ' : '').Locale::get('pdf01');
         }
         if (!$this->_footerParam['date'] && $this->_footerParam['time']) {
-            $txt.= ($txt ? ' - ' : '').(Locale::get('pdf02'));
+            $txt.= ($txt ? ' - ' : '').Locale::get('pdf02');
         }
         if ($this->_footerParam['page']) {
-            $txt.= ($txt ? ' - ' : '').(Locale::get('pdf04'));
+            $txt.= ($txt ? ' - ' : '').Locale::get('pdf04');
         }
 
         if (strlen($txt)>0) {
@@ -704,7 +704,7 @@ class MyPdf extends \TCPDF
 
         // Style : fill
         if ($styles['fill']) {
-            $this->setFillColorArray($styles['fill']);
+            $this->SetFillColorArray($styles['fill']);
             $style.= 'F';
         }
 
@@ -1256,7 +1256,7 @@ class MyPdf extends \TCPDF
         }
 
         // apply the Transformation Matrix
-        list($x,$y) = array(($x*$m[0]+$y*$m[2]+$m[4]),($x*$m[1]+$y*$m[3]+$m[5]));
+        list($x, $y) = array(($x*$m[0]+$y*$m[2]+$m[4]),($x*$m[1]+$y*$m[3]+$m[5]));
 
         // if true => convert into PDF unit
         if ($trans) {
@@ -1343,7 +1343,7 @@ class MyPdf extends \TCPDF
 
         // it Label => add the FontSize to the height
         if ($labelFontsize) {
-            $h+= ($labelFontsize);
+            $h+= $labelFontsize;
         }
 
         // return the size of the barcode

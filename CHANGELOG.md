@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [5.0.2](https://github.com/spipu/html2pdf/compare/v5.0.1...master) - unreleased
 
   * add support of css `page-break-before:always` and `page-break-after:always` on `DIV` tag, based on PR #190 and PR #204
+  * fix lots of bad method names and minor improvements, from PR #147
   * fix changelog file
   
 ## [5.0.1](https://github.com/spipu/html2pdf/compare/v5.0.0...v5.0.1) - 2017-06-15

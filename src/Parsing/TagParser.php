@@ -211,7 +211,8 @@ class TagParser
 
         foreach ($regexes as $regex) {
             preg_match_all('/'.$regex.'/is', $code, $match);
-            for ($k = 0; $k < count($match[0]); $k++) {
+            $amountMatch = count($match[0]);
+            for ($k = 0; $k < $amountMatch; $k++) {
                 $param[trim(strtolower($match[1][$k]))] = trim($match[2][$k]);
             }
         }
