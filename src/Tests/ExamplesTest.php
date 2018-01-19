@@ -233,36 +233,6 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * test: js1
-     *
-     * @return void
-     */
-    public function testJs1()
-    {
-        $this->launchExample('js1');
-    }
-
-    /**
-     * test: js2
-     *
-     * @return void
-     */
-    public function testJs2()
-    {
-        $this->launchExample('js2');
-    }
-
-    /**
-     * test: js3
-     *
-     * @return void
-     */
-    public function testJs3()
-    {
-        $this->launchExample('js3');
-    }
-
-    /**
      * test: qrcode
      *
      * @return void
