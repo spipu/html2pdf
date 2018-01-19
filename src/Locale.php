@@ -53,7 +53,12 @@ class Locale
 
         // must be [a-z-0-9]
         if (!preg_match('/^([a-z0-9]+)$/isU', $code)) {
-            throw new LocaleException('language code ['.self::$code.'] invalid.');
+            $e = new LocaleException(
+                'invalid language code'
+            );
+            $e->setLocaleCode($code);
+
+            throw $e;
         }
 
         // save the code
@@ -64,10 +69,12 @@ class Locale
 
         // the file must exist
         if (!is_file($file)) {
-            throw new LocaleException(
-                'language code ['.self::$code.'] unknown. '.
-                'You can create the translation file ['.$file.'] and push it on the Html2Pdf GitHub project.'
+            $e = new LocaleException(
+                'unknown language code. You can create the locale file and push it on the Html2Pdf GitHub project.'
             );
+            $e->setLocaleCode($code);
+
+            throw $e;
         }
 
         // load the file

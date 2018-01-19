@@ -13,6 +13,7 @@
 namespace Spipu\Html2Pdf\Tests\Tag;
 
 use Spipu\Html2Pdf\Locale;
+use Spipu\Html2Pdf\Exception\LocaleException;
 
 /**
  * Class LocaleTest
@@ -28,7 +29,13 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
     public function testBadCode()
     {
         Locale::clean();
-        Locale::load('$aa');
+
+        try {
+            Locale::load('$aa');
+        } catch (LocaleException $e) {
+            $this->assertSame('$aa', $e->getLocalCode());
+            throw $e;
+        }
     }
 
     /**
@@ -40,7 +47,12 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
     public function testUnknownCode()
     {
         Locale::clean();
-        Locale::load('aa');
+        try {
+            Locale::load('aa');
+        } catch (LocaleException $e) {
+            $this->assertSame('aa', $e->getLocalCode());
+            throw $e;
+        }
     }
 
     /**

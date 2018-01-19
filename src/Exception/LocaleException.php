@@ -22,4 +22,33 @@ class LocaleException extends Html2PdfException
      * @var int
      */
     const ERROR_CODE = 5;
+
+    /**
+     * @var string
+     */
+    protected $localCode;
+
+    /**
+     * set the code
+     *
+     * @param string $localCode
+     *
+     * @return $this
+     */
+    public function setLocaleCode($localCode)
+    {
+        $this->localCode = $localCode;
+
+        return $this;
+    }
+
+    /**
+     * get the local code
+     *
+     * @return string
+     */
+    public function getLocalCode()
+    {
+        return $this->localCode;
+    }
 }

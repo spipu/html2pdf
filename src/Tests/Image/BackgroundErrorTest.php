@@ -13,6 +13,7 @@
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
 use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Exception\ImageException;
 
 /**
  * Class BackgroundErrorTest
@@ -27,9 +28,16 @@ class BackgroundErrorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCase()
     {
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
-        $object->writeHTML('<div style="background-image: url('.dirname(__FILE__).'/res/wrong.png)">Hello World</div>');
-        $object->output('test.pdf', 'S');
+        $image = '/res/wrong.png';
+
+        try {
+            $object = new Html2Pdf();
+            $object->pdf->SetTitle('PhpUnit Test');
+            $object->writeHTML('<div style="background-image: url('.$image.')">Hello World</div>');
+            $object->output('test.pdf', 'S');
+        } catch (ImageException $e) {
+            $this->assertSame($image, $e->getImage());
+            throw $e;
+        }
     }
 }
