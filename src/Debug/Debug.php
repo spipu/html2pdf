@@ -33,13 +33,18 @@ class Debug implements DebugInterface
     protected $level = 0;
 
     /**
+     * @var bool
+     */
+    protected $htmlOutput;
+
+    /**
      * Debug constructor
      *
-     * @return Debug
+     * @param bool $htmlOutput
      */
-    public function __construct()
+    public function __construct($htmlOutput = true)
     {
-
+        $this->htmlOutput = $htmlOutput;
     }
 
     /**
@@ -55,14 +60,18 @@ class Debug implements DebugInterface
      */
     protected function displayLine($name, $timeTotal, $timeStep, $memoryUsage, $memoryPeak)
     {
-        $txt =
+        $output =
             str_pad($name, 30, ' ', STR_PAD_RIGHT).
             str_pad($timeTotal, 12, ' ', STR_PAD_LEFT).
             str_pad($timeStep, 12, ' ', STR_PAD_LEFT).
             str_pad($memoryUsage, 15, ' ', STR_PAD_LEFT).
             str_pad($memoryPeak, 15, ' ', STR_PAD_LEFT);
 
-        echo '<pre style="padding:0; margin:0">'.$txt.'</pre>';
+        if ($this->htmlOutput) {
+            $output = '<pre style="padding:0; margin:0">'.$output.'</pre>';
+        }
+
+        echo $output."\n";
     }
 
     /**
@@ -112,13 +121,10 @@ class Debug implements DebugInterface
         $time  = microtime(true);
         $usage = memory_get_usage();
         $peak  = memory_get_peak_usage();
-        $name  =
-            str_repeat('  ', $this->level).
-            $name.
-            ($level === true ? ' Begin' : ($level === false ? ' End' : ''));
+        $type  = ($level === true ? ' Begin' : ($level === false ? ' End' : ''));
 
         $this->displayLine(
-            $name,
+            str_repeat('  ', $this->level) . $name . $type,
             number_format(($time - $this->startTime)*1000, 1, '.', ' ').' ms',
             number_format(($time - $this->lastTime)*1000, 1, '.', ' ').' ms',
             number_format($usage/1024, 1, '.', ' ').' Ko',
