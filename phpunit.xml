@@ -15,6 +15,7 @@
             <directory suffix=".php">src</directory>
             <exclude>
                 <directory>src/Tests</directory>
+                <directory>src/config</directory>
             </exclude>
         </whitelist>
     </filter>
