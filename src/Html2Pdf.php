@@ -1436,7 +1436,7 @@ class Html2Pdf
         $infos=@getimagesize($src);
 
         // if the image does not exist, or can not be loaded
-        if (count($infos)<2) {
+        if (!is_array($infos) || count($infos)<2) {
             if ($this->_testIsImage) {
                 $e = new ImageException('Unable to get the size of the image ['.$src.']');
                 $e->setImage($src);
@@ -1740,7 +1740,7 @@ class Html2Pdf
             $imageInfos=@getimagesize($iName);
 
             // if the image can not be loaded
-            if (count($imageInfos)<2) {
+            if (!is_array($imageInfos) || count($imageInfos)<2) {
                 if ($this->_testIsImage) {
                     $e = new ImageException('Unable to get the size of the image ['.$iName.']');
                     $e->setImage($iName);
@@ -2763,7 +2763,7 @@ class Html2Pdf
                     // get the size of the image
                     // WARNING : if URL, "allow_url_fopen" must turned to "on" in php.ini
                     $infos=@getimagesize($background['img']);
-                    if (count($infos)>1) {
+                    if (is_array($infos) && count($infos)>1) {
                         $imageWidth = $this->cssConverter->convertToMM($background['width'], $this->pdf->getW());
                         $imageHeight = $imageWidth*$infos[1]/$infos[0];
 
