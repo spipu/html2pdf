@@ -110,7 +110,7 @@ class ExceptionFormatterTest extends \PHPUnit_Framework_TestCase
             $this->assertContains('My Message', $message);
             $this->assertContains('my sentence', $message);
             $this->assertContains('142', $message);
-            $this->assertContains('252', $message);
+            $this->assertContains('242', $message);
         }
     }
 }
