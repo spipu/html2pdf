@@ -11,6 +11,9 @@
 /test/*
 !/test/generate.sh
 
+# PhpUnit
+/build/
+
 # Composer
 /bin/
 /vendor/
