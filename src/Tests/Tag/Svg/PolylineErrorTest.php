@@ -12,12 +12,12 @@
 
 namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
-use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class PolylineErrorTest
  */
-class PolylineErrorTest extends \PHPUnit_Framework_TestCase
+class PolylineErrorTest extends AbstractTest
 {
     /**
      * test
@@ -27,8 +27,7 @@ class PolylineErrorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCase()
     {
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML('<polyline />');
         $object->output('test.pdf', 'S');
     }

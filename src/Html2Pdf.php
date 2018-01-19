@@ -481,14 +481,18 @@ class Html2Pdf
     }
 
     /**
-     * clean up the objects
+     * clean up the objects, if the method output can not be called because of an exception
      *
-     * @access protected
+     * @return Html2Pdf
      */
-    protected function _cleanUp()
+    public function clean()
     {
         self::$_subobj = null;
         self::$_tables = array();
+
+        Locale::clean();
+
+        return $this;
     }
 
     /**
@@ -512,7 +516,7 @@ class Html2Pdf
     public function output($name = 'document.pdf', $dest = 'I')
     {
         // close the pdf and clean up
-        $this->_cleanUp();
+        $this->clean();
 
         // if on debug mode
         if (!is_null($this->debug)) {
@@ -1066,7 +1070,11 @@ class Html2Pdf
         self::$_subobj->setFallbackImage($this->_fallbackImage);
         self::$_subobj->parsingCss->css            = &$this->parsingCss->css;
         self::$_subobj->parsingCss->cssKeys        = &$this->parsingCss->cssKeys;
-        self::$_subobj->extensions                 = $this->extensions;
+
+        // add all the extensions
+        foreach ($this->extensions as $extension) {
+            self::$_subobj->addExtension($extension);
+        }
 
         // clone font from the original PDF
         self::$_subobj->pdf->cloneFontFrom($this->pdf);

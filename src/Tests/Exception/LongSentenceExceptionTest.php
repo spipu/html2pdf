@@ -12,12 +12,12 @@
 
 namespace Spipu\Html2Pdf\Tests\Exception;
 
-use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class DebugTest
  */
-class LongSentenceExceptionTest extends \PHPUnit_Framework_TestCase
+class LongSentenceExceptionTest extends AbstractTest
 {
     /**
      * test LongSentence Exception
@@ -34,8 +34,7 @@ class LongSentenceExceptionTest extends \PHPUnit_Framework_TestCase
         }
         $html = '<page backleft="0" backright="200mm"style="font-size: 1mm">'.$bigSentence.'</page>';
 
-        $object = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', [0, 0, 0, 0]);
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->setSentenceMaxLines(100);
         $object->writeHTML($html);
         $object->output('test.pdf', 'S');

@@ -13,11 +13,12 @@
 namespace Spipu\Html2Pdf\Tests\Tag;
 
 use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class TdTooLongTest
  */
-class TdTooLongTest extends \PHPUnit_Framework_TestCase
+class TdTooLongTest extends AbstractTest
 {
     /**
      * test
@@ -33,8 +34,7 @@ class TdTooLongTest extends \PHPUnit_Framework_TestCase
             $sentences.= $sentence;
         }
 
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML('<table><tr><td style="width: 28mm">'.$sentences.'</td></tr></table>');
         $object->output('test.pdf', 'S');
     }

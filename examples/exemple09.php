@@ -71,6 +71,8 @@ if ($generate) {
         $html2pdf->output('exemple09.pdf');
         exit;
     } catch (Html2PdfException $e) {
+        $html2pdf->clean();
+
         $formatter = new ExceptionFormatter($e);
         echo $formatter->getHtmlMessage();
         exit;

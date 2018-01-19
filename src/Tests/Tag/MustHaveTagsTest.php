@@ -13,11 +13,12 @@
 namespace Spipu\Html2Pdf\Tests\Tag;
 
 use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class Thead must not be empty
  */
-class MustHaveTagsTest extends \PHPUnit_Framework_TestCase
+class MustHaveTagsTest extends AbstractTest
 {
     /**
      * test
@@ -31,8 +32,7 @@ class MustHaveTagsTest extends \PHPUnit_Framework_TestCase
         $html.= '<tbody><tr><td>World</td></tr></tbody>';
         $html.= '</table>';
 
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML($html);
         $result = $object->output('test.pdf', 'S');
 
@@ -52,8 +52,7 @@ class MustHaveTagsTest extends \PHPUnit_Framework_TestCase
         $html.= '<tbody><tr><td>World</td></tr></tbody>';
         $html.= '</table>';
 
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML($html);
         $object->output('test.pdf', 'S');
     }
@@ -71,8 +70,7 @@ class MustHaveTagsTest extends \PHPUnit_Framework_TestCase
         $html.= '<tbody><tr><td>World</td></tr></tbody>';
         $html.= '</table>';
 
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML($html);
         $object->output('test.pdf', 'S');
     }

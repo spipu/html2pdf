@@ -13,11 +13,12 @@
 namespace Spipu\Html2Pdf\Tests\Tag;
 
 use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Div Tag test
  */
-class DivTest extends \PHPUnit_Framework_TestCase
+class DivTest extends AbstractTest
 {
     /**
      * test No Break
@@ -30,8 +31,7 @@ class DivTest extends \PHPUnit_Framework_TestCase
         $html.= '<div>Second Tag</div>';
         $html.= '<p>Third Tag</p>';
 
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML($html);
         $result = $object->output('test.pdf', 'S');
 
@@ -50,8 +50,7 @@ class DivTest extends \PHPUnit_Framework_TestCase
         $html.= '<div style="page-break-before:always">Second Tag</div>';
         $html.= '<p>Third Tag</p>';
 
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML($html);
         $result = $object->output('test.pdf', 'S');
 
@@ -70,8 +69,7 @@ class DivTest extends \PHPUnit_Framework_TestCase
         $html.= '<div style="page-break-after:always">Second Tag</div>';
         $html.= '<p>Third Tag</p>';
 
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML($html);
         $result = $object->output('test.pdf', 'S');
 
@@ -91,8 +89,7 @@ class DivTest extends \PHPUnit_Framework_TestCase
         $html.= '<div style="page-break-before:always; page-break-after:always">Second Tag</div>';
         $html.= '<p>Third Tag</p>';
 
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML($html);
         $result = $object->output('test.pdf', 'S');
 

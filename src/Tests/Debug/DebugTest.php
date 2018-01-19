@@ -12,13 +12,13 @@
 
 namespace Spipu\Html2Pdf\Tests\Debug;
 
-use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Debug\Debug;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class DebugTest
  */
-class DebugTest extends \PHPUnit_Framework_TestCase
+class DebugTest extends AbstractTest
 {
     /**
      * test Debug Mode, Automatic
@@ -31,12 +31,8 @@ class DebugTest extends \PHPUnit_Framework_TestCase
         $html.= '<div>Second Tag</div>';
         $html.= '<b>Third Tag</b>';
 
-        // prepare the Html2Pdf object
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
-
-        // make the test
         ob_start();
+        $object = $this->getObject();
         $object->setModeDebug();
         $object->writeHTML($html);
         $pdfResult = $object->output('test.pdf', 'S');
@@ -60,12 +56,8 @@ class DebugTest extends \PHPUnit_Framework_TestCase
         // Prepare debug object, without html output
         $debug = new Debug(false);
 
-        // prepare the Html2Pdf object
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
-
-        // make the test
         ob_start();
+        $object = $this->getObject();
         $object->setModeDebug($debug);
         $object->writeHTML($html);
         $pdfResult = $object->output('test.pdf', 'S');

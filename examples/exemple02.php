@@ -25,6 +25,8 @@ try {
     $html2pdf->writeHTML($content);
     $html2pdf->output('exemple02.pdf');
 } catch (Html2PdfException $e) {
+    $html2pdf->clean();
+
     $formatter = new ExceptionFormatter($e);
     echo $formatter->getHtmlMessage();
 }

@@ -25,6 +25,8 @@ try {
     $html2pdf->createIndex('Sommaire', 25, 12, false, true, 1);
     $html2pdf->output('bookmark.pdf');
 } catch (Html2PdfException $e) {
+    $html2pdf->clean();
+
     $formatter = new ExceptionFormatter($e);
     echo $formatter->getHtmlMessage();
 }

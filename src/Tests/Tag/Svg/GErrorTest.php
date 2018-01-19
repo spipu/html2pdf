@@ -12,12 +12,12 @@
 
 namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
-use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class GErrorTest
  */
-class GErrorTest extends \PHPUnit_Framework_TestCase
+class GErrorTest extends AbstractTest
 {
     /**
      * test
@@ -27,8 +27,7 @@ class GErrorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCase()
     {
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML('<g />');
         $object->output('test.pdf', 'S');
     }

@@ -12,12 +12,12 @@
 
 namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
-use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class PathInvalidTest
  */
-class PathInvalidTest extends \PHPUnit_Framework_TestCase
+class PathInvalidTest extends AbstractTest
 {
     /**
      * test
@@ -34,8 +34,7 @@ class PathInvalidTest extends \PHPUnit_Framework_TestCase
     </draw>
 </page>';
 
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML($html);
         $object->output('test.pdf', 'S');
     }

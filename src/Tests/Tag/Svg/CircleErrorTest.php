@@ -12,12 +12,12 @@
 
 namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
-use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class CircleErrorTest
  */
-class CircleErrorTest extends \PHPUnit_Framework_TestCase
+class CircleErrorTest extends AbstractTest
 {
     /**
      * test
@@ -27,8 +27,7 @@ class CircleErrorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCase()
     {
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML('<circle />');
         $object->output('test.pdf', 'S');
     }

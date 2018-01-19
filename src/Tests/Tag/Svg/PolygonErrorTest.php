@@ -12,12 +12,12 @@
 
 namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
-use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class PolygonErrorTest
  */
-class PolygonErrorTest extends \PHPUnit_Framework_TestCase
+class PolygonErrorTest extends AbstractTest
 {
     /**
      * test
@@ -27,8 +27,7 @@ class PolygonErrorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCase()
     {
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML('<polygon />');
         $object->output('test.pdf', 'S');
     }

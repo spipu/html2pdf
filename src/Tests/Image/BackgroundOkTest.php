@@ -12,12 +12,12 @@
 
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
-use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class BackgroundOkTest
  */
-class BackgroundOkTest extends \PHPUnit_Framework_TestCase
+class BackgroundOkTest extends AbstractTest
 {
     /**
      * test: The image src is unknown
@@ -26,8 +26,7 @@ class BackgroundOkTest extends \PHPUnit_Framework_TestCase
      */
     public function testCase()
     {
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML('<div style="background-image: url('.dirname(__FILE__).'/res/logo.png)">Hello World</div>');
         $result = $object->output('test.pdf', 'S');
 

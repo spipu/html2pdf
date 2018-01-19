@@ -13,11 +13,12 @@
 namespace Spipu\Html2Pdf\Tests\Tag;
 
 use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class FileNameErrorTest
  */
-class FileNameErrorTest extends \PHPUnit_Framework_TestCase
+class FileNameErrorTest extends AbstractTest
 {
     /**
      * test: the file extension must be PDF
@@ -27,8 +28,7 @@ class FileNameErrorTest extends \PHPUnit_Framework_TestCase
      */
     public function testCase()
     {
-        $object = new Html2Pdf();
-        $object->pdf->SetTitle('PhpUnit Test');
+        $object = $this->getObject();
         $object->writeHTML('<p>Hello World</p>');
         $object->output('test.bad', 'S');
     }

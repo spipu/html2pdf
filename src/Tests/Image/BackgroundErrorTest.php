@@ -12,13 +12,13 @@
 
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
-use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\ImageException;
+use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
  * Class BackgroundErrorTest
  */
-class BackgroundErrorTest extends \PHPUnit_Framework_TestCase
+class BackgroundErrorTest extends AbstractTest
 {
     /**
      * test: The image src is unknown
@@ -31,8 +31,7 @@ class BackgroundErrorTest extends \PHPUnit_Framework_TestCase
         $image = '/res/wrong.png';
 
         try {
-            $object = new Html2Pdf();
-            $object->pdf->SetTitle('PhpUnit Test');
+            $object = $this->getObject();
             $object->writeHTML('<div style="background-image: url('.$image.')">Hello World</div>');
             $object->output('test.pdf', 'S');
         } catch (ImageException $e) {
