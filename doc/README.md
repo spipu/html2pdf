@@ -59,6 +59,8 @@
         * Can insert bookmark in pdfs, CF Example 7 and About.
         * It is also possible to automatically create an index at the end of document (CF Example About)
 
+     * `<end_last_page end_height="30mm"></end_last_page>` (CF Example 5)
+
      * css property `rotate`:
     
         * Values : 0, 90, 180, 270
