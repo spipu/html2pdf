@@ -4,7 +4,7 @@
     "description": "Html2Pdf is a HTML to PDF converter written in PHP5 (it uses TCPDF). OFFICIAL PACKAGE",
     "keywords": ["html", "pdf", "html2pdf"],
     "homepage": "http://html2pdf.fr/",
-    "license": "LGPL",
+    "license": "OSL-3.0",
     "authors": [
         {
             "name": "Spipu",
