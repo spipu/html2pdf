@@ -2598,8 +2598,9 @@ class Html2Pdf
                 if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][2]>1) {
 
                     // sum the max width of each column in colspan
-                    $s = 0; for ($i=0; $i<$corr[$y][$x][2];
-                    $i++) {
+                    // if  you have an error here, it is because you have not the same number of columns on each row...
+                    $s = 0;
+                    for ($i=0; $i<$corr[$y][$x][2]; $i++) {
                         $s+= $sw[$x+$i];
                     }
 
