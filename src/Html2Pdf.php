@@ -2757,7 +2757,7 @@ class Html2Pdf
             // format
             $format = null;
             if (isset($param['format'])) {
-                $format = strtolower($param['format']);
+                $format = (string) $param['format'];
                 if (preg_match('/^([0-9]+)x([0-9]+)$/isU', $format, $match)) {
                     $format = array((int)$match[1], (int)$match[2]);
                 }

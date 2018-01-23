@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
   * add some unit tests, better coverage
   * fix lots of bad method names and minor improvements, from PR #147
   * fix bad cleaning after output or exception
+  * fix bad format detecting on page` tag - issue #260
   * fix changelog file
   
 ## [5.0.1](https://github.com/spipu/html2pdf/compare/v5.0.0...v5.0.1) - 2017-06-15
