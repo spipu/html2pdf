@@ -1,0 +1,5 @@
+"pdf01","Dokumentti luotu [[date_y]]-[[date_m]]-[[date_d]]"
+"pdf02","Dokumentti luotu [[date_h]]:[[date_i]]"
+"pdf03","Dokumentti luotu [[date_y]]-[[date_m]]-[[date_d]] klo [[date_h]]:[[date_i]]"
+"pdf04","Sivu [[page_cu]]/[[page_nb]]"
+"pdf05","Lomakkeet edellyttävät Adobe Reader 9 käyttöä"

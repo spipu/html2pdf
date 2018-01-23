@@ -1,5 +1,5 @@
-"pdf01","Documento generado em [[date_d]]/[[date_m]]/[[date_y]]"
-"pdf02","Documento generado às [[date_h]]:[[date_i]]"
-"pdf03","Documento generado em [[date_d]]/[[date_m]]/[[date_y]] às [[date_h]]:[[date_i]]"
+"pdf01","Documento gerado em [[date_d]]/[[date_m]]/[[date_y]]"
+"pdf02","Documento gerado às [[date_h]]:[[date_i]]"
+"pdf03","Documento gerado em [[date_d]]/[[date_m]]/[[date_y]] às [[date_h]]:[[date_i]]"
 "pdf04","Página [[page_cu]]/[[page_nb]]"
 "pdf05","Os formulários exigem a utilização do Adobe Reader 9"

@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [5.1.1](https://github.com/spipu/html2pdf/compare/v5.1.0...master)
 
-  * better doc
+  * add locale fi - thanks to @RWAP
+  * fix locale pt - thanks to @marcoshenzel
+  * fix better doc
 
 ## [5.1.0](https://github.com/spipu/html2pdf/compare/v5.0.1...v5.1.0) - 2018-01-23
 
