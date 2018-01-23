@@ -26,7 +26,7 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $textParser = $this->getMockBuilder(\Spipu\Html2Pdf\Parsing\TextParser::class)
+        $textParser = $this->getMockBuilder('Spipu\Html2Pdf\Parsing\TextParser')
             ->disableOriginalConstructor()
             ->setMethods(['prepareTxt'])
             ->getMock();
