@@ -419,9 +419,6 @@ class Html
 
         // explode from the body tag. If no body tag => end
         $res = explode('<body', $html);
-        if (count($res)<2) {
-            return $html;
-        }
 
         // the html content is between body tag openning and closing
         $content = '<page'.$res[1];
@@ -430,9 +427,9 @@ class Html
 
         // extract the link tags from the original html
         // and add them before the content
-        preg_match_all('/<link([^>]*)>/isU', $html, $match);
-        foreach ($match[0] as $src) {
-            $content = $src.'</link>'.$content;
+        preg_match_all('/<link ([^>]*)[\/]?>/isU', $html, $match);
+        foreach ($match[1] as $src) {
+            $content = '<link '.$src.'/>'.$content;
         }
 
         // extract the css style tags from the original html
