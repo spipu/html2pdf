@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.1.1](https://github.com/spipu/html2pdf/compare/v5.1.0...master)
+## [5.1.1](https://github.com/spipu/html2pdf/compare/v5.1.0...master) - Unreleased
 
   * add locale fi - thanks to @RWAP
   * fix locale pt - thanks to @marcoshenzel
