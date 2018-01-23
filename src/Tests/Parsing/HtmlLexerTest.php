@@ -58,12 +58,13 @@ class HtmlLexerTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             array(
-                "<a><!-- comment -->\n<b><c>",
+                "<a><!-- comment -->\n<b><c>test",
                 array(
                     array('code', '<a>', 1),
                     array('txt', "\n", -1),
                     array('code', '<b>', 2),
                     array('code', '<c>', 2),
+                    array('txt', "test", -1),
                 )
             )
         );

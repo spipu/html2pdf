@@ -122,7 +122,7 @@ class TagParser
                     if (!$val) {
                         $val = 1;
                     }
-                    $param[$key] = $val;
+                    $param[$key] = (int) $val;
                     break;
 
                 case 'color':
@@ -136,13 +136,13 @@ class TagParser
 
         // compliance of the border
         if ($border !== null) {
-            if ($border) {
-                $border = 'border: solid '.$border.' '.$color;
+            if ($border && $border !== '0px') {
+                $border = 'solid '.$border.' '.$color;
             } else {
-                $border = 'border: none';
+                $border = 'none';
             }
 
-            $param['style'] .= $border.'; ';
+            $param['style'] .= 'border: '.$border.'; ';
             $param['border'] = $border;
         }
 

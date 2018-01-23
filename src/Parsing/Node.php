@@ -51,10 +51,10 @@ class Node
      */
     public function __construct($name, $params, $close, $autoClose = false)
     {
-        $this->name = $name;
-        $this->params = $params;
-        $this->close = $close;
-        $this->autoClose = $autoClose;
+        $this->setName($name);
+        $this->setParams($params);
+        $this->setClose($close);
+        $this->setAutoClose($autoClose);
     }
 
     /**
@@ -89,8 +89,25 @@ class Node
      */
     public function getParam($key, $default = null)
     {
-        if (isset($this->params[$key])) {
+        if (array_key_exists($key, $this->params)) {
             return $this->params[$key];
+        }
+        return $default;
+    }
+
+    /**
+     * Get a style
+     * @param string $key
+     * @param string|null $default
+     *
+     * @return string|null
+     */
+    public function getStyle($key, $default = null)
+    {
+        $styles = $this->getParam('style', []);
+
+        if (array_key_exists($key, $styles)) {
+            return $styles[$key];
         }
         return $default;
     }
@@ -127,7 +144,7 @@ class Node
      */
     public function setClose($close)
     {
-        $this->close = $close;
+        $this->close = (bool) $close;
     }
     /**
      * @return bool
@@ -135,6 +152,14 @@ class Node
     public function isAutoClose()
     {
         return $this->autoClose;
+    }
+
+    /**
+     * @param $autoClose
+     */
+    public function setAutoClose($autoClose)
+    {
+        $this->autoClose = (bool) $autoClose;
     }
 
     /**
