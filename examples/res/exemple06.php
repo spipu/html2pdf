@@ -1,4 +1,4 @@
-<link type="text/css" href="./res/exemple06.css" rel="stylesheet" >
+<link type="text/css" href="./res/exemple06.css" rel="stylesheet" />
 <style type="text/css">
 <!--
 /* commentaire dans un css */
