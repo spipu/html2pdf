@@ -531,9 +531,11 @@ class Html2Pdf
             throw new Html2PdfException('The output destination mode ['.$dest.'] is invalid');
         }
 
-        // the name must be a PDF name
-        if (strtolower(substr($name, -4)) !== '.pdf') {
-            throw new Html2PdfException('The output document name ['.$name.'] is not a PDF name');
+        if ($dest !== 'S') {
+            // the name must be a PDF name
+            if (strtolower(substr($name, -4)) !== '.pdf') {
+                throw new Html2PdfException('The output document name [' . $name . '] is not a PDF name');
+            }
         }
 
         // if save on server: it must be an absolute path
