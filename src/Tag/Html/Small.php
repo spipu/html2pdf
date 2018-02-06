@@ -11,12 +11,12 @@
  */
 namespace Spipu\Html2Pdf\Tag\Html;
 
-use Spipu\Html2Pdf\Tag\AbstractDefaultTag;
+use Spipu\Html2Pdf\Tag\AbstractHtmlTag;
 
 /**
  * Tag Small
  */
-class Small extends AbstractDefaultTag
+class Small extends AbstractHtmlTag
 {
     /**
      * @inheritdoc

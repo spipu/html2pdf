@@ -9,14 +9,13 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2017 Laurent MINGUET
  */
-
 namespace Spipu\Html2Pdf\Tag;
 
 /**
  * Abstract Default Tag
  * used by all the simple tags like b, u, i, ...
  */
-abstract class AbstractDefaultTag extends AbstractTag
+abstract class AbstractHtmlTag extends AbstractTag
 {
     /**
      * Open the HTML tag
@@ -39,7 +38,7 @@ abstract class AbstractDefaultTag extends AbstractTag
     /**
      * override some styles
      *
-     * @return Span
+     * @return $this
      */
     protected function overrideStyles()
     {

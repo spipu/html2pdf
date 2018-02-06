@@ -11,16 +11,15 @@
  */
 namespace Spipu\Html2Pdf\Tag\Html;
 
-use Spipu\Html2Pdf\Tag\AbstractDefaultTag;
+use Spipu\Html2Pdf\Tag\AbstractHtmlTag;
 
 /**
  * Tag I
  */
-class I extends AbstractDefaultTag
+class I extends AbstractHtmlTag
 {
     /**
      * @inheritdoc
-
      */
     public function getName()
     {
