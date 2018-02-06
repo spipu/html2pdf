@@ -9,31 +9,30 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2017 Laurent MINGUET
  */
-namespace Spipu\Html2Pdf\Tag;
+namespace Spipu\Html2Pdf\Tag\Html;
+
+use Spipu\Html2Pdf\Tag\AbstractDefaultTag;
 
 /**
- * Tag I
+ * Tag Sup
  */
-class I extends AbstractDefaultTag
+class Sup extends AbstractDefaultTag
 {
     /**
-     * get the name of the tag
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getName()
     {
-        return 'i';
+        return 'sup';
     }
 
     /**
-     * override some styles
-     *
-     * @return Span
+     * @inheritdoc
      */
     protected function overrideStyles()
     {
-        $this->parsingCss->value['font-italic'] = true;
+        $this->parsingCss->value['mini-decal']-= $this->parsingCss->value['mini-size']*0.15;
+        $this->parsingCss->value['mini-size'] *= 0.75;
 
         return $this;
     }

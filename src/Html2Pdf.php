@@ -17,7 +17,7 @@ use Spipu\Html2Pdf\Exception\ImageException;
 use Spipu\Html2Pdf\Exception\LongSentenceException;
 use Spipu\Html2Pdf\Exception\TableException;
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
-use Spipu\Html2Pdf\Extension\CoreExtension;
+use Spipu\Html2Pdf\Extension\Core;
 use Spipu\Html2Pdf\Extension\ExtensionInterface;
 use Spipu\Html2Pdf\Parsing\HtmlLexer;
 use Spipu\Html2Pdf\Parsing\Node;
@@ -219,7 +219,8 @@ class Html2Pdf
         // init the form's fields
         $this->_lstField = array();
 
-        $this->addExtension(new CoreExtension());
+        $this->addExtension(new Core\HtmlExtension());
+        $this->addExtension(new Core\SvgExtension());
 
         return $this;
     }

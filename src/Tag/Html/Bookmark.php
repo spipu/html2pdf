@@ -9,7 +9,9 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2017 Laurent MINGUET
  */
-namespace Spipu\Html2Pdf\Tag;
+namespace Spipu\Html2Pdf\Tag\Html;
+
+use Spipu\Html2Pdf\Tag\AbstractTag;
 
 /**
  * Tag Bookmark
@@ -17,9 +19,7 @@ namespace Spipu\Html2Pdf\Tag;
 class Bookmark extends AbstractTag
 {
     /**
-     * get the name of the tag
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getName()
     {
@@ -27,11 +27,7 @@ class Bookmark extends AbstractTag
     }
 
     /**
-     * Open the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
+     * @inheritdoc
      */
     public function open($properties)
     {
@@ -49,11 +45,7 @@ class Bookmark extends AbstractTag
     }
 
     /**
-     * Close the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
+     * @inheritdoc
      */
     public function close($properties)
     {
