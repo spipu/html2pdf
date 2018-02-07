@@ -10,7 +10,7 @@
  * @copyright 2017 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\Tag;
+namespace Spipu\Html2Pdf\Tests;
 
 /**
  * Class ExamplesTest
