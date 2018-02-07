@@ -29,12 +29,12 @@ class G extends AbstractSvgTag
     /**
      * @inheritdoc
      */
-    protected function draw($properties)
+    public function open($properties)
     {
-        $this->pdf->doTransform(isset($properties['transform']) ? $this->svgDrawer->prepareTransform($properties['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $properties);
-        $style = $this->pdf->svgSetStyle($styles);
+        $this->openSvg($properties);
+        $this->drawSvg($properties);
+
+        return true;
     }
 
     /**
@@ -42,9 +42,17 @@ class G extends AbstractSvgTag
      */
     public function close($properties)
     {
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
+        $this->closeSvg();
 
-        return parent::close($properties);
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function drawSvg($properties)
+    {
+        $styles = $this->parsingCss->getSvgStyle($this->getName(), $properties);
+        $this->pdf->svgSetStyle($styles);
     }
 }

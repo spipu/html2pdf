@@ -29,25 +29,32 @@ class Line extends AbstractSvgTag
     /**
      * @inheritdoc
      */
-    protected function draw($properties)
+    protected function drawSvg($properties)
     {
-        $this->pdf->doTransform(
-            isset($properties['transform'])
-                ? $this->svgDrawer->prepareTransform($properties['transform'])
-                : null
-        );
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $properties);
+        $styles = $this->parsingCss->getSvgStyle($this->getName(), $properties);
         $styles['fill'] = null;
-        $style = $this->pdf->svgSetStyle($styles);
+        $this->pdf->svgSetStyle($styles);
 
-        $x1 = isset($properties['x1']) ? $this->cssConverter->convertToMM($properties['x1'], $this->svgDrawer->getProperty('w')) : 0.;
-        $y1 = isset($properties['y1']) ? $this->cssConverter->convertToMM($properties['y1'], $this->svgDrawer->getProperty('h')) : 0.;
-        $x2 = isset($properties['x2']) ? $this->cssConverter->convertToMM($properties['x2'], $this->svgDrawer->getProperty('w')) : 0.;
-        $y2 = isset($properties['y2']) ? $this->cssConverter->convertToMM($properties['y2'], $this->svgDrawer->getProperty('h')) : 0.;
+        $x1 = 0.;
+        if (isset($properties['x1'])) {
+            $x1 = $this->cssConverter->convertToMM($properties['x1'], $this->svgDrawer->getProperty('w'));
+        }
+
+        $y1 = 0.;
+        if (isset($properties['y1'])) {
+            $y1 = $this->cssConverter->convertToMM($properties['y1'], $this->svgDrawer->getProperty('h'));
+        }
+
+        $x2 = 0.;
+        if (isset($properties['x2'])) {
+            $x2 = $this->cssConverter->convertToMM($properties['x2'], $this->svgDrawer->getProperty('w'));
+        }
+
+        $y2 = 0.;
+        if (isset($properties['y2'])) {
+            $y2 = $this->cssConverter->convertToMM($properties['y2'], $this->svgDrawer->getProperty('h'));
+        }
+
         $this->pdf->svgLine($x1, $y1, $x2, $y2);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
     }
 }

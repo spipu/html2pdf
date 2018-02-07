@@ -29,24 +29,26 @@ class Circle extends AbstractSvgTag
     /**
      * @inheritdoc
      */
-    protected function draw($properties)
+    protected function drawSvg($properties)
     {
-        $this->pdf->doTransform(
-            isset($properties['transform'])
-                ? $this->svgDrawer->prepareTransform($properties['transform'])
-                : null
-        );
-
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('circle', $properties);
+        $styles = $this->parsingCss->getSvgStyle($this->getName(), $properties);
         $style = $this->pdf->svgSetStyle($styles);
 
-        $cx = isset($properties['cx']) ? $this->cssConverter->convertToMM($properties['cx'], $this->svgDrawer->getProperty('w')) : 0.;
-        $cy = isset($properties['cy']) ? $this->cssConverter->convertToMM($properties['cy'], $this->svgDrawer->getProperty('h')) : 0.;
-        $r  = isset($properties['r'])  ? $this->cssConverter->convertToMM($properties['r'], $this->svgDrawer->getProperty('w'))  : 0.;
-        $this->pdf->svgEllipse($cx, $cy, $r, $r, $style);
+        $cx = 0.;
+        if (isset($properties['cx'])) {
+            $cx = $this->cssConverter->convertToMM($properties['cx'], $this->svgDrawer->getProperty('w'));
+        }
 
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
+        $cy = 0.;
+        if (isset($properties['cy'])) {
+            $cy = $this->cssConverter->convertToMM($properties['cy'], $this->svgDrawer->getProperty('h'));
+        }
+
+        $r = 0.;
+        if (isset($properties['r'])) {
+            $r = $this->cssConverter->convertToMM($properties['r'], $this->svgDrawer->getProperty('w'));
+        }
+
+        $this->pdf->svgEllipse($cx, $cy, $r, $r, $style);
     }
 }

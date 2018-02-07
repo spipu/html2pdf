@@ -29,26 +29,31 @@ class Rect extends AbstractSvgTag
     /**
      * @inheritdoc
      */
-    protected function draw($properties)
+    protected function drawSvg($properties)
     {
-        $this->pdf->doTransform(
-            isset($properties['transform'])
-                ? $this->svgDrawer->prepareTransform($properties['transform'])
-                : null
-        );
-
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $properties);
+        $styles = $this->parsingCss->getSvgStyle($this->getName(), $properties);
         $style = $this->pdf->svgSetStyle($styles);
 
-        $x = isset($properties['x']) ? $this->cssConverter->convertToMM($properties['x'], $this->svgDrawer->getProperty('w')) : 0.;
-        $y = isset($properties['y']) ? $this->cssConverter->convertToMM($properties['y'], $this->svgDrawer->getProperty('h')) : 0.;
-        $w = isset($properties['w']) ? $this->cssConverter->convertToMM($properties['w'], $this->svgDrawer->getProperty('w')) : 0.;
-        $h = isset($properties['h']) ? $this->cssConverter->convertToMM($properties['h'], $this->svgDrawer->getProperty('h')) : 0.;
+        $x = 0.;
+        if (isset($properties['x'])) {
+            $x = $this->cssConverter->convertToMM($properties['x'], $this->svgDrawer->getProperty('w'));
+        }
+
+        $y = 0.;
+        if (isset($properties['y'])) {
+            $y = $this->cssConverter->convertToMM($properties['y'], $this->svgDrawer->getProperty('h'));
+        }
+
+        $w = 0.;
+        if (isset($properties['w'])) {
+            $w = $this->cssConverter->convertToMM($properties['w'], $this->svgDrawer->getProperty('w'));
+        }
+
+        $h = 0.;
+        if (isset($properties['h'])) {
+            $h = $this->cssConverter->convertToMM($properties['h'], $this->svgDrawer->getProperty('h'));
+        }
 
         $this->pdf->svgRect($x, $y, $w, $h, $style);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
     }
 }

@@ -29,15 +29,9 @@ class Polyline extends AbstractSvgTag
     /**
      * @inheritdoc
      */
-    protected function draw($properties)
+    protected function drawSvg($properties)
     {
-        $this->pdf->doTransform(
-            isset($properties['transform'])
-                ? $this->svgDrawer->prepareTransform($properties['transform'])
-                : null
-        );
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $properties);
+        $styles = $this->parsingCss->getSvgStyle($this->getName(), $properties);
         $style = $this->pdf->svgSetStyle($styles);
 
         $path = isset($properties['points']) ? $properties['points'] : null;
@@ -69,8 +63,5 @@ class Polyline extends AbstractSvgTag
             // drawing
             $this->pdf->svgPolygone($actions, $style);
         }
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
     }
 }

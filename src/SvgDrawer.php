@@ -215,6 +215,7 @@ class SvgDrawer
                     }
                     $actions[] = array(1,tan($val[0]),0,1,0,0);
                     break;
+
                 case 'matrix':
                     if (!isset($val[0])) {
                         $val[0] = 0.;

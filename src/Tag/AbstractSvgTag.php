@@ -42,14 +42,9 @@ abstract class AbstractSvgTag extends AbstractTag
      */
     public function open($properties)
     {
-        if (!$this->svgDrawer->isDrawing()) {
-            $e = new HtmlParsingException('The asked ['.$this->getName().'] tag is not in a [DRAW] tag');
-            $e->setInvalidTag($this->getName());
-            throw $e;
-        }
-
-        $this->draw($properties);
-
+        $this->openSvg($properties);
+        $this->drawSvg($properties);
+        $this->closeSvg();
         return true;
     }
 
@@ -62,11 +57,44 @@ abstract class AbstractSvgTag extends AbstractTag
     }
 
     /**
+     * Open the SVG tag
+     *
+     * @param array $properties
+     * @throws HtmlParsingException
+     */
+    protected function openSvg($properties)
+    {
+        if (!$this->svgDrawer->isDrawing()) {
+            $e = new HtmlParsingException('The asked ['.$this->getName().'] tag is not in a [DRAW] tag');
+            $e->setInvalidTag($this->getName());
+            throw $e;
+        }
+
+        $transform = null;
+        if (array_key_exists('transform', $properties)) {
+            $transform = $this->svgDrawer->prepareTransform($properties['transform']);
+        }
+
+        $this->pdf->doTransform($transform);
+        $this->parsingCss->save();
+    }
+
+    /**
+     * Close the SVG tag
+     */
+    protected function closeSvg()
+    {
+        $this->pdf->undoTransform();
+
+        $this->parsingCss->load();
+    }
+
+    /**
      * Draw the SVG tag
      *
      * @param array $properties
      *
      * @return void
      */
-    abstract protected function draw($properties);
+    abstract protected function drawSvg($properties);
 }

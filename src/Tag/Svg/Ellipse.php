@@ -29,25 +29,31 @@ class Ellipse extends AbstractSvgTag
     /**
      * @inheritdoc
      */
-    protected function draw($properties)
+    protected function drawSvg($properties)
     {
-        $this->pdf->doTransform(
-            isset($properties['transform'])
-                ? $this->svgDrawer->prepareTransform($properties['transform'])
-                : null
-        );
-
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('ellipse', $properties);
+        $styles = $this->parsingCss->getSvgStyle($this->getName(), $properties);
         $style = $this->pdf->svgSetStyle($styles);
 
-        $cx = isset($properties['cx']) ? $this->cssConverter->convertToMM($properties['cx'], $this->svgDrawer->getProperty('w')) : 0.;
-        $cy = isset($properties['cy']) ? $this->cssConverter->convertToMM($properties['cy'], $this->svgDrawer->getProperty('h')) : 0.;
-        $rx = isset($properties['ry']) ? $this->cssConverter->convertToMM($properties['rx'], $this->svgDrawer->getProperty('w')) : 0.;
-        $ry = isset($properties['rx']) ? $this->cssConverter->convertToMM($properties['ry'], $this->svgDrawer->getProperty('h')) : 0.;
-        $this->pdf->svgEllipse($cx, $cy, $rx, $ry, $style);
+        $cx = 0.;
+        if (isset($properties['cx'])) {
+            $cx = $this->cssConverter->convertToMM($properties['cx'], $this->svgDrawer->getProperty('w'));
+        }
 
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
+        $cy = 0.;
+        if (isset($properties['cy'])) {
+            $cy = $this->cssConverter->convertToMM($properties['cy'], $this->svgDrawer->getProperty('h'));
+        }
+
+        $rx = 0.;
+        if (isset($properties['rx'])) {
+            $rx = $this->cssConverter->convertToMM($properties['rx'], $this->svgDrawer->getProperty('w'));
+        }
+
+        $ry = 0.;
+        if (isset($properties['ry'])) {
+            $ry = $this->cssConverter->convertToMM($properties['ry'], $this->svgDrawer->getProperty('h'));
+        }
+
+        $this->pdf->svgEllipse($cx, $cy, $rx, $ry, $style);
     }
 }
