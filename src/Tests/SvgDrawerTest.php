@@ -51,8 +51,8 @@ class SvgDrawerTest extends \PHPUnit_Framework_TestCase
         $properties = [
             'x' => 0,
             'y' => 0,
-            'w' => '100mm',
-            'h' => '100mm',
+            'w' => 100,
+            'h' => 100,
         ];
 
         $this->assertFalse($this->svgDrawer->isDrawing());
@@ -68,18 +68,18 @@ class SvgDrawerTest extends \PHPUnit_Framework_TestCase
     public function testProperties()
     {
         $properties = [
-            'x' => '1mm',
-            'y' => '2mm',
-            'w' => '3mm',
-            'h' => '4mm',
+            'x' => 1,
+            'y' => 2,
+            'w' => 3,
+            'h' => 4,
         ];
 
         $this->svgDrawer->startDrawing($properties);
 
-        $this->assertSame('1mm', $this->svgDrawer->getProperty('x'));
-        $this->assertSame('2mm', $this->svgDrawer->getProperty('y'));
-        $this->assertSame('3mm', $this->svgDrawer->getProperty('w'));
-        $this->assertSame('4mm', $this->svgDrawer->getProperty('h'));
+        $this->assertSame(1, $this->svgDrawer->getProperty('x'));
+        $this->assertSame(2, $this->svgDrawer->getProperty('y'));
+        $this->assertSame(3, $this->svgDrawer->getProperty('w'));
+        $this->assertSame(4, $this->svgDrawer->getProperty('h'));
     }
 
     /**
@@ -95,8 +95,8 @@ class SvgDrawerTest extends \PHPUnit_Framework_TestCase
         $properties = [
             'x' => 0,
             'y' => 0,
-            'w' => '100mm',
-            'h' => '100mm',
+            'w' => 100,
+            'h' => 100,
         ];
 
         $this->svgDrawer->startDrawing($properties);

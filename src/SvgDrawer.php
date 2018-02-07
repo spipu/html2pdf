@@ -64,7 +64,7 @@ class SvgDrawer
         $this->properties = $properties;
 
         // init the translate matrix : (0,0) => (x, y)
-        $this->pdf->doTransform(array(1,0,0,1,$this->properties['x'],$this->properties['y']));
+        $this->pdf->doTransform(array(1,0,0,1,$this->getProperty('x'),$this->getProperty('y')));
         $this->pdf->setAlpha(1.);
     }
 
@@ -171,8 +171,8 @@ class SvgDrawer
                         $values[1] = 0.;
                     }
 
-                    $values[0] = $this->cssConverter->convertToMM($values[0], $this->properties['w']);
-                    $values[1] = $this->cssConverter->convertToMM($values[1], $this->properties['h']);
+                    $values[0] = $this->cssConverter->convertToMM($values[0], $this->getProperty('w'));
+                    $values[1] = $this->cssConverter->convertToMM($values[1], $this->getProperty('h'));
 
                     $actions[] = array(1.,0.,0.,1.,$values[0],$values[1]);
                     break;
@@ -189,8 +189,8 @@ class SvgDrawer
                     }
 
                     $values[0] = $values[0]*M_PI/180.;
-                    $values[1] = $this->cssConverter->convertToMM($values[1], $this->properties['w']);
-                    $values[2] = $this->cssConverter->convertToMM($values[2], $this->properties['h']);
+                    $values[1] = $this->cssConverter->convertToMM($values[1], $this->getProperty('w'));
+                    $values[2] = $this->cssConverter->convertToMM($values[2], $this->getProperty('h'));
 
                     if ($values[1] || $values[2]) {
                         $actions[] = array(1.,0.,0.,1.,-$values[1],-$values[2]);
@@ -252,8 +252,8 @@ class SvgDrawer
                     $values[1] = floatval($values[1]);
                     $values[2] = floatval($values[2]);
                     $values[3] = floatval($values[3]);
-                    $values[4] = $this->cssConverter->convertToMM($values[4], $this->properties['w']);
-                    $values[5] = $this->cssConverter->convertToMM($values[5], $this->properties['h']);
+                    $values[4] = $this->cssConverter->convertToMM($values[4], $this->getProperty('w'));
+                    $values[5] = $this->cssConverter->convertToMM($values[5], $this->getProperty('h'));
 
                     $actions[] = $values;
                     break;
