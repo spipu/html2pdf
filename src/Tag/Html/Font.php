@@ -9,20 +9,18 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2017 Laurent MINGUET
  */
-namespace Spipu\Html2Pdf\Tag;
+namespace Spipu\Html2Pdf\Tag\Html;
 
 /**
- * Tag Samp
+ * Tag Font
  */
-class Samp extends I
+class Font extends Span
 {
     /**
-     * get the name of the tag
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getName()
     {
-        return 'samp';
+        return 'font';
     }
 }

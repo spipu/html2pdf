@@ -125,7 +125,10 @@ Then, you can add your extension to Html2Pdf with the following method:
 $html2pdf->addExtension(new \Example\Html2Pdf\Extension\MyExtension());
 ```
 
-A core extension is automatically added to Html2pdf: `\Spipu\Html2Pdf\Extension\CoreExtension`
+The following core extensions are automatically added to Html2pdf:
+
+  * `\Spipu\Html2Pdf\Extension\Core\HtmlExtension`
+  * `\Spipu\Html2Pdf\Extension\Core\SvgExtension`
 
 It contains all the native tags.
 

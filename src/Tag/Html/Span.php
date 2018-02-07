@@ -9,17 +9,17 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2017 Laurent MINGUET
  */
-namespace Spipu\Html2Pdf\Tag;
+namespace Spipu\Html2Pdf\Tag\Html;
+
+use Spipu\Html2Pdf\Tag\AbstractHtmlTag;
 
 /**
  * Tag Span
  */
-class Span extends AbstractDefaultTag
+class Span extends AbstractHtmlTag
 {
     /**
-     * get the name of the tag
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getName()
     {
@@ -27,11 +27,7 @@ class Span extends AbstractDefaultTag
     }
 
     /**
-     * Close the HTML tag
-     *
-     * @param array $properties properties of the HTML tag
-     *
-     * @return boolean
+     * @inheritdoc
      */
     public function close($properties)
     {

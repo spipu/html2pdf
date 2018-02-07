@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [5.1.1](https://github.com/spipu/html2pdf/compare/v5.1.0...master) - Unreleased
 
+  * change the name of `CoreExtension` to `Core\HtmlExtension`
+  * change the namespace of all the html tags from `Tag\` to `Tag\Html`
+  * change all the svg tag from internal methods to new external tags
+  * add the extension `Core\SvgExtension`
   * add locale fi - thanks to @RWAP
   * fix locale pt - thanks to @marcoshenzel
   * fix better doc

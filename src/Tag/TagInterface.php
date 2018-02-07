@@ -20,13 +20,6 @@ use Spipu\Html2Pdf\Parsing\Css as ParsingCss;
 interface TagInterface
 {
     /**
-     * PHP constructor.
-     *
-     * @return TagInterface
-     */
-    public function __construct();
-
-    /**
      * Set the Parsing Css Object
      *
      * @param ParsingCss $parsingCss The parsing css object

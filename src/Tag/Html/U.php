@@ -9,31 +9,29 @@
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
  * @copyright 2017 Laurent MINGUET
  */
-namespace Spipu\Html2Pdf\Tag;
+namespace Spipu\Html2Pdf\Tag\Html;
+
+use Spipu\Html2Pdf\Tag\AbstractHtmlTag;
 
 /**
- * Tag S
+ * Tag U
  */
-class S extends AbstractDefaultTag
+class U extends AbstractHtmlTag
 {
     /**
-     * get the name of the tag
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getName()
     {
-        return 's';
+        return 'u';
     }
 
     /**
-     * override some styles
-     *
-     * @return Span
+     * @inheritdoc
      */
     protected function overrideStyles()
     {
-        $this->parsingCss->value['font-linethrough'] = true;
+        $this->parsingCss->value['font-underline'] = true;
 
         return $this;
     }
