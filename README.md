@@ -1,13 +1,6 @@
 # Html2Pdf
 
-Html2Pdf is a HTML to PDF converter written in PHP, and compatible with:
-
-* PHP 5.4
-* PHP 5.5
-* PHP 5.6
-* PHP 7.0
-* PHP 7.1
-* PHP 7.2
+Html2Pdf is a HTML to PDF converter written in PHP, and compatible with PHP **5.4** to **7.2**.
 
 It allows the conversion of valid HTML in PDF format, to generate documents like invoices, documentation, ...
 
@@ -30,9 +23,15 @@ You will also need at least the following php extensions:
 
 ## Documentation
 
+You will find the install documentation [here](./doc/install.md).
+
 You will find all the documentation [here](./doc/README.md).
 
 You will find lots of examples [here](./examples/).
+
+## Donate
+
+You can support this project by making a [donation](http://html2pdf.fr/en/donate).
 
 ## Change log
 
@@ -41,10 +40,6 @@ See the [./CHANGELOG.md](./CHANGELOG.md) file.
 ## Help & Support
 
 For questions and bug reports, please use the GitHub issues page.
-
-## Donate
-
-You can support this project by making a [donation](http://html2pdf.fr/en/donate).
 
 ## License
 
