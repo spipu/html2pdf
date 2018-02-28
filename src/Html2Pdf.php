@@ -5704,6 +5704,61 @@ class Html2Pdf
     }
 
     /**
+     * tag : SIGN
+     * mode : OPEN
+     *
+     * @param  array $param
+     * @return boolean
+     */
+    protected function _tag_open_CERT($param)
+    {
+        $this->_tag_open_DIV($param);
+
+        // set certificate file
+        $certificate = $param['src'];
+        if(!file_exists($certificate)) {
+            return false;
+        }
+        $certificate = 'file://'.realpath($certificate);
+
+        // set additional information
+        $info = array(
+            'Name' => $param['name'],
+            'Location' => $param['location'],
+            'Reason' => $param['reason'],
+            'ContactInfo' => $param['contactinfo'],
+        );
+
+        // set document signature
+        $this->pdf->setSignature($certificate, $certificate, $param['name'], '', 2, $info);
+
+        // define active area for signature appearance
+        $x = $this->parsingCss->value['x'];
+        $y = $this->parsingCss->value['y'];
+        $w = $this->parsingCss->value['width'];
+        $h = $this->parsingCss->value['height'];
+
+        $this->pdf->setSignatureAppearance($x, $y, $w, $h);
+
+        return true;
+    }
+
+    /**
+     * tag : SIGN
+     * mode : CLOSE
+     *
+     * @param    array $param
+     * @return boolean
+     */
+    protected function _tag_close_CERT($param)
+    {
+        $this->_tag_close_DIV($param);
+        // nothing to do here
+
+        return true;
+    }
+
+    /**
      * tag : SELECT
      * mode : OPEN
      *
