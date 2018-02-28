@@ -5719,7 +5719,15 @@ class Html2Pdf
         if(!file_exists($certificate)) {
             return false;
         }
+
+        // Set private key
+        $privkey = $param['privkey'];
+        if(strlen($privkey)==0 || !file_exists($privkey)) {
+            $privkey = $certificate;
+        }
+
         $certificate = 'file://'.realpath($certificate);
+        $privkey = 'file://'.realpath($privkey);
 
         // set additional information
         $info = array(
@@ -5730,7 +5738,7 @@ class Html2Pdf
         );
 
         // set document signature
-        $this->pdf->setSignature($certificate, $certificate, $param['name'], '', 2, $info);
+        $this->pdf->setSignature($certificate, $privkey, '', '', 2, $info);
 
         // define active area for signature appearance
         $x = $this->parsingCss->value['x'];
