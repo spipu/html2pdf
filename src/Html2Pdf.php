@@ -523,9 +523,6 @@ class Html2Pdf
      */
     public function output($name = 'document.pdf', $dest = 'I')
     {
-        // close the pdf and clean up
-        $this->clean();
-
         // if on debug mode
         if (!is_null($this->debug)) {
             $this->debug->stop();
@@ -556,7 +553,12 @@ class Html2Pdf
         }
 
         // call the output of TCPDF
-        return $this->pdf->Output($name, $dest);
+        $output = $this->pdf->Output($name, $dest);
+        
+        // close the pdf and clean up
+        $this->clean();
+
+        return $output;
     }
 
     /**
