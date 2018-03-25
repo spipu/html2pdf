@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
   * add locale fi - thanks to @RWAP
   * fix locale pt - thanks to @marcoshenzel
   * fix issue on testing the filename when asking for string output
+  * fix issue - clean locale before PDF generation - thanks to @quimcalpe
   * fix better doc
 
 ## [5.1.0](https://github.com/spipu/html2pdf/compare/v5.0.1...v5.1.0) - 2018-01-23
