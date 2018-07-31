@@ -1714,7 +1714,7 @@ class Css
 
         // extract the style tags des tags style, and remove them in the html code
         preg_match_all('/<style[^>]*>(.*)<\/style[^>]*>/isU', $html, $match);
-        $html = preg_replace('/<style[^>]*>(.*)<\/style[^>]*>/isU', '', $html);
+        $html = preg_replace_callback('/<style[^>]*>(.*)<\/style[^>]*>/isU', [$this, 'removeStyleTag'], $html);
 
         // analyse each style tags
         foreach ($match[1] as $code) {
@@ -1728,5 +1728,17 @@ class Css
         $this->analyseStyle($style);
 
         return $html;
+    }
+
+    /**
+     * put the same line number for the lexer
+     * @param string[] $match
+     * @return string
+     */
+    private function removeStyleTag(array $match)
+    {
+        $nbLines = count(explode("\n", $match[0]))-1;
+
+        return str_pad('', $nbLines, "\n");
     }
 }
