@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
   * fix issue on radio/checkbow width - thanks to @Ohda
   * fix issue on line number when using style tag - issue #338
   * fix issue on svg draw path - relative move was not implemented
+  * fix issue on svg draw path when Z directive is not separate from the next directive - issue #308
   * fix better doc
 
 ## [5.1.0](https://github.com/spipu/html2pdf/compare/v5.0.1...v5.1.0) - 2018-01-23

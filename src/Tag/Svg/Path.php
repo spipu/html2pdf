@@ -43,6 +43,7 @@ class Path extends AbstractSvgTag
             $path = preg_replace('/([0-9\.])([a-zA-Z])/', '$1 $2', $path);
             $path = preg_replace('/[\s]+/', ' ', trim($path));
             $path = preg_replace('/ ([a-z]{2})/', '$1', $path);
+            $path = preg_replace('/Z([a-zA-Z])/', 'Z $1', $path);
 
             $path = explode(' ', $path);
             foreach ($path as $k => $v) {
