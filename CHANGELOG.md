@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
   * change all the svg tag from internal methods to new external tags
   * add the extension `Core\SvgExtension`
   * add locale fi - thanks to @RWAP
+  * add `$marginTop` parameter on the `createIndex` method - issue #333
   * fix locale pt - thanks to @marcoshenzel
   * fix issue on testing the filename when asking for string output
   * fix issue - clean locale before PDF generation - thanks to @quimcalpe

@@ -22,7 +22,7 @@ level | 0 | Level of the bookmark, must be a positive integer. Level 0 is the ma
 You can insert an index (summary) of all bookmarks automatically, using the following function : 
 
 ```php
-$html2pdf->createIndex($titre, $sizeTitle, $sizeBookmark, $bookmarkTitle, $displayPage, $onPage, $fontName);
+$html2pdf->createIndex($titre, $sizeTitle, $sizeBookmark, $bookmarkTitle, $displayPage, $onPage, $fontName, $marginTop);
 ```
 
 ### parameters
@@ -35,7 +35,8 @@ $sizeBookmark | 15 | font size of the index, in mm
 $bookmarkTitle | true | add a bookmark for the index, at his beginning
 $displayPage | true | display the page numbers
 $onPage | null | if null : at the end of the document on a new page, else on the $onPage page
-$fontName | helvetica | font name to use
+$fontName | null | font name to use. If null, use helvetica
+$marginTop | null | margin top to use on the index page
 
 **IMPORTANT**:
 If you want the summary index on a specific page (using $onPage) you must have anticipated this page during the creation of HTML (see example below).

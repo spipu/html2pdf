@@ -477,11 +477,30 @@ class Html2Pdf
      * @param  boolean $displayPage   display the page numbers
      * @param  int     $onPage        if null : at the end of the document on a new page, else on the $onPage page
      * @param  string  $fontName      font name to use
+     * @param  string  $marginTop     margin top to use on the index page
      * @return null
      */
-    public function createIndex($titre = 'Index', $sizeTitle = 20, $sizeBookmark = 15, $bookmarkTitle = true, $displayPage = true, $onPage = null, $fontName = 'helvetica')
-    {
+    public function createIndex(
+        $titre = 'Index',
+        $sizeTitle = 20,
+        $sizeBookmark = 15,
+        $bookmarkTitle = true,
+        $displayPage = true,
+        $onPage = null,
+        $fontName = null,
+        $marginTop = null
+    ) {
+        if ($fontName === null) {
+            $fontName = 'helvetica';
+        }
+
         $oldPage = $this->_INDEX_NewPage($onPage);
+
+        if ($marginTop !== null) {
+            $marginTop = $this->cssConverter->convertToMM($marginTop);
+            $this->pdf->SetY($this->pdf->GetY() + $marginTop);
+        }
+
         $this->pdf->createIndex($this, $titre, $sizeTitle, $sizeBookmark, $bookmarkTitle, $displayPage, $onPage, $fontName);
         if ($oldPage) {
             $this->pdf->setPage($oldPage);

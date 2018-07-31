@@ -24,7 +24,7 @@ try {
     $content = ob_get_clean();
 
     $html2pdf->writeHTML($content);
-    $html2pdf->createIndex('Sommaire', 30, 12, false, true, 2);
+    $html2pdf->createIndex('Sommaire', 30, 12, false, true, 2, null, '10mm');
     $html2pdf->output('about.pdf');
 } catch (Html2PdfException $e) {
     $html2pdf->clean();
