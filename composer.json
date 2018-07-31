@@ -14,6 +14,7 @@
     ],
     "require": {
         "php": "^5.4 || ^7.0",
+        "ext-mbstring": "*",
         "tecnickcom/tcpdf": "^6.2"
     },
     "require-dev": {
