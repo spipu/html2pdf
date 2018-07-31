@@ -11,6 +11,7 @@
   * [Bookmark](./bookmark.md)
   * [Font](./font.md)
   * [SVG](./svg.md)
+  * [Electronic Signature](./cert.md)
   * [Extensions](./extension.md)
   * [Exceptions](./exception.md)
   * [Useful Methods](./methods.md)

@@ -5785,9 +5785,9 @@ class Html2Pdf
 
         // set additional information
         $info = array(
-            'Name' => $param['name'],
-            'Location' => $param['location'],
-            'Reason' => $param['reason'],
+            'Name'        => $param['name'],
+            'Location'    => $param['location'],
+            'Reason'      => $param['reason'],
             'ContactInfo' => $param['contactinfo'],
         );
 
