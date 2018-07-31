@@ -111,25 +111,54 @@ class Html
             'option'
         );
 
+        // list of the tags to move space
+        $tagsToSpace = array(
+            'span', 'font', 'label',
+            'strong', 'b',
+            'address', 'cite', 'em', 'i', 'samp',
+            'cite', 's',
+            'ins', 'u',
+            'big', 'small', 'sub', 'sup'
+        );
+
         // foreach action
         $nb = count($actions);
         for ($k = 0; $k < $nb; $k++) {
             // if it is a Text
-            if ($actions[$k]->getName() === 'write') {
-                // if the tag before the text is a tag to clean => ltrim on the text
-                if ($k>0 && in_array($actions[$k - 1]->getName(), $tagsToClean)) {
+            if ($actions[$k]->getName() !== 'write') {
+                continue;
+            }
+
+            // if the tag before the text is a tag to clean => ltrim on the text
+            if ($k>0) {
+                if (in_array($actions[$k - 1]->getName(), $tagsToClean)) {
                     $actions[$k]->setParam('txt', ltrim($actions[$k]->getParam('txt')));
                 }
+            }
 
+            if ($k < $nb - 1) {
                 // if the tag after the text is a tag to clean => rtrim on the text
-                if ($k < $nb - 1 && in_array($actions[$k + 1]->getName(), $tagsToClean)) {
+                if (in_array($actions[$k + 1]->getName(), $tagsToClean)) {
                     $actions[$k]->setParam('txt', rtrim($actions[$k]->getParam('txt')));
                 }
 
-                // if the text is empty => remove the action
-                if (!strlen($actions[$k]->getParam('txt'))) {
-                    unset($actions[$k]);
+                // if the tag after the text is a tag with space to move => move the space to the next write
+                if (in_array($actions[$k + 1]->getName(), $tagsToSpace)) {
+                    if (substr($actions[$k]->getParam('txt'), -1) == ' ') {
+                        $actions[$k]->setParam('txt', rtrim($actions[$k]->getParam('txt')));
+                        for ($subK = $k+2; $subK < $nb; $subK++) {
+                            if ($actions[$subK]->getName() === 'write') {
+                                $actions[$subK]->setParam('txt', ' '.ltrim($actions[$subK]->getParam('txt')));
+                                break;
+                            }
+                        }
+                    }
                 }
+            }
+
+            // if the text is empty => remove the action
+            if (!strlen($actions[$k]->getParam('txt'))) {
+                unset($actions[$k]);
             }
         }
 
