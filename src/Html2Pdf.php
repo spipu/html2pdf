@@ -242,7 +242,7 @@ class Html2Pdf
         return array(
             'major'     => 5,
             'minor'     => 2,
-            'revision'  => 1
+            'revision'  => 0
         );
     }
 
@@ -5750,6 +5750,72 @@ class Html2Pdf
         $this->parsingCss->load();
         $this->parsingCss->fontSet();
         $this->_maxE++;
+
+        return true;
+    }
+
+   /**
+     * tag : SIGN
+     * mode : OPEN
+     *
+     * @param  array $param
+     * @return boolean
+     */
+    protected function _tag_open_CERT($param)
+    {
+        $res = $this->_tag_open_DIV($param);
+        if (!$res) {
+            return $res;
+        }
+
+        // set certificate file
+        $certificate = $param['src'];
+        if(!file_exists($certificate)) {
+            return true;
+        }
+
+        // Set private key
+        $privkey = $param['privkey'];
+        if(strlen($privkey)==0 || !file_exists($privkey)) {
+            $privkey = $certificate;
+        }
+
+        $certificate = 'file://'.realpath($certificate);
+        $privkey = 'file://'.realpath($privkey);
+
+        // set additional information
+        $info = array(
+            'Name' => $param['name'],
+            'Location' => $param['location'],
+            'Reason' => $param['reason'],
+            'ContactInfo' => $param['contactinfo'],
+        );
+
+        // set document signature
+        $this->pdf->setSignature($certificate, $privkey, '', '', 2, $info);
+
+        // define active area for signature appearance
+        $x = $this->parsingCss->value['x'];
+        $y = $this->parsingCss->value['y'];
+        $w = $this->parsingCss->value['width'];
+        $h = $this->parsingCss->value['height'];
+
+        $this->pdf->setSignatureAppearance($x, $y, $w, $h);
+
+        return true;
+    }
+
+    /**
+     * tag : SIGN
+     * mode : CLOSE
+     *
+     * @param    array $param
+     * @return boolean
+     */
+    protected function _tag_close_CERT($param)
+    {
+        $this->_tag_close_DIV($param);
+        // nothing to do here
 
         return true;
     }
