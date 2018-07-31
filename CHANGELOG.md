@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
   * add the extension `Core\SvgExtension`
   * add locale fi - thanks to @RWAP
   * add `$marginTop` parameter on the `createIndex` method - issue #333
+  * add `xx-large` to `xx-small` font-size management - issue #320
   * fix locale pt - thanks to @marcoshenzel
   * fix issue on testing the filename when asking for string output
   * fix issue - clean locale before PDF generation - thanks to @quimcalpe

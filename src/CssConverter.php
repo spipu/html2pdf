@@ -18,6 +18,22 @@ class CssConverter
 {
     private $htmlColor   = array(); // list of the HTML colors
 
+    /**
+     * fontsize ratios
+     * @var float[]
+     */
+    private $fontSizeRatio = [
+        'smaller'  => 0.8,
+        'larger'   => 1.25,
+        'xx-small' => 0.512,
+        'x-small'  => 0.64,
+        'small'    => 0.8,
+        'medium'   => 1.,
+        'large'    => 1.25,
+        'x-large'  => 1.5625,
+        'xx-large' => 1.953125,
+    ];
+
     public function __construct()
     {
         $this->htmlColor = \TCPDF_COLORS::$webcolor;
@@ -52,6 +68,21 @@ class CssConverter
         }
 
         return $css;
+    }
+
+    /**
+     * @param string $css    font size to convert
+     * @param float  $parent parent font size
+     * @return float
+     */
+    public function convertFontSize($css, $parent = 0.)
+    {
+        $css = trim($css);
+        if (array_key_exists($css, $this->fontSizeRatio)) {
+            $css = ($this->fontSizeRatio[$css] * $parent).'mm';
+        }
+
+        return $this->convertToMM($css, $parent);
     }
 
     /**

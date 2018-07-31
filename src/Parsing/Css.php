@@ -144,7 +144,7 @@ class Css
         $this->value['font-overline']    = false;
         $this->value['font-linethrough'] = false;
         $this->value['text-transform']   = 'none';
-        $this->value['font-size']        = $this->cssConverter->convertToMM('10pt');
+        $this->value['font-size']        = $this->cssConverter->convertFontSize('10pt');
         $this->value['text-indent']      = 0;
         $this->value['text-align']       = 'left';
         $this->value['vertical-align']   = 'middle';
@@ -717,7 +717,7 @@ class Css
                     break;
 
                 case 'font-size':
-                    $val = $this->cssConverter->convertToMM($val, $this->value['font-size']);
+                    $val = $this->cssConverter->convertFontSize($val, $this->value['font-size']);
                     if ($val) {
                         $this->value['font-size'] = $val;
                     }

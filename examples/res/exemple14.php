@@ -37,4 +37,22 @@
     <br />
     Image : <img src="./res/logos.png" /><br />
     Image : <img src="./res/logo.png" /><br />
+
+    <h2>Css Large FontSize</h2>
+    <span style="font-size: medium;"  >text with font-style medium</span><br />
+    <span style="font-size: large;"   >text with font-style large</span><br />
+    <span style="font-size: x-large;" >text with font-style x-large</span><br />
+    <span style="font-size: xx-large;">text with font-style xx-large</span><br />
+
+    <h2>Css Small FontSize</h2>
+    <span style="font-size: medium;"  >text with font-style medium</span><br />
+    <span style="font-size: small;"   >text with font-style small</span><br />
+    <span style="font-size: x-small;" >text with font-style x-small</span><br />
+    <span style="font-size: xx-small;">text with font-style xx-small</span><br />
+
+    <h2>Css Relative FontSize</h2>
+    <span style="font-size: medium;"  >text with font-style medium</span><br />
+    <span style="font-size: smaller;"  ><span style="font-size: larger;"  >text with font-style smaller larger</span></span><br />
+    <span style="font-size: larger;"  >text with font-style larger</span><br />
+    <span style="font-size: smaller;"  >text with font-style smaller</span><br />
 </page>

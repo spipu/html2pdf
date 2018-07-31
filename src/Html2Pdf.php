@@ -4063,7 +4063,7 @@ class Html2Pdf
         $this->parsingCss->value['margin']['r'] = 0;
         $this->parsingCss->value['margin']['t'] = $this->cssConverter->convertToMM('16px');
         $this->parsingCss->value['margin']['b'] = $this->cssConverter->convertToMM('16px');
-        $this->parsingCss->value['font-size'] = $this->cssConverter->convertToMM($size[$other]);
+        $this->parsingCss->value['font-size'] = $this->cssConverter->convertFontSize($size[$other]);
 
         $this->parsingCss->analyse($other, $param);
         $this->parsingCss->setPosition();
