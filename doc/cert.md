@@ -4,8 +4,8 @@
 
 You can add an electronic signature to the PDF, by using the following specific html TAG:
 
-```html
-<CERT
+```
+<cert
     src="/path/to/cert.crt"
     name="sender_name"
     location="sender_location"
@@ -13,7 +13,7 @@ You can add an electronic signature to the PDF, by using the following specific 
     contactinfo="sender_contact"
 >                            
 /** html **/
-</CERT>
+</cert>
 ```
 
 Attribute   |  Description
