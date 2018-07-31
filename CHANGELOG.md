@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.1.1](https://github.com/spipu/html2pdf/compare/v5.1.0...master) - Unreleased
+## [5.2.0](https://github.com/spipu/html2pdf/compare/v5.1.0...v5.2.0) - 2018-07-31
 
   * change the name of `CoreExtension` to `Core\HtmlExtension`
   * change the namespace of all the html tags from `Tag\` to `Tag\Html`
