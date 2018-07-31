@@ -5165,6 +5165,8 @@ class Html2Pdf
         for ($k=0; $k<$span; $k++) {
             self::$_tables[$param['num']]['cols'][] = $param;
         }
+
+        return true;
     }
 
     /**
@@ -5175,6 +5177,34 @@ class Html2Pdf
      * @return boolean
      */
     protected function _tag_close_COL($param)
+    {
+        // there is nothing to do here
+
+        return true;
+    }
+
+    /**
+     * tag : COLGROUP
+     * mode : OPEN
+     *
+     * @param  array $param
+     * @return boolean
+     */
+    protected function _tag_open_COLGROUP($param)
+    {
+        // there is nothing to do here
+
+        return true;
+    }
+
+    /**
+     * tag : COLGROUP
+     * mode : CLOSE
+     *
+     * @param  array $param
+     * @return boolean
+     */
+    protected function _tag_close_COLGROUP($param)
     {
         // there is nothing to do here
 

@@ -40,10 +40,12 @@ end_last_page div
 <br>
 <br>
 <table>
-    <col style="width: 5%" class="col1">
-    <col style="width: 25%">
-    <col style="width: 30%">
-    <col style="width: 40%">
+    <colgroup>
+        <col style="width: 5%" class="col1">
+        <col style="width: 25%">
+        <col style="width: 30%">
+        <col style="width: 40%">
+    </colgroup>
     <thead>
         <tr>
             <th rowspan="2">n°</th>

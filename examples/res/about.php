@@ -90,7 +90,7 @@
         <li>&lt;sup&gt; : Exemple<sup>haut</sup>.</li>
         <li>&lt;sub&gt; : Exemple<sub>bas</sub>.</li>
         <li>&lt;u&gt; : Texte <u>souligné</u></li>
-        <li>&lt;table&gt;, &lt;td&gt;, &lt;th&gt;, &lt;tr&gt;, &lt;thead&gt;, &lt;tbody&gt;, &lt;tfoot&gt;, &lt;col&gt; </li>
+        <li>&lt;table&gt;, &lt;td&gt;, &lt;th&gt;, &lt;tr&gt;, &lt;thead&gt;, &lt;tbody&gt;, &lt;tfoot&gt;, &lt;col&gt;, &lt;colgroup&gt; </li>
         <li>&lt;ol&gt;, &lt;ul&gt;, &lt;li&gt;</li>
         <li>&lt;form&gt;, &lt;input&gt;, &lt;textarea&gt;, &lt;select&gt;, &lt;option&gt;</li>
         <li>&lt;fieldset&gt;, &lt;legend&gt;</li>
