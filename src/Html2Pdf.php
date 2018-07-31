@@ -17,7 +17,7 @@ use Spipu\Html2Pdf\Exception\ImageException;
 use Spipu\Html2Pdf\Exception\LongSentenceException;
 use Spipu\Html2Pdf\Exception\TableException;
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
-use Spipu\Html2Pdf\Extension\CoreExtension;
+use Spipu\Html2Pdf\Extension\Core;
 use Spipu\Html2Pdf\Extension\ExtensionInterface;
 use Spipu\Html2Pdf\Parsing\HtmlLexer;
 use Spipu\Html2Pdf\Parsing\Node;
@@ -63,6 +63,11 @@ class Html2Pdf
      * @var CssConverter
      */
     private $cssConverter;
+
+    /**
+     * @var SvgDrawer
+     */
+    private $svgDrawer;
 
     protected $_langue           = 'fr';        // locale of the messages
     protected $_orientation      = 'P';         // page orientation : Portrait ou Landscape
@@ -219,7 +224,10 @@ class Html2Pdf
         // init the form's fields
         $this->_lstField = array();
 
-        $this->addExtension(new CoreExtension());
+        $this->svgDrawer = new SvgDrawer($this->pdf, $this->cssConverter);
+
+        $this->addExtension(new Core\HtmlExtension());
+        $this->addExtension(new Core\SvgExtension($this->svgDrawer));
 
         return $this;
     }
@@ -469,11 +477,30 @@ class Html2Pdf
      * @param  boolean $displayPage   display the page numbers
      * @param  int     $onPage        if null : at the end of the document on a new page, else on the $onPage page
      * @param  string  $fontName      font name to use
+     * @param  string  $marginTop     margin top to use on the index page
      * @return null
      */
-    public function createIndex($titre = 'Index', $sizeTitle = 20, $sizeBookmark = 15, $bookmarkTitle = true, $displayPage = true, $onPage = null, $fontName = 'helvetica')
-    {
+    public function createIndex(
+        $titre = 'Index',
+        $sizeTitle = 20,
+        $sizeBookmark = 15,
+        $bookmarkTitle = true,
+        $displayPage = true,
+        $onPage = null,
+        $fontName = null,
+        $marginTop = null
+    ) {
+        if ($fontName === null) {
+            $fontName = 'helvetica';
+        }
+
         $oldPage = $this->_INDEX_NewPage($onPage);
+
+        if ($marginTop !== null) {
+            $marginTop = $this->cssConverter->convertToMM($marginTop);
+            $this->pdf->SetY($this->pdf->GetY() + $marginTop);
+        }
+
         $this->pdf->createIndex($this, $titre, $sizeTitle, $sizeBookmark, $bookmarkTitle, $displayPage, $onPage, $fontName);
         if ($oldPage) {
             $this->pdf->setPage($oldPage);
@@ -515,9 +542,6 @@ class Html2Pdf
      */
     public function output($name = 'document.pdf', $dest = 'I')
     {
-        // close the pdf and clean up
-        $this->clean();
-
         // if on debug mode
         if (!is_null($this->debug)) {
             $this->debug->stop();
@@ -531,9 +555,11 @@ class Html2Pdf
             throw new Html2PdfException('The output destination mode ['.$dest.'] is invalid');
         }
 
-        // the name must be a PDF name
-        if (strtolower(substr($name, -4)) !== '.pdf') {
-            throw new Html2PdfException('The output document name ['.$name.'] is not a PDF name');
+        if ($dest !== 'S') {
+            // the name must be a PDF name
+            if (strtolower(substr($name, -4)) !== '.pdf') {
+                throw new Html2PdfException('The output document name [' . $name . '] is not a PDF name');
+            }
         }
 
         // if save on server: it must be an absolute path
@@ -546,7 +572,12 @@ class Html2Pdf
         }
 
         // call the output of TCPDF
-        return $this->pdf->Output($name, $dest);
+        $output = $this->pdf->Output($name, $dest);
+        
+        // close the pdf and clean up
+        $this->clean();
+
+        return $output;
     }
 
     /**
@@ -2384,189 +2415,6 @@ class Html2Pdf
     }
 
     /**
-     * prepare a transform matrix, only for drawing a SVG graphic
-     *
-     * @access protected
-     * @param  string $transform
-     * @return array  $matrix
-     */
-    protected function _prepareTransform($transform)
-    {
-        // it can not be  empty
-        if (!$transform) {
-            return null;
-        }
-
-        // sctions must be like scale(...)
-        if (!preg_match_all('/([a-z]+)\(([^\)]*)\)/isU', $transform, $match)) {
-            return null;
-        }
-
-        // prepare the list of the actions
-        $actions = array();
-
-        // for actions
-        $amountMatches = count($match[0]);
-        for ($k=0; $k < $amountMatches; $k++) {
-
-            // get the name of the action
-            $name = strtolower($match[1][$k]);
-
-            // get the parameters of the action
-            $val = explode(',', trim($match[2][$k]));
-            foreach ($val as $i => $j) {
-                $val[$i] = trim($j);
-            }
-
-            // prepare the matrix, depending on the action
-            switch ($name) {
-                case 'scale':
-                    if (!isset($val[0])) {
-                        $val[0] = 1.;
-
-                    } else {
-                        $val[0] = 1.*$val[0];
-                    }
-                    if (!isset($val[1])) {
-                        $val[1] = $val[0];
-
-                    } else {
-                        $val[1] = 1.*$val[1];
-                    }
-                    $actions[] = array($val[0],0,0,$val[1],0,0);
-                    break;
-
-                case 'translate':
-                    if (!isset($val[0])) {
-                        $val[0] = 0.;
-
-                    } else {
-                        $val[0] = $this->cssConverter->convertToMM($val[0], $this->_isInDraw['w']);
-                    }
-                    if (!isset($val[1])) {
-                        $val[1] = 0.;
-
-                    } else {
-                        $val[1] = $this->cssConverter->convertToMM($val[1], $this->_isInDraw['h']);
-                    }
-                    $actions[] = array(1,0,0,1,$val[0],$val[1]);
-                    break;
-
-                case 'rotate':
-                    if (!isset($val[0])) {
-                        $val[0] = 0.;
-
-                    } else {
-                        $val[0] = $val[0]*M_PI/180.;
-                    }
-                    if (!isset($val[1])) {
-                        $val[1] = 0.;
-
-                    } else {
-                        $val[1] = $this->cssConverter->convertToMM($val[1], $this->_isInDraw['w']);
-                    }
-                    if (!isset($val[2])) {
-                        $val[2] = 0.;
-
-                    } else {
-                        $val[2] = $this->cssConverter->convertToMM($val[2], $this->_isInDraw['h']);
-                    }
-                    if ($val[1] || $val[2]) {
-                        $actions[] = array(1,0,0,1,-$val[1],-$val[2]);
-                    }
-                    $actions[] = array(cos($val[0]),sin($val[0]),-sin($val[0]),cos($val[0]),0,0);
-                    if ($val[1] || $val[2]) {
-                        $actions[] = array(1,0,0,1,$val[1],$val[2]);
-                    }
-                    break;
-
-                case 'skewx':
-                    if (!isset($val[0])) {
-                        $val[0] = 0.;
-
-                    } else {
-                        $val[0] = $val[0]*M_PI/180.;
-                    }
-                    $actions[] = array(1,0,tan($val[0]),1,0,0);
-                    break;
-
-                case 'skewy':
-                    if (!isset($val[0])) {
-                        $val[0] = 0.;
-
-                    } else {
-                        $val[0] = $val[0]*M_PI/180.;
-                    }
-                    $actions[] = array(1,tan($val[0]),0,1,0,0);
-                    break;
-                case 'matrix':
-                    if (!isset($val[0])) {
-                        $val[0] = 0.;
-
-                    } else {
-                        $val[0] = $val[0]*1.;
-                    }
-                    if (!isset($val[1])) {
-                        $val[1] = 0.;
-
-                    } else {
-                        $val[1] = $val[1]*1.;
-                    }
-                    if (!isset($val[2])) {
-                        $val[2] = 0.;
-
-                    } else {
-                        $val[2] = $val[2]*1.;
-                    }
-                    if (!isset($val[3])) {
-                        $val[3] = 0.;
-
-                    } else {
-                        $val[3] = $val[3]*1.;
-                    }
-                    if (!isset($val[4])) {
-                        $val[4] = 0.;
-
-                    } else {
-                        $val[4] = $this->cssConverter->convertToMM($val[4], $this->_isInDraw['w']);
-                    }
-                    if (!isset($val[5])) {
-                        $val[5] = 0.;
-
-                    } else {
-                        $val[5] = $this->cssConverter->convertToMM($val[5], $this->_isInDraw['h']);
-                    }
-                    $actions[] =$val;
-                    break;
-            }
-        }
-
-        // if there are no actions => return
-        if (!$actions) {
-            return null;
-        }
-
-        // get the first matrix
-        $m = $actions[0];
-        unset($actions[0]);
-
-        // foreach matrix => multiply to the last matrix
-        foreach ($actions as $n) {
-            $m = array(
-                $m[0]*$n[0]+$m[2]*$n[1],
-                $m[1]*$n[0]+$m[3]*$n[1],
-                $m[0]*$n[2]+$m[2]*$n[3],
-                $m[1]*$n[2]+$m[3]*$n[3],
-                $m[0]*$n[4]+$m[2]*$n[5]+$m[4],
-                $m[1]*$n[4]+$m[3]*$n[5]+$m[5]
-            );
-        }
-
-        // return the matrix
-        return $m;
-    }
-
-    /**
      * @access protected
      * @param  &array $cases
      * @param  &array $corr
@@ -4215,7 +4063,7 @@ class Html2Pdf
         $this->parsingCss->value['margin']['r'] = 0;
         $this->parsingCss->value['margin']['t'] = $this->cssConverter->convertToMM('16px');
         $this->parsingCss->value['margin']['b'] = $this->cssConverter->convertToMM('16px');
-        $this->parsingCss->value['font-size'] = $this->cssConverter->convertToMM($size[$other]);
+        $this->parsingCss->value['font-size'] = $this->cssConverter->convertFontSize($size[$other]);
 
         $this->parsingCss->analyse($other, $param);
         $this->parsingCss->setPosition();
@@ -5252,7 +5100,7 @@ class Html2Pdf
                 self::$_tables[$param['num']]['height'][] = $height;
             }
         } else {
-            // if we have tfoor, draw it
+            // if we have tfoot, draw it
             if (count(self::$_tables[$param['num']]['tfoot']['code'])) {
                 $tmpTR = self::$_tables[$param['num']]['tr_curr'];
                 $tmpTD = self::$_tables[$param['num']]['td_curr'];
@@ -5317,6 +5165,8 @@ class Html2Pdf
         for ($k=0; $k<$span; $k++) {
             self::$_tables[$param['num']]['cols'][] = $param;
         }
+
+        return true;
     }
 
     /**
@@ -5327,6 +5177,34 @@ class Html2Pdf
      * @return boolean
      */
     protected function _tag_close_COL($param)
+    {
+        // there is nothing to do here
+
+        return true;
+    }
+
+    /**
+     * tag : COLGROUP
+     * mode : OPEN
+     *
+     * @param  array $param
+     * @return boolean
+     */
+    protected function _tag_open_COLGROUP($param)
+    {
+        // there is nothing to do here
+
+        return true;
+    }
+
+    /**
+     * tag : COLGROUP
+     * mode : CLOSE
+     *
+     * @param  array $param
+     * @return boolean
+     */
+    protected function _tag_close_COLGROUP($param)
     {
         // there is nothing to do here
 
@@ -6184,7 +6062,7 @@ class Html2Pdf
 
         switch ($param['type']) {
             case 'checkbox':
-                $w = 3;
+                $w = 4;
                 $h = $w;
                 if ($h<$f) {
                     $y+= ($f-$h)*0.5;
@@ -6194,7 +6072,7 @@ class Html2Pdf
                 break;
 
             case 'radio':
-                $w = 3;
+                $w = 4;
                 $h = $w;
                 if ($h<$f) {
                     $y+= ($f-$h)*0.5;
@@ -6400,17 +6278,15 @@ class Html2Pdf
         $this->_saveMargin($mL, 0, $mR);
         $this->pdf->SetXY($x, $y);
 
-        // we are in a draw tag
-        $this->_isInDraw = array(
-            'x' => $x,
-            'y' => $y,
-            'w' => $overW,
-            'h' => $overH,
+        $this->svgDrawer->startDrawing(
+            array(
+                'x' => $x,
+                'y' => $y,
+                'w' => $overW,
+                'h' => $overH,
+            )
         );
 
-        // init the translate matrix : (0,0) => ($x, $y)
-        $this->pdf->doTransform(array(1,0,0,1,$x,$y));
-        $this->pdf->setAlpha(1.);
         return true;
     }
 
@@ -6427,9 +6303,8 @@ class Html2Pdf
             return false;
         }
 
-        $this->pdf->setAlpha(1.);
-        $this->pdf->undoTransform();
-        $this->pdf->clippingPathStop();
+        $this->svgDrawer->stopDrawing();
+
 
         $this->_maxX = $this->parsingCss->value['old_maxX'];
         $this->_maxY = $this->parsingCss->value['old_maxY'];
@@ -6473,410 +6348,7 @@ class Html2Pdf
             $this->debug->addStep('DRAW', false);
         }
 
-        $this->_isInDraw = null;
-
         return true;
-    }
-
-    /**
-     * tag : LINE
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_LINE($param)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [LINE] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('LINE');
-            throw $e;
-        }
-
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $styles['fill'] = null;
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $x1 = isset($param['x1']) ? $this->cssConverter->convertToMM($param['x1'], $this->_isInDraw['w']) : 0.;
-        $y1 = isset($param['y1']) ? $this->cssConverter->convertToMM($param['y1'], $this->_isInDraw['h']) : 0.;
-        $x2 = isset($param['x2']) ? $this->cssConverter->convertToMM($param['x2'], $this->_isInDraw['w']) : 0.;
-        $y2 = isset($param['y2']) ? $this->cssConverter->convertToMM($param['y2'], $this->_isInDraw['h']) : 0.;
-        $this->pdf->svgLine($x1, $y1, $x2, $y2);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
-     * tag : RECT
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_RECT($param)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [RECT] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('RECT');
-            throw $e;
-        }
-
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $x = isset($param['x']) ? $this->cssConverter->convertToMM($param['x'], $this->_isInDraw['w']) : 0.;
-        $y = isset($param['y']) ? $this->cssConverter->convertToMM($param['y'], $this->_isInDraw['h']) : 0.;
-        $w = isset($param['w']) ? $this->cssConverter->convertToMM($param['w'], $this->_isInDraw['w']) : 0.;
-        $h = isset($param['h']) ? $this->cssConverter->convertToMM($param['h'], $this->_isInDraw['h']) : 0.;
-
-        $this->pdf->svgRect($x, $y, $w, $h, $style);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
-     * tag : CIRCLE
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_CIRCLE($param)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [CIRCLE] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('CIRCLE');
-            throw $e;
-        }
-
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $cx = isset($param['cx']) ? $this->cssConverter->convertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
-        $cy = isset($param['cy']) ? $this->cssConverter->convertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
-        $r = isset($param['r']) ? $this->cssConverter->convertToMM($param['r'], $this->_isInDraw['w']) : 0.;
-        $this->pdf->svgEllipse($cx, $cy, $r, $r, $style);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
-     * tag : ELLIPSE
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_ELLIPSE($param)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [ELLIPSE] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('ELLIPSE');
-            throw $e;
-        }
-
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $cx = isset($param['cx']) ? $this->cssConverter->convertToMM($param['cx'], $this->_isInDraw['w']) : 0.;
-        $cy = isset($param['cy']) ? $this->cssConverter->convertToMM($param['cy'], $this->_isInDraw['h']) : 0.;
-        $rx = isset($param['ry']) ? $this->cssConverter->convertToMM($param['rx'], $this->_isInDraw['w']) : 0.;
-        $ry = isset($param['rx']) ? $this->cssConverter->convertToMM($param['ry'], $this->_isInDraw['h']) : 0.;
-        $this->pdf->svgEllipse($cx, $cy, $rx, $ry, $style);
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-
-    /**
-     * tag : POLYLINE
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_POLYLINE($param)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [POLYLINE] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('POLYLINE');
-            throw $e;
-        }
-
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $path = isset($param['points']) ? $param['points'] : null;
-        if ($path) {
-            $path = str_replace(',', ' ', $path);
-            $path = preg_replace('/[\s]+/', ' ', trim($path));
-
-            // prepare the path
-            $path = explode(' ', $path);
-            foreach ($path as $k => $v) {
-                $path[$k] = trim($v);
-                if ($path[$k] === '') {
-                    unset($path[$k]);
-                }
-            }
-            $path = array_values($path);
-
-            $amountPath = count($path);
-
-            $actions = array();
-            for ($k=0; $k<$amountPath; $k+=2) {
-                $actions[] = array(
-                    ($k ? 'L' : 'M') ,
-                    $this->cssConverter->convertToMM($path[$k+0], $this->_isInDraw['w']),
-                    $this->cssConverter->convertToMM($path[$k+1], $this->_isInDraw['h'])
-                );
-            }
-
-            // drawing
-            $this->pdf->svgPolygone($actions, $style);
-        }
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
-     * tag : POLYGON
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_POLYGON($param)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [POLYGON] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('POLYGON');
-            throw $e;
-        }
-
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $path = (isset($param['points']) ? $param['points'] : null);
-        if ($path) {
-            $path = str_replace(',', ' ', $path);
-            $path = preg_replace('/[\s]+/', ' ', trim($path));
-
-            // prepare the path
-            $path = explode(' ', $path);
-            foreach ($path as $k => $v) {
-                $path[$k] = trim($v);
-                if ($path[$k] === '') {
-                    unset($path[$k]);
-                }
-            }
-            $path = array_values($path);
-
-            $amountPath = count($path);
-            $actions = array();
-            for ($k=0; $k<$amountPath; $k+=2) {
-                $actions[] = array(
-                    ($k ? 'L' : 'M') ,
-                    $this->cssConverter->convertToMM($path[$k+0], $this->_isInDraw['w']),
-                    $this->cssConverter->convertToMM($path[$k+1], $this->_isInDraw['h'])
-                );
-            }
-            $actions[] = array('z');
-
-            // drawing
-            $this->pdf->svgPolygone($actions, $style);
-        }
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
-     * tag : PATH
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_PATH($param)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [PATH] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('PATH');
-            throw $e;
-        }
-
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-
-        $path = isset($param['d']) ? $param['d'] : null;
-
-        if ($path) {
-            // prepare the path
-            $path = str_replace(',', ' ', $path);
-            $path = preg_replace('/([a-zA-Z])([0-9\.\-])/', '$1 $2', $path);
-            $path = preg_replace('/([0-9\.])([a-zA-Z])/', '$1 $2', $path);
-            $path = preg_replace('/[\s]+/', ' ', trim($path));
-            $path = preg_replace('/ ([a-z]{2})/', '$1', $path);
-
-            $path = explode(' ', $path);
-            foreach ($path as $k => $v) {
-                $path[$k] = trim($v);
-                if ($path[$k] === '') {
-                    unset($path[$k]);
-                }
-            }
-            $path = array_values($path);
-            $amountPath = count($path);
-
-            // read each actions in the path
-            $actions = array();
-            $lastAction = null; // last action found
-            for ($k=0; $k<$amountPath; true) {
-
-                // for this actions, we can not have multi coordonate
-                if (in_array($lastAction, array('z', 'Z'))) {
-                    $lastAction = null;
-                }
-
-                // read the new action (forcing if no action before)
-                if (preg_match('/^[a-z]+$/i', $path[$k]) || $lastAction === null) {
-                    $lastAction = $path[$k];
-                    $k++;
-                }
-
-                // current action
-                $action = array();
-                $action[] = $lastAction;
-                switch ($lastAction) {
-                    case 'C':
-                    case 'c':
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->_isInDraw['w']);    // x1
-                        $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->_isInDraw['h']);    // y1
-                        $action[] = $this->cssConverter->convertToMM($path[$k+2], $this->_isInDraw['w']);    // x2
-                        $action[] = $this->cssConverter->convertToMM($path[$k+3], $this->_isInDraw['h']);    // y2
-                        $action[] = $this->cssConverter->convertToMM($path[$k+4], $this->_isInDraw['w']);    // x
-                        $action[] = $this->cssConverter->convertToMM($path[$k+5], $this->_isInDraw['h']);    // y
-                        $k+= 6;
-                        break;
-
-                    case 'Q':
-                    case 'S':
-                    case 'q':
-                    case 's':
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->_isInDraw['w']);    // x2
-                        $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->_isInDraw['h']);    // y2
-                        $action[] = $this->cssConverter->convertToMM($path[$k+2], $this->_isInDraw['w']);    // x
-                        $action[] = $this->cssConverter->convertToMM($path[$k+3], $this->_isInDraw['h']);    // y
-                        $k+= 4;
-                        break;
-
-                    case 'A':
-                    case 'a':
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->_isInDraw['w']);    // rx
-                        $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->_isInDraw['h']);    // ry
-                        $action[] = 1.*$path[$k+2];                                                        // angle de deviation de l'axe X
-                        $action[] = ($path[$k+3] === '1') ? 1 : 0;                                            // large-arc-flag
-                        $action[] = ($path[$k+4] === '1') ? 1 : 0;                                            // sweep-flag
-                        $action[] = $this->cssConverter->convertToMM($path[$k+5], $this->_isInDraw['w']);    // x
-                        $action[] = $this->cssConverter->convertToMM($path[$k+6], $this->_isInDraw['h']);    // y
-                        $k+= 7;
-                        break;
-
-                    case 'M':
-                    case 'L':
-                    case 'T':
-                    case 'm':
-                    case 'l':
-                    case 't':
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->_isInDraw['w']);    // x
-                        $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->_isInDraw['h']);    // y
-                        $k+= 2;
-                        break;
-
-                    case 'H':
-                    case 'h':
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->_isInDraw['w']);    // x
-                        $k+= 1;
-                        break;
-
-                    case 'V':
-                    case 'v':
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->_isInDraw['h']);    // y
-                        $k+= 1;
-                        break;
-
-                    case 'z':
-                    case 'Z':
-                        break;
-
-                    default:
-                        $k+= 1;
-                        break;
-                }
-                // add the action
-                $actions[] = $action;
-            }
-
-            // drawing
-            $this->pdf->svgPolygone($actions, $style);
-        }
-
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
-    }
-
-    /**
-     * tag : G
-     * mode : OPEN
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_open_G($param)
-    {
-        if (!$this->_isInDraw) {
-            $e = new HtmlParsingException('The asked [G] tag is not in a [DRAW] tag');
-            $e->setInvalidTag('G');
-            throw $e;
-        }
-
-        $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
-        $this->parsingCss->save();
-        $styles = $this->parsingCss->getSvgStyle('path', $param);
-        $style = $this->pdf->svgSetStyle($styles);
-    }
-
-    /**
-     * tag : G
-     * mode : CLOSE
-     *
-     * @param  array $param
-     * @return boolean
-     */
-    protected function _tag_close_G($param)
-    {
-        $this->pdf->undoTransform();
-        $this->parsingCss->load();
     }
 
     /**
