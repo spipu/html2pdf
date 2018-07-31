@@ -16,12 +16,16 @@ use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
 try {
+    // get the HTML
     ob_start();
-    include dirname(__FILE__).'/res/exemple10.php';
+    include dirname(__FILE__).'/res/example07a.php';
+    include dirname(__FILE__).'/res/example07b.php';
     $content = ob_get_clean();
+
     $html2pdf = new Html2Pdf('P', 'A4', 'fr');
+    $html2pdf->pdf->SetDisplayMode('fullpage');
     $html2pdf->writeHTML($content);
-    $html2pdf->output('exemple10.pdf');
+    $html2pdf->output('example07.pdf');
 } catch (Html2PdfException $e) {
     $html2pdf->clean();
 

@@ -25,7 +25,7 @@
         <tr>
 <?php
 for ($k=0; $k<28;$k++) {
-    echo '<td><img src="./res/regle.png" alt="" ><br>'.$k.'</td>';
+    echo '<td><img src="./res/measure.png" alt="" ><br>'.$k.'</td>';
 }
 ?>
         </tr>

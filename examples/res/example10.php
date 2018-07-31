@@ -10,7 +10,7 @@ div.minifiche
     font-size:   11px;
     text-align:  left;
     font-weight: normal;
-    background-image: url(./res/exemple10a.gif);
+    background-image: url(./res/example10a.gif);
 }
 div.minifiche img.icone    { position: absolute; border: none; left: 5px;   top: 5px;  width: 240px; height: 128px;overflow: hidden; }
 div.minifiche div.zone1    { position: absolute; border: none; left: 257px; top: 8px;  width: 188px; height: 14px; padding-top: 1px; overflow: hidden; text-align: center; font-weight: bold; }
@@ -47,13 +47,13 @@ div.minifiche div.download { position: absolute; border: none; left: 257px; top:
     </table>
     <hr>
     <div class="minifiche" >
-        <img class="icone"    src="./res/exemple10b.jpg" alt="Html2Pdf" >
+        <img class="icone"    src="./res/example10b.jpg" alt="Html2Pdf" >
         <div class="zone1">Html2Pdf</div>
         <div class="zone2">PHP</div>
         <div class="zone3">Utilitaire</div>
         <div class="zone4">1.00</div>
         <div class="zone5">01/01/1901</div>
-        <div class="download"><img src="./res/exemple10c.gif" alt="" style="border: none;"></div>
+        <div class="download"><img src="./res/example10c.gif" alt="" style="border: none;"></div>
     </div>
     <hr>
     <div style="border: solid 1px #000000; margin: 0; padding: 0; background: rgb(255, 255, 255); width: 400px; height: 300px; position: relative;">
@@ -66,7 +66,7 @@ div.minifiche div.download { position: absolute; border: none; left: 257px; top:
     <hr>
     <pre><?php
     ob_start();
-    readfile(dirname(__FILE__).'/../exemple10.php');
+    readfile(dirname(__FILE__).'/../example10.php');
     echo htmlentities(ob_get_clean());
     ?></pre>
 </page>

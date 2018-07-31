@@ -17,12 +17,12 @@ use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
 try {
     ob_start();
-    include dirname(__FILE__).'/res/exemple13.php';
+    include dirname(__FILE__).'/res/example06.php';
     $content = ob_get_clean();
 
     $html2pdf = new Html2Pdf('P', 'A4', 'fr');
     $html2pdf->writeHTML($content);
-    $html2pdf->output('exemple13.pdf');
+    $html2pdf->output('example06.pdf');
 } catch (Html2PdfException $e) {
     $html2pdf->clean();
 

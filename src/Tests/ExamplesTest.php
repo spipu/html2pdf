@@ -83,133 +83,133 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * test: exemple01
+     * test: example01
      *
      * @return void
      */
-    public function testExemple01()
+    public function testExample01()
     {
-        $this->launchExample('exemple01');
+        $this->launchExample('example01');
     }
 
     /**
-     * test: exemple02
+     * test: example02
      *
      * @return void
      */
-    public function testExemple02()
+    public function testExample02()
     {
-        $this->launchExample('exemple02');
+        $this->launchExample('example02');
     }
 
     /**
-     * test: exemple03
+     * test: example03
      *
      * @return void
      */
-    public function testExemple03()
+    public function testExample03()
     {
-        $this->launchExample('exemple03');
+        $this->launchExample('example03');
     }
 
     /**
-     * test: exemple04
+     * test: example04
      *
      * @return void
      */
-    public function testExemple04()
+    public function testExample04()
     {
-        $this->launchExample('exemple04');
+        $this->launchExample('example04');
     }
 
     /**
-     * test: exemple05
+     * test: example05
      *
      * @return void
      */
-    public function testExemple05()
+    public function testExample05()
     {
-        $this->launchExample('exemple05');
+        $this->launchExample('example05');
     }
 
     /**
-     * test: exemple06
+     * test: example06
      *
      * @return void
      */
-    public function testExemple06()
+    public function testExample06()
     {
-        $this->launchExample('exemple06');
+        $this->launchExample('example06');
     }
 
     /**
-     * test: exemple07
+     * test: example07
      *
      * @return void
      */
-    public function testExemple07()
+    public function testExample07()
     {
-        $this->launchExample('exemple07');
+        $this->launchExample('example07');
     }
 
     /**
-     * test: exemple08
+     * test: example08
      *
      * @return void
      */
-    public function testExemple08()
+    public function testExample08()
     {
-        $this->launchExample('exemple08');
+        $this->launchExample('example08');
     }
 
     /**
-     * test: exemple10
+     * test: example10
      *
      * @return void
      */
-    public function testExemple10()
+    public function testExample10()
     {
-        $this->launchExample('exemple10');
+        $this->launchExample('example10');
     }
 
     /**
-     * test: exemple11
+     * test: example11
      *
      * @return void
      */
-    public function testExemple11()
+    public function testExample11()
     {
-        $this->launchExample('exemple11');
+        $this->launchExample('example11');
     }
 
     /**
-     * test: exemple12
+     * test: example12
      *
      * @return void
      */
-    public function testExemple12()
+    public function testExample12()
     {
-        $this->launchExample('exemple12');
+        $this->launchExample('example12');
     }
 
     /**
-     * test: exemple13
+     * test: example13
      *
      * @return void
      */
-    public function testExemple13()
+    public function testExample13()
     {
-        $this->launchExample('exemple13');
+        $this->launchExample('example13');
     }
 
     /**
-     * test: exemple14
+     * test: example14
      *
      * @return void
      */
-    public function testExemple14()
+    public function testExample14()
     {
-        $this->launchExample('exemple14');
+        $this->launchExample('example14');
     }
 
     /**
@@ -257,9 +257,9 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testRegle()
+    public function testMeasure()
     {
-        $this->launchExample('regle');
+        $this->launchExample('measure');
     }
 
     /**

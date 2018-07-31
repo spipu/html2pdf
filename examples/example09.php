@@ -29,7 +29,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
 }
 
 $nom = substr(preg_replace('/[^a-zA-Z0-9]/isU', '', $nom), 0, 26);
-$url.= '/res/exemple09.png.php?px=5&amp;py=20';
+$url.= '/res/example09.png.php?px=5&amp;py=20';
 
 
 if ($generate) {
@@ -68,7 +68,7 @@ if ($generate) {
     try {
         $html2pdf = new Html2Pdf('P', 'A4', 'fr');
         $html2pdf->writeHTML($content);
-        $html2pdf->output('exemple09.pdf');
+        $html2pdf->output('example09.pdf');
         exit;
     } catch (Html2PdfException $e) {
         $html2pdf->clean();
