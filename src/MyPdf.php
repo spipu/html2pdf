@@ -834,12 +834,21 @@ class MyPdf extends \TCPDF
 
         foreach ($actions as $action) {
             switch ($action[0]) {
-            // Start the Path
+                // Start the Path - move - absolute
                 case 'M':
-                case 'm':
                     $first = $action;
                     $x = $action[1];
                     $y = $action[2];
+                    $xc = $x;
+                    $yc = $y;
+                    $this->_Point($x, $y, true);
+                    break;
+
+                // Start the Path - move - relative
+                case 'm':
+                    $first = $action;
+                    $x = $last[0]+$action[1];
+                    $y = $last[1]+$action[2];
                     $xc = $x;
                     $yc = $y;
                     $this->_Point($x, $y, true);

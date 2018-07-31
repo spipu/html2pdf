@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
   * fix issue - clean locale before PDF generation - thanks to @quimcalpe
   * fix issue on radio/checkbow width - thanks to @Ohda
   * fix issue on line number when using style tag - issue #338
+  * fix issue on svg draw path - relative move was not implemented
   * fix better doc
 
 ## [5.1.0](https://github.com/spipu/html2pdf/compare/v5.0.1...v5.1.0) - 2018-01-23
