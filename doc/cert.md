@@ -6,7 +6,8 @@ You can add an electronic signature to the PDF, by using the following specific 
 
 ```
 <cert
-    src="/path/to/cert.crt"
+    src="/path/to/cert.pem"
+    privkey="/path/to/priv.pem"
     name="sender_name"
     location="sender_location"
     reason="sender_reason"
@@ -16,12 +17,16 @@ You can add an electronic signature to the PDF, by using the following specific 
 </cert>
 ```
 
-Attribute   |  Description
-------------|-------------
-src         | @todo
-name        | @todo
-location    | @todo
-reason      | @todo
-contactinfo | @todo
+Attribute   |  Description                      |  Example 1          | Example 2
+------------|-----------------------------------|---------------------|-------------------
+src         | Path to the Cert                  | /www/certs/my.pem   | /www/certs/my.crt
+privkey     | Private key of the Cert if needed | /www/certs/priv.pem | nothing
+name        | Name of the Cert                  | My.org Cert         |
+location    | Country of the Cert               | France              |
+reason      | Purpose of the Cert               | Invoice validation  |
+contactinfo | EMail of organisation's contact   | contact@my.org      |
+
+/** HTML **/ 
+part could be any HTML formatted string, img, etc...
 
 [back](./README.md)
