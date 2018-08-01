@@ -66,15 +66,24 @@ td    { vertical-align: top; }
     <br>
     Nous souhaitons vous informer que le dossier <b>71326</b> concernant un &laquo; Bon de Retour &raquo; pour les articles suivants a été accepté.<br>
     <br>
-    <table cellspacing="0" style="width: 100%; border: solid 1px black; background: #E7E7E7; text-align: center; font-size: 10pt;">
-        <tr>
-            <th style="width: 12%">Produit</th>
-            <th style="width: 52%">Désignation</th>
-            <th style="width: 13%">Prix Unitaire</th>
-            <th style="width: 10%">Quantité</th>
-            <th style="width: 13%">Prix Net</th>
-        </tr>
-    </table>
+    <table cellspacing="0" style="width: 100%; border: solid 1px black; background: #F7F7F7; font-size: 10pt;">
+        <colgroup>
+            <col style="width: 12%; text-align: left">
+            <col style="width: 52%; text-align: left">
+            <col style="width: 13%; text-align: right">
+            <col style="width: 10%; text-align: center">
+            <col style="width: 13%; text-align: right">
+        </colgroup>
+        <thead>
+            <tr style="background: #E7E7E7;">
+                <th style="border-bottom: solid 1px black;">Produit</th>
+                <th style="border-bottom: solid 1px black;">Désignation</th>
+                <th style="border-bottom: solid 1px black;">Prix Unitaire</th>
+                <th style="border-bottom: solid 1px black;">Quantité</th>
+                <th style="border-bottom: solid 1px black;">Prix Net</th>
+            </tr>
+        </thead>
+        <tbody>
 <?php
     $nb = rand(5, 11);
     $produits = array();
@@ -87,23 +96,21 @@ td    { vertical-align: top; }
         $total+= $prix*$qua;
         $produits[] = array($num, $nom, $qua, $prix, rand(0, $qua));
 ?>
-    <table cellspacing="0" style="width: 100%; border: solid 1px black; background: #F7F7F7; text-align: center; font-size: 10pt;">
-        <tr>
-            <td style="width: 12%; text-align: left"><?php echo $num; ?></td>
-            <td style="width: 52%; text-align: left"><?php echo $nom; ?></td>
-            <td style="width: 13%; text-align: right"><?php echo number_format($prix, 2, ',', ' '); ?> &euro;</td>
-            <td style="width: 10%"><?php echo $qua; ?></td>
-            <td style="width: 13%; text-align: right;"><?php echo number_format($prix*$qua, 2, ',', ' '); ?> &euro;</td>
-        </tr>
-    </table>
+            <tr>
+                <td><?php echo $num; ?></td>
+                <td><?php echo $nom; ?></td>
+                <td><?php echo number_format($prix, 2, ',', ' '); ?> &euro;</td>
+                <td><?php echo $qua; ?></td>
+                <td><?php echo number_format($prix*$qua, 2, ',', ' '); ?> &euro;</td>
+            </tr>
 <?php
     }
 ?>
-    <table cellspacing="0" style="width: 100%; border: solid 1px black; background: #E7E7E7; text-align: center; font-size: 10pt;">
-        <tr>
-            <th style="width: 87%; text-align: right;">Total : </th>
-            <th style="width: 13%; text-align: right;"><?php echo number_format($total, 2, ',', ' '); ?> &euro;</th>
-        </tr>
+            <tr style="background: #E7E7E7;">
+                <th colspan="4" style="border-top: solid 1px black; text-align: right;">Total : </th>
+                <th style="border-top: solid 1px black;"><?php echo number_format($total, 2, ',', ' '); ?> &euro;</th>
+            </tr>
+        </tbody>
     </table>
     <br>
     Cette reprise concerne la quantité et les matériels dont la référence figure sur le <a href="#document_reprise">document de reprise joint</a>.<br>
