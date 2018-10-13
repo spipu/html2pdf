@@ -40,7 +40,7 @@ class TextParser
     public function prepareTxt($txt, $spaces = true)
     {
         if ($spaces) {
-            $txt = preg_replace('/\s+/isu', ' ', $txt);
+            $txt = preg_replace('/[[:blank:]]+/isu', ' ', $txt);
         }
         $txt = str_replace('&euro;', '€', $txt);
         $txt = html_entity_decode($txt, ENT_QUOTES, $this->encoding);
