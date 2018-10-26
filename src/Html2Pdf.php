@@ -734,8 +734,14 @@ class Html2Pdf
                     $this->pdf->Rect(0, 0, $this->pdf->getW(), $this->pdf->getH(), 'F');
                 }
 
-                if (isset($this->_background['img']) && $this->_background['img']) {
-                    $this->pdf->Image($this->_background['img'], $this->_background['posX'], $this->_background['posY'], $this->_background['width']);
+                if (isset($this->_background['img']) && is_array($this->_background['img'])) {
+                    $imageWidth  = $this->cssConverter->convertToMM($this->_background['width'], $this->pdf->getW());
+                    $imageHeight = $imageWidth * $this->_background['img']['height'] / $this->_background['img']['width'];
+
+                    $posX = $this->cssConverter->convertToMM($this->_background['posX'], $this->pdf->getW() - $imageWidth);
+                    $posY = $this->cssConverter->convertToMM($this->_background['posY'], $this->pdf->getH() - $imageHeight);
+
+                    $this->pdf->Image($this->_background['img']['file'], $posX, $posY, $imageWidth);
                 }
             }
 
@@ -2648,12 +2654,11 @@ class Html2Pdf
                     // WARNING : if URL, "allow_url_fopen" must turned to "on" in php.ini
                     $infos=@getimagesize($background['img']);
                     if (is_array($infos) && count($infos)>1) {
-                        $imageWidth = $this->cssConverter->convertToMM($background['width'], $this->pdf->getW());
-                        $imageHeight = $imageWidth*$infos[1]/$infos[0];
-
-                        $background['width'] = $imageWidth;
-                        $background['posX']  = $this->cssConverter->convertToMM($background['posX'], $this->pdf->getW() - $imageWidth);
-                        $background['posY']  = $this->cssConverter->convertToMM($background['posY'], $this->pdf->getH() - $imageHeight);
+                        $background['img'] = [
+                            'file'   => $background['img'],
+                            'width'  => (int) $infos[0],
+                            'height' => (int) $infos[1]
+                        ];
                     } else {
                         $background = array();
                     }

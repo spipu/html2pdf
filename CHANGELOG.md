@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
   * add `cert` tag - thanks to @LittleBigFox
   * change the name of all the examples from `exemple` to `example`
+  * fix issue on page background image width - issue #394
   * fix issue on qrcode value with multi lines - issue #390
   * fix documentation - thanks to @noxlux and @tpohchai
 
