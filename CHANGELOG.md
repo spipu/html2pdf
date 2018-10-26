@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
   * fix tag parser - css style corruption
   * fix issue on page background image width - issue #394
   * fix issue on qrcode value with multi lines - issue #390
+  * fix issue on colspan usage when all the columns don't really exist - issue #360
   * fix documentation - thanks to @noxlux and @tpohchai
 
 ## [5.2.0](https://github.com/spipu/html2pdf/compare/v5.1.0...v5.2.0) - 2018-07-31

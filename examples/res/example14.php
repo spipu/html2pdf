@@ -2,7 +2,7 @@
     .table-bordered {border-width: 0.25mm; border-style: solid; border-color: #aaaaaa;}
 </style>
 <page backtop="5mm" backbottom="5mm" backleft="5mm" backright="5mm">
-    <table style="border-top: solid 1px green; margin: 0 0 10mm">
+    <table style="border-top: solid 1px green;">
         <col class="table-bordered" style="width: 20mm;">
         <col class="table-bordered" style="width: 21mm;">
         <col class="table-bordered" style="width: 22mm;">
@@ -17,6 +17,7 @@
             <td>1 2</td>
         </tr>
     </table>
+    <br /><hr /><br />
     <table style="border-collapse: collapse;">
         <col class="table-bordered" style="width: 20mm;">
         <col class="table-bordered" style="width: 21mm;">
@@ -30,6 +31,69 @@
             <td><div>1 0</div></td>
             <td>1 1</td>
             <td>1 2</td>
+        </tr>
+    </table>
+    <br /><hr /><br />
+    <table border="1" style="width:150mm">
+        <colgroup>
+            <col style="width: 33%">
+            <col style="width: 33%">
+            <col style="width: 33%">
+        </colgroup>
+        <tr>
+            <td>A</td>
+            <td>B</td>
+            <td>C</td>
+        </tr>
+    </table>
+    <br /><hr /><br />
+    <table border="1" style="width:150mm">
+        <colgroup>
+            <col style="width: 33%">
+            <col style="width: 33%">
+            <col style="width: 33%">
+        </colgroup>
+        <tr>
+            <td>A</td>
+            <td>B</td>
+            <td>C</td>
+        </tr>
+        <tr>
+            <td style="padding: 1cm;">First column</td>
+            <td colspan="2" style="padding: 1cm;">Second column with a colspan of 2</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="padding: 1cm;">Third column with a colspan of 3</td>
+        </tr>
+    </table>
+    <br /><hr /><br />
+    <table border="1" style="width:150mm">
+        <colgroup>
+            <col style="width: 33%">
+            <col style="width: 33%">
+            <col style="width: 33%">
+        </colgroup>
+        <tr>
+            <td style="padding: 1cm;">First column</td>
+            <td colspan="2" style="padding: 1cm;">Second column with a colspan of 2</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="padding: 1cm;">Third column with a colspan of 3</td>
+        </tr>
+    </table>
+    <br /><hr /><br />
+    <table border="1" style="width:150mm">
+        <colgroup>
+            <col style="width: 33%">
+            <col style="width: 33%">
+            <col style="width: 33%">
+        </colgroup>
+        <tr>
+            <td colspan="2" style="padding: 1cm;">Second column with a colspan of 2</td>
+            <td style="padding: 1cm;">First column</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="padding: 1cm;">Third column with a colspan of 3</td>
         </tr>
     </table>
     <br />

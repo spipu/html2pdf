@@ -2438,9 +2438,22 @@ class Html2Pdf
         $sw = array();
         for ($x=0; $x<$amountCorr0; $x++) {
             $m=0;
+            $found = false;
             for ($y=0; $y<$amountCorr; $y++) {
                 if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][2] == 1) {
+                    $found = true;
                     $m = max($m, $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w']);
+                }
+            }
+            if (!$found) {
+                for ($y=0; $y<$amountCorr; $y++) {
+                    for ($previousCell = 0; $previousCell <= $x; $previousCell++) {
+                        $xPrevious = $x - $previousCell;
+                        if (isset($corr[$y][$xPrevious]) && is_array($corr[$y][$xPrevious]) && $corr[$y][$xPrevious][2] > ($previousCell)) {
+                            $m = max($m, $cases[$corr[$y][$xPrevious][1]][$corr[$y][$xPrevious][0]]['w'] / $corr[$y][$xPrevious][2]);
+                            break 1;
+                        }
+                    }
                 }
             }
             $sw[$x] = $m;
