@@ -177,7 +177,8 @@ class TagParser
 
         // prepare the parameters
         if (isset($param['value'])) {
-            $param['value']  = $this->textParser->prepareTxt($param['value']);
+            $keepSpaces = in_array($name, array('qrcode', 'barcode'));
+            $param['value']  = $this->textParser->prepareTxt($param['value'], !$keepSpaces);
         }
         if (isset($param['alt'])) {
             $param['alt']    = $this->textParser->prepareTxt($param['alt']);

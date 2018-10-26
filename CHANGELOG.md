@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [5.2.1](https://github.com/spipu/html2pdf/compare/v5.2.0...master) - unreleased
 
   * add `cert` tag - thanks to @LittleBigFox
-  * rename all the examples from `exemple` to `example`
+  * change the name of all the examples from `exemple` to `example`
+  * fix issue on qrcode value with multi lines - issue #390
 
 ## [5.2.0](https://github.com/spipu/html2pdf/compare/v5.1.0...v5.2.0) - 2018-07-31
 

@@ -1,5 +1,5 @@
 <?php
-$msg = "Le site de html2pdf\r\nhttp://html2pdf.fr/";
+$msg = "Le site de html2pdf\nhttp://html2pdf.fr/";
 ?>
 <page backtop="10mm" >
     <page_header>
