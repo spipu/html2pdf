@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [5.2.1](https://github.com/spipu/html2pdf/compare/v5.2.0...master) - unreleased
 
   * add `cert` tag - thanks to @LittleBigFox
+  * add `balloon` example - issue #385
   * change the name of all the examples from `exemple` to `example`
   * fix tag parser - css style corruption
   * fix issue on relative margin calculation

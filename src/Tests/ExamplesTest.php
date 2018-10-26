@@ -83,6 +83,16 @@ class ExamplesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * test: bookmark
+     *
+     * @return void
+     */
+    public function testBalloon()
+    {
+        $this->launchExample('balloon');
+    }
+
+    /**
      * test: example01
      *
      * @return void
