@@ -60,6 +60,10 @@ class TagParser
         }
 
         $param = array_merge($defaultParams, $this->extractTagAttributes($code));
+        $param['style'] = trim($param['style']);
+        if (strlen($param['style']) > 0 && substr($param['style'], -1) !== ';') {
+            $param['style'].= ';';
+        }
 
         // compliance of each parameter
         $color  = "#000000";
