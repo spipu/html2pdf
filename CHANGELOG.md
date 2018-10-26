@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
   * add `cert` tag - thanks to @LittleBigFox
   * change the name of all the examples from `exemple` to `example`
   * fix tag parser - css style corruption
+  * fix issue on relative margin calculation
+  * fix issue on border radius calculation
   * fix issue on page background image width - issue #394
   * fix issue on qrcode value with multi lines - issue #390
   * fix issue on colspan usage when all the columns don't really exist - issue #360

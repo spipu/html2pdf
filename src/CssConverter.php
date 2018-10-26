@@ -99,7 +99,7 @@ class CssConverter
 
         foreach ($css as $k => $v) {
             $v = trim($v);
-            if ($v) {
+            if ($v !== '') {
                 $v = $this->convertToMM($v, 0);
                 if ($v !== null) {
                     $css[$k] = $v;
