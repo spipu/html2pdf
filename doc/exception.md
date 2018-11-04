@@ -38,7 +38,7 @@ try {
     $html2pdf->writeHTML($htmlContent);
     $html2pdf->output();
 } catch (Html2PdfException $e) {
-    html2pdf->clean();
+    $html2pdf->clean();
 
     $formatter = new ExceptionFormatter($e);
     echo $formatter->getHtmlMessage();
