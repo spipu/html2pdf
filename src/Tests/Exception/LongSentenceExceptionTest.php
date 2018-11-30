@@ -22,7 +22,7 @@ class LongSentenceExceptionTest extends AbstractTest
     /**
      * test LongSentence Exception
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\LongSentenceException
      */
     public function testBug()

@@ -25,7 +25,7 @@ if (isset($_POST['test'])) {
 
 try {
     ob_start();
-    require dirname(__FILE__).'/res/forms.php';
+    include dirname(__FILE__).'/res/forms.php';
     $content = ob_get_clean();
 
     $html2pdf = new Html2Pdf('P', 'A4', 'fr');

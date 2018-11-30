@@ -18,18 +18,21 @@ class Locale
 {
     /**
      * code of the current used locale
+     *
      * @var string
      */
     static protected $code = null;
 
     /**
      * texts of the current used locale
+     *
      * @var array
      */
     static protected $list = array();
 
     /**
      * directory where locale files are
+     *
      * @var string
      */
     static protected $directory = null;
@@ -37,7 +40,7 @@ class Locale
     /**
      * load the locale
      *
-     * @param  string $code
+     * @param string $code
      *
      * @return void
      * @throws LocaleException

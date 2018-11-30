@@ -19,6 +19,7 @@ class TableException extends Html2PdfException
 {
     /**
      * ERROR CODE 4
+     *
      * @var int
      */
     const ERROR_CODE = 4;

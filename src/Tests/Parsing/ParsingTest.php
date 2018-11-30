@@ -23,7 +23,7 @@ class ParsingTest extends AbstractTest
     /**
      * test: The tag is unknown
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testUnknownTag()
@@ -36,7 +36,7 @@ class ParsingTest extends AbstractTest
     /**
      * test: Too many tag closures found
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testTooManyClosuresFound()
@@ -49,7 +49,7 @@ class ParsingTest extends AbstractTest
     /**
      * test: Tags are closed in a wrong order
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testWrongClosedOrder()
@@ -62,7 +62,7 @@ class ParsingTest extends AbstractTest
     /**
      * test: The following tag has not been closed
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testNotClosed()
@@ -75,7 +75,7 @@ class ParsingTest extends AbstractTest
     /**
      * test: The following tags have not been closed
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testNotClosedMore()
@@ -88,7 +88,7 @@ class ParsingTest extends AbstractTest
     /**
      * test: The HTML tag code provided is invalid
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testInvalidCode()

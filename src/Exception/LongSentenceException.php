@@ -19,24 +19,28 @@ class LongSentenceException extends Html2PdfException
 {
     /**
      * ERROR CODE 3
+     *
      * @var int
      */
     const ERROR_CODE = 3;
 
     /**
      * the sentence
+     *
      * @var string
      */
     protected $sentence;
 
     /**
      * the width of the box
+     *
      * @var string
      */
     protected $widthBox;
 
     /**
      * the length of the sentence
+     *
      * @var string
      */
     protected $length;

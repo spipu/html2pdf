@@ -30,13 +30,13 @@ class MyPdf extends \TCPDF
     /**
      * class constructor
      *
-     * @param string  $orientation page orientation, same as TCPDF
-     * @param string  $unit        User measure unit, same as TCPDF
-     * @param mixed   $format      The format used for pages, same as TCPDF
-     * @param boolean $unicode     TRUE means that the input text is unicode (default = true)
-     * @param String  $encoding    charset encoding; default is UTF-8
-     * @param boolean $diskcache   if TRUE reduce the RAM memory usage by caching temporary data on filesystem (slower).
-     * @param boolean $pdfa        If TRUE set the document to PDF/A mode.
+     * @param  string  $orientation page orientation, same as TCPDF
+     * @param  string  $unit        User measure unit, same as TCPDF
+     * @param  mixed   $format      The format used for pages, same as TCPDF
+     * @param  boolean $unicode     TRUE means that the input text is unicode (default = true)
+     * @param  String  $encoding    charset encoding; default is UTF-8
+     * @param  boolean $diskcache   if TRUE reduce the RAM memory usage by caching temporary data on filesystem (slower).
+     * @param  boolean $pdfa        If TRUE set the document to PDF/A mode.
      * @access public
      */
     public function __construct(
@@ -68,10 +68,10 @@ class MyPdf extends \TCPDF
     /**
      * Set the parameters for the automatic footer
      *
-     * @param boolean $page display the page number
-     * @param boolean $date display the date
-     * @param boolean $time display the time
-     * @param boolean $form display a warning abour forms
+     * @param  boolean $page display the page number
+     * @param  boolean $date display the date
+     * @param  boolean $time display the time
+     * @param  boolean $form display a warning abour forms
      * @access public
      */
     public function SetMyFooter($page = false, $date = false, $time = false, $form = false)
@@ -135,7 +135,7 @@ class MyPdf extends \TCPDF
      * after cloning a object, we does not want to clone all the front informations
      * because it take a lot a time and a lot of memory => we use reference
      *
-     * @param myPdf &$pdf
+     * @param  myPdf &$pdf
      * @access public
      */
     public function cloneFontFrom(&$pdf)
@@ -198,7 +198,7 @@ class MyPdf extends \TCPDF
     /**
      * Verify that a Font is already loaded
      *
-     * @param string Font Key
+     * @param  string Font Key
      * @return boolean
      * @access public
      */
@@ -229,7 +229,7 @@ class MyPdf extends \TCPDF
     /**
      * set the Word Spacing
      *
-     * @param float word spacing
+     * @param  float word spacing
      * @access public
      */
     public function setWordSpacing($ws = 0.)
@@ -241,14 +241,14 @@ class MyPdf extends \TCPDF
     /**
      * start to use a rectangular Cliping Path with radius corners
      *
-     * @param float $x (top left corner)
-     * @param float $y (top left corner)
-     * @param float $w (x+w  = botom rigth corner)
-     * @param float $h (y+h = botom rigth corner)
-     * @param array $cornerTL radius of the Top Left corner
-     * @param array $cornerTR radius of the Top Right corner
-     * @param array $cornerBL radius of the Bottom Left corner
-     * @param array $cornerBR radius of the Bottom Right corner
+     * @param  float $x        (top left corner)
+     * @param  float $y        (top left corner)
+     * @param  float $w        (x+w  = botom rigth corner)
+     * @param  float $h        (y+h = botom rigth corner)
+     * @param  array $cornerTL radius of the Top Left corner
+     * @param  array $cornerTR radius of the Top Right corner
+     * @param  array $cornerBL radius of the Bottom Left corner
+     * @param  array $cornerBR radius of the Bottom Right corner
      * @access public
      */
     public function clippingPathStart(
@@ -392,16 +392,16 @@ class MyPdf extends \TCPDF
      *      | |
      * ext1 +-+ int1        + cen
      *
-     * @param float $ext1X
-     * @param float $ext1Y
-     * @param float $ext2X
-     * @param float $ext2Y
-     * @param float $int1X
-     * @param float $int1Y
-     * @param float $int2X
-     * @param float $int2Y
-     * @param float $cenX
-     * @param float $cenY
+     * @param  float $ext1X
+     * @param  float $ext1Y
+     * @param  float $ext2X
+     * @param  float $ext2Y
+     * @param  float $int1X
+     * @param  float $int1Y
+     * @param  float $int2X
+     * @param  float $int2Y
+     * @param  float $cenX
+     * @param  float $cenY
      * @access public
      */
     public function drawCurve($ext1X, $ext1Y, $ext2X, $ext2Y, $int1X, $int1Y, $int2X, $int2Y, $cenX, $cenY)
@@ -465,14 +465,14 @@ class MyPdf extends \TCPDF
      *      |     |
      * ext1 +-----+ int      + cen
      *
-     * @param float $ext1X
-     * @param float $ext1Y
-     * @param float $ext2X
-     * @param float $ext2Y
-     * @param float $intX
-     * @param float $intY
-     * @param float $cenX
-     * @param float $cenY
+     * @param  float $ext1X
+     * @param  float $ext1Y
+     * @param  float $ext2X
+     * @param  float $ext2Y
+     * @param  float $intX
+     * @param  float $intY
+     * @param  float $cenX
+     * @param  float $cenY
      * @access public
      */
     public function drawCorner($ext1X, $ext1Y, $ext2X, $ext2Y, $intX, $intY, $cenX, $cenY)
@@ -534,8 +534,8 @@ class MyPdf extends \TCPDF
     /**
      * add a Translate transformation
      *
-     * @param float $Tx
-     * @param float $Ty
+     * @param  float $Tx
+     * @param  float $Ty
      * @access public
      */
     public function setTranslate($xT, $yT)
@@ -555,9 +555,9 @@ class MyPdf extends \TCPDF
     /**
      * add a Rotate transformation
      *
-     * @param float $angle
-     * @param float $Cx
-     * @param float $Cy
+     * @param  float $angle
+     * @param  float $Cx
+     * @param  float $Cy
      * @access public
      */
     public function setRotation($angle, $xC = null, $yC = null)
@@ -591,8 +591,8 @@ class MyPdf extends \TCPDF
      * It is Html2Pdf that make the treatment.
      * If language is RTL direction this method will call to parent (TCPDF class).
      *
-     * @param float   $x
-     * @param boolean $rtloff
+     * @param  float   $x
+     * @param  boolean $rtloff
      * @access public
      */
     public function SetX($x, $rtloff = false)
@@ -610,9 +610,9 @@ class MyPdf extends \TCPDF
      * It is Html2Pdf that make the treatment.
      * If language is RTL direction this method will call to parent (TCPDF class).
      *
-     * @param float   $y
-     * @param boolean $resetx Reset the X position
-     * @param boolean $rtloff
+     * @param  float   $y
+     * @param  boolean $resetx Reset the X position
+     * @param  boolean $rtloff
      * @access public
      */
     public function SetY($y, $resetx = true, $rtloff = false)
@@ -634,9 +634,9 @@ class MyPdf extends \TCPDF
      * It is Html2Pdf that make the treatment.
      * If language is RTL direction this method will call to parent (TCPDF class).
      *
-     * @param integer $x
-     * @param integer $y
-     * @param boolean $rtloff
+     * @param  integer $x
+     * @param  integer $y
+     * @param  boolean $rtloff
      * @access public
      */
     public function SetXY($x, $y, $rtloff = false)
@@ -693,7 +693,7 @@ class MyPdf extends \TCPDF
     /**
      * SVG - Convert a SVG Style in PDF Style
      *
-     * @param  array  $styles SVG Style
+     * @param  array $styles SVG Style
      * @return string PDF style
      * @access public
      */
@@ -726,11 +726,11 @@ class MyPdf extends \TCPDF
     /**
      * SVG - make a Rectangle
      *
-     * @param float $x
-     * @param float $y
-     * @param float $w
-     * @param float $h
-     * @param string $style PDF Style
+     * @param  float  $x
+     * @param  float  $y
+     * @param  float  $w
+     * @param  float  $h
+     * @param  string $style PDF Style
      * @access public
      */
     public function svgRect($x, $y, $w, $h, $style)
@@ -767,10 +767,10 @@ class MyPdf extends \TCPDF
     /**
      * SVG - make a Line
      *
-     * @param float $x1
-     * @param float $y1
-     * @param float $x2
-     * @param float $y2
+     * @param  float $x1
+     * @param  float $y1
+     * @param  float $x2
+     * @param  float $y2
      * @access public
      */
     public function svgLine($x1, $y1, $x2, $y2)
@@ -787,11 +787,11 @@ class MyPdf extends \TCPDF
     /**
      * SVG - make a Ellipse
      *
-     * @param float  $x0 x Center
-     * @param float  $y0 y Center
-     * @param float  $rx x radius
-     * @param float  $ry y radius
-     * @param string $style PDF Style
+     * @param  float  $x0    x Center
+     * @param  float  $y0    y Center
+     * @param  float  $rx    x radius
+     * @param  float  $ry    y radius
+     * @param  string $style PDF Style
      * @access public
      */
     public function svgEllipse($x0, $y0, $rx, $ry, $style)
@@ -813,8 +813,8 @@ class MyPdf extends \TCPDF
     /**
      * SVG - make a Advanced Polygone
      *
-     * @param array  $actions list of actions
-     * @param string $style PDF Style
+     * @param  array  $actions list of actions
+     * @param  string $style   PDF Style
      * @access public
      */
     public function svgPolygone($actions, $style)
@@ -835,162 +835,162 @@ class MyPdf extends \TCPDF
         foreach ($actions as $action) {
             switch ($action[0]) {
                 // Start the Path - move - absolute
-                case 'M':
-                    $first = $action;
-                    $x = $action[1];
-                    $y = $action[2];
-                    $xc = $x;
-                    $yc = $y;
-                    $this->_Point($x, $y, true);
-                    break;
+            case 'M':
+                $first = $action;
+                $x = $action[1];
+                $y = $action[2];
+                $xc = $x;
+                $yc = $y;
+                $this->_Point($x, $y, true);
+                break;
 
                 // Start the Path - move - relative
-                case 'm':
-                    $first = $action;
-                    $x = $last[0]+$action[1];
-                    $y = $last[1]+$action[2];
-                    $xc = $x;
-                    $yc = $y;
-                    $this->_Point($x, $y, true);
-                    break;
+            case 'm':
+                $first = $action;
+                $x = $last[0]+$action[1];
+                $y = $last[1]+$action[2];
+                $xc = $x;
+                $yc = $y;
+                $this->_Point($x, $y, true);
+                break;
 
                 // Close the Path
-                case 'Z':
-                case 'z':
-                    $x = $first[1];
-                    $y = $first[2];
-                    $xc = $x;
-                    $yc = $y;
-                    $this->_Line($x, $y, true);
-                    break;
+            case 'Z':
+            case 'z':
+                $x = $first[1];
+                $y = $first[2];
+                $xc = $x;
+                $yc = $y;
+                $this->_Line($x, $y, true);
+                break;
 
                 // Make a Line (new point)
-                case 'L':
-                    $x = $action[1];
-                    $y = $action[2];
-                    $xc = $x;
-                    $yc = $y;
-                    $this->_Line($x, $y, true);
-                    break;
+            case 'L':
+                $x = $action[1];
+                $y = $action[2];
+                $xc = $x;
+                $yc = $y;
+                $this->_Line($x, $y, true);
+                break;
 
                 // Make a Line (vector from last point)
-                case 'l':
-                    $x = $last[0]+$action[1];
-                    $y = $last[1]+$action[2];
-                    $xc = $x;
-                    $yc = $y;
-                    $this->_Line($x, $y, true);
-                    break;
+            case 'l':
+                $x = $last[0]+$action[1];
+                $y = $last[1]+$action[2];
+                $xc = $x;
+                $yc = $y;
+                $this->_Line($x, $y, true);
+                break;
 
                 // Make a Horizontal Line (new point)
-                case 'H':
-                    $x = $action[1];
-                    $y = $last[1];
-                    $xc = $x;
-                    $yc = $y;
-                    $this->_Line($x, $y, true);
-                    break;
+            case 'H':
+                $x = $action[1];
+                $y = $last[1];
+                $xc = $x;
+                $yc = $y;
+                $this->_Line($x, $y, true);
+                break;
 
                 // Make a Horisontal Line (vector from last point)
-                case 'h':
-                    $x = $last[0]+$action[1];
-                    $y = $last[1];
-                    $xc = $x;
-                    $yc = $y;
-                    $this->_Line($x, $y, true);
-                    break;
+            case 'h':
+                $x = $last[0]+$action[1];
+                $y = $last[1];
+                $xc = $x;
+                $yc = $y;
+                $this->_Line($x, $y, true);
+                break;
 
                 // Make a Vertical Line (new point)
-                case 'V':
-                    $x = $last[0];
-                    $y = $action[1];
-                    $xc = $x;
-                    $yc = $y;
-                    $this->_Line($x, $y, true);
-                    break;
+            case 'V':
+                $x = $last[0];
+                $y = $action[1];
+                $xc = $x;
+                $yc = $y;
+                $this->_Line($x, $y, true);
+                break;
 
                 // Make a Vertical Line (vector from last point)
-                case 'v':
-                    $x = $last[0];
-                    $y = $last[1]+$action[1];
-                    $xc = $x;
-                    $yc = $y;
-                    $this->_Line($x, $y, true);
-                    break;
+            case 'v':
+                $x = $last[0];
+                $y = $last[1]+$action[1];
+                $xc = $x;
+                $yc = $y;
+                $this->_Line($x, $y, true);
+                break;
 
                 // Make a Arc (new point)
-                case 'A':
-                    $rx = $action[1];   // rx
-                    $ry = $action[2];   // ry
-                    $a = $action[3];    // deviation angle of the axis X
-                    $l = $action[4];    // large-arc-flag
-                    $s = $action[5];    // sweep-flag
-                    $x1 = $last[0];     // begin x
-                    $y1 = $last[1];     // begin y
-                    $x2 = $action[6];   // final x
-                    $y2 = $action[7];   // final y
+            case 'A':
+                $rx = $action[1];   // rx
+                $ry = $action[2];   // ry
+                $a = $action[3];    // deviation angle of the axis X
+                $l = $action[4];    // large-arc-flag
+                $s = $action[5];    // sweep-flag
+                $x1 = $last[0];     // begin x
+                $y1 = $last[1];     // begin y
+                $x2 = $action[6];   // final x
+                $y2 = $action[7];   // final y
 
-                    $this->_Arc2($x1, $y1, $x2, $y2, $rx, $ry, $a, $l, $s, true);
-                    $x = $x2;
-                    $y = $y2;
-                    $xc = $x;
-                    $yc = $y;
-                    break;
+                $this->_Arc2($x1, $y1, $x2, $y2, $rx, $ry, $a, $l, $s, true);
+                $x = $x2;
+                $y = $y2;
+                $xc = $x;
+                $yc = $y;
+                break;
 
                 // Make a Arc (vector from last point)
-                case 'a':
-                    $rx = $action[1];   // rx
-                    $ry = $action[2];   // ry
-                    $a = $action[3];    // deviation angle of the axis X
-                    $l = $action[4];    // large-arc-flag
-                    $s = $action[5];    // sweep-flag
-                    $x1 = $last[0];     // begin x
-                    $y1 = $last[1];     // begin y
-                    $x2 = $last[0]+$action[6]; // final x
-                    $y2 = $last[1]+$action[7]; // final y
+            case 'a':
+                $rx = $action[1];   // rx
+                $ry = $action[2];   // ry
+                $a = $action[3];    // deviation angle of the axis X
+                $l = $action[4];    // large-arc-flag
+                $s = $action[5];    // sweep-flag
+                $x1 = $last[0];     // begin x
+                $y1 = $last[1];     // begin y
+                $x2 = $last[0]+$action[6]; // final x
+                $y2 = $last[1]+$action[7]; // final y
 
-                    $this->_Arc2($x1, $y1, $x2, $y2, $rx, $ry, $a, $l, $s, true);
-                    $x = $x2;
-                    $y = $y2;
-                    $xc = $x;
-                    $yc = $y;
-                    break;
+                $this->_Arc2($x1, $y1, $x2, $y2, $rx, $ry, $a, $l, $s, true);
+                $x = $x2;
+                $y = $y2;
+                $xc = $x;
+                $yc = $y;
+                break;
 
                 // Make a Bezier Curve (new point)
-                case 'C':
-                    $x1 = $action[1];
-                    $y1 = $action[2];
-                    $x2 = $action[3];
-                    $y2 = $action[4];
-                    $xf = $action[5];
-                    $yf = $action[6];
-                    $this->_Curve($x1, $y1, $x2, $y2, $xf, $yf, true);
-                    $x = $xf;
-                    $y = $yf;
-                    $xc = $x2;
-                    $yc = $y2;
-                    break;
+            case 'C':
+                $x1 = $action[1];
+                $y1 = $action[2];
+                $x2 = $action[3];
+                $y2 = $action[4];
+                $xf = $action[5];
+                $yf = $action[6];
+                $this->_Curve($x1, $y1, $x2, $y2, $xf, $yf, true);
+                $x = $xf;
+                $y = $yf;
+                $xc = $x2;
+                $yc = $y2;
+                break;
 
                 // Make a Bezier Curve (vector from last point)
-                case 'c':
-                    $x1 = $last[0]+$action[1];
-                    $y1 = $last[1]+$action[2];
-                    $x2 = $last[0]+$action[3];
-                    $y2 = $last[1]+$action[4];
-                    $xf = $last[0]+$action[5];
-                    $yf = $last[1]+$action[6];
-                    $this->_Curve($x1, $y1, $x2, $y2, $xf, $yf, true);
-                    $x = $xf;
-                    $y = $yf;
-                    $xc = $x2;
-                    $yc = $y2;
-                    break;
+            case 'c':
+                $x1 = $last[0]+$action[1];
+                $y1 = $last[1]+$action[2];
+                $x2 = $last[0]+$action[3];
+                $y2 = $last[1]+$action[4];
+                $xf = $last[0]+$action[5];
+                $yf = $last[1]+$action[6];
+                $this->_Curve($x1, $y1, $x2, $y2, $xf, $yf, true);
+                $x = $xf;
+                $y = $yf;
+                $xc = $x2;
+                $yc = $y2;
+                break;
 
                 // Unknown Path
-                default:
-                    $e = new HtmlParsingException('SVG Path Error : ['.$action[0].'] is unknown');
-                    $e->setInvalidTag('POLYGON');
-                    throw $e;
+            default:
+                $e = new HtmlParsingException('SVG Path Error : ['.$action[0].'] is unknown');
+                $e->setInvalidTag('POLYGON');
+                throw $e;
             }
 
             // save the last point
@@ -1004,9 +1004,9 @@ class MyPdf extends \TCPDF
     /**
      * SVG - go to a point
      *
-     * @param float   $x
-     * @param float   $y
-     * @param boolean $trans apply transformation
+     * @param  float   $x
+     * @param  float   $y
+     * @param  boolean $trans apply transformation
      * @access protected
      */
     protected function _Point($x, $y, $trans = false)
@@ -1021,9 +1021,9 @@ class MyPdf extends \TCPDF
     /**
      * SVG - make a line from the last point to (x,y)
      *
-     * @param float   $x
-     * @param float   $y
-     * @param boolean $trans apply transformation
+     * @param  float   $x
+     * @param  float   $y
+     * @param  boolean $trans apply transformation
      * @access protected
      */
     protected function _Line($x, $y, $trans = false)
@@ -1038,13 +1038,13 @@ class MyPdf extends \TCPDF
     /**
      * SVG - make a bezier curve from the last point to (xf,yf), with the 2 direction points (x1,y1) and (x2,y2)
      *
-     * @param float $x1
-     * @param float $y1
-     * @param float $x2
-     * @param float $y2
-     * @param float $xf
-     * @param float $yf
-     * @param boolean $trans apply transformation
+     * @param  float   $x1
+     * @param  float   $y1
+     * @param  float   $x2
+     * @param  float   $y2
+     * @param  float   $xf
+     * @param  float   $yf
+     * @param  boolean $trans apply transformation
      * @access protected
      */
     protected function _Curve($x1, $y1, $x2, $y2, $xf, $yf, $trans = false)
@@ -1060,15 +1060,15 @@ class MyPdf extends \TCPDF
     /**
      * SVG - make a arc with Center, Radius, from angleBegin to angleEnd
      *
-     * @param float $xc
-     * @param float $yc
-     * @param float $rx
-     * @param float $ry
-     * @param float $angleBegin in radians
-     * @param float $angleEng in radians
-     * @param boolean $direction
-     * @param boolean $drawFirst, true => add the first point
-     * @param boolean $trans apply transformation
+     * @param  float   $xc
+     * @param  float   $yc
+     * @param  float   $rx
+     * @param  float   $ry
+     * @param  float   $angleBegin in radians
+     * @param  float   $angleEng   in radians
+     * @param  boolean $direction
+     * @param  boolean $drawFirst, true => add the first point
+     * @param  boolean $trans      apply transformation
      * @access protected
      */
     protected function _Arc(
@@ -1139,16 +1139,16 @@ class MyPdf extends \TCPDF
     /**
      * SVG - make a arc from Pt1 to Pt2, with Radius
      *
-     * @param float $x1
-     * @param float $y1
-     * @param float $x2
-     * @param float $y2
-     * @param float $rx
-     * @param float $ry
-     * @param float $angle deviation angle of the axis X
-     * @param boolean $l large-arc-flag
-     * @param boolean $s sweep-flag
-     * @param boolean $trans apply transformation
+     * @param  float   $x1
+     * @param  float   $y1
+     * @param  float   $x2
+     * @param  float   $y2
+     * @param  float   $rx
+     * @param  float   $ry
+     * @param  float   $angle deviation angle of the axis X
+     * @param  boolean $l     large-arc-flag
+     * @param  boolean $s     sweep-flag
+     * @param  boolean $trans apply transformation
      * @access protected
      */
     protected function _Arc2($x1, $y1, $x2, $y2, $rx, $ry, $angle = 0., $l = 0, $s = 0, $trans = false)
@@ -1248,9 +1248,9 @@ class MyPdf extends \TCPDF
     /**
      * SVG - transform the point (reference)
      *
-     * @param float &$x
-     * @param float &$y
-     * @param boolean $trans true => convert into PDF unit
+     * @param  float   &$x
+     * @param  float   &$y
+     * @param  boolean $trans true => convert into PDF unit
      * @return boolean
      * @access public
      */
@@ -1279,7 +1279,7 @@ class MyPdf extends \TCPDF
     /**
      * SVG - add a transformation Matric
      *
-     * @param array $n matrix
+     * @param  array $n matrix
      * @access public
      */
     public function doTransform($n = null)
@@ -1321,15 +1321,15 @@ class MyPdf extends \TCPDF
     /**
      * Convert a Html2Pdf barcode in a TCPDF barcode
      *
-     * @param string $code code to print
-     * @param string $type type of barcode (see tcpdf/barcodes.php for supported formats)
-     * @param int $x x position in user units
-     * @param int $y y position in user units
-     * @param int $w width in user units
-     * @param int $h height in user units
-     * @param int $labelFontsize of the Test Label. If false : no Label
-     * @param array $color color of the foreground
-     * @param string $dimension 1D or 2D
+     * @param  string $code          code to print
+     * @param  string $type          type of barcode (see tcpdf/barcodes.php for supported formats)
+     * @param  int    $x             x position in user units
+     * @param  int    $y             y position in user units
+     * @param  int    $w             width in user units
+     * @param  int    $h             height in user units
+     * @param  int    $labelFontsize of the Test Label. If false : no Label
+     * @param  array  $color         color of the foreground
+     * @param  string $dimension     1D or 2D
      * @access public
      */
     public function myBarcode($code, $type, $x, $y, $w, $h, $labelFontsize, $color, $dimension = '1D')
@@ -1362,14 +1362,14 @@ class MyPdf extends \TCPDF
     /**
      * create a automatic Index on a page
      *
-     * @param html2pdf $obj           parent object
-     * @param string   $titre         Title of the Index Page
-     * @param integer  $sizeTitle     Font size for hthe Title
-     * @param integer  $sizeBookmark  Font size for the bookmarks
-     * @param boolean  $bookmarkTitle Bookmark the Title
-     * @param boolean  $displayPage   Display the page number for each bookmark
-     * @param integer  $page draw the automatic Index on a specific Page. if null => add a page at the end
-     * @param string   $fontName      FontName to use
+     * @param  html2pdf $obj           parent object
+     * @param  string   $titre         Title of the Index Page
+     * @param  integer  $sizeTitle     Font size for hthe Title
+     * @param  integer  $sizeBookmark  Font size for the bookmarks
+     * @param  boolean  $bookmarkTitle Bookmark the Title
+     * @param  boolean  $displayPage   Display the page number for each bookmark
+     * @param  integer  $page          draw the automatic Index on a specific Page. if null => add a page at the end
+     * @param  string   $fontName      FontName to use
      * @access public
      */
     public function createIndex(
@@ -1450,7 +1450,7 @@ class MyPdf extends \TCPDF
      *
      * @access public
      * @return string;
-     * @see TCPDF::getAliasNbPages(), TCPDF::getPageGroupAlias()
+     * @see    TCPDF::getAliasNbPages(), TCPDF::getPageGroupAlias()
      */
     public function getMyAliasNbPages()
     {
@@ -1491,7 +1491,7 @@ class MyPdf extends \TCPDF
      *
      * @access public
      * @return integer;
-     * @see tcpdf::startPageGroup
+     * @see    tcpdf::startPageGroup
      */
     public function myStartPageGroup()
     {
@@ -1514,7 +1514,7 @@ class MyPdf extends \TCPDF
      * set $_myLastPageGroup;
      *
      * @access public
-     * @param integer $myLastPageGroup;
+     * @param  integer $myLastPageGroup;
      */
     public function setMyLastPageGroup($myLastPageGroup)
     {
@@ -1536,7 +1536,7 @@ class MyPdf extends \TCPDF
      * set $_myLastPageGroupNb;
      *
      * @access public
-     * @param integer $myLastPageGroupNb;
+     * @param  integer $myLastPageGroupNb;
      */
     public function setMyLastPageGroupNb($myLastPageGroupNb)
     {

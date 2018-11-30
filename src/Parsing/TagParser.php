@@ -70,71 +70,71 @@ class TagParser
         $border = null;
         foreach ($param as $key => $val) {
             switch ($key) {
-                case 'width':
+            case 'width':
+                unset($param[$key]);
+                $param['style'] .= 'width: '.$val.'px; ';
+                break;
+
+            case 'align':
+                if ($name === 'img') {
                     unset($param[$key]);
-                    $param['style'] .= 'width: '.$val.'px; ';
-                    break;
-
-                case 'align':
-                    if ($name === 'img') {
-                        unset($param[$key]);
-                        $param['style'] .= 'float: '.$val.'; ';
-                    } elseif ($name !== 'table') {
-                        unset($param[$key]);
-                        $param['style'] .= 'text-align: '.$val.'; ';
-                    }
-                    break;
-
-                case 'valign':
+                    $param['style'] .= 'float: '.$val.'; ';
+                } elseif ($name !== 'table') {
                     unset($param[$key]);
-                    $param['style'] .= 'vertical-align: '.$val.'; ';
-                    break;
+                    $param['style'] .= 'text-align: '.$val.'; ';
+                }
+                break;
 
-                case 'height':
+            case 'valign':
+                unset($param[$key]);
+                $param['style'] .= 'vertical-align: '.$val.'; ';
+                break;
+
+            case 'height':
+                unset($param[$key]);
+                $param['style'] .= 'height: '.$val.'px; ';
+                break;
+
+            case 'bgcolor':
+                unset($param[$key]);
+                $param['style'] .= 'background: '.$val.'; ';
+                break;
+
+            case 'bordercolor':
+                unset($param[$key]);
+                $color = $val;
+                break;
+
+            case 'border':
+                unset($param[$key]);
+                if (preg_match('/^[0-9]+$/isU', $val)) {
+                    $val = $val.'px';
+                }
+                $border = $val;
+                break;
+
+            case 'cellpadding':
+            case 'cellspacing':
+                if (preg_match('/^([0-9]+)$/isU', $val)) {
+                    $param[$key] = $val.'px';
+                }
+                break;
+
+            case 'colspan':
+            case 'rowspan':
+                $val = preg_replace('/[^0-9]/isU', '', $val);
+                if (!$val) {
+                    $val = 1;
+                }
+                $param[$key] = (int) $val;
+                break;
+
+            case 'color':
+                if ($name === 'font') {
                     unset($param[$key]);
-                    $param['style'] .= 'height: '.$val.'px; ';
-                    break;
-
-                case 'bgcolor':
-                    unset($param[$key]);
-                    $param['style'] .= 'background: '.$val.'; ';
-                    break;
-
-                case 'bordercolor':
-                    unset($param[$key]);
-                    $color = $val;
-                    break;
-
-                case 'border':
-                    unset($param[$key]);
-                    if (preg_match('/^[0-9]+$/isU', $val)) {
-                        $val = $val.'px';
-                    }
-                    $border = $val;
-                    break;
-
-                case 'cellpadding':
-                case 'cellspacing':
-                    if (preg_match('/^([0-9]+)$/isU', $val)) {
-                        $param[$key] = $val.'px';
-                    }
-                    break;
-
-                case 'colspan':
-                case 'rowspan':
-                    $val = preg_replace('/[^0-9]/isU', '', $val);
-                    if (!$val) {
-                        $val = 1;
-                    }
-                    $param[$key] = (int) $val;
-                    break;
-
-                case 'color':
-                    if ($name === 'font') {
-                        unset($param[$key]);
-                        $param['style'] .= 'color: '.$val.'; ';
-                    }
-                    break;
+                    $param['style'] .= 'color: '.$val.'; ';
+                }
+                break;
             }
         }
 

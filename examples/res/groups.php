@@ -33,12 +33,12 @@
 </page>
 <?php
 for ($k=2; $k<5; $k++) :
-?>
+    ?>
 <page pageset="old" pagegroup="new">
     Ceci est la page 1 du groupe <?php echo $k; ?>
 </page>
 <page pageset="old">
     Ceci est la page 2 du groupe <?php echo $k; ?>
 </page>
-<?php
+    <?php
 endfor;

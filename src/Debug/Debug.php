@@ -50,11 +50,11 @@ class Debug implements DebugInterface
     /**
      * display a debug line
      *
-     * @param  string $name
-     * @param  string $timeTotal
-     * @param  string $timeStep
-     * @param  string $memoryUsage
-     * @param  string $memoryPeak
+     * @param string $name
+     * @param string $timeTotal
+     * @param string $timeStep
+     * @param string $memoryUsage
+     * @param string $memoryPeak
      *
      * @return void
      */
@@ -106,8 +106,8 @@ class Debug implements DebugInterface
     /**
      * add a debug step
      *
-     * @param  string  $name step name
-     * @param  boolean $level (true=up, false=down, null=nothing to do)
+     * @param string  $name  step name
+     * @param boolean $level (true=up, false=down, null=nothing to do)
      *
      * @return Debug
      */

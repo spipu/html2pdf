@@ -31,8 +31,8 @@ interface DebugInterface
     /**
      * add a debug step
      *
-     * @param  string  $name step name
-     * @param  boolean $level (true=up, false=down, null=nothing to do)
+     * @param string  $name  step name
+     * @param boolean $level (true=up, false=down, null=nothing to do)
      *
      * @return DebugInterface
      */

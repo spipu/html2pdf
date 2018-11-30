@@ -42,7 +42,7 @@ class MustHaveTagsTest extends AbstractTest
     /**
      * test
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testNotEmptyThead()
@@ -60,7 +60,7 @@ class MustHaveTagsTest extends AbstractTest
     /**
      * test
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testNotEmptyTfoot()

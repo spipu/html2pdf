@@ -32,12 +32,14 @@ class Html
 
     /**
      * are we in a pre ?
+     *
      * @var boolean
      */
     protected $tagPreIn = false;
 
     /**
      * parsed HTML code
+     *
      * @var Node[]
      */
     public $code = array();
@@ -84,6 +86,7 @@ class Html
 
         /**
          * all the actions to do
+         *
          * @var Node[] $actions
          */
         $actions = array();
@@ -338,8 +341,8 @@ class Html
     /**
      * get a full level of HTML, between an opening and closing corresponding
      *
-     * @param   integer $k
-     * @return  array   actions
+     * @param  integer $k
+     * @return array   actions
      */
     public function getLevel($k)
     {
@@ -364,7 +367,9 @@ class Html
         // while it's not ended
         while (!$end) {
             // current action
-            /** @var Node $node */
+            /**
+ * @var Node $node 
+*/
             $node = $this->code[$k];
 
             // if 'write' => we add the text

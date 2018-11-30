@@ -24,7 +24,7 @@ class SrcErrorTest extends AbstractTest
     /**
      * test: The image src is unknown
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\ImageException
      */
     public function testCase()

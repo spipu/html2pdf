@@ -20,6 +20,7 @@ class CssConverter
 
     /**
      * fontsize ratios
+     *
      * @var float[]
      */
     private $fontSizeRatio = [
@@ -37,6 +38,19 @@ class CssConverter
     public function __construct()
     {
         $this->htmlColor = \TCPDF_COLORS::$webcolor;
+    }
+
+
+    /**
+     * convert rem em px
+     *
+     * @param string $css rem to convert
+     * @param string $old result in px
+     *
+     * @return type
+     */
+    public function convertToPX($css,$old) {
+        return (str_replace('rem', '', $css) / str_replace('px', '', $old)).'px';
     }
 
     /**
@@ -71,8 +85,8 @@ class CssConverter
     }
 
     /**
-     * @param string $css    font size to convert
-     * @param float  $parent parent font size
+     * @param  string $css    font size to convert
+     * @param  float  $parent parent font size
      * @return float
      */
     public function convertFontSize($css, $parent = 0.)
@@ -117,7 +131,7 @@ class CssConverter
     /**
      * convert a css color to an RGB array
      *
-     * @param string   $css
+     * @param string  $css
      * @param &boolean $res
      *
      * @return array (r, g, b)
@@ -206,8 +220,8 @@ class CssConverter
     /**
      * Analyse a background
      *
-     * @param  string $css css background properties
-     * @param  &array $value parsed values (by reference, because, ther is a legacy of the parent CSS properties)
+     * @param string $css   css background properties
+     * @param array  $value parsed values (by reference, because, ther is a legacy of the parent CSS properties)
      *
      * @return void
      */
@@ -273,7 +287,7 @@ class CssConverter
     /**
      * Parse a background color
      *
-     * @param  string $css
+     * @param string $css
      *
      * @return string|null $value
      */
@@ -290,7 +304,7 @@ class CssConverter
     /**
      * Parse a background image
      *
-     * @param  string $css
+     * @param string $css
      *
      * @return string|null $value
      */
@@ -310,8 +324,8 @@ class CssConverter
     /**
      * Parse a background position
      *
-     * @param  string $css
-     * @param  boolean &$res flag if convert is ok or not
+     * @param string  $css
+     * @param boolean &$res flag if convert is ok or not
      *
      * @return array (x, y)
      */
@@ -384,21 +398,21 @@ class CssConverter
     /**
      * Parse a background repeat
      *
-     * @param  string $css
+     * @param string $css
      *
      * @return array|null background repeat as array
      */
     public function convertBackgroundRepeat($css)
     {
         switch ($css) {
-            case 'repeat':
-                return array(true, true);
-            case 'repeat-x':
-                return array(true, false);
-            case 'repeat-y':
-                return array(false, true);
-            case 'no-repeat':
-                return array(false, false);
+        case 'repeat':
+            return array(true, true);
+        case 'repeat-x':
+            return array(true, false);
+        case 'repeat-y':
+            return array(false, true);
+        case 'no-repeat':
+            return array(false, false);
         }
         return null;
     }

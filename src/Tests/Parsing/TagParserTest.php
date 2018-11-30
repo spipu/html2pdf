@@ -43,8 +43,8 @@ class TagParserTest extends \PHPUnit_Framework_TestCase
     /**
      * mock of prepareTxt method
      *
-     * @param $txt
-     * @param bool $spaces
+     * @param  $txt
+     * @param  bool $spaces
      * @return mixed
      */
     public function mockPrepareTxt($txt, $spaces = true)
@@ -84,7 +84,7 @@ class TagParserTest extends \PHPUnit_Framework_TestCase
     /**
      * Test if a bad tag is detected
      *
-     * @expectedException  \Spipu\Html2Pdf\Exception\HtmlParsingException
+     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testAnalyzeTagBadTag()
     {

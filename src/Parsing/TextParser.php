@@ -32,10 +32,10 @@ class TextParser
     /**
      * prepare the text
      *
-     * @param   string $txt
-     * @param   boolean $spaces true => replace multiple space+\t+\r+\n by a single space
-     * @return  string txt
-     * @access  protected
+     * @param  string  $txt
+     * @param  boolean $spaces true => replace multiple space+\t+\r+\n by a single space
+     * @return string txt
+     * @access protected
      */
     public function prepareTxt($txt, $spaces = true)
     {

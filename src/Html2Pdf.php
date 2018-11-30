@@ -33,18 +33,21 @@ class Html2Pdf
 {
     /**
      * myPdf object, extends from TCPDF
+     *
      * @var MyPdf
      */
     public $pdf = null;
 
     /**
      * CSS parsing
+     *
      * @var Parsing\Css
      */
     public $parsingCss = null;
 
     /**
      * HTML parsing
+     *
      * @var Parsing\Html
      */
     public $parsingHtml = null;
@@ -142,12 +145,14 @@ class Html2Pdf
 
     /**
      * list of tag definitions
+     *
      * @var ExtensionInterface[]
      */
     protected $extensions = array();
 
     /**
      * List of tag objects
+     *
      * @var TagInterface[]
      */
     protected $tagObjects = array();
@@ -170,6 +175,7 @@ class Html2Pdf
      *
      * @return Html2Pdf
      */
+<<<<<<< HEAD
     public function __construct(
         $orientation = 'P',
         $format = 'A4',
@@ -179,6 +185,10 @@ class Html2Pdf
         $margins = array(5, 5, 5, 8),
         $pdfa = false
     ) {
+=======
+    public function __construct($margins = array(5, 5, 5, 8))
+    {
+>>>>>>> 8053e5289f3016245aa391e3471a958000226c3f
         // init the page number
         $this->_page         = 0;
         $this->_firstPage    = true;
@@ -242,7 +252,7 @@ class Html2Pdf
         return array(
             'major'     => 5,
             'minor'     => 2,
-            'revision'  => 2
+            'revision'  => 1
         );
     }
 
@@ -305,6 +315,7 @@ class Html2Pdf
 
     /**
      * Get the number of pages
+     *
      * @return int
      */
     public function getNbPages()
@@ -396,7 +407,7 @@ class Html2Pdf
      * Set the test of TD that can not take more than one page
      *
      * @access public
-     * @param  boolean  $mode
+     * @param  boolean $mode
      * @return Html2Pdf $this
      */
     public function setTestTdInOnePage($mode = true)
@@ -410,7 +421,7 @@ class Html2Pdf
      * Set the test if the images exist or not
      *
      * @access public
-     * @param  boolean  $mode
+     * @param  boolean $mode
      * @return Html2Pdf $this
      */
     public function setTestIsImage($mode = true)
@@ -424,7 +435,7 @@ class Html2Pdf
      * Set the default font to use, if no font is specified, or if the asked font does not exist
      *
      * @access public
-     * @param  string   $default name of the default font to use. If null : Arial if no font is specified, and error if the asked font does not exist
+     * @param  string $default name of the default font to use. If null : Arial if no font is specified, and error if the asked font does not exist
      * @return Html2Pdf $this
      */
     public function setDefaultFont($default = null)
@@ -453,11 +464,11 @@ class Html2Pdf
      * add a font, see TCPDF function addFont
      *
      * @access public
-     * @param string $family Font family. The name can be chosen arbitrarily. If it is a standard family name, it will override the corresponding font.
-     * @param string $style Font style. Possible values are (case insensitive):<ul><li>empty string: regular (default)</li><li>B: bold</li><li>I: italic</li><li>BI or IB: bold italic</li></ul>
-     * @param string $file The font definition file. By default, the name is built from the family and style, in lower case with no spaces.
+     * @param  string $family Font family. The name can be chosen arbitrarily. If it is a standard family name, it will override the corresponding font.
+     * @param  string $style  Font style. Possible values are (case insensitive):<ul><li>empty string: regular (default)</li><li>B: bold</li><li>I: italic</li><li>BI or IB: bold italic</li></ul>
+     * @param  string $file   The font definition file. By default, the name is built from the family and style, in lower case with no spaces.
      * @return Html2Pdf $this
-     * @see TCPDF::addFont
+     * @see    TCPDF::addFont
      */
     public function addFont($family, $style = '', $file = '')
     {
@@ -566,7 +577,7 @@ class Html2Pdf
         if ($dest[0] === 'F') {
             $isWindowsPath = preg_match("/^[A-Z]:\\\\/", $name);
             // If windows is not saving on a remote file server
-            if($name[0] !== DIRECTORY_SEPARATOR &&  $isWindowsPath === false ){
+            if($name[0] !== DIRECTORY_SEPARATOR &&  $isWindowsPath === false ) {
                 $name = getcwd() . DIRECTORY_SEPARATOR . $name;
             }
         }
@@ -697,8 +708,8 @@ class Html2Pdf
      * @access protected
      * @param  mixed   $format
      * @param  string  $orientation
-     * @param  array   $background background information
-     * @param  integer $curr real position in the html parser (if break line in the write of a text)
+     * @param  array   $background      background information
+     * @param  integer $curr            real position in the html parser (if break line in the write of a text)
      * @param  boolean $resetPageNumber
      */
     protected function _setNewPage($format = null, $orientation = '', $background = null, $curr = null, $resetPageNumber = false)
@@ -806,7 +817,7 @@ class Html2Pdf
      * Add margins, for a float
      *
      * @access protected
-     * @param  string $float (left / right)
+     * @param  string $float   (left / right)
      * @param  float  $xLeft
      * @param  float  $yTop
      * @param  float  $xRight
@@ -860,9 +871,9 @@ class Html2Pdf
      * Save old margins (push), and set new ones
      *
      * @access protected
-     * @param  float  $ml left margin
-     * @param  float  $mt top margin
-     * @param  float  $mr right margin
+     * @param  float $ml left margin
+     * @param  float $mt top margin
+     * @param  float $mr right margin
      */
     protected function _saveMargin($ml, $mt, $mr)
     {
@@ -996,8 +1007,8 @@ class Html2Pdf
      * new line, with a specific height
      *
      * @access protected
-     * @param float   $h
-     * @param integer $curr real current position in the text, if new line in the write of a text
+     * @param  float   $h
+     * @param  integer $curr real current position in the text, if new line in the write of a text
      */
     protected function _setNewLine($h, $curr = null)
     {
@@ -1265,38 +1276,38 @@ class Html2Pdf
         }
 
         switch ($st) {
-            case 'none':
-                return array('helvetica', true, ' ');
+        case 'none':
+            return array('helvetica', true, ' ');
 
-            case 'upper-alpha':
-            case 'lower-alpha':
-                $str = '';
-                while ($nb>26) {
-                    $str = chr(96+$nb%26).$str;
-                    $nb = floor($nb/26);
-                }
-                $str = chr(96+$nb).$str;
+        case 'upper-alpha':
+        case 'lower-alpha':
+            $str = '';
+            while ($nb>26) {
+                $str = chr(96+$nb%26).$str;
+                $nb = floor($nb/26);
+            }
+            $str = chr(96+$nb).$str;
 
-                return array('helvetica', false, ($up ? strtoupper($str) : $str).'.');
+            return array('helvetica', false, ($up ? strtoupper($str) : $str).'.');
 
-            case 'upper-roman':
-            case 'lower-roman':
-                $str = $this->_listeArab2Rom($nb);
+        case 'upper-roman':
+        case 'lower-roman':
+            $str = $this->_listeArab2Rom($nb);
 
-                return array('helvetica', false, ($up ? strtoupper($str) : $str).'.');
+            return array('helvetica', false, ($up ? strtoupper($str) : $str).'.');
 
-            case 'decimal':
-                return array('helvetica', false, $nb.'.');
+        case 'decimal':
+            return array('helvetica', false, $nb.'.');
 
-            case 'square':
-                return array('zapfdingbats', true, chr(110));
+        case 'square':
+            return array('zapfdingbats', true, chr(110));
 
-            case 'circle':
-                return array('zapfdingbats', true, chr(109));
+        case 'circle':
+            return array('zapfdingbats', true, chr(109));
 
-            case 'disc':
-            default:
-                return array('zapfdingbats', true, chr(108));
+        case 'disc':
+        default:
+            return array('zapfdingbats', true, chr(108));
         }
     }
 
@@ -1474,7 +1485,7 @@ class Html2Pdf
      * make a break line
      *
      * @access protected
-     * @param  float $h current line height
+     * @param  float   $h    current line height
      * @param  integer $curr real current position in the text, if new line in the write of a text
      */
     protected function _makeBreakLine($h, $curr = null)
@@ -1497,7 +1508,7 @@ class Html2Pdf
      * display an image
      *
      * @access protected
-     * @param  string $src
+     * @param  string  $src
      * @param  boolean $subLi if true=image of a list
      * @return boolean depending on "isForOneLine"
      */
@@ -1700,8 +1711,8 @@ class Html2Pdf
      * @param  float $w
      * @param  float $h
      * @param  array $border
-     * @param  float $padding - internal margin of the rectangle => not used, but...
-     * @param  float $margin  - external margin of the rectangle
+     * @param  float $padding    - internal margin of the rectangle => not used, but...
+     * @param  float $margin     - external margin of the rectangle
      * @param  array $background
      * @return boolean
      */
@@ -2217,7 +2228,7 @@ class Html2Pdf
      * @access protected
      * @param  array   $pt
      * @param  array   $color
-     * @param  string  $type (dashed, dotted, double, solid)
+     * @param  string  $type   (dashed, dotted, double, solid)
      * @param  float   $width
      * @param  integer $radius (binary from 0 to 3 with 1=>start with a radius, 2=>end with a radius)
      */
@@ -2488,7 +2499,7 @@ class Html2Pdf
                     // without colspan
                     if ($corr[$y][$x][2] == 1) {
                         $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'] = $sw[$x];
-                    // with colspan
+                        // with colspan
                     } else {
                         $s = 0;
                         for ($i=0; $i<$corr[$y][$x][2]; $i++) {
@@ -2540,7 +2551,7 @@ class Html2Pdf
                     // without rowspan
                     if ($corr[$y][$x][3] == 1) {
                         $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h'] = $sh[$y];
-                    // with rowspan
+                        // with rowspan
                     } else {
                         $s = 0;
                         for ($i=0; $i<$corr[$y][$x][3]; $i++) {
@@ -2738,7 +2749,7 @@ class Html2Pdf
                 $form    = null;
             }
             $this->pdf->SetMyFooter($page, $date, $time, $form);
-        // else => we use the last page set used
+            // else => we use the last page set used
         } else {
             $this->parsingCss->save();
             $this->parsingCss->analyse('PAGE', $param);
@@ -3028,8 +3039,8 @@ class Html2Pdf
         $y = $this->pdf->GetY();
 
         // if the content does not fit on the page => new page
-        if ($sub->_maxY < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) &&
-            $y + $sub->_maxY>=($this->pdf->getH() - $this->pdf->getbMargin())
+        if ($sub->_maxY < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin()) 
+            && $y + $sub->_maxY>=($this->pdf->getH() - $this->pdf->getbMargin())
         ) {
             $this->_setNewPage();
         }
@@ -3063,7 +3074,7 @@ class Html2Pdf
      * tag : DIV
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  array  $param
      * @param  string $other name of tag that used the div tag
      * @return boolean
      */
@@ -3143,47 +3154,47 @@ class Html2Pdf
         }
 
         switch ($this->parsingCss->value['rotate']) {
-            case 90:
-                $tmp = $overH;
-                $overH = $overW;
-                $overW = $tmp;
-                $tmp = $hReel;
-                $hReel = $wReel;
-                $wReel = $tmp;
-                unset($tmp);
-                $w = $this->parsingCss->value['height'];
-                $h = $this->parsingCss->value['width'];
-                $tX =-$h;
-                $tY = 0;
-                break;
+        case 90:
+            $tmp = $overH;
+            $overH = $overW;
+            $overW = $tmp;
+            $tmp = $hReel;
+            $hReel = $wReel;
+            $wReel = $tmp;
+            unset($tmp);
+            $w = $this->parsingCss->value['height'];
+            $h = $this->parsingCss->value['width'];
+            $tX =-$h;
+            $tY = 0;
+            break;
 
-            case 180:
-                $w = $this->parsingCss->value['width'];
-                $h = $this->parsingCss->value['height'];
-                $tX = -$w;
-                $tY = -$h;
-                break;
+        case 180:
+            $w = $this->parsingCss->value['width'];
+            $h = $this->parsingCss->value['height'];
+            $tX = -$w;
+            $tY = -$h;
+            break;
 
-            case 270:
-                $tmp = $overH;
-                $overH = $overW;
-                $overW = $tmp;
-                $tmp = $hReel;
-                $hReel = $wReel;
-                $wReel = $tmp;
-                unset($tmp);
-                $w = $this->parsingCss->value['height'];
-                $h = $this->parsingCss->value['width'];
-                $tX = 0;
-                $tY =-$w;
-                break;
+        case 270:
+            $tmp = $overH;
+            $overH = $overW;
+            $overW = $tmp;
+            $tmp = $hReel;
+            $hReel = $wReel;
+            $wReel = $tmp;
+            unset($tmp);
+            $w = $this->parsingCss->value['height'];
+            $h = $this->parsingCss->value['width'];
+            $tX = 0;
+            $tY =-$w;
+            break;
 
-            default:
-                $w = $this->parsingCss->value['width'];
-                $h = $this->parsingCss->value['height'];
-                $tX = 0;
-                $tY = 0;
-                break;
+        default:
+            $w = $this->parsingCss->value['width'];
+            $h = $this->parsingCss->value['height'];
+            $tX = 0;
+            $tY = 0;
+            break;
         }
 
         $maxW = ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin());
@@ -3277,23 +3288,23 @@ class Html2Pdf
         $yCorr = 0;
         if (!$this->_subPart && !$this->_isSubPart) {
             switch ($this->parsingCss->value['text-align']) {
-                case 'right':
-                    $xCorr = ($this->parsingCss->value['width']-$wReel);
-                    break;
-                case 'center':
-                    $xCorr = ($this->parsingCss->value['width']-$wReel)*0.5;
-                    break;
+            case 'right':
+                $xCorr = ($this->parsingCss->value['width']-$wReel);
+                break;
+            case 'center':
+                $xCorr = ($this->parsingCss->value['width']-$wReel)*0.5;
+                break;
             }
             if ($xCorr>0) {
                 $xCorr=0;
             }
             switch ($this->parsingCss->value['vertical-align']) {
-                case 'bottom':
-                    $yCorr = ($this->parsingCss->value['height']-$hReel);
-                    break;
-                case 'middle':
-                    $yCorr = ($this->parsingCss->value['height']-$hReel)*0.5;
-                    break;
+            case 'bottom':
+                $yCorr = ($this->parsingCss->value['height']-$hReel);
+                break;
+            case 'middle':
+                $yCorr = ($this->parsingCss->value['height']-$hReel)*0.5;
+                break;
             }
         }
 
@@ -3414,7 +3425,7 @@ class Html2Pdf
      * tag : DIV
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  array  $param
      * @param  string $other name of tag that used the div tag
      * @return boolean
      */
@@ -3448,20 +3459,20 @@ class Html2Pdf
         $h = $this->parsingCss->value['height']+$marge['t']+$marge['b']+$this->parsingCss->value['margin']['b'];
 
         switch ($this->parsingCss->value['rotate']) {
-            case 90:
-                $t = $w;
-                $w = $h;
-                $h = $t;
-                break;
+        case 90:
+            $t = $w;
+            $w = $h;
+            $h = $t;
+            break;
 
-            case 270:
-                $t = $w;
-                $w = $h;
-                $h = $t;
-                break;
+        case 270:
+            $t = $w;
+            $w = $h;
+            $h = $t;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
 
@@ -3915,7 +3926,7 @@ class Html2Pdf
      * mode : OPEN
      *
      * @param  array   $param
-     * @param  integer $curr real position in the html parseur (if break line in the write of a text)
+     * @param  integer $curr  real position in the html parseur (if break line in the write of a text)
      * @return boolean
      */
     protected function _tag_open_BR($param, $curr = null)
@@ -4060,7 +4071,7 @@ class Html2Pdf
      * tag : H1
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  array  $param
      * @param  string $other
      * @return boolean
      */
@@ -4242,7 +4253,7 @@ class Html2Pdf
      * tag : P
      * mode : OPEN
      *
-     * @param    array $param
+     * @param  array $param
      * @return boolean
      */
     protected function _tag_open_P($param)
@@ -4313,7 +4324,7 @@ class Html2Pdf
      * tag : PRE
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  array  $param
      * @param  string $other
      * @return boolean
      */
@@ -4352,7 +4363,7 @@ class Html2Pdf
      * tag : PRE
      * mode : CLOSE
      *
-     * @param  array $param
+     * @param  array  $param
      * @param  string $other
      * @return boolean
      */
@@ -4388,7 +4399,7 @@ class Html2Pdf
      * tag : UL
      * mode : OPEN
      *
-     * @param  array $param
+     * @param  array  $param
      * @param  string $other
      * @return boolean
      */
@@ -4800,7 +4811,7 @@ class Html2Pdf
     /**
      * It is not a real TAG, do not use it !
      *
-     * @param    array $param
+     * @param  array $param
      * @return boolean
      */
     protected function _tag_open_TFOOT_SUB($param)
@@ -5341,7 +5352,7 @@ class Html2Pdf
                 self::$_tables[$param['num']]['td_curr'] = $tmpTD;
                 self::$_tables[$param['num']]['new_page'] = true;
             }
-        // else (in a sub HTML)
+            // else (in a sub HTML)
         } else {
             // prepare it
             self::$_tables[$param['num']]['cases'][self::$_tables[$param['num']]['tr_curr']-1] = array();
@@ -5403,7 +5414,7 @@ class Html2Pdf
      * tag : TD
      * mode : OPEN
      *
-     * @param  array $param
+     * @param array  $param
      * @param string $other
      *
      * @return boolean
@@ -5528,8 +5539,8 @@ class Html2Pdf
         // if table collapse => modify the borders
         if ($collapse) {
             if (!$this->_subPart) {
-                if ((self::$_tables[$param['num']]['tr_curr']>1 && !self::$_tables[$param['num']]['new_page']) ||
-                    (!$this->_isInThead && count(self::$_tables[$param['num']]['thead']['code']))
+                if ((self::$_tables[$param['num']]['tr_curr']>1 && !self::$_tables[$param['num']]['new_page']) 
+                    || (!$this->_isInThead && count(self::$_tables[$param['num']]['thead']['code']))
                 ) {
                     $this->parsingCss->value['border']['t'] = $this->parsingCss->readBorder('none');
                 }
@@ -5610,18 +5621,18 @@ class Html2Pdf
             $hCorr = self::$_tables[$param['num']]['cases'][$y][$x]['h'];
             $hReel = self::$_tables[$param['num']]['cases'][$y][$x]['real_h'];
             switch ($this->parsingCss->value['vertical-align']) {
-                case 'bottom':
-                    $yCorr = $hCorr-$hReel;
-                    break;
+            case 'bottom':
+                $yCorr = $hCorr-$hReel;
+                break;
 
-                case 'middle':
-                    $yCorr = ($hCorr-$hReel)*0.5;
-                    break;
+            case 'middle':
+                $yCorr = ($hCorr-$hReel)*0.5;
+                break;
 
-                case 'top':
-                default:
-                    $yCorr = 0;
-                    break;
+            case 'top':
+            default:
+                $yCorr = 0;
+                break;
             }
 
             //  position of the content
@@ -5881,7 +5892,7 @@ class Html2Pdf
      * tag : OPTION
      * mode : OPEN
      *
-     * @param    array $param
+     * @param  array $param
      * @return boolean
      */
     protected function _tag_open_OPTION($param)
@@ -5900,7 +5911,7 @@ class Html2Pdf
      * tag : OPTION
      * mode : CLOSE
      *
-     * @param    array $param
+     * @param  array $param
      * @return boolean
      */
     protected function _tag_close_OPTION($param)
@@ -5966,7 +5977,7 @@ class Html2Pdf
      * tag : TEXTAREA
      * mode : OPEN
      *
-     * @param    array $param
+     * @param  array $param
      * @return boolean
      */
     protected function _tag_open_TEXTAREA($param)
@@ -6079,86 +6090,86 @@ class Html2Pdf
         $prop = $this->parsingCss->getFormStyle();
 
         switch ($param['type']) {
-            case 'checkbox':
-                $w = 4;
-                $h = $w;
-                if ($h<$f) {
-                    $y+= ($f-$h)*0.5;
-                }
-                $checked = (isset($param['checked']) && $param['checked'] === 'checked');
-                $this->pdf->CheckBox($name, $w, $checked, $prop, array(), ($param['value'] ? $param['value'] : 'Yes'), $x, $y);
-                break;
+        case 'checkbox':
+            $w = 4;
+            $h = $w;
+            if ($h<$f) {
+                $y+= ($f-$h)*0.5;
+            }
+            $checked = (isset($param['checked']) && $param['checked'] === 'checked');
+            $this->pdf->CheckBox($name, $w, $checked, $prop, array(), ($param['value'] ? $param['value'] : 'Yes'), $x, $y);
+            break;
 
-            case 'radio':
-                $w = 4;
-                $h = $w;
-                if ($h<$f) {
-                    $y+= ($f-$h)*0.5;
-                }
-                $checked = (isset($param['checked']) && $param['checked'] === 'checked');
-                $this->pdf->RadioButton($name, $w, $prop, array(), ($param['value'] ? $param['value'] : 'On'), $checked, $x, $y);
-                break;
+        case 'radio':
+            $w = 4;
+            $h = $w;
+            if ($h<$f) {
+                $y+= ($f-$h)*0.5;
+            }
+            $checked = (isset($param['checked']) && $param['checked'] === 'checked');
+            $this->pdf->RadioButton($name, $w, $prop, array(), ($param['value'] ? $param['value'] : 'On'), $checked, $x, $y);
+            break;
 
-            case 'hidden':
-                $w = 0;
-                $h = 0;
-                $prop['value'] = $param['value'];
-                $this->pdf->TextField($name, $w, $h, $prop, array(), $x, $y);
-                break;
+        case 'hidden':
+            $w = 0;
+            $h = 0;
+            $prop['value'] = $param['value'];
+            $this->pdf->TextField($name, $w, $h, $prop, array(), $x, $y);
+            break;
 
-            case 'text':
-                $w = $this->parsingCss->value['width'];
-                if (!$w) {
-                    $w = 40;
-                }
+        case 'text':
+            $w = $this->parsingCss->value['width'];
+            if (!$w) {
+                $w = 40;
+            }
+            $h = $f*1.3;
+            $prop['value'] = $param['value'];
+            $this->pdf->TextField($name, $w, $h, $prop, array(), $x, $y);
+            break;
+
+        case 'submit':
+            $w = $this->parsingCss->value['width'];
+            if (!$w) {
+                $w = 40;
+            }
+            $h = $this->parsingCss->value['height'];
+            if (!$h) {
                 $h = $f*1.3;
-                $prop['value'] = $param['value'];
-                $this->pdf->TextField($name, $w, $h, $prop, array(), $x, $y);
-                break;
+            }
+            $action = array('S'=>'SubmitForm', 'F'=>$this->_isInForm, 'Flags'=>array('ExportFormat'));
+            $this->pdf->Button($name, $w, $h, $param['value'], $action, $prop, array(), $x, $y);
+            break;
 
-            case 'submit':
-                $w = $this->parsingCss->value['width'];
-                if (!$w) {
-                    $w = 40;
-                }
-                $h = $this->parsingCss->value['height'];
-                if (!$h) {
-                    $h = $f*1.3;
-                }
-                $action = array('S'=>'SubmitForm', 'F'=>$this->_isInForm, 'Flags'=>array('ExportFormat'));
-                $this->pdf->Button($name, $w, $h, $param['value'], $action, $prop, array(), $x, $y);
-                break;
+        case 'reset':
+            $w = $this->parsingCss->value['width'];
+            if (!$w) {
+                $w = 40;
+            }
+            $h = $this->parsingCss->value['height'];
+            if (!$h) {
+                $h = $f*1.3;
+            }
+            $action = array('S'=>'ResetForm');
+            $this->pdf->Button($name, $w, $h, $param['value'], $action, $prop, array(), $x, $y);
+            break;
 
-            case 'reset':
-                $w = $this->parsingCss->value['width'];
-                if (!$w) {
-                    $w = 40;
-                }
-                $h = $this->parsingCss->value['height'];
-                if (!$h) {
-                    $h = $f*1.3;
-                }
-                $action = array('S'=>'ResetForm');
-                $this->pdf->Button($name, $w, $h, $param['value'], $action, $prop, array(), $x, $y);
-                break;
+        case 'button':
+            $w = $this->parsingCss->value['width'];
+            if (!$w) {
+                $w = 40;
+            }
+            $h = $this->parsingCss->value['height'];
+            if (!$h) {
+                $h = $f*1.3;
+            }
+            $action = isset($param['onclick']) ? $param['onclick'] : '';
+            $this->pdf->Button($name, $w, $h, $param['value'], $action, $prop, array(), $x, $y);
+            break;
 
-            case 'button':
-                $w = $this->parsingCss->value['width'];
-                if (!$w) {
-                    $w = 40;
-                }
-                $h = $this->parsingCss->value['height'];
-                if (!$h) {
-                    $h = $f*1.3;
-                }
-                $action = isset($param['onclick']) ? $param['onclick'] : '';
-                $this->pdf->Button($name, $w, $h, $param['value'], $action, $prop, array(), $x, $y);
-                break;
-
-            default:
-                $w = 0;
-                $h = 0;
-                break;
+        default:
+            $w = 0;
+            $h = 0;
+            break;
         }
 
         $this->_maxX = max($this->_maxX, $x+$w);
@@ -6208,16 +6219,16 @@ class Html2Pdf
         $h = $this->parsingCss->value['height'];
 
         if (!$this->parsingCss->value['position']) {
-            if ($w < ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin()) &&
-                $this->pdf->GetX() + $w>=($this->pdf->getW() - $this->pdf->getrMargin())
-                ) {
+            if ($w < ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin()) 
+                && $this->pdf->GetX() + $w>=($this->pdf->getW() - $this->pdf->getrMargin())
+            ) {
                 $this->_tag_open_BR(array());
             }
 
-            if (($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
-                    ($this->pdf->GetY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
-                    !$this->_isInOverflow
-                ) {
+            if (($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) 
+                && ($this->pdf->GetY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) 
+                && !$this->_isInOverflow
+            ) {
                 $this->_setNewPage();
             }
 
