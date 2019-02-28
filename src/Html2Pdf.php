@@ -1181,8 +1181,8 @@ class Html2Pdf
      */
     protected function _listeArab2Rom($nbArabic)
     {
-        $nbBaseTen  = array('I','X','C','M');
-        $nbBaseFive = array('V','L','D');
+        $nbBaseTen  = array('i','x','c','m');
+        $nbBaseFive = array('v','l','d');
         $nbRoman    = '';
 
         if ($nbArabic<1) {
