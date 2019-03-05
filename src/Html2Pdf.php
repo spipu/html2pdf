@@ -241,7 +241,7 @@ class Html2Pdf
 	public function __destruct() {
 		if($this->_isSubPart || self::$_tmpFilesAreCleaned) return;
 		// remove all temporary files
-		$tmpfiles = glob(K_PATH_CACHE.'__tcpdf_*');
+		$tmpfiles = glob(K_PATH_CACHE.'__tcpdf_'.$this->pdf->getFileId().'_*');
 		if (!empty($tmpfiles)) {
 			self::$_tmpFilesAreCleaned = true;
 			array_map('unlink', $tmpfiles);

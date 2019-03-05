@@ -107,6 +107,15 @@ class MyPdf extends \TCPDF
 			}
 		}
 	}
+	
+	/**
+     * Get the private variable file_id, for cleaning tmp files
+	 * @access public
+     */
+	public function getFileId()
+	{
+		return $this->file_id;
+	}
 
     /**
      * Set the parameters for the automatic footer
