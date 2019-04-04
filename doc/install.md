@@ -6,7 +6,7 @@
 
 You must use Composer to install Html2Pdf.
 
-If you do not know what is Composer, you have a few years late...
+If you do not know what is Composer, you are a few years late...
 
 It is used by all the modern PHP applications (Magento2, Drupal, EasyPlatform, Symfony, ...).
 
