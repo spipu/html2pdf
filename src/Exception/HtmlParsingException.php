@@ -19,18 +19,21 @@ class HtmlParsingException extends Html2PdfException
 {
     /**
      * ERROR CODE 1
+     *
      * @var int
      */
     const ERROR_CODE = 1;
 
     /**
      * invalid tag
+     *
      * @var string
      */
     protected $invalidTag;
 
     /**
      * the line in HTML data where the error occurred
+     *
      * @var int
      */
     protected $htmlLine;

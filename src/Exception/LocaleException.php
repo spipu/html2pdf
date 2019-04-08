@@ -19,6 +19,7 @@ class LocaleException extends Html2PdfException
 {
     /**
      * ERROR CODE 5
+     *
      * @var int
      */
     const ERROR_CODE = 5;

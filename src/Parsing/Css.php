@@ -45,7 +45,7 @@ class Css
     /**
      * Constructor
      *
-     * @param MyPdf        $pdf reference to the PDF $object
+     * @param MyPdf        $pdf          reference to the PDF $object
      * @param TagParser    $tagParser
      * @param CssConverter $cssConverter
      */
@@ -60,7 +60,7 @@ class Css
     /**
      * Set the $pdf parent object
      *
-     * @param  MyPdf &$pdf reference to the Html2Pdf parent
+     * @param MyPdf &$pdf reference to the Html2Pdf parent
      *
      * @return void
      */
@@ -90,13 +90,13 @@ class Css
         return isset($this->table[count($this->table)-1]) ? $this->table[count($this->table)-1] : $this->value;
     }
 
-   /**
-    * Define the Default Font to use, if the font does not exist, or if no font asked
-    *
-    * @param string  default font-family. If null : Arial for no font asked, and error fot ont does not exist
-    *
-    * @return string  old default font-family
-    */
+    /**
+     * Define the Default Font to use, if the font does not exist, or if no font asked
+     *
+     * @param string  default font-family. If null : Arial for no font asked, and error fot ont does not exist
+     *
+     * @return string  old default font-family
+     */
     public function setDefaultFont($default = null)
     {
         $old = $this->defaultFont;
@@ -678,163 +678,138 @@ class Css
         $correctWidth = false;
         $noWidth = true;
 
+
+        //look for the first font-size
+        $keys= array_keys($this->cssKeys);
+        if(in_array('font-size', array_keys($this->css[$keys[0]]))){
+            $font_size=$this->css[$keys[0]]['font-size'];
+        }
+        if(!isset($font_size)){
+            $font_size='16px';
+        }
+
         // read all the css styles
         foreach ($styles as $nom => $val) {
+            if(preg_match('/^[0-9\.\-]+rem$/isU', $val)){
+                $val=$this->cssConverter->convertToPX($val, $font_size);
+            }
             switch ($nom) {
-                case 'font-family':
-                    $val = explode(',', $val);
-                    $val = trim($val[0]);
-                    $val = trim($val, '\'"');
-                    if ($val && strtolower($val) !== 'inherit') {
-                        $this->value['font-family'] = $val;
+            case 'font-family':
+                $val = explode(',', $val);
+                $val = trim($val[0]);
+                $val = trim($val, '\'"');
+                if ($val && strtolower($val) !== 'inherit') {
+                    $this->value['font-family'] = $val;
+                }
+                break;
+
+            case 'font-weight':
+                $this->value['font-bold'] = ($val === 'bold');
+                break;
+
+            case 'font-style':
+                $this->value['font-italic'] = ($val === 'italic');
+                break;
+
+            case 'text-decoration':
+                $val = explode(' ', $val);
+                $this->value['font-underline']   = (in_array('underline', $val));
+                $this->value['font-overline']    = (in_array('overline', $val));
+                $this->value['font-linethrough'] = (in_array('line-through', $val));
+                break;
+
+            case 'text-indent':
+                $this->value['text-indent'] = $this->cssConverter->convertToMM($val);
+                break;
+
+            case 'text-transform':
+                if (!in_array($val, array('none', 'capitalize', 'uppercase', 'lowercase'))) {
+                    $val = 'none';
+                }
+                $this->value['text-transform']  = $val;
+                break;
+
+            case 'font-size':
+                $val = $this->cssConverter->convertFontSize($val, $this->value['font-size']);
+                if ($val) {
+                    $this->value['font-size'] = $val;
+                }
+                break;
+
+            case 'color':
+                $res = null;
+                $this->value['color'] = $this->cssConverter->convertToColor($val, $res);
+                if ($tagName === 'hr') {
+                    $this->value['border']['l']['color'] = $this->value['color'];
+                    $this->value['border']['t']['color'] = $this->value['color'];
+                    $this->value['border']['r']['color'] = $this->value['color'];
+                    $this->value['border']['b']['color'] = $this->value['color'];
+                }
+                break;
+
+            case 'text-align':
+                $val = strtolower($val);
+                if (!in_array($val, array('left', 'right', 'center', 'justify', 'li_right'))) {
+                    $val = 'left';
+                }
+                $this->value['text-align'] = $val;
+                break;
+
+            case 'vertical-align':
+                $this->value['vertical-align'] = $val;
+                break;
+
+            case 'width':
+                $this->value['width'] = $this->cssConverter->convertToMM($val, $this->getLastWidth());
+                if ($this->value['width'] && substr($val, -1) === '%') {
+                    $correctWidth=true;
+                }
+                $noWidth = false;
+                break;
+
+            case 'max-width':
+                $this->value[$nom] = $this->cssConverter->convertToMM($val, $this->getLastWidth());
+                break;
+
+            case 'height':
+            case 'max-height':
+                $this->value[$nom] = $this->cssConverter->convertToMM($val, $this->getLastHeight());
+                break;
+
+            case 'line-height':
+                if (preg_match('/^[0-9\.]+$/isU', $val)) {
+                    $val = floor($val*100).'%';
+                }
+                $this->value['line-height'] = $val;
+                break;
+
+            case 'rotate':
+                if (!in_array($val, array(0, -90, 90, 180, 270, -180, -270))) {
+                    $val = null;
+                }
+                if ($val<0) {
+                    $val+= 360;
+                }
+                $this->value['rotate'] = $val;
+                break;
+
+            case 'overflow':
+                if (!in_array($val, array('visible', 'hidden'))) {
+                    $val = 'visible';
+                }
+                $this->value['overflow'] = $val;
+                break;
+
+            case 'padding':
+                $val = explode(' ', $val);
+                foreach ($val as $k => $v) {
+                    $v = trim($v);
+                    if ($v !== '') {
+                        $val[$k] = $v;
+                    } else {
+                        unset($val[$k]);
                     }
-                    break;
-
-                case 'font-weight':
-                    $this->value['font-bold'] = ($val === 'bold');
-                    break;
-
-                case 'font-style':
-                    $this->value['font-italic'] = ($val === 'italic');
-                    break;
-
-                case 'text-decoration':
-                    $val = explode(' ', $val);
-                    $this->value['font-underline']   = (in_array('underline', $val));
-                    $this->value['font-overline']    = (in_array('overline', $val));
-                    $this->value['font-linethrough'] = (in_array('line-through', $val));
-                    break;
-
-                case 'text-indent':
-                    $this->value['text-indent'] = $this->cssConverter->convertToMM($val);
-                    break;
-
-                case 'text-transform':
-                    if (!in_array($val, array('none', 'capitalize', 'uppercase', 'lowercase'))) {
-                        $val = 'none';
-                    }
-                    $this->value['text-transform']  = $val;
-                    break;
-
-                case 'font-size':
-                    $val = $this->cssConverter->convertFontSize($val, $this->value['font-size']);
-                    if ($val) {
-                        $this->value['font-size'] = $val;
-                    }
-                    break;
-
-                case 'color':
-                    $res = null;
-                    $this->value['color'] = $this->cssConverter->convertToColor($val, $res);
-                    if ($tagName === 'hr') {
-                        $this->value['border']['l']['color'] = $this->value['color'];
-                        $this->value['border']['t']['color'] = $this->value['color'];
-                        $this->value['border']['r']['color'] = $this->value['color'];
-                        $this->value['border']['b']['color'] = $this->value['color'];
-                    }
-                    break;
-
-                case 'text-align':
-                    $val = strtolower($val);
-                    if (!in_array($val, array('left', 'right', 'center', 'justify', 'li_right'))) {
-                        $val = 'left';
-                    }
-                    $this->value['text-align'] = $val;
-                    break;
-
-                case 'vertical-align':
-                    $this->value['vertical-align'] = $val;
-                    break;
-
-                case 'width':
-                    $this->value['width'] = $this->cssConverter->convertToMM($val, $this->getLastWidth());
-                    if ($this->value['width'] && substr($val, -1) === '%') {
-                        $correctWidth=true;
-                    }
-                    $noWidth = false;
-                    break;
-
-                case 'max-width':
-                    $this->value[$nom] = $this->cssConverter->convertToMM($val, $this->getLastWidth());
-                    break;
-
-                case 'height':
-                case 'max-height':
-                    $this->value[$nom] = $this->cssConverter->convertToMM($val, $this->getLastHeight());
-                    break;
-
-                case 'line-height':
-                    if (preg_match('/^[0-9\.]+$/isU', $val)) {
-                        $val = floor($val*100).'%';
-                    }
-                    $this->value['line-height'] = $val;
-                    break;
-
-                case 'rotate':
-                    if (!in_array($val, array(0, -90, 90, 180, 270, -180, -270))) {
-                        $val = null;
-                    }
-                    if ($val<0) {
-                        $val+= 360;
-                    }
-                    $this->value['rotate'] = $val;
-                    break;
-
-                case 'overflow':
-                    if (!in_array($val, array('visible', 'hidden'))) {
-                        $val = 'visible';
-                    }
-                    $this->value['overflow'] = $val;
-                    break;
-
-                case 'padding':
-                    $val = explode(' ', $val);
-                    foreach ($val as $k => $v) {
-                        $v = trim($v);
-                        if ($v !== '') {
-                            $val[$k] = $v;
-                        } else {
-                            unset($val[$k]);
-                        }
-                    }
-                    $val = array_values($val);
-                    $this->duplicateBorder($val);
-                    $this->value['padding']['t'] = $this->cssConverter->convertToMM($val[0], 0);
-                    $this->value['padding']['r'] = $this->cssConverter->convertToMM($val[1], 0);
-                    $this->value['padding']['b'] = $this->cssConverter->convertToMM($val[2], 0);
-                    $this->value['padding']['l'] = $this->cssConverter->convertToMM($val[3], 0);
-                    break;
-
-                case 'padding-top':
-                    $this->value['padding']['t'] = $this->cssConverter->convertToMM($val, 0);
-                    break;
-
-                case 'padding-right':
-                    $this->value['padding']['r'] = $this->cssConverter->convertToMM($val, 0);
-                    break;
-
-                case 'padding-bottom':
-                    $this->value['padding']['b'] = $this->cssConverter->convertToMM($val, 0);
-                    break;
-
-                case 'padding-left':
-                    $this->value['padding']['l'] = $this->cssConverter->convertToMM($val, 0);
-                    break;
-
-                case 'margin':
-                    if ($val === 'auto') {
-                        $this->value['margin-auto'] = true;
-                        break;
-                    }
-                    $val = explode(' ', $val);
-                    foreach ($val as $k => $v) {
-                        $v = trim($v);
-                        if ($v !== '') {
-                            $val[$k] = $v;
-                        } else {
-                            unset($val[$k]);
-                        }
-                    }
+<<<<<<< HEAD
                     $val = array_values($val);
                     $this->duplicateBorder($val);
                     $this->value['margin']['t'] = $this->cssConverter->convertToMM($val[0], $this->getLastHeight());
@@ -865,337 +840,408 @@ class Css
                     $this->value['border']['r'] = $val;
                     $this->value['border']['b'] = $val;
                     $this->value['border']['l'] = $val;
+=======
+                }
+                $val = array_values($val);
+                $this->duplicateBorder($val);
+                $this->value['padding']['t'] = $this->cssConverter->convertToMM($val[0], 0);
+                $this->value['padding']['r'] = $this->cssConverter->convertToMM($val[1], 0);
+                $this->value['padding']['b'] = $this->cssConverter->convertToMM($val[2], 0);
+                $this->value['padding']['l'] = $this->cssConverter->convertToMM($val[3], 0);
+                break;
+
+            case 'padding-top':
+                $this->value['padding']['t'] = $this->cssConverter->convertToMM($val, 0);
+                break;
+
+            case 'padding-right':
+                $this->value['padding']['r'] = $this->cssConverter->convertToMM($val, 0);
+                break;
+
+            case 'padding-bottom':
+                $this->value['padding']['b'] = $this->cssConverter->convertToMM($val, 0);
+                break;
+
+            case 'padding-left':
+                $this->value['padding']['l'] = $this->cssConverter->convertToMM($val, 0);
+                break;
+
+            case 'margin':
+                if ($val === 'auto') {
+                    $this->value['margin-auto'] = true;
+>>>>>>> 8053e5289f3016245aa391e3471a958000226c3f
                     break;
-
-                case 'border-style':
-                    $val = explode(' ', $val);
-                    foreach ($val as $valK => $valV) {
-                        if (!in_array($valV, array('solid', 'dotted', 'dashed'))) {
-                            $val[$valK] = null;
-                        }
-                    }
-                    $this->duplicateBorder($val);
-                    if ($val[0]) {
-                        $this->value['border']['t']['type'] = $val[0];
-                    }
-                    if ($val[1]) {
-                        $this->value['border']['r']['type'] = $val[1];
-                    }
-                    if ($val[2]) {
-                        $this->value['border']['b']['type'] = $val[2];
-                    }
-                    if ($val[3]) {
-                        $this->value['border']['l']['type'] = $val[3];
-                    }
-                    break;
-
-                case 'border-top-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
-                        $this->value['border']['t']['type'] = $val;
-                    }
-                    break;
-
-                case 'border-right-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
-                        $this->value['border']['r']['type'] = $val;
-                    }
-                    break;
-
-                case 'border-bottom-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
-                        $this->value['border']['b']['type'] = $val;
-                    }
-                    break;
-
-                case 'border-left-style':
-                    if (in_array($val, array('solid', 'dotted', 'dashed'))) {
-                        $this->value['border']['l']['type'] = $val;
-                    }
-                    break;
-
-                case 'border-color':
-                    $res = false;
-                    $val = preg_replace('/,[\s]+/', ',', $val);
-                    $val = explode(' ', $val);
-                    foreach ($val as $valK => $valV) {
-                            $val[$valK] = $this->cssConverter->convertToColor($valV, $res);
-                        if (!$res) {
-                            $val[$valK] = null;
-                        }
-                    }
-                    $this->duplicateBorder($val);
-                    if (is_array($val[0])) {
-                        $this->value['border']['t']['color'] = $val[0];
-                    }
-                    if (is_array($val[1])) {
-                        $this->value['border']['r']['color'] = $val[1];
-                    }
-                    if (is_array($val[2])) {
-                        $this->value['border']['b']['color'] = $val[2];
-                    }
-                    if (is_array($val[3])) {
-                        $this->value['border']['l']['color'] = $val[3];
-                    }
-
-                    break;
-
-                case 'border-top-color':
-                    $res = false;
-                    $val = $this->cssConverter->convertToColor($val, $res);
-                    if ($res) {
-                        $this->value['border']['t']['color'] = $val;
-                    }
-                    break;
-
-                case 'border-right-color':
-                    $res = false;
-                    $val = $this->cssConverter->convertToColor($val, $res);
-                    if ($res) {
-                        $this->value['border']['r']['color'] = $val;
-                    }
-                    break;
-
-                case 'border-bottom-color':
-                    $res = false;
-                    $val = $this->cssConverter->convertToColor($val, $res);
-                    if ($res) {
-                        $this->value['border']['b']['color'] = $val;
-                    }
-                    break;
-
-                case 'border-left-color':
-                    $res = false;
-                    $val = $this->cssConverter->convertToColor($val, $res);
-                    if ($res) {
-                        $this->value['border']['l']['color'] = $val;
-                    }
-                    break;
-
-                case 'border-width':
-                    $val = explode(' ', $val);
-                    foreach ($val as $valK => $valV) {
-                            $val[$valK] = $this->cssConverter->convertToMM($valV, 0);
-                    }
-                    $this->duplicateBorder($val);
-                    if ($val[0]) {
-                        $this->value['border']['t']['width'] = $val[0];
-                    }
-                    if ($val[1]) {
-                        $this->value['border']['r']['width'] = $val[1];
-                    }
-                    if ($val[2]) {
-                        $this->value['border']['b']['width'] = $val[2];
-                    }
-                    if ($val[3]) {
-                        $this->value['border']['l']['width'] = $val[3];
-                    }
-                    break;
-
-                case 'border-top-width':
-                    $val = $this->cssConverter->convertToMM($val, 0);
-                    if ($val) {
-                        $this->value['border']['t']['width'] = $val;
-                    }
-                    break;
-
-                case 'border-right-width':
-                    $val = $this->cssConverter->convertToMM($val, 0);
-                    if ($val) {
-                        $this->value['border']['r']['width'] = $val;
-                    }
-                    break;
-
-                case 'border-bottom-width':
-                    $val = $this->cssConverter->convertToMM($val, 0);
-                    if ($val) {
-                        $this->value['border']['b']['width'] = $val;
-                    }
-                    break;
-
-                case 'border-left-width':
-                    $val = $this->cssConverter->convertToMM($val, 0);
-                    if ($val) {
-                        $this->value['border']['l']['width'] = $val;
-                    }
-                    break;
-
-                case 'border-collapse':
-                    if ($tagName === 'table') {
-                        $this->value['border']['collapse'] = ($val === 'collapse');
-                    }
-                    break;
-
-                case 'border-radius':
-                    $val = explode('/', $val);
-                    if (count($val)>2) {
-                        break;
-                    }
-                    $valH = $this->cssConverter->convertToRadius(trim($val[0]));
-                    if (count($valH)<1 || count($valH)>4) {
-                        break;
-                    }
-                    if (!isset($valH[1])) {
-                        $valH[1] = $valH[0];
-                    }
-                    if (!isset($valH[2])) {
-                        $valH = array($valH[0], $valH[0], $valH[1], $valH[1]);
-                    }
-                    if (!isset($valH[3])) {
-                        $valH[3] = $valH[1];
-                    }
-                    if (isset($val[1])) {
-                        $valV = $this->cssConverter->convertToRadius(trim($val[1]));
-                        if (count($valV)<1 || count($valV)>4) {
-                            break;
-                        }
-                        if (!isset($valV[1])) {
-                            $valV[1] = $valV[0];
-                        }
-                        if (!isset($valV[2])) {
-                            $valV = array($valV[0], $valV[0], $valV[1], $valV[1]);
-                        }
-                        if (!isset($valV[3])) {
-                            $valV[3] = $valV[1];
-                        }
+                }
+                $val = explode(' ', $val);
+                foreach ($val as $k => $v) {
+                    $v = trim($v);
+                    if ($v !== '') {
+                        $val[$k] = $v;
                     } else {
-                        $valV = $valH;
+                        unset($val[$k]);
                     }
-                    $this->value['border']['radius'] = array(
-                                'tl' => array($valH[0], $valV[0]),
-                                'tr' => array($valH[1], $valV[1]),
-                                'br' => array($valH[2], $valV[2]),
-                                'bl' => array($valH[3], $valV[3])
-                            );
-                    break;
+                }
+                $val = array_values($val);
+                $this->duplicateBorder($val);
+                $this->value['margin']['t'] = $this->cssConverter->convertToMM($val[0], 0);
+                $this->value['margin']['r'] = $this->cssConverter->convertToMM($val[1], 0);
+                $this->value['margin']['b'] = $this->cssConverter->convertToMM($val[2], 0);
+                $this->value['margin']['l'] = $this->cssConverter->convertToMM($val[3], 0);
+                break;
 
-                case 'border-top-left-radius':
-                    $val = $this->cssConverter->convertToRadius($val);
-                    if (count($val)<1 || count($val)>2) {
+            case 'margin-top':
+                $this->value['margin']['t'] = $this->cssConverter->convertToMM($val, 0);
+                break;
+
+            case 'margin-right':
+                $this->value['margin']['r'] = $this->cssConverter->convertToMM($val, 0);
+                break;
+
+            case 'margin-bottom':
+                $this->value['margin']['b'] = $this->cssConverter->convertToMM($val, 0);
+                break;
+
+            case 'margin-left':
+                $this->value['margin']['l'] = $this->cssConverter->convertToMM($val, 0);
+                break;
+
+            case 'border':
+                $val = $this->readBorder($val);
+                $this->value['border']['t'] = $val;
+                $this->value['border']['r'] = $val;
+                $this->value['border']['b'] = $val;
+                $this->value['border']['l'] = $val;
+                break;
+
+            case 'border-style':
+                $val = explode(' ', $val);
+                foreach ($val as $valK => $valV) {
+                    if (!in_array($valV, array('solid', 'dotted', 'dashed'))) {
+                        $val[$valK] = null;
+                    }
+                }
+                $this->duplicateBorder($val);
+                if ($val[0]) {
+                    $this->value['border']['t']['type'] = $val[0];
+                }
+                if ($val[1]) {
+                    $this->value['border']['r']['type'] = $val[1];
+                }
+                if ($val[2]) {
+                    $this->value['border']['b']['type'] = $val[2];
+                }
+                if ($val[3]) {
+                    $this->value['border']['l']['type'] = $val[3];
+                }
+                break;
+
+            case 'border-top-style':
+                if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    $this->value['border']['t']['type'] = $val;
+                }
+                break;
+
+            case 'border-right-style':
+                if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    $this->value['border']['r']['type'] = $val;
+                }
+                break;
+
+            case 'border-bottom-style':
+                if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    $this->value['border']['b']['type'] = $val;
+                }
+                break;
+
+            case 'border-left-style':
+                if (in_array($val, array('solid', 'dotted', 'dashed'))) {
+                    $this->value['border']['l']['type'] = $val;
+                }
+                break;
+
+            case 'border-color':
+                $res = false;
+                $val = preg_replace('/,[\s]+/', ',', $val);
+                $val = explode(' ', $val);
+                foreach ($val as $valK => $valV) {
+                        $val[$valK] = $this->cssConverter->convertToColor($valV, $res);
+                    if (!$res) {
+                        $val[$valK] = null;
+                    }
+                }
+                $this->duplicateBorder($val);
+                if (is_array($val[0])) {
+                    $this->value['border']['t']['color'] = $val[0];
+                }
+                if (is_array($val[1])) {
+                    $this->value['border']['r']['color'] = $val[1];
+                }
+                if (is_array($val[2])) {
+                    $this->value['border']['b']['color'] = $val[2];
+                }
+                if (is_array($val[3])) {
+                    $this->value['border']['l']['color'] = $val[3];
+                }
+
+                break;
+
+            case 'border-top-color':
+                $res = false;
+                $val = $this->cssConverter->convertToColor($val, $res);
+                if ($res) {
+                    $this->value['border']['t']['color'] = $val;
+                }
+                break;
+
+            case 'border-right-color':
+                $res = false;
+                $val = $this->cssConverter->convertToColor($val, $res);
+                if ($res) {
+                    $this->value['border']['r']['color'] = $val;
+                }
+                break;
+
+            case 'border-bottom-color':
+                $res = false;
+                $val = $this->cssConverter->convertToColor($val, $res);
+                if ($res) {
+                    $this->value['border']['b']['color'] = $val;
+                }
+                break;
+
+            case 'border-left-color':
+                $res = false;
+                $val = $this->cssConverter->convertToColor($val, $res);
+                if ($res) {
+                    $this->value['border']['l']['color'] = $val;
+                }
+                break;
+
+            case 'border-width':
+                $val = explode(' ', $val);
+                foreach ($val as $valK => $valV) {
+                        $val[$valK] = $this->cssConverter->convertToMM($valV, 0);
+                }
+                $this->duplicateBorder($val);
+                if ($val[0]) {
+                    $this->value['border']['t']['width'] = $val[0];
+                }
+                if ($val[1]) {
+                    $this->value['border']['r']['width'] = $val[1];
+                }
+                if ($val[2]) {
+                    $this->value['border']['b']['width'] = $val[2];
+                }
+                if ($val[3]) {
+                    $this->value['border']['l']['width'] = $val[3];
+                }
+                break;
+
+            case 'border-top-width':
+                $val = $this->cssConverter->convertToMM($val, 0);
+                if ($val) {
+                    $this->value['border']['t']['width'] = $val;
+                }
+                break;
+
+            case 'border-right-width':
+                $val = $this->cssConverter->convertToMM($val, 0);
+                if ($val) {
+                    $this->value['border']['r']['width'] = $val;
+                }
+                break;
+
+            case 'border-bottom-width':
+                $val = $this->cssConverter->convertToMM($val, 0);
+                if ($val) {
+                    $this->value['border']['b']['width'] = $val;
+                }
+                break;
+
+            case 'border-left-width':
+                $val = $this->cssConverter->convertToMM($val, 0);
+                if ($val) {
+                    $this->value['border']['l']['width'] = $val;
+                }
+                break;
+
+            case 'border-collapse':
+                if ($tagName === 'table') {
+                    $this->value['border']['collapse'] = ($val === 'collapse');
+                }
+                break;
+
+            case 'border-radius':
+                $val = explode('/', $val);
+                if (count($val)>2) {
+                    break;
+                }
+                $valH = $this->cssConverter->convertToRadius(trim($val[0]));
+                if (count($valH)<1 || count($valH)>4) {
+                    break;
+                }
+                if (!isset($valH[1])) {
+                    $valH[1] = $valH[0];
+                }
+                if (!isset($valH[2])) {
+                    $valH = array($valH[0], $valH[0], $valH[1], $valH[1]);
+                }
+                if (!isset($valH[3])) {
+                    $valH[3] = $valH[1];
+                }
+                if (isset($val[1])) {
+                    $valV = $this->cssConverter->convertToRadius(trim($val[1]));
+                    if (count($valV)<1 || count($valV)>4) {
                         break;
                     }
-                    $this->value['border']['radius']['tl'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
-                    break;
-
-                case 'border-top-right-radius':
-                    $val = $this->cssConverter->convertToRadius($val);
-                    if (count($val)<1 || count($val)>2) {
-                        break;
+                    if (!isset($valV[1])) {
+                        $valV[1] = $valV[0];
                     }
-                    $this->value['border']['radius']['tr'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
-                    break;
-
-                case 'border-bottom-right-radius':
-                    $val = $this->cssConverter->convertToRadius($val);
-                    if (count($val)<1 || count($val)>2) {
-                        break;
+                    if (!isset($valV[2])) {
+                        $valV = array($valV[0], $valV[0], $valV[1], $valV[1]);
                     }
-                    $this->value['border']['radius']['br'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
-                    break;
-
-                case 'border-bottom-left-radius':
-                    $val = $this->cssConverter->convertToRadius($val);
-                    if (count($val)<1 || count($val)>2) {
-                        break;
+                    if (!isset($valV[3])) {
+                        $valV[3] = $valV[1];
                     }
-                    $this->value['border']['radius']['bl'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
-                    break;
+                } else {
+                    $valV = $valH;
+                }
+                $this->value['border']['radius'] = array(
+                            'tl' => array($valH[0], $valV[0]),
+                            'tr' => array($valH[1], $valV[1]),
+                            'br' => array($valH[2], $valV[2]),
+                            'bl' => array($valH[3], $valV[3])
+                        );
+                break;
 
-                case 'border-top':
-                    $this->value['border']['t'] = $this->readBorder($val);
+            case 'border-top-left-radius':
+                $val = $this->cssConverter->convertToRadius($val);
+                if (count($val)<1 || count($val)>2) {
                     break;
+                }
+                $this->value['border']['radius']['tl'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
+                break;
 
-                case 'border-right':
-                    $this->value['border']['r'] = $this->readBorder($val);
+            case 'border-top-right-radius':
+                $val = $this->cssConverter->convertToRadius($val);
+                if (count($val)<1 || count($val)>2) {
                     break;
+                }
+                $this->value['border']['radius']['tr'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
+                break;
 
-                case 'border-bottom':
-                    $this->value['border']['b'] = $this->readBorder($val);
+            case 'border-bottom-right-radius':
+                $val = $this->cssConverter->convertToRadius($val);
+                if (count($val)<1 || count($val)>2) {
                     break;
+                }
+                $this->value['border']['radius']['br'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
+                break;
 
-                case 'border-left':
-                    $this->value['border']['l'] = $this->readBorder($val);
+            case 'border-bottom-left-radius':
+                $val = $this->cssConverter->convertToRadius($val);
+                if (count($val)<1 || count($val)>2) {
                     break;
+                }
+                $this->value['border']['radius']['bl'] = array($val[0], isset($val[1]) ? $val[1] : $val[0]);
+                break;
 
-                case 'background-color':
-                    $this->value['background']['color'] = $this->cssConverter->convertBackgroundColor($val);
-                    break;
+            case 'border-top':
+                $this->value['border']['t'] = $this->readBorder($val);
+                break;
 
-                case 'background-image':
-                    $this->value['background']['image'] = $this->cssConverter->convertBackgroundImage($val);
-                    break;
+            case 'border-right':
+                $this->value['border']['r'] = $this->readBorder($val);
+                break;
 
-                case 'background-position':
-                    $res = null;
-                    $this->value['background']['position'] = $this->cssConverter->convertBackgroundPosition($val, $res);
-                    break;
+            case 'border-bottom':
+                $this->value['border']['b'] = $this->readBorder($val);
+                break;
 
-                case 'background-repeat':
-                    $this->value['background']['repeat'] = $this->cssConverter->convertBackgroundRepeat($val);
-                    break;
+            case 'border-left':
+                $this->value['border']['l'] = $this->readBorder($val);
+                break;
 
-                case 'background':
-                    $this->cssConverter->convertBackground($val, $this->value['background']);
-                    break;
+            case 'background-color':
+                $this->value['background']['color'] = $this->cssConverter->convertBackgroundColor($val);
+                break;
 
-                case 'position':
-                    if ($val === 'absolute') {
-                        $this->value['position'] = 'absolute';
-                    } elseif ($val === 'relative') {
-                        $this->value['position'] = 'relative';
-                    } else {
-                        $this->value['position'] = null;
-                    }
-                    break;
+            case 'background-image':
+                $this->value['background']['image'] = $this->cssConverter->convertBackgroundImage($val);
+                break;
 
-                case 'float':
-                    if ($val === 'left') {
-                        $this->value['float'] = 'left';
-                    } elseif ($val === 'right') {
-                        $this->value['float'] = 'right';
-                    } else {
-                        $this->value['float'] = null;
-                    }
-                    break;
+            case 'background-position':
+                $res = null;
+                $this->value['background']['position'] = $this->cssConverter->convertBackgroundPosition($val, $res);
+                break;
 
-                case 'display':
-                    if ($val === 'inline') {
-                        $this->value['display'] = 'inline';
-                    } elseif ($val === 'block') {
-                        $this->value['display'] = 'block';
-                    } elseif ($val === 'none') {
-                        $this->value['display'] = 'none';
-                    } else {
-                        $this->value['display'] = null;
-                    }
-                    break;
+            case 'background-repeat':
+                $this->value['background']['repeat'] = $this->cssConverter->convertBackgroundRepeat($val);
+                break;
 
-                case 'top':
-                case 'bottom':
-                case 'left':
-                case 'right':
-                    $this->value[$nom] = $val;
-                    break;
+            case 'background':
+                $this->cssConverter->convertBackground($val, $this->value['background']);
+                break;
 
-                case 'list-style':
-                case 'list-style-type':
-                case 'list-style-image':
-                    if ($nom === 'list-style') {
-                        $nom = 'list-style-type';
-                    }
-                    $this->value[$nom] = $val;
-                    break;
+            case 'position':
+                if ($val === 'absolute') {
+                    $this->value['position'] = 'absolute';
+                } elseif ($val === 'relative') {
+                    $this->value['position'] = 'relative';
+                } else {
+                    $this->value['position'] = null;
+                }
+                break;
 
-                case 'page-break-before':
-                case 'page-break-after':
-                    $this->value[$nom] = $val;
-                    break;
+            case 'float':
+                if ($val === 'left') {
+                    $this->value['float'] = 'left';
+                } elseif ($val === 'right') {
+                    $this->value['float'] = 'right';
+                } else {
+                    $this->value['float'] = null;
+                }
+                break;
 
-                case 'start':
-                    $this->value[$nom] = intval($val);
-                    break;
+            case 'display':
+                if ($val === 'inline') {
+                    $this->value['display'] = 'inline';
+                } elseif ($val === 'block') {
+                    $this->value['display'] = 'block';
+                } elseif ($val === 'none') {
+                    $this->value['display'] = 'none';
+                } else {
+                    $this->value['display'] = null;
+                }
+                break;
 
-                default:
-                    break;
+            case 'top':
+            case 'bottom':
+            case 'left':
+            case 'right':
+                $this->value[$nom] = $val;
+                break;
+
+            case 'list-style':
+            case 'list-style-type':
+            case 'list-style-image':
+                if ($nom === 'list-style') {
+                    $nom = 'list-style-type';
+                }
+                $this->value[$nom] = $val;
+                break;
+
+            case 'page-break-before':
+            case 'page-break-after':
+                $this->value[$nom] = $val;
+                break;
+
+            case 'start':
+                $this->value[$nom] = intval($val);
+                break;
+
+            default:
+                break;
             }
         }
 
@@ -1306,7 +1352,7 @@ class Css
     /**
      * Get the width of the parent
      *
-     * @param  boolean $mode true => adding padding and border
+     * @param boolean $mode true => adding padding and border
      *
      * @return float width in mm
      */
@@ -1328,7 +1374,7 @@ class Css
     /**
      * Get the height of the parent
      *
-     * @param  boolean $mode true => adding padding and border
+     * @param boolean $mode true => adding padding and border
      *
      * @return float height in mm
      */
@@ -1366,7 +1412,7 @@ class Css
     /**
      * Get the last value for a specific key
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -1452,9 +1498,9 @@ class Css
     /**
      * Identify if the selector $key match with the list of tag selectors
      *
-     * @param  string   $key CSS selector to analyse
-     * @param  array    $lst list of the selectors of each tags
-     * @param  string   $next next step of parsing the selector
+     * @param string $key  CSS selector to analyse
+     * @param array  $lst  list of the selectors of each tags
+     * @param string $next next step of parsing the selector
      *
      * @return boolean
      */
@@ -1499,9 +1545,9 @@ class Css
     /**
      * Analyse a border
      *
-     * @param   string $css css border properties
+     * @param string $css css border properties
      *
-     * @return  array border properties
+     * @return array border properties
      */
     public function readBorder($css)
     {
@@ -1540,10 +1586,10 @@ class Css
             // if the convert is ok => it is a width
             if ($tmp !== null) {
                 $width = $tmp;
-            // else, it could be the type
+                // else, it could be the type
             } elseif (in_array($value, array('solid', 'dotted', 'dashed', 'double'))) {
                 $type = $value;
-            // else, it could be the color
+                // else, it could be the color
             } else {
                 $tmp = $this->cssConverter->convertToColor($value, $res);
                 if ($res) {
@@ -1564,7 +1610,7 @@ class Css
     /**
      * Duplicate the borders if needed
      *
-     * @param  &array $val
+     * @param &array $val
      *
      * @return void
      */
@@ -1575,11 +1621,11 @@ class Css
             $val[1] = $val[0];
             $val[2] = $val[0];
             $val[3] = $val[0];
-        // 2 values => L => R & T => B
+            // 2 values => L => R & T => B
         } elseif (count($val) == 2) {
             $val[2] = $val[0];
             $val[3] = $val[1];
-        // 3 values => T => B
+            // 3 values => T => B
         } elseif (count($val) == 3) {
             $val[3] = $val[1];
         }
@@ -1589,7 +1635,7 @@ class Css
     /**
      * Read a css content
      *
-     * @param  &string $code
+     * @param &string $code
      *
      * @return void
      */
@@ -1659,7 +1705,7 @@ class Css
     /**
      * Extract the css files from a html code
      *
-     * @param  string $html
+     * @param string $html
      *
      * @return string
      */
@@ -1732,7 +1778,8 @@ class Css
 
     /**
      * put the same line number for the lexer
-     * @param string[] $match
+     *
+     * @param  string[] $match
      * @return string
      */
     private function removeStyleTag(array $match)

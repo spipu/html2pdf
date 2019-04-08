@@ -25,24 +25,28 @@ abstract class AbstractTag implements TagInterface
 {
     /**
      * Css Parsing object
+     *
      * @var ParsingCss
      */
     protected $parsingCss;
 
     /**
      * Css Converter object
+     *
      * @var CssConverter
      */
     protected $cssConverter;
 
     /**
      * Pdf object
+     *
      * @var MyPdf
      */
     protected $pdf;
 
     /**
      * Debug object
+     *
      * @var DebugInterface
      */
     protected $debug;

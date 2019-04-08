@@ -19,12 +19,14 @@ class ExceptionFormatter
 {
     /**
      * the text message
+     *
      * @var string
      */
     protected $message;
 
     /**
      * the html message
+     *
      * @var string
      */
     protected $htmlMessage;
@@ -77,28 +79,34 @@ class ExceptionFormatter
 
         // read the error
         switch ($e->getCode()) {
-            case HtmlParsingException::ERROR_CODE:
-                /** @var HtmlParsingException $e */
-                $data['invalid tag'] = $e->getInvalidTag();
-                $data['html line'] = $e->getHtmlLine();
-                break;
+        case HtmlParsingException::ERROR_CODE:
+            /**
+ * @var HtmlParsingException $e 
+*/
+            $data['invalid tag'] = $e->getInvalidTag();
+            $data['html line'] = $e->getHtmlLine();
+            break;
 
-            case ImageException::ERROR_CODE:
-                /** @var ImageException $e */
-                $data['image src'] = $e->getImage();
-                break;
+        case ImageException::ERROR_CODE:
+            /**
+ * @var ImageException $e 
+*/
+            $data['image src'] = $e->getImage();
+            break;
 
-            case LongSentenceException::ERROR_CODE:
-                /** @var LongSentenceException $e */
-                $data['sentence']  = $e->getSentence();
-                $data['box width'] = $e->getWidthBox();
-                $data['length']    = $e->getLength();
-                break;
+        case LongSentenceException::ERROR_CODE:
+            /**
+ * @var LongSentenceException $e 
+*/
+            $data['sentence']  = $e->getSentence();
+            $data['box width'] = $e->getWidthBox();
+            $data['length']    = $e->getLength();
+            break;
 
-            case TableException::ERROR_CODE:
-            case Html2PdfException::ERROR_CODE:
-            default:
-                break;
+        case TableException::ERROR_CODE:
+        case Html2PdfException::ERROR_CODE:
+        default:
+            break;
         }
 
         return $data;

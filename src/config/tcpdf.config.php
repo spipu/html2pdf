@@ -30,10 +30,11 @@
 
 /**
  * Configuration file for TCPDF.
- * @author Nicola Asuni
+ *
+ * @author  Nicola Asuni
  * @package com.tecnick.tcpdf
  * @version 4.9.005
- * @since 2004-10-27
+ * @since   2004-10-27
  */
 
 // If you define the constant K_TCPDF_EXTERNAL_CONFIG, the following settings will be ignored.

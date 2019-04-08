@@ -42,8 +42,8 @@ class HtmlTest extends \PHPUnit_Framework_TestCase
     /**
      * mock of prepareTxt method
      *
-     * @param $txt
-     * @param bool $spaces
+     * @param  $txt
+     * @param  bool $spaces
      * @return mixed
      */
     public function mockPrepareTxt($txt, $spaces = true)

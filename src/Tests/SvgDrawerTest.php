@@ -86,7 +86,7 @@ class SvgDrawerTest extends \PHPUnit_Framework_TestCase
      * Test: tokenize
      *
      * @param mixed $transform
-     * @param mixed  $expected
+     * @param mixed $expected
      *
      * @dataProvider transformProvider
      */

@@ -59,7 +59,7 @@ abstract class AbstractSvgTag extends AbstractTag
     /**
      * Open the SVG tag
      *
-     * @param array $properties
+     * @param  array $properties
      * @throws HtmlParsingException
      */
     protected function openSvg($properties)

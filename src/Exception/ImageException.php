@@ -19,12 +19,14 @@ class ImageException extends Html2PdfException
 {
     /**
      * ERROR CODE 2
+     *
      * @var int
      */
     const ERROR_CODE = 2;
 
     /**
      * asked unknown image
+     *
      * @var string
      */
     protected $image;

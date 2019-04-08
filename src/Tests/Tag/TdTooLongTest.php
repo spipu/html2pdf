@@ -23,7 +23,7 @@ class TdTooLongTest extends AbstractTest
     /**
      * test
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\TableException
      */
     public function testCase()

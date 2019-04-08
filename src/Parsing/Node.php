@@ -97,7 +97,8 @@ class Node
 
     /**
      * Get a style
-     * @param string $key
+     *
+     * @param string      $key
      * @param string|null $default
      *
      * @return string|null

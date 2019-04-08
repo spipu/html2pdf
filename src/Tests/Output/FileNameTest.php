@@ -54,7 +54,7 @@ class FileNameOkTest extends AbstractTest
     /**
      * test: the file extension must be PDF - Error
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\Html2PdfException
      */
     public function testError()

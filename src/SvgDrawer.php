@@ -35,7 +35,7 @@ class SvgDrawer
     /**
      * SvgDrawer constructor.
      *
-     * @param MyPdf $pdf
+     * @param MyPdf        $pdf
      * @param CssConverter $cssConverter
      */
     public function __construct(
@@ -50,7 +50,7 @@ class SvgDrawer
     /**
      * Start Drawing
      *
-     * @param array $properties
+     * @param  array $properties
      * @throws HtmlParsingException
      */
     public function startDrawing($properties)
@@ -93,7 +93,7 @@ class SvgDrawer
     /**
      * Get the property
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public function getProperty($key)
@@ -147,116 +147,116 @@ class SvgDrawer
 
             // prepare the matrix, depending on the action
             switch ($name) {
-                case 'scale':
-                    if (!array_key_exists(0, $values)) {
-                        $values[0] = 1.;
-                    }
+            case 'scale':
+                if (!array_key_exists(0, $values)) {
+                    $values[0] = 1.;
+                }
 
-                    if (!array_key_exists(1, $values)) {
-                        $values[1] = $values[0];
-                    }
+                if (!array_key_exists(1, $values)) {
+                    $values[1] = $values[0];
+                }
 
-                    $values[0] = floatval($values[0]);
-                    $values[1] = floatval($values[1]);
+                $values[0] = floatval($values[0]);
+                $values[1] = floatval($values[1]);
 
-                    $actions[] = array($values[0],0.,0.,$values[1],0.,0.);
-                    break;
+                $actions[] = array($values[0],0.,0.,$values[1],0.,0.);
+                break;
 
-                case 'translate':
-                    if (!array_key_exists(0, $values)) {
-                        $values[0] = 0.;
-                    }
+            case 'translate':
+                if (!array_key_exists(0, $values)) {
+                    $values[0] = 0.;
+                }
 
-                    if (!array_key_exists(1, $values)) {
-                        $values[1] = 0.;
-                    }
+                if (!array_key_exists(1, $values)) {
+                    $values[1] = 0.;
+                }
 
-                    $values[0] = $this->cssConverter->convertToMM($values[0], $this->getProperty('w'));
-                    $values[1] = $this->cssConverter->convertToMM($values[1], $this->getProperty('h'));
+                $values[0] = $this->cssConverter->convertToMM($values[0], $this->getProperty('w'));
+                $values[1] = $this->cssConverter->convertToMM($values[1], $this->getProperty('h'));
 
-                    $actions[] = array(1.,0.,0.,1.,$values[0],$values[1]);
-                    break;
+                $actions[] = array(1.,0.,0.,1.,$values[0],$values[1]);
+                break;
 
-                case 'rotate':
-                    if (!array_key_exists(0, $values)) {
-                        $values[0] = 0.;
-                    }
-                    if (!array_key_exists(1, $values)) {
-                        $values[1] = 0.;
-                    }
-                    if (!array_key_exists(2, $values)) {
-                        $values[2] = 0.;
-                    }
+            case 'rotate':
+                if (!array_key_exists(0, $values)) {
+                    $values[0] = 0.;
+                }
+                if (!array_key_exists(1, $values)) {
+                    $values[1] = 0.;
+                }
+                if (!array_key_exists(2, $values)) {
+                    $values[2] = 0.;
+                }
 
-                    $values[0] = $values[0]*M_PI/180.;
-                    $values[1] = $this->cssConverter->convertToMM($values[1], $this->getProperty('w'));
-                    $values[2] = $this->cssConverter->convertToMM($values[2], $this->getProperty('h'));
+                $values[0] = $values[0]*M_PI/180.;
+                $values[1] = $this->cssConverter->convertToMM($values[1], $this->getProperty('w'));
+                $values[2] = $this->cssConverter->convertToMM($values[2], $this->getProperty('h'));
 
-                    if ($values[1] || $values[2]) {
-                        $actions[] = array(1.,0.,0.,1.,-$values[1],-$values[2]);
-                    }
+                if ($values[1] || $values[2]) {
+                    $actions[] = array(1.,0.,0.,1.,-$values[1],-$values[2]);
+                }
 
-                    $actions[] = array(cos($values[0]),sin($values[0]),-sin($values[0]),cos($values[0]),0.,0.);
+                $actions[] = array(cos($values[0]),sin($values[0]),-sin($values[0]),cos($values[0]),0.,0.);
 
-                    if ($values[1] || $values[2]) {
-                        $actions[] = array(1.,0.,0.,1.,$values[1],$values[2]);
-                    }
-                    break;
+                if ($values[1] || $values[2]) {
+                    $actions[] = array(1.,0.,0.,1.,$values[1],$values[2]);
+                }
+                break;
 
-                case 'skewx':
-                    if (!array_key_exists(0, $values)) {
-                        $values[0] = 0.;
-                    }
+            case 'skewx':
+                if (!array_key_exists(0, $values)) {
+                    $values[0] = 0.;
+                }
 
-                    $values[0] = $values[0]*M_PI/180.;
+                $values[0] = $values[0]*M_PI/180.;
 
-                    $actions[] = array(1.,0.,tan($values[0]),1.,0.,0.);
-                    break;
+                $actions[] = array(1.,0.,tan($values[0]),1.,0.,0.);
+                break;
 
-                case 'skewy':
-                    if (!array_key_exists(0, $values)) {
-                        $values[0] = 0.;
-                    }
+            case 'skewy':
+                if (!array_key_exists(0, $values)) {
+                    $values[0] = 0.;
+                }
 
-                    $values[0] = $values[0]*M_PI/180.;
+                $values[0] = $values[0]*M_PI/180.;
 
-                    $actions[] = array(1.,tan($values[0]),0.,1.,0.,0.);
-                    break;
+                $actions[] = array(1.,tan($values[0]),0.,1.,0.,0.);
+                break;
 
-                case 'matrix':
-                    if (!array_key_exists(0, $values)) {
-                        $values[0] = 0.;
-                    }
+            case 'matrix':
+                if (!array_key_exists(0, $values)) {
+                    $values[0] = 0.;
+                }
 
-                    if (!array_key_exists(1, $values)) {
-                        $values[1] = 0.;
-                    }
+                if (!array_key_exists(1, $values)) {
+                    $values[1] = 0.;
+                }
 
-                    if (!array_key_exists(2, $values)) {
-                        $values[2] = 0.;
-                    }
+                if (!array_key_exists(2, $values)) {
+                    $values[2] = 0.;
+                }
 
-                    if (!array_key_exists(3, $values)) {
-                        $values[3] = 0.;
-                    }
+                if (!array_key_exists(3, $values)) {
+                    $values[3] = 0.;
+                }
 
-                    if (!array_key_exists(4, $values)) {
-                        $values[4] = 0.;
-                    }
+                if (!array_key_exists(4, $values)) {
+                    $values[4] = 0.;
+                }
 
-                    if (!array_key_exists(5, $values)) {
-                        $values[5] = 0.;
-                    }
+                if (!array_key_exists(5, $values)) {
+                    $values[5] = 0.;
+                }
 
-                    $values[0] = floatval($values[0]);
-                    $values[1] = floatval($values[1]);
-                    $values[2] = floatval($values[2]);
-                    $values[3] = floatval($values[3]);
-                    $values[4] = $this->cssConverter->convertToMM($values[4], $this->getProperty('w'));
-                    $values[5] = $this->cssConverter->convertToMM($values[5], $this->getProperty('h'));
+                $values[0] = floatval($values[0]);
+                $values[1] = floatval($values[1]);
+                $values[2] = floatval($values[2]);
+                $values[3] = floatval($values[3]);
+                $values[4] = $this->cssConverter->convertToMM($values[4], $this->getProperty('w'));
+                $values[5] = $this->cssConverter->convertToMM($values[5], $this->getProperty('h'));
 
-                    $actions[] = $values;
-                    break;
+                $actions[] = $values;
+                break;
             }
         }
 

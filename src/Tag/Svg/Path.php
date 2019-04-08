@@ -74,76 +74,76 @@ class Path extends AbstractSvgTag
                 $action = array();
                 $action[] = $lastAction;
                 switch ($lastAction) {
-                    case 'C':
-                    case 'c':
-                        // x1 y1 x2 y2 x y
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->svgDrawer->getProperty('h'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+2], $this->svgDrawer->getProperty('w'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+3], $this->svgDrawer->getProperty('h'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+4], $this->svgDrawer->getProperty('w'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+5], $this->svgDrawer->getProperty('h'));
-                        $k+= 6;
-                        break;
+                case 'C':
+                case 'c':
+                    // x1 y1 x2 y2 x y
+                    $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->svgDrawer->getProperty('h'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+2], $this->svgDrawer->getProperty('w'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+3], $this->svgDrawer->getProperty('h'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+4], $this->svgDrawer->getProperty('w'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+5], $this->svgDrawer->getProperty('h'));
+                    $k+= 6;
+                    break;
 
-                    case 'Q':
-                    case 'S':
-                    case 'q':
-                    case 's':
-                        // x2 y2 x y
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->svgDrawer->getProperty('h'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+2], $this->svgDrawer->getProperty('w'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+3], $this->svgDrawer->getProperty('h'));
-                        $k+= 4;
-                        break;
+                case 'Q':
+                case 'S':
+                case 'q':
+                case 's':
+                    // x2 y2 x y
+                    $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->svgDrawer->getProperty('h'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+2], $this->svgDrawer->getProperty('w'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+3], $this->svgDrawer->getProperty('h'));
+                    $k+= 4;
+                    break;
 
-                    case 'A':
-                    case 'a':
-                        // rx ry (angle de deviation de l'axe X) (large-arc-flag) (sweep-flag) x y
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->svgDrawer->getProperty('h'));
-                        $action[] = 1.*$path[$k+2];
-                        $action[] = ($path[$k+3] === '1') ? 1 : 0;
-                        $action[] = ($path[$k+4] === '1') ? 1 : 0;
-                        $action[] = $this->cssConverter->convertToMM($path[$k+5], $this->svgDrawer->getProperty('w'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+6], $this->svgDrawer->getProperty('h'));
-                        $k+= 7;
-                        break;
+                case 'A':
+                case 'a':
+                    // rx ry (angle de deviation de l'axe X) (large-arc-flag) (sweep-flag) x y
+                    $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->svgDrawer->getProperty('h'));
+                    $action[] = 1.*$path[$k+2];
+                    $action[] = ($path[$k+3] === '1') ? 1 : 0;
+                    $action[] = ($path[$k+4] === '1') ? 1 : 0;
+                    $action[] = $this->cssConverter->convertToMM($path[$k+5], $this->svgDrawer->getProperty('w'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+6], $this->svgDrawer->getProperty('h'));
+                    $k+= 7;
+                    break;
 
-                    case 'M':
-                    case 'L':
-                    case 'T':
-                    case 'm':
-                    case 'l':
-                    case 't':
-                        // x y
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
-                        $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->svgDrawer->getProperty('h'));
-                        $k+= 2;
-                        break;
+                case 'M':
+                case 'L':
+                case 'T':
+                case 'm':
+                case 'l':
+                case 't':
+                    // x y
+                    $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
+                    $action[] = $this->cssConverter->convertToMM($path[$k+1], $this->svgDrawer->getProperty('h'));
+                    $k+= 2;
+                    break;
 
-                    case 'H':
-                    case 'h':
-                        // x
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
-                        $k+= 1;
-                        break;
+                case 'H':
+                case 'h':
+                    // x
+                    $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('w'));
+                    $k+= 1;
+                    break;
 
-                    case 'V':
-                    case 'v':
-                        // y
-                        $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('h'));
-                        $k+= 1;
-                        break;
+                case 'V':
+                case 'v':
+                    // y
+                    $action[] = $this->cssConverter->convertToMM($path[$k+0], $this->svgDrawer->getProperty('h'));
+                    $k+= 1;
+                    break;
 
-                    case 'z':
-                    case 'Z':
-                        break;
+                case 'z':
+                case 'Z':
+                    break;
 
-                    default:
-                        $k+= 1;
-                        break;
+                default:
+                    $k+= 1;
+                    break;
                 }
                 // add the action
                 $actions[] = $action;

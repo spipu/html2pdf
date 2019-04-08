@@ -23,7 +23,7 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
     /**
      * test bad code
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\LocaleException
      */
     public function testBadCode()
@@ -41,7 +41,7 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
     /**
      * test unknown code
      *
-     * @return void
+     * @return            void
      * @expectedException \Spipu\Html2Pdf\Exception\LocaleException
      */
     public function testUnknownCode()

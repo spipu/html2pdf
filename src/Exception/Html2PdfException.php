@@ -19,6 +19,7 @@ class Html2PdfException extends \Exception
 {
     /**
      * ERROR CODE 0
+     *
      * @var int
      */
     const ERROR_CODE = 0;
