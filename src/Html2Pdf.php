@@ -564,7 +564,7 @@ class Html2Pdf
 
         // if save on server: it must be an absolute path
         if ($dest[0] === 'F') {
-            $isWindowsPath = preg_match("/^[A-Z]:\\\\/", $name);
+            $isWindowsPath = !!preg_match("/^[A-Z]:\\\\/", $name);
             // If windows is not saving on a remote file server
             if($name[0] !== DIRECTORY_SEPARATOR &&  $isWindowsPath === false ){
                 $name = getcwd() . DIRECTORY_SEPARATOR . $name;
