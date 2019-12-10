@@ -621,8 +621,17 @@ class Css
         $class = array();
         $tmp = isset($param['class']) ? strtolower(trim($param['class'])) : '';
         $tmp = explode(' ', $tmp);
+        
+        // replace some values
+        $toReplace = array(
+            '[[page_cu]]' => $this->pdf->getMyNumPage()
+        );
+        
         foreach ($tmp as $k => $v) {
             $v = trim($v);
+            if (strlen($v)>0) {
+                $v = str_replace(array_keys($toReplace), array_values($toReplace), $v);
+            }
             if ($v) {
                 $class[] = $v;
             }
