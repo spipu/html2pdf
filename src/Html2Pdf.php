@@ -1505,7 +1505,13 @@ class Html2Pdf
     {
         // get the size of the image
         // WARNING : if URL, "allow_url_fopen" must turned to "on" in php.ini
-        $infos=@getimagesize($src);
+        if( strpos($src,'data:') === 0 ) {
+            $src = base64_decode( preg_replace('#^data:image/[^;]+;base64,#', '', $src) );
+            $infos = @getimagesizefromstring($src);
+            $src = "@{$src}";
+        } else {
+            $infos = @getimagesize($src);
+        }
 
         // if the image does not exist, or can not be loaded
         if (!is_array($infos) || count($infos)<2) {
