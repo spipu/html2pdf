@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [5.2.2](https://github.com/spipu/html2pdf/compare/v5.2.1...master) - unreleased
 
+  * add support for BASE64 encoded images - thanks to @darius-heavy
   * add Chinese local file - thanks to @Jaggle
   * fix issue on lower-roman style - thanks to @jigneshsolanki
 
