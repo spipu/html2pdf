@@ -4,7 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [5.2.2](https://github.com/spipu/html2pdf/compare/v5.2.1...master) - unreleased
 
-  * nothing yet
+  * fix issue on \_drawRectangle where array offset was being accessed on value of type null
+  * bump supported version from 5.4-7.2 to 5.6-7.4
 
 ## [5.2.1](https://github.com/spipu/html2pdf/compare/v5.2.0...v5.2.1) - 2018-10-26
 
