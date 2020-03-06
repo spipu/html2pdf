@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [5.2.2](https://github.com/spipu/html2pdf/compare/v5.2.1...master) - unreleased
 
-  * nothing yet
+  * fix issue on lower-roman style - thanks to @jigneshsolanki 
 
 ## [5.2.1](https://github.com/spipu/html2pdf/compare/v5.2.0...v5.2.1) - 2018-10-26
 
