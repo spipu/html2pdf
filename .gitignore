@@ -8,8 +8,7 @@
 /.idea
 
 # Examples
-/test/*
-!/test/generate.sh
+/test/*.pdf
 
 # PhpUnit
 /build/

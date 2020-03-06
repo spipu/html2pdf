@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
   * add support for BASE64 encoded images - thanks to @darius-heavy
   * add Chinese local file - thanks to @Jaggle
+  * add powershell test script
   * bump supported version from 5.4-7.2 to 5.6-7.4 - thanks to @coffeemedia
   * fix issue on \_drawRectangle where array offset was being accessed on value of type null - thanks to @coffeemedia
   * fix issue on lower-roman style - thanks to @jigneshsolanki
