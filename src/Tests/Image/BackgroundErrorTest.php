@@ -10,7 +10,7 @@
  * @copyright 2017 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\Parsing;
+namespace Spipu\Html2Pdf\Tests\Image;
 
 use Spipu\Html2Pdf\Exception\ImageException;
 use Spipu\Html2Pdf\Tests\AbstractTest;
