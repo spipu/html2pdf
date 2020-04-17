@@ -2,14 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.2.2](https://github.com/spipu/html2pdf/compare/v5.2.1...master) - unreleased
+## [5.2.3](https://github.com/spipu/html2pdf/compare/v5.2.2...master) - unreleased
 
+  * nothing yet
+
+## [5.2.2](https://github.com/spipu/html2pdf/compare/v5.2.1...v5.2.2) - 2020-03-22
+
+  * allow usage of [[page_cu]] in css class names - thanks to @marbetschar - see example 15
   * add support for BASE64 encoded images - thanks to @darius-heavy
   * add Chinese local file - thanks to @Jaggle
   * add powershell test script
   * bump supported version from 5.4-7.2 to 5.6-7.4 - thanks to @coffeemedia
   * fix issue on \_drawRectangle where array offset was being accessed on value of type null - thanks to @coffeemedia
   * fix issue on lower-roman style - thanks to @jigneshsolanki
+  * fix issue on composer autoload warning - thanks to @adrienfr
 
 ## [5.2.1](https://github.com/spipu/html2pdf/compare/v5.2.0...v5.2.1) - 2018-10-26
 

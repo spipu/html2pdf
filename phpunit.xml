@@ -19,8 +19,8 @@
             </exclude>
         </whitelist>
     </filter>
-    <logging>
+    <!-- logging>
         <log type="coverage-html" target="build/logs/coverage" charset="UTF-8" yui="true" highlight="true"/>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
+    </logging -->
 </phpunit>
