@@ -47,8 +47,8 @@
 
      * `<barcode></barcode>`  (CF Examples 0 & 9)
     
-        * Can insert barcodes in pdfs, CF Examples 0 and 9
-        * the possible types of codebar are alls of TCPDF
+        * Can insert barcodes in pdfs, CF Examples 0 and 9.
+        * the possible types of codebar are alls of TCPDF.
 
      * `<qrcode></qrcode>` (CF Example 13)
     
