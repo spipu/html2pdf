@@ -1,0 +1,5 @@
+"pdf01","Dokumentas sugeneruotas [[date_y]]-[[date_m]]-[[date_d]]"
+"pdf02","Dokumentas sugeneruotas [[date_h]]:[[date_i]]"
+"pdf03","dokumentas sugeneruotas [[date_y]]-[[date_m]]-[[date_d]] [[date_h]]:[[date_i]]"
+"pdf04","Puslapis [[page_cu]]/[[page_nb]]"
+"pdf05","Formų naudojimui reikalingas Adobe Reader 9"
