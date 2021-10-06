@@ -2671,7 +2671,13 @@ class Html2Pdf
                 if ($background['img']) {
                     // get the size of the image
                     // WARNING : if URL, "allow_url_fopen" must turned to "on" in php.ini
-                    $infos=@getimagesize($background['img']);
+                    if( strpos($background['img'],'data:') === 0 ) {
+                        $src = base64_decode( preg_replace('#^data:image/[^;]+;base64,#', '', $background['img']) );
+                        $infos = @getimagesizefromstring($src);
+                        $background['img'] = "@{$src}";
+                    }else{
+                        $infos = @getimagesize($background['img']);
+                    }
                     if (is_array($infos) && count($infos)>1) {
                         $background['img'] = [
                             'file'   => $background['img'],
