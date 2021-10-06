@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [5.2.3](https://github.com/spipu/html2pdf/compare/v5.2.2...master) - unreleased
 
-  *  fix issue on write2DBarcode parameters - thanks to @Sarigue
+  * add support for BASE64 encoded images also for backimg tag in page - thanks to @berengan
+  * fix issue on write2DBarcode parameters - thanks to @Sarigue
+  * fix svg path parser - thanks to @CWBudde - issue #618
+  * fix html attribute parser - thanks to @Tofandel
+  * fix multibyte aware substr when setting newline position - thanks to @AndyTWF
+  * add php8 compatibility and fix tcpdf compatibilty - thanks to @humancopy
 
 ## [5.2.2](https://github.com/spipu/html2pdf/compare/v5.2.1...v5.2.2) - 2020-03-22
 
