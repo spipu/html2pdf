@@ -33,7 +33,7 @@
   * A DEBUG mode to know the resources used is present. It is activated by adding the following command just after the contructor (see Example 0): `$html2pdf->setModeDebug();`
   * Some specific tags have been introduced:
   
-     * `<page></page>`  (CF Exemple 7)
+     * `<page></page>`  (CF Example 7)
     
         * Determines the orientation, margins left, right, top and bottom, the background image and the background color of a page, its size and position, the footer.
         * It is also possible to keep the header and footer of the previous pages, through the attribut `pageset="old"` (see Example 3 & 4)
