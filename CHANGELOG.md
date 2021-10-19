@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.2.3](https://github.com/spipu/html2pdf/compare/v5.2.2...master) - unreleased
+## [5.2.3](https://github.com/spipu/html2pdf/compare/v5.2.2...v5.2.3) - 2021-10-19
 
   * add support for BASE64 encoded images also for backimg tag in page - thanks to @berengan
   * fix issue on write2DBarcode parameters - thanks to @Sarigue
