@@ -1,14 +1,4 @@
 <?php
-/**
- * Html2Pdf Library - main class
- *
- * HTML => PDF converter
- * distributed under the OSL-3.0 License
- *
- * @package   Html2pdf
- * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2017 Laurent MINGUET
- */
 
 namespace Spipu\Html2Pdf;
 
@@ -157,19 +147,6 @@ class Html2Pdf
      */
     protected $extensionsLoaded = false;
 
-    /**
-     * class constructor
-     *
-     * @param string  $orientation page orientation, same as TCPDF
-     * @param mixed   $format      The format used for pages, same as TCPDF
-     * @param string  $lang        Lang : fr, en, it...
-     * @param boolean $unicode     TRUE means that the input text is unicode (default = true)
-     * @param String  $encoding    charset encoding; default is UTF-8
-     * @param array   $margins     Default margins (left, top, right, bottom)
-     * @param boolean $pdfa        If TRUE set the document to PDF/A mode.
-     *
-     * @return Html2Pdf
-     */
     public function __construct(
         $orientation = 'P',
         $format = 'A4',
@@ -373,13 +350,6 @@ class Html2Pdf
         return $tagObject;
     }
 
-    /**
-     * set the debug mode to On
-     *
-     * @param DebugInterface $debugObject
-     *
-     * @return Html2Pdf $this
-     */
     public function setModeDebug(DebugInterface $debugObject = null)
     {
         if (is_null($debugObject)) {
