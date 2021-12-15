@@ -13,6 +13,7 @@
 namespace Spipu\Html2Pdf\Parsing;
 
 use Spipu\Html2Pdf\CssConverter;
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\MyPdf;
 
 class Css
@@ -41,6 +42,8 @@ class Css
     public $css          = array(); // css values
     public $cssKeys      = array(); // css key, for the execution order
     public $table        = array(); // level history
+
+    protected $unauthorizedSchemes = ['php://', 'zlib://', 'data://', 'glob://', 'phar://'];
 
     /**
      * Constructor
@@ -195,7 +198,7 @@ class Css
      */
     public function resetStyle($tagName = '')
     {
-        // prepare somme values
+        // prepare some values
         $border = $this->readBorder('solid 1px #000000');
         $units = array(
             '1px' => $this->cssConverter->convertToMM('1px'),
@@ -536,7 +539,7 @@ class Css
         $class = array();
         $tmp = isset($param['class']) ? strtolower(trim($param['class'])) : '';
         $tmp = explode(' ', $tmp);
-        foreach ($tmp as $k => $v) {
+        foreach ($tmp as $v) {
             $v = trim($v);
             if ($v) {
                 $class[] = $v;
@@ -606,7 +609,7 @@ class Css
      */
     public function analyse($tagName, &$param, $legacy = null)
     {
-        // prepare the informations
+        // prepare the information
         $tagName = strtolower($tagName);
         $id   = isset($param['id'])   ? strtolower(trim($param['id']))    : null;
         if (!$id) {
@@ -627,7 +630,7 @@ class Css
             '[[page_cu]]' => $this->pdf->getMyNumPage()
         );
         
-        foreach ($tmp as $k => $v) {
+        foreach ($tmp as $v) {
             $v = trim($v);
             if (strlen($v)>0) {
                 $v = str_replace(array_keys($toReplace), array_values($toReplace), $v);
@@ -1661,7 +1664,7 @@ class Css
             }
         }
 
-        // get he list of the keys
+        // get the list of the keys
         $this->cssKeys = array_flip(array_keys($this->css));
     }
 
@@ -1693,6 +1696,7 @@ class Css
                 $url = $tmp['href'];
 
                 // get the content of the css file
+                $this->checkValidPath($url);
                 $content = @file_get_contents($url);
 
                 // if "http://" in the url
@@ -1749,5 +1753,20 @@ class Css
         $nbLines = count(explode("\n", $match[0]))-1;
 
         return str_pad('', $nbLines, "\n");
+    }
+
+    /**
+     * @param string $path
+     * @return void
+     * @throws HtmlParsingException
+     */
+    public function checkValidPath($path)
+    {
+        $path = trim(strtolower($path));
+        foreach ($this->unauthorizedSchemes as $unauthorizedScheme) {
+            if (substr($path, 0, strlen($unauthorizedScheme)) === $unauthorizedScheme) {
+                throw new HtmlParsingException('Unauthorized path scheme');
+            }
+        }
     }
 }

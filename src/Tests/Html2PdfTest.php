@@ -27,4 +27,15 @@ class Html2PdfTest extends AbstractTest
         Phake::verify($tag, Phake::times(4))->open;
         Phake::verify($tag, Phake::times(2))->close;
     }
+
+    /**
+     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
+     * @expectedExceptionMessage Unauthorized path scheme
+     */
+    public function testSecurity()
+    {
+        $object = $this->getObject();
+
+        $object->writeHTML('<div><img src="phar://test.com/php.phar" alt="" /></div>');
+    }
 }

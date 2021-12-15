@@ -1511,6 +1511,7 @@ class Html2Pdf
             $infos = @getimagesizefromstring($src);
             $src = "@{$src}";
         } else {
+            $this->parsingCss->checkValidPath($src);
             $infos = @getimagesize($src);
         }
 
