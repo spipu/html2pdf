@@ -90,7 +90,7 @@ class CssConverter
      *
      * @access public
      * @param  string $css
-     * @return float  $value
+     * @return array
      */
     public function convertToRadius($css)
     {
@@ -207,13 +207,13 @@ class CssConverter
      * Analyse a background
      *
      * @param  string $css css background properties
-     * @param  &array $value parsed values (by reference, because, ther is a legacy of the parent CSS properties)
+     * @param  &array $value parsed values (by reference, because, there is a legacy of the parent CSS properties)
      *
      * @return void
      */
     public function convertBackground($css, &$value)
     {
-        // is there a image ?
+        // is there an image ?
         $text = '/url\(([^)]*)\)/isU';
         if (preg_match($text, $css, $match)) {
             // get the image
@@ -242,7 +242,7 @@ class CssConverter
             // if ok => it is a color
             if ($ok) {
                 $value['color'] = $color;
-                // else if transparent => no coloàr
+                // else if transparent => no color
             } elseif ($val === 'transparent') {
                 $value['color'] = null;
                 // else
@@ -250,7 +250,7 @@ class CssConverter
                 // try to parse the value as a repeat
                 $repeat = $this->convertBackgroundRepeat($val);
 
-                // if ok => it is repeat
+                // if ok => it is repeated
                 if ($repeat) {
                     $value['repeat'] = $repeat;
                     // else => it could only be a position
@@ -275,7 +275,7 @@ class CssConverter
      *
      * @param  string $css
      *
-     * @return string|null $value
+     * @return float[]|null $value
      */
     public function convertBackgroundColor($css)
     {
