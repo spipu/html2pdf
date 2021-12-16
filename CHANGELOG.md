@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.2.4](https://github.com/spipu/html2pdf/compare/v5.2.3...master) - unreleased
+## [5.2.4](https://github.com/spipu/html2pdf/compare/v5.2.3...v5.2.4) - 2021-12-16
 
   * revert fix multibyte aware substr when setting newline position - it causes pbs on some specific cases
   * add security on scheme of css and image paths - thanks to Clément Amic and Antoine Gicquel from [Synacktiv](https://www.synacktiv.com/)
