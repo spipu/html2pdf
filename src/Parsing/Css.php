@@ -43,7 +43,7 @@ class Css
     public $cssKeys      = array(); // css key, for the execution order
     public $table        = array(); // level history
 
-    protected $unauthorizedSchemes = ['php://', 'zlib://', 'data://', 'glob://', 'phar://'];
+    protected $authorizedSchemes = ['file', 'http', 'https'];
 
     /**
      * Constructor
@@ -1763,10 +1763,9 @@ class Css
     public function checkValidPath($path)
     {
         $path = trim(strtolower($path));
-        foreach ($this->unauthorizedSchemes as $unauthorizedScheme) {
-            if (substr($path, 0, strlen($unauthorizedScheme)) === $unauthorizedScheme) {
-                throw new HtmlParsingException('Unauthorized path scheme');
-            }
+        $scheme = parse_url($path, PHP_URL_SCHEME);
+        if ($scheme !== null && !in_array($scheme, $this->authorizedSchemes)) {
+            throw new HtmlParsingException('Unauthorized path scheme');
         }
     }
 }
