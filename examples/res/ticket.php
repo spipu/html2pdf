@@ -30,7 +30,7 @@
                     </div>
                     <h1>Billet soirée spécial Html2Pdf</h1>
                     &nbsp;&nbsp;&nbsp;&nbsp;<b>Valable le <?php echo $date; ?> à 20h30</b><br>
-                    <img src="./res/logo.gif" alt="logo" style="margin-top: 3mm; margin-left: 20mm">
+                    <img src="./res/logo.gif" alt="logo" style="width: 213px; margin-top: 3mm; margin-left: 20mm">
                 </div>
             </td>
         </tr>

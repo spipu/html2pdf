@@ -11,7 +11,7 @@ The PHP constructor takes the following parameters:
 Variable | Default value |Description
 ---------|---------------|--------------
 $orientation | P | The default page orientation, can be P (portrait) or L (landscape)
-$format | A4 | The default page format used for pages. The list of the available value are [here](https://github.com/tecnickcom/TCPDF/blob/master/include/tcpdf_static.php#L2097). You can also give a array with 2 values the width and the height in mm.
+$format | A4 | The default page format used for pages. The list of the available value are [here](https://github.com/tecnickcom/TCPDF/blob/485956db63b5a225760e80fa2278bdb22eca4650/include/tcpdf_static.php#L2129). You can also give a array with 2 values the width and the height in mm.
 $lang | fr | Language to use, for some minor translations. The list of the available languages are [here](https://github.com/spipu/html2pdf/tree/master/src/locale)
 $unicode | true | means that the input HTML string is unicode
 $encoding |UTF-8 | charset encoding of the input HTML string

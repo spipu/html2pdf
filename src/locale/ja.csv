@@ -1,0 +1,5 @@
+"pdf01","[[date_y]]年[[date_m]]月[[date_d]]日に作成された文書"
+"pdf02","[[date_h]]時[[date_i]]分に作成された文書"
+"pdf03","[[date_y]]年[[date_m]]月[[date_d]]日 [[date_h]]時[[date_i]]分に作成された文書"
+"pdf04","[[page_cu]]/[[page_nb]]ページ"
+"pdf05","フォームの利用にはAdobe Reader 9が必要です"

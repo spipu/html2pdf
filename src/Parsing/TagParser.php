@@ -210,8 +210,8 @@ class TagParser
         $param = array();
         $regexes = array(
             '([a-zA-Z0-9_]+)=([^"\'\s>]+)',  // read the parameters : name=value
-            '([a-zA-Z0-9_]+)=["]([^"]*)["]', // read the parameters : name="value"
-            "([a-zA-Z0-9_]+)=[']([^']*)[']"  // read the parameters : name='value'
+            '([a-zA-Z0-9_]+)=\s*["]([^"]*)["]', // read the parameters : name="value"
+            "([a-zA-Z0-9_]+)=\s*[']([^']*)[']"  // read the parameters : name='value'
         );
 
         foreach ($regexes as $regex) {
