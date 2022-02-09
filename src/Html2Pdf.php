@@ -1041,7 +1041,7 @@ class Html2Pdf
         if ($curr !== null && $sub->parsingHtml->code[$this->_parsePos]->getName() === 'write') {
             $txt = $sub->parsingHtml->code[$this->_parsePos]->getParam('txt');
             $txt = str_replace('[[page_cu]]', $sub->pdf->getMyNumPage($this->_page), $txt);
-            $sub->parsingHtml->code[$this->_parsePos]->setParam('txt', substr($txt, $curr + 1));
+            $sub->parsingHtml->code[$this->_parsePos]->setParam('txt', mb_substr($txt, $curr + 1, null, $this->_encoding));
         } else {
             $sub->_parsePos++;
         }
