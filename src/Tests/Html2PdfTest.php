@@ -28,14 +28,22 @@ class Html2PdfTest extends AbstractTest
         Phake::verify($tag, Phake::times(2))->close;
     }
 
+    public function testSecurityGood()
+    {
+        $object = $this->getObject();
+        $object->setTestIsImage(false);
+        $object->writeHTML('<div><img src="https://www.spipu.net/res/logo_spipu.gif" alt="" /></div>');
+        $object->writeHTML('<div><img src="/temp/test.jpg" alt="" /></div>');
+        $object->writeHTML('<div><img src="c:/temp/test.jpg" alt="" /></div>');
+    }
+
     /**
      * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      * @expectedExceptionMessage Unauthorized path scheme
      */
-    public function testSecurity()
+    public function testSecurityKo()
     {
         $object = $this->getObject();
-
         $object->writeHTML('<div><img src="phar://test.com/php.phar" alt="" /></div>');
     }
 }
