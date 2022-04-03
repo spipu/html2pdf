@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.2.5](https://github.com/spipu/html2pdf/compare/v5.2.4...master) - 2022-04-03
+## [5.2.5](https://github.com/spipu/html2pdf/compare/v5.2.4...v5.2.5) - 2022-04-04
 
-  * improve security on scheme of css and image paths for windows paths
+  * fix security on scheme of css and image paths for windows paths
 
 ## [5.2.4](https://github.com/spipu/html2pdf/compare/v5.2.3...v5.2.4) - 2021-12-16
 
