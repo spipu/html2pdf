@@ -2,9 +2,6 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
-use Phake;
-use Spipu\Html2Pdf\Html2Pdf;
-
 /**
  * Class Html2PdfTest
  */
@@ -12,20 +9,19 @@ class Html2PdfTest extends AbstractTest
 {
     public function testExtensionTag()
     {
-        $tag = Phake::mock('Spipu\Html2Pdf\Tag\TagInterface');
-        Phake::when($tag)->getName()->thenReturn('test_tag');
+        $tag = $this->createMock('Spipu\Html2Pdf\Tag\TagInterface');
+        $tag->expects($this->any())->method('getName')->willReturn('test_tag');
+        $tag->expects($this->exactly(4))->method('open');
+        $tag->expects($this->exactly(2))->method('close');
 
-        $extension = Phake::mock('Spipu\Html2Pdf\Extension\ExtensionInterface');
-        Phake::when($extension)->getName()->thenReturn('test');
-        Phake::when($extension)->getTags()->thenReturn(array($tag));
+        $extension = $this->createMock('Spipu\Html2Pdf\Extension\ExtensionInterface');
+        $extension->expects($this->any())->method('getName')->willReturn('test');
+        $extension->expects($this->any())->method('getTags')->willReturn(array($tag));
 
         $object = $this->getObject();
 
         $object->addExtension($extension);
         $object->writeHTML('<div><test_tag>Hello</test_tag></div>');
-
-        Phake::verify($tag, Phake::times(4))->open;
-        Phake::verify($tag, Phake::times(2))->close;
     }
 
     public function testSecurityGood()
