@@ -1793,6 +1793,7 @@ class Html2Pdf
             $iName      = $background['image'];
             $iPosition  = $background['position'] !== null ? $background['position'] : array(0, 0);
             $iRepeat    = $background['repeat'] !== null   ? $background['repeat']   : array(true, true);
+            $iSize      = $background['size'] !== null     ? $background['size']     : 'auto';
 
             // size of the background without the borders
             $bX = $x;
@@ -1828,10 +1829,39 @@ class Html2Pdf
                 }
             } else {
                 // convert the size of the image from pixel to the unit of the PDF
-                $imageWidth    = 72./96.*$imageInfos[0]/$this->pdf->getK();
-                $imageHeight    = 72./96.*$imageInfos[1]/$this->pdf->getK();
+                $imageWidth  = 72./96.*$imageInfos[0]/$this->pdf->getK();
+                $imageHeight = 72./96.*$imageInfos[1]/$this->pdf->getK();
 
-                // prepare the position of the backgroung
+
+                // prepare for image size "contain" and "cover"
+                $fitbox = false;
+                $resize = false;
+                if ($iSize && $iSize != 'auto') {
+                    $containerIsLandscape = $bW > $bH;
+                    $imageIsLandscape = $imageWidth > $imageHeight;
+
+                    if ($iSize == 'contain') {
+                        $imageWidth = $bW;
+                        $imageHeight = $bH;
+                    }
+                    else if ($iSize == 'cover') {
+                        if ((!$containerIsLandscape && $imageIsLandscape) || ($containerIsLandscape && !$imageIsLandscape)) {
+                            $aspectRatio = $imageWidth / $imageHeight;
+                            $imageWidth = $imageWidth * $aspectRatio;
+                            $imageHeight = $bH;
+                        }
+                        else {
+                            $aspectRatio = $imageHeight / $imageWidth;
+                            $imageWidth = $bW;
+                            $imageHeight = $imageHeight * $aspectRatio;
+                        }
+                    }
+
+                    $resize = true;
+                    $fitbox = 'CM';
+                }
+
+                // prepare the position of the background
                 if ($iRepeat[0]) {
                     $iPosition[0] = $bX;
                 } elseif (preg_match('/^([-]?[0-9\.]+)%/isU', $iPosition[0], $match)) {
@@ -1887,7 +1917,7 @@ class Html2Pdf
                             $cW = $imageXmax-$iX;
                         }
 
-                        $this->pdf->Image($iName, $iX, $iY, $imageWidth, $imageHeight, '', '');
+                        $this->pdf->Image($iName, $iX, $iY, $imageWidth, $imageHeight, '', '', '', $resize, 300, '', false, false, 0, $fitbox);
                     }
                 }
 
