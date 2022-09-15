@@ -1505,20 +1505,37 @@ class Html2Pdf
     {
         // get the size of the image
         // WARNING : if URL, "allow_url_fopen" must turned to "on" in php.ini
-
+        $isSVG = false;
         if (strpos($src,'data:') === 0) {
             $src = base64_decode( preg_replace('#^data:image/[^;]+;base64,#', '', $src) );
             $infos = @getimagesizefromstring($src);
             $src = "@{$src}";
         } else {
             $this->parsingCss->checkValidPath($src);
-            $infos = @getimagesize($src);
+            if (substr($src, -4) != ".svg") {
+                $infos = @getimagesize($src);
+            } else {
+                $isSVG = true;
+                $content = file_get_contents($src);
+                $xml = simplexml_load_string($content);
+                if (!empty($xml["width"]) && !empty($xml["height"])) {
+                    $infos = array((float)$xml["width"], (float)$xml["height"]);
+                } elseif (!empty($xml["viewBox"]) && 1 === preg_match('/(\d+.?\d*) (\d+.?\d*)$/i', $xml["viewBox"], $viewBoxMatches)) {
+                    $infos = array((float)$viewBoxMatches[1], (float)$viewBoxMatches[2]);
+                } elseif ($this->parsingCss->value['width'] && $this->parsingCss->value['height']) {
+                    $infos = array($this->parsingCss->value['width'], $this->parsingCss->value['height']);
+                }
+            }
         }
 
         // if the image does not exist, or can not be loaded
         if (!is_array($infos) || count($infos)<2) {
             if ($this->_testIsImage) {
-                $e = new ImageException('Unable to get the size of the image ['.$src.']');
+                if (!$isSVG) {
+                    $e = new ImageException('Unable to get the size of the image ['.$src.']');
+                } else {
+                    $e = new ImageException('Unable to get the size of the SVG image ['.$src.']. For an SVG image without attributes (width & height) and viewBox, you must specify the size in the CSS.');
+                }
                 $e->setImage($src);
                 throw $e;
             }
@@ -1651,7 +1668,11 @@ class Html2Pdf
         // display the image
         if (!$this->_subPart && !$this->_isSubPart) {
             if ($src) {
-                $this->pdf->Image($src, $x, $y, $w, $h, '', $this->_isInLink);
+                if (!$isSVG) {
+                    $this->pdf->Image($src, $x, $y, $w, $h, '', $this->_isInLink);
+                } else {
+                    $this->pdf->ImageSVG($src, $x, $y, $w, $h, $this->_isInLink);
+                }
             } else {
                 // rectangle if the image can not be loaded
                 $this->pdf->SetFillColorArray(array(240, 220, 220));
