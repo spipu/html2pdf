@@ -1524,6 +1524,8 @@ class Html2Pdf
                     $infos = array((float)$viewBoxMatches[1], (float)$viewBoxMatches[2]);
                 } elseif ($this->parsingCss->value['width'] && $this->parsingCss->value['height']) {
                     $infos = array($this->parsingCss->value['width'], $this->parsingCss->value['height']);
+                } else {
+                    $infos = null;
                 }
             }
         }
