@@ -2,7 +2,6 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
-use Phake;
 use Spipu\Html2Pdf\CssConverter;
 use Spipu\Html2Pdf\SvgDrawer;
 
@@ -18,7 +17,7 @@ class SvgDrawerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $myPdf = Phake::mock('Spipu\Html2Pdf\MyPdf');
+        $myPdf = $this->createMock('Spipu\Html2Pdf\MyPdf');
 
         $cssConverter = new CssConverter();
 

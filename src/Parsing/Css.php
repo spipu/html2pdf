@@ -1764,8 +1764,19 @@ class Css
     {
         $path = trim(strtolower($path));
         $scheme = parse_url($path, PHP_URL_SCHEME);
-        if ($scheme !== null && !in_array($scheme, $this->authorizedSchemes)) {
-            throw new HtmlParsingException('Unauthorized path scheme');
+
+        if ($scheme === null) {
+            return;
         }
+
+        if (in_array($scheme, $this->authorizedSchemes)) {
+            return;
+        }
+
+        if (strlen($scheme) === 1 && preg_match('/^[a-z]$/i', $scheme)) {
+            return;
+        }
+
+        throw new HtmlParsingException('Unauthorized path scheme');
     }
 }
