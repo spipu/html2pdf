@@ -24,10 +24,10 @@ class BackgroundErrorTest extends AbstractTest
      * test: The image src is unknown
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\ImageException
      */
     public function testCase()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\ImageException::class);
         $image = '/res/wrong.png';
 
         try {

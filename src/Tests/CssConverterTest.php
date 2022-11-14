@@ -2,23 +2,17 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
-use Spipu\Html2Pdf\CssConverter;
+if (HTML2PDF_PHPUNIT_VERSION === 9) {
+    require_once 'CrossVersionCompatibility/PhpUnit9/CssConverterTestCase.php';
+} else {
+    require_once 'CrossVersionCompatibility/PhpUnit5/CssConverterTestCase.php';
+}
 
 /**
  * Class CssConverterTest
  */
-class CssConverterTest extends \PHPUnit_Framework_TestCase
+class CssConverterTest extends \Spipu\Html2Pdf\Tests\CrossVersionCompatibility\CssConverterTestCase
 {
-    /**
-     * @var CssConverter
-     */
-    private $cssConverter;
-
-    public function setUp()
-    {
-        $this->cssConverter = new CssConverter();
-    }
-
     /**
      * @param string $css
      * @param string $old

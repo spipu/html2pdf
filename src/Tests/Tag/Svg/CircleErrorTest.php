@@ -23,10 +23,10 @@ class CircleErrorTest extends AbstractTest
      * test
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testCase()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<circle />');
         $object->output('test.pdf', 'S');

@@ -43,10 +43,10 @@ class MustHaveTagsTest extends AbstractTest
      * test
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testNotEmptyThead()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $html = '<table>';
         $html.= '<thead></thead>';
         $html.= '<tbody><tr><td>World</td></tr></tbody>';
@@ -61,10 +61,10 @@ class MustHaveTagsTest extends AbstractTest
      * test
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testNotEmptyTfoot()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $html = '<table>';
         $html.= '<tfoot></tfoot>';
         $html.= '<tbody><tr><td>World</td></tr></tbody>';
