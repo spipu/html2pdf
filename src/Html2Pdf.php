@@ -29,6 +29,7 @@ use Spipu\Html2Pdf\Debug\Debug;
 
 require_once dirname(__FILE__) . '/config/tcpdf.config.php';
 
+#[\AllowDynamicProperties]
 class Html2Pdf
 {
     /**

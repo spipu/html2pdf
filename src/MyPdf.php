@@ -14,6 +14,7 @@ namespace Spipu\Html2Pdf;
 
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
 
+#[\AllowDynamicProperties]
 class MyPdf extends \TCPDF
 {
     protected $_footerParam = array();
