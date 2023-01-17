@@ -39,8 +39,8 @@ class ExceptionFormatterTest extends TestCase
         ];
 
         foreach ($messages as $message) {
-            $this->assertContains('Html2Pdf Error ['.Html2PdfException::ERROR_CODE.']', $message);
-            $this->assertContains('My Message', $message);
+            $this->assertStringContainsString('Html2Pdf Error ['.Html2PdfException::ERROR_CODE.']', $message);
+            $this->assertStringContainsString('My Message', $message);
         }
     }
 
@@ -61,10 +61,10 @@ class ExceptionFormatterTest extends TestCase
         ];
 
         foreach ($messages as $message) {
-            $this->assertContains('Html2Pdf Error ['.HtmlParsingException::ERROR_CODE.']', $message);
-            $this->assertContains('My Message', $message);
-            $this->assertContains('my_tag', $message);
-            $this->assertContains('42', $message);
+            $this->assertStringContainsString('Html2Pdf Error ['.HtmlParsingException::ERROR_CODE.']', $message);
+            $this->assertStringContainsString('My Message', $message);
+            $this->assertStringContainsString('my_tag', $message);
+            $this->assertStringContainsString('42', $message);
         }
     }
 
@@ -84,9 +84,9 @@ class ExceptionFormatterTest extends TestCase
         ];
 
         foreach ($messages as $message) {
-            $this->assertContains('Html2Pdf Error ['.ImageException::ERROR_CODE.']', $message);
-            $this->assertContains('My Message', $message);
-            $this->assertContains('my_image.png', $message);
+            $this->assertStringContainsString('Html2Pdf Error ['.ImageException::ERROR_CODE.']', $message);
+            $this->assertStringContainsString('My Message', $message);
+            $this->assertStringContainsString('my_image.png', $message);
         }
     }
 
@@ -108,11 +108,11 @@ class ExceptionFormatterTest extends TestCase
         ];
 
         foreach ($messages as $message) {
-            $this->assertContains('Html2Pdf Error ['.LongSentenceException::ERROR_CODE.']', $message);
-            $this->assertContains('My Message', $message);
-            $this->assertContains('my sentence', $message);
-            $this->assertContains('142', $message);
-            $this->assertContains('242', $message);
+            $this->assertStringContainsString('Html2Pdf Error ['.LongSentenceException::ERROR_CODE.']', $message);
+            $this->assertStringContainsString('My Message', $message);
+            $this->assertStringContainsString('my sentence', $message);
+            $this->assertStringContainsString('142', $message);
+            $this->assertStringContainsString('242', $message);
         }
     }
 }

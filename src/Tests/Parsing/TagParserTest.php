@@ -12,20 +12,21 @@
 
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\Parsing\Node;
 use Spipu\Html2Pdf\Parsing\TagParser;
 
 /**
  * Class TagParserTest
  */
-class TagParserTest extends \PHPUnit_Framework_TestCase
+class TagParserTest extends TestCase
 {
     /**
      * @var TagParser
      */
     private $parser;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $textParser = $this->getMockBuilder('Spipu\Html2Pdf\Parsing\TextParser')
             ->disableOriginalConstructor()

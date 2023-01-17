@@ -34,7 +34,7 @@ class FileNameOkTest extends AbstractTest
         $object->output('test.pdf');
         $result = ob_get_clean();
 
-        $this->assertContains('PhpUnit Test', $result);
+        $this->assertStringContainsString('PhpUnit Test', $result);
     }
 
     /**
@@ -48,7 +48,7 @@ class FileNameOkTest extends AbstractTest
         $object->writeHTML('Hello World');
         $result = $object->output('test.bad', 'S');
 
-        $this->assertContains('PhpUnit Test', $result);
+        $this->assertStringContainsString('PhpUnit Test', $result);
     }
 
     /**

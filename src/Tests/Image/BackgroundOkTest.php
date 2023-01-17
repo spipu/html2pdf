@@ -30,6 +30,6 @@ class BackgroundOkTest extends AbstractTest
         $object->writeHTML('<div style="background-image: url('.dirname(__FILE__).'/res/logo.png)">Hello World</div>');
         $result = $object->output('test.pdf', 'S');
 
-        $this->assertContains('PhpUnit Test', $result);
+        $this->assertStringContainsString('PhpUnit Test', $result);
     }
 }
