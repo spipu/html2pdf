@@ -10,8 +10,9 @@
  * @copyright 2017 Laurent MINGUET
  */
 
-use PHPUnit\Framework\TestCase;
 namespace Spipu\Html2Pdf\Tests;
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class ExamplesTest
