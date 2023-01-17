@@ -2,12 +2,13 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\Html2Pdf;
 
 /**
  * Class Html2PdfTest
  */
-abstract class AbstractTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractTest extends TestCase
 {
     /**
      * @var Html2Pdf
@@ -17,7 +18,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Executed before each test
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', [0, 0, 0, 0]);
         $this->html2pdf->pdf->SetTitle('PhpUnit Test');
@@ -26,7 +27,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Executed after each test
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->html2pdf->clean();
         $this->html2pdf = null;

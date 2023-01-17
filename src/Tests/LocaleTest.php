@@ -12,13 +12,14 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\Locale;
 use Spipu\Html2Pdf\Exception\LocaleException;
 
 /**
  * Class LocaleTest
  */
-class LocaleTest extends \PHPUnit_Framework_TestCase
+class LocaleTest extends TestCase
 {
     /**
      * test bad code

@@ -12,16 +12,18 @@
 
 namespace Spipu\Html2Pdf\Tests\Exception;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Exception\ImageException;
 use Spipu\Html2Pdf\Exception\LongSentenceException;
 
+
 /**
  * Class ExceptionFormaterTest
  */
-class ExceptionFormatterTest extends \PHPUnit_Framework_TestCase
+class ExceptionFormatterTest extends TestCase
 {
     /**
      * Test the formatter / generic exception
