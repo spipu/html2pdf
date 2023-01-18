@@ -14,6 +14,7 @@ namespace Spipu\Html2Pdf\Tests\Output;
 
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Tests\AbstractTest;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
 
 /**
  * Class FileNameOkTest
