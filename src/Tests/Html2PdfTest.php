@@ -11,6 +11,13 @@ class Html2PdfTest extends AbstractTest
 {
     public function testExtensionTag()
     {
+        /**
+         * Ignore deprecation errors as this causes this test to fail on deprecated toString.
+         * Later versions of phpunit allow this to be set in the XML file, but this isn't
+         * available until phpunit v6.2.
+         */
+        error_reporting(E_ALL & ~E_DEPRECATED);
+
         $tag = $this->createMock('Spipu\Html2Pdf\Tag\TagInterface');
         $tag->expects($this->any())->method('getName')->willReturn('test_tag');
         $tag->expects($this->exactly(4))->method('open');
