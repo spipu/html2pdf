@@ -25,10 +25,10 @@ class LocaleTest extends TestCase
      * test bad code
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\LocaleException
      */
     public function testBadCode()
     {
+        $this->expectException(LocaleException::class);
         Locale::clean();
 
         try {
@@ -43,10 +43,10 @@ class LocaleTest extends TestCase
      * test unknown code
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\LocaleException
      */
     public function testUnknownCode()
     {
+        $this->expectException(LocaleException::class);
         Locale::clean();
         try {
             Locale::load('aa');

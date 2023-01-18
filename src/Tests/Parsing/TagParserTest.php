@@ -13,6 +13,7 @@
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
 use PHPUnit\Framework\TestCase;
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Parsing\Node;
 use Spipu\Html2Pdf\Parsing\TagParser;
 
@@ -85,10 +86,10 @@ class TagParserTest extends TestCase
     /**
      * Test if a bad tag is detected
      *
-     * @expectedException  \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testAnalyzeTagBadTag()
     {
+        $this->expectException(HtmlParsingException::class);
         $this->parser->analyzeTag('test');
     }
 
