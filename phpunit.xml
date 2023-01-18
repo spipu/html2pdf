@@ -12,4 +12,17 @@
             <directory>Tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src</directory>
+            <exclude>
+                <directory>src/Tests</directory>
+                <directory>src/config</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <!-- logging>
+        <log type="coverage-html" target="build/logs/coverage" charset="UTF-8" yui="true" highlight="true"/>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging -->
 </phpunit>
