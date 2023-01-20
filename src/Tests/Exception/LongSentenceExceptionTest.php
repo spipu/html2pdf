@@ -36,7 +36,8 @@ class LongSentenceExceptionTest extends AbstractTest
         $html = '<page backleft="0" backright="200mm"style="font-size: 1mm">'.$bigSentence.'</page>';
 
         $object = $this->getObject();
-        $object->setSentenceMaxLines(100);$object->writeHTML($html);
+        $object->setSentenceMaxLines(100);
+        $object->writeHTML($html);
         $object->output('test.pdf', 'S');
     }
 }
