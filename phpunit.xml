@@ -6,6 +6,7 @@
      backupGlobals="false"
      backupStaticAttributes="false"
      verbose="true"
+     failOnWarning="false"
 >
     <testsuites>
         <testsuite name="unit">
