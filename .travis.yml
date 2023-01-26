@@ -1,3 +1,5 @@
+dist: focal
+
 language: php
 
 php:
