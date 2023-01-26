@@ -12,6 +12,7 @@
 
 namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
@@ -23,10 +24,10 @@ class PathErrorTest extends AbstractTest
      * test
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testCase()
     {
+        $this->expectException(HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<path />');
         $object->output('test.pdf', 'S');

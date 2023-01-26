@@ -12,12 +12,13 @@
 
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\Parsing\Token;
 
 /**
  * Class TokenTest
  */
-class TokenTest extends \PHPUnit_Framework_TestCase
+class TokenTest extends TestCase
 {
 
     /**

@@ -12,19 +12,20 @@
 
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\Parsing\TextParser;
 
 /**
  * Class TextParserTest
  */
-class TextParserTest extends \PHPUnit_Framework_TestCase
+class TextParserTest extends TestCase
 {
     /**
      * @var TextParser
      */
     private $parser;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->parser = new TextParser();
     }

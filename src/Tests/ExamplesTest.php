@@ -12,10 +12,12 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Class ExamplesTest
  */
-class ExamplesTest extends \PHPUnit_Framework_TestCase
+class ExamplesTest extends TestCase
 {
     /**
      * Launch a example

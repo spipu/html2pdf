@@ -14,6 +14,7 @@ namespace Spipu\Html2Pdf\Tests\Output;
 
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Tests\AbstractTest;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
 
 /**
  * Class FileNameOkTest
@@ -34,7 +35,7 @@ class FileNameOkTest extends AbstractTest
         $object->output('test.pdf');
         $result = ob_get_clean();
 
-        $this->assertContains('PhpUnit Test', $result);
+        $this->assertStringContainsString('PhpUnit Test', $result);
     }
 
     /**
@@ -48,17 +49,17 @@ class FileNameOkTest extends AbstractTest
         $object->writeHTML('Hello World');
         $result = $object->output('test.bad', 'S');
 
-        $this->assertContains('PhpUnit Test', $result);
+        $this->assertStringContainsString('PhpUnit Test', $result);
     }
 
     /**
      * test: the file extension must be PDF - Error
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\Html2PdfException
      */
     public function testError()
     {
+        $this->expectException(Html2PdfException::class);
         $object = $this->getObject();
         $object->writeHTML('<p>Hello World</p>');
         $object->output('test.bad');

@@ -2,19 +2,20 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\CssConverter;
 
 /**
  * Class CssConverterTest
  */
-class CssConverterTest extends \PHPUnit_Framework_TestCase
+class CssConverterTest extends TestCase
 {
     /**
      * @var CssConverter
      */
     private $cssConverter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->cssConverter = new CssConverter();
     }

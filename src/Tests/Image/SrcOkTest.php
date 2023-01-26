@@ -30,6 +30,6 @@ class SrcOkTest extends AbstractTest
         $object->writeHTML('Hello World <img src="'.dirname(__FILE__).'/res/logo.png" />');
         $result = $object->output('test.pdf', 'S');
 
-        $this->assertContains('PhpUnit Test', $result);
+        $this->assertStringContainsString('PhpUnit Test', $result);
     }
 }

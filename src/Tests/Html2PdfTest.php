@@ -2,6 +2,8 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
+
 /**
  * Class Html2PdfTest
  */
@@ -31,14 +33,13 @@ class Html2PdfTest extends AbstractTest
         $object->writeHTML('<div><img src="https://www.spipu.net/res/logo_spipu.gif" alt="" /></div>');
         $object->writeHTML('<div><img src="/temp/test.jpg" alt="" /></div>');
         $object->writeHTML('<div><img src="c:/temp/test.jpg" alt="" /></div>');
+        $this->assertTrue(true);
     }
 
-    /**
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
-     * @expectedExceptionMessage Unauthorized path scheme
-     */
     public function testSecurityKo()
     {
+        $this->expectException(HtmlParsingException::class);
+        $this->expectExceptionMessage("Unauthorized path scheme");
         $object = $this->getObject();
         $object->writeHTML('<div><img src="phar://test.com/php.phar" alt="" /></div>');
     }
