@@ -9,6 +9,7 @@ php:
   - 8.2
 
 before_script:
+  - sudo apt-get install libonig5
   - composer selfupdate
   - composer install --dev --prefer-dist
   - composer sniffer:php82
