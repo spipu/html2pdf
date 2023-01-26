@@ -13,12 +13,14 @@
         }
     ],
     "require": {
-        "php": "^5.6 || ^7.0 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "ext-mbstring": "*",
         "ext-gd": "*",
         "tecnickcom/tcpdf": "^6.3"
     },
     "require-dev": {
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpcompatibility/php-compatibility": "dev-develop"
         "phpunit/phpunit": "^5.0 || ^9.0"
     },
     "suggest": {
@@ -34,5 +36,13 @@
         "psr-4": {
             "Spipu\\Html2Pdf\\Tests\\": "Tests/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false
+        }
+    },
+    "scripts": {
+        "sniffer:php82": "phpcs -p . --ignore=vendor/*,examples/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --extensions=php --exclude=Generic.Internal.NoCodeFound --report-full=compatibility.txt --runtime-set testVersion 8.2"
     }
 }

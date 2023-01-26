@@ -1,8 +1,6 @@
 language: php
 
 php:
-  - 7.2
-  - 7.3
   - 7.4
   - 8.0
   - 8.1
@@ -11,3 +9,4 @@ php:
 before_script:
   - composer selfupdate
   - composer install --dev --prefer-dist
+  - composer sniffer:php82
