@@ -19,3 +19,6 @@
 /vendor/
 /composer.lock
 /composer.phar
+
+
+/compatibility.txt
