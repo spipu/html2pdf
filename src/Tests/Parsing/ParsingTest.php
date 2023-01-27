@@ -24,10 +24,10 @@ class ParsingTest extends AbstractTest
      * test: The tag is unknown
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testUnknownTag()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<bad_tag>Hello World</bad_tag>');
         $object->output('test.pdf', 'S');
@@ -37,10 +37,10 @@ class ParsingTest extends AbstractTest
      * test: Too many tag closures found
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testTooManyClosuresFound()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<i><u>Hello</u></i></b>');
         $object->output('test.pdf', 'S');
@@ -50,10 +50,10 @@ class ParsingTest extends AbstractTest
      * test: Tags are closed in a wrong order
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testWrongClosedOrder()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<b><u><i>Hello</u></i></b>');
         $object->output('test.pdf', 'S');
@@ -63,10 +63,10 @@ class ParsingTest extends AbstractTest
      * test: The following tag has not been closed
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testNotClosed()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<b><i>Hello</i>');
         $object->output('test.pdf', 'S');
@@ -76,10 +76,10 @@ class ParsingTest extends AbstractTest
      * test: The following tags have not been closed
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testNotClosedMore()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<b><u><i>Hello</i>');
         $object->output('test.pdf', 'S');
@@ -89,10 +89,10 @@ class ParsingTest extends AbstractTest
      * test: The HTML tag code provided is invalid
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testInvalidCode()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<az1-r_h>Hello</az1-r_h>');
         $object->output('test.pdf', 'S');

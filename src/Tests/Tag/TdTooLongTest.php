@@ -24,10 +24,10 @@ class TdTooLongTest extends AbstractTest
      * test
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\TableException
      */
     public function testCase()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\TableException::class);
         $sentence = 'Hello World ! ';
         $sentences = '';
         for ($k=0; $k<100; $k++) {

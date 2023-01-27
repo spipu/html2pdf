@@ -23,10 +23,10 @@ class PathInvalidTest extends AbstractTest
      * test
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\HtmlParsingException
      */
     public function testCase()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
         $html = '
 <page>
     <draw style="width:150mm; height:100mm;">

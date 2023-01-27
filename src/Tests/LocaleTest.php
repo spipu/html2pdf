@@ -24,10 +24,10 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
      * test bad code
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\LocaleException
      */
     public function testBadCode()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\LocaleException::class);
         Locale::clean();
 
         try {
@@ -42,10 +42,10 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
      * test unknown code
      *
      * @return void
-     * @expectedException \Spipu\Html2Pdf\Exception\LocaleException
      */
     public function testUnknownCode()
     {
+        $this->expectException(\Spipu\Html2Pdf\Exception\LocaleException::class);
         Locale::clean();
         try {
             Locale::load('aa');

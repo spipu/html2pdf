@@ -4,34 +4,17 @@ namespace Spipu\Html2Pdf\Tests;
 
 use Spipu\Html2Pdf\Html2Pdf;
 
+if (HTML2PDF_PHPUNIT_VERSION === 9) {
+    require_once 'CrossVersionCompatibility/PhpUnit9/AbstractTestCase.php';
+} else {
+    require_once 'CrossVersionCompatibility/PhpUnit5/AbstractTestCase.php';
+}
+
 /**
- * Class Html2PdfTest
+ * Class AbstractTest
  */
-abstract class AbstractTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractTest extends \Spipu\Html2Pdf\Tests\CrossVersionCompatibility\AbstractTestCase
 {
-    /**
-     * @var Html2Pdf
-     */
-    private $html2pdf;
-
-    /**
-     * Executed before each test
-     */
-    protected function setUp()
-    {
-        $this->html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', [0, 0, 0, 0]);
-        $this->html2pdf->pdf->SetTitle('PhpUnit Test');
-    }
-
-    /**
-     * Executed after each test
-     */
-    protected function tearDown()
-    {
-        $this->html2pdf->clean();
-        $this->html2pdf = null;
-    }
-
     /**
      * Get the object to test
      *

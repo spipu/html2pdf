@@ -12,10 +12,20 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
+if (HTML2PDF_PHPUNIT_VERSION === 9) {
+    abstract class BaseExamplesTest extends \PHPUnit\Framework\TestCase
+    {
+    }
+} else {
+    abstract class BaseExamplesTest extends \PHPUnit_Framework_TestCase
+    {
+    }
+}
+
 /**
  * Class ExamplesTest
  */
-class ExamplesTest extends \PHPUnit_Framework_TestCase
+class ExamplesTest extends BaseExamplesTest
 {
     /**
      * Launch a example
