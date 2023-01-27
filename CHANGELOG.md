@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.2.6](https://github.com/spipu/html2pdf/compare/v5.2.5...v5.2.6) - 2023-01-28
+
+  * add support of PHP 8.1 and PHP 8.2
+  * remove useless files
+
 ## [5.2.5](https://github.com/spipu/html2pdf/compare/v5.2.4...v5.2.5) - 2022-04-04
 
   * fix security on scheme of css and image paths for windows paths

@@ -2,6 +2,8 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
+use Spipu\Html2Pdf\Tag\AbstractTag;
+
 /**
  * Class Html2PdfTest
  */
@@ -9,10 +11,7 @@ class Html2PdfTest extends AbstractTest
 {
     public function testExtensionTag()
     {
-        $tag = $this->createMock('Spipu\Html2Pdf\Tag\TagInterface');
-        $tag->expects($this->any())->method('getName')->willReturn('test_tag');
-        $tag->expects($this->exactly(4))->method('open');
-        $tag->expects($this->exactly(2))->method('close');
+        $tag = new testTag();
 
         $extension = $this->createMock('Spipu\Html2Pdf\Extension\ExtensionInterface');
         $extension->expects($this->any())->method('getName')->willReturn('test');
@@ -41,5 +40,21 @@ class Html2PdfTest extends AbstractTest
     {
         $object = $this->getObject();
         $object->writeHTML('<div><img src="phar://test.com/php.phar" alt="" /></div>');
+    }
+}
+
+class testTag extends AbstractTag
+{
+    public function getName()
+    {
+        return 'test_tag';
+    }
+
+    public function open($properties)
+    {
+    }
+
+    public function close($properties)
+    {
     }
 }

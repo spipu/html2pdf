@@ -75,6 +75,11 @@ class Html2Pdf
     protected $_encoding         = '';          // charset encoding
     protected $_unicode          = true;        // means that the input text is unicode (default = true)
 
+    /**
+     * @var bool
+     */
+    protected $_pdfa;
+
     protected $_testTdInOnepage  = true;        // test of TD that can not take more than one page
     protected $_testIsImage      = true;        // test if the images exist or not
     protected $_fallbackImage    = null;        // fallback image to use in img tags
@@ -242,7 +247,7 @@ class Html2Pdf
         return array(
             'major'     => 5,
             'minor'     => 2,
-            'revision'  => 4
+            'revision'  => 6
         );
     }
 
@@ -1021,7 +1026,7 @@ class Html2Pdf
 
         // if subPart => return because align left
         if ($this->_subPart || $this->_isSubPart || $this->_isForOneLine) {
-            $this->pdf->setWordSpacing(0);
+            $this->pdf->setWordSpacing(0.);
             return null;
         }
 
@@ -1073,9 +1078,9 @@ class Html2Pdf
 
         // if justify => set the word spacing
         if ($this->parsingCss->value['text-align'] === 'justify' && $e>1) {
-            $this->pdf->setWordSpacing(($wMax-$w)/($e-1));
+            $this->pdf->setWordSpacing((float) ($wMax - $w) / (float) ($e - 1.));
         } else {
-            $this->pdf->setWordSpacing(0);
+            $this->pdf->setWordSpacing(0.);
         }
     }
 
