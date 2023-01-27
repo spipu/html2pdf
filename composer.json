@@ -43,6 +43,6 @@
         }
     },
     "scripts": {
-        "sniffer:php82": "phpcs -p . --ignore=vendor/*,examples/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --extensions=php --report-full=compatibility.txt --runtime-set testVersion 8.2"
+        "sniffer:php82": "phpcs -p . --ignore=vendor/*,examples/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --extensions=php --report-full=PHPCompatibilityReport.txt --runtime-set testVersion 8.2"
     }
 }
