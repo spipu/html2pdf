@@ -28,6 +28,11 @@ class MyPdf extends \TCPDF
     const ARC_NB_SEGMENT = 8;
 
     /**
+     * @var float|mixed
+     */
+    private mixed $ws;
+
+    /**
      * class constructor
      *
      * @param string  $orientation page orientation, same as TCPDF
@@ -229,7 +234,6 @@ class MyPdf extends \TCPDF
     /**
      * set the Word Spacing
      *
-     * @param float word spacing
      * @access public
      */
     public function setWordSpacing($ws = 0.)
