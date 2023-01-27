@@ -158,6 +158,11 @@ class Html2Pdf
     protected $extensionsLoaded = false;
 
     /**
+     * @var bool
+     */
+    private $_pdfa;
+
+    /**
      * class constructor
      *
      * @param string  $orientation page orientation, same as TCPDF
