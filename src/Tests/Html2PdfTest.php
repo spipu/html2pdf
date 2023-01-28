@@ -21,6 +21,8 @@ class Html2PdfTest extends AbstractTest
 
         $object->addExtension($extension);
         $object->writeHTML('<div><test_tag>Hello</test_tag></div>');
+
+        $this->assertTrue(true);
     }
 
     public function testSecurityGood()
