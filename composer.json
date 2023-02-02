@@ -29,5 +29,10 @@
         "psr-4": {
             "Spipu\\Html2Pdf\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Spipu\\Html2Pdf\\Tests\\": "Tests/"
+        }
     }
 }

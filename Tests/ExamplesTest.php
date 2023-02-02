@@ -29,7 +29,7 @@ class ExamplesTest extends PHPUnit_Framework_TestCase
      */
     protected function launchExample($example)
     {
-        $filename = dirname(dirname(dirname(__FILE__))).'/examples/'.$example.'.php';
+        $filename = dirname(dirname(__FILE__)).'/examples/'.$example.'.php';
         if (!is_file($filename)) {
             throw new \Exception('The filename of the example ['.$example.'] does not exist!');
         }
