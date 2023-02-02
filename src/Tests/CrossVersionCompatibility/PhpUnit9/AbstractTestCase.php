@@ -1,12 +1,13 @@
 <?php
 
-namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility;
+namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility\PhpUnit9;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\Html2Pdf;
 
-abstract class AbstractTestCase extends \PHPUnit\Framework\TestCase
+abstract class AbstractTestCase extends TestCase
 {
-    use \Spipu\Html2Pdf\Tests\CrossVersionCompatibility\PhpUnit9\AssertContains;
+    use AssertContains;
 
     /**
      * @var Html2Pdf

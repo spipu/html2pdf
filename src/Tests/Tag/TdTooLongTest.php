@@ -12,7 +12,6 @@
 
 namespace Spipu\Html2Pdf\Tests\Tag;
 
-use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**

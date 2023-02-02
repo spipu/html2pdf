@@ -2,6 +2,7 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Tag\AbstractTag;
 
 /**
@@ -39,8 +40,8 @@ class Html2PdfTest extends AbstractTest
 
     public function testSecurityKo()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
-        $this->expectExceptionMessage('Unauthorized path scheme', \Spipu\Html2Pdf\Exception\HtmlParsingException::class);
+        $this->expectException(HtmlParsingException::class);
+        $this->expectExceptionMessage('Unauthorized path scheme', HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<div><img src="phar://test.com/php.phar" alt="" /></div>');
     }

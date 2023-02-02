@@ -12,6 +12,7 @@
 
 namespace Spipu\Html2Pdf\Tests\Exception;
 
+use Spipu\Html2Pdf\Exception\LongSentenceException;
 use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
@@ -26,7 +27,7 @@ class LongSentenceExceptionTest extends AbstractTest
      */
     public function testBug()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\LongSentenceException::class);
+        $this->expectException(LongSentenceException::class);
 
         $sentence = 'This is a sentence.';
         $bigSentence = $sentence;

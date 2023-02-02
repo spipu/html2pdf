@@ -12,7 +12,7 @@
 
 namespace Spipu\Html2Pdf\Tests\Output;
 
-use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
@@ -58,7 +58,7 @@ class FileNameOkTest extends AbstractTest
      */
     public function testError()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\Html2PdfException::class);
+        $this->expectException(Html2PdfException::class);
         $object = $this->getObject();
         $object->writeHTML('<p>Hello World</p>');
         $object->output('test.bad');

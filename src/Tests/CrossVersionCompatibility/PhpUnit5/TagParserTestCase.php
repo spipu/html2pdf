@@ -10,12 +10,12 @@
  * @copyright 2017 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility;
+namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility\PhpUnit5;
 
-use Spipu\Html2Pdf\Parsing\Node;
+use PHPUnit_Framework_TestCase;
 use Spipu\Html2Pdf\Parsing\TagParser;
 
-abstract class TagParserTestCase extends \PHPUnit_Framework_TestCase
+abstract class TagParserTestCase extends PHPUnit_Framework_TestCase
 {
     /**
      * @var TagParser

@@ -12,7 +12,7 @@
 
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
-use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
@@ -27,7 +27,7 @@ class ParsingTest extends AbstractTest
      */
     public function testUnknownTag()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
+        $this->expectException(HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<bad_tag>Hello World</bad_tag>');
         $object->output('test.pdf', 'S');
@@ -40,7 +40,7 @@ class ParsingTest extends AbstractTest
      */
     public function testTooManyClosuresFound()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
+        $this->expectException(HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<i><u>Hello</u></i></b>');
         $object->output('test.pdf', 'S');
@@ -53,7 +53,7 @@ class ParsingTest extends AbstractTest
      */
     public function testWrongClosedOrder()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
+        $this->expectException(HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<b><u><i>Hello</u></i></b>');
         $object->output('test.pdf', 'S');
@@ -66,7 +66,7 @@ class ParsingTest extends AbstractTest
      */
     public function testNotClosed()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
+        $this->expectException(HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<b><i>Hello</i>');
         $object->output('test.pdf', 'S');
@@ -79,7 +79,7 @@ class ParsingTest extends AbstractTest
      */
     public function testNotClosedMore()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
+        $this->expectException(HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<b><u><i>Hello</i>');
         $object->output('test.pdf', 'S');
@@ -92,7 +92,7 @@ class ParsingTest extends AbstractTest
      */
     public function testInvalidCode()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
+        $this->expectException(HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<az1-r_h>Hello</az1-r_h>');
         $object->output('test.pdf', 'S');

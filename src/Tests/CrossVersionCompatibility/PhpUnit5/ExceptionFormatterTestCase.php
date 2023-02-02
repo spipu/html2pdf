@@ -10,8 +10,10 @@
  * @copyright 2017 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility;
+namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility\PhpUnit5;
 
-abstract class ExceptionFormatterTestCase extends \PHPUnit_Framework_TestCase
+use PHPUnit_Framework_TestCase;
+
+abstract class ExceptionFormatterTestCase extends PHPUnit_Framework_TestCase
 {
 }

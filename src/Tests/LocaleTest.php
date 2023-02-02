@@ -12,13 +12,14 @@
 
 namespace Spipu\Html2Pdf\Tests;
 
+use PHPUnit_Framework_TestCase;
 use Spipu\Html2Pdf\Locale;
 use Spipu\Html2Pdf\Exception\LocaleException;
 
 /**
  * Class LocaleTest
  */
-class LocaleTest extends \PHPUnit_Framework_TestCase
+class LocaleTest extends PHPUnit_Framework_TestCase
 {
     /**
      * test bad code
@@ -27,7 +28,7 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
      */
     public function testBadCode()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\LocaleException::class);
+        $this->expectException(LocaleException::class);
         Locale::clean();
 
         try {
@@ -45,7 +46,7 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
      */
     public function testUnknownCode()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\LocaleException::class);
+        $this->expectException(LocaleException::class);
         Locale::clean();
         try {
             Locale::load('aa');

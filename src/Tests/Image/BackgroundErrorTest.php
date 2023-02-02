@@ -27,7 +27,7 @@ class BackgroundErrorTest extends AbstractTest
      */
     public function testCase()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\ImageException::class);
+        $this->expectException(ImageException::class);
         $image = '/res/wrong.png';
 
         try {

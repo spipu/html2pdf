@@ -17,17 +17,12 @@ use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Exception\ImageException;
 use Spipu\Html2Pdf\Exception\LongSentenceException;
-
-if (HTML2PDF_PHPUNIT_VERSION === 9) {
-    require_once __DIR__ . '/../CrossVersionCompatibility/PhpUnit9/ExceptionFormatterTestCase.php';
-} else {
-    require_once __DIR__ . '/../CrossVersionCompatibility/PhpUnit5/ExceptionFormatterTestCase.php';
-}
+use Spipu\Html2Pdf\Tests\CrossVersionCompatibility\ExceptionFormatterTestCase;
 
 /**
  * Class ExceptionFormaterTest
  */
-class ExceptionFormatterTest extends \Spipu\Html2Pdf\Tests\CrossVersionCompatibility\ExceptionFormatterTestCase
+class ExceptionFormatterTest extends ExceptionFormatterTestCase
 {
     /**
      * Test the formatter / generic exception

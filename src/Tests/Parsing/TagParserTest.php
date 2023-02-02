@@ -12,18 +12,14 @@
 
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Parsing\Node;
-
-if (HTML2PDF_PHPUNIT_VERSION === 9) {
-    require_once __DIR__ . '/../CrossVersionCompatibility/PhpUnit9/TagParserTestCase.php';
-} else {
-    require_once __DIR__ . '/../CrossVersionCompatibility/PhpUnit5/TagParserTestCase.php';
-}
+use Spipu\Html2Pdf\Tests\CrossVersionCompatibility\TagParserTestCase;
 
 /**
  * Class TagParserTest
  */
-class TagParserTest extends \Spipu\Html2Pdf\Tests\CrossVersionCompatibility\TagParserTestCase
+class TagParserTest extends TagParserTestCase
 {
     /**
      * mock of prepareTxt method
@@ -71,7 +67,7 @@ class TagParserTest extends \Spipu\Html2Pdf\Tests\CrossVersionCompatibility\TagP
      */
     public function testAnalyzeTagBadTag()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
+        $this->expectException(HtmlParsingException::class);
         $this->parser->analyzeTag('test');
     }
 

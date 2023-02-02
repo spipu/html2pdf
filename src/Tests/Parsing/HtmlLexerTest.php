@@ -12,12 +12,13 @@
 
 namespace Spipu\Html2Pdf\Tests\Parsing;
 
+use PHPUnit_Framework_TestCase;
 use Spipu\Html2Pdf\Parsing\HtmlLexer;
 
 /**
  * Class HtmlLexerTest
  */
-class HtmlLexerTest extends \PHPUnit_Framework_TestCase
+class HtmlLexerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Test: tokenize

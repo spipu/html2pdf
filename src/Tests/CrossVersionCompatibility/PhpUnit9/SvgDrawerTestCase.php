@@ -1,11 +1,12 @@
 <?php
 
-namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility;
+namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility\PhpUnit9;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\CssConverter;
 use Spipu\Html2Pdf\SvgDrawer;
 
-abstract class SvgDrawerTestCase extends \PHPUnit\Framework\TestCase
+abstract class SvgDrawerTestCase extends TestCase
 {
     /**
      * @var SvgDrawer

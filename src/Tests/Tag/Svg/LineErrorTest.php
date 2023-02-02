@@ -12,6 +12,7 @@
 
 namespace Spipu\Html2Pdf\Tests\Tag\Svg;
 
+use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\Tests\AbstractTest;
 
 /**
@@ -26,7 +27,7 @@ class LineErrorTest extends AbstractTest
      */
     public function testCase()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\HtmlParsingException::class);
+        $this->expectException(HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<line />');
         $object->output('test.pdf', 'S');

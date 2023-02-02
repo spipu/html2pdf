@@ -12,7 +12,6 @@
 
 namespace Spipu\Html2Pdf\Tests\Image;
 
-use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\ImageException;
 use Spipu\Html2Pdf\Tests\AbstractTest;
 
@@ -28,7 +27,7 @@ class SrcErrorTest extends AbstractTest
      */
     public function testCase()
     {
-        $this->expectException(\Spipu\Html2Pdf\Exception\ImageException::class);
+        $this->expectException(ImageException::class);
         $image = '/res/wrong.png';
 
         try {

@@ -10,11 +10,12 @@
  * @copyright 2017 Laurent MINGUET
  */
 
-namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility;
+namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility\PhpUnit9;
 
+use PHPUnit\Framework\TestCase;
 use Spipu\Html2Pdf\Parsing\Html;
 
-abstract class HtmlTestCase extends \PHPUnit\Framework\TestCase
+abstract class HtmlTestCase extends TestCase
 {
     /**
      * @var Html

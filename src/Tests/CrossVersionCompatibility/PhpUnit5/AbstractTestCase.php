@@ -1,6 +1,6 @@
 <?php
 
-namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility;
+namespace Spipu\Html2Pdf\Tests\CrossVersionCompatibility\PhpUnit5;
 
 use Spipu\Html2Pdf\Html2Pdf;
 
