@@ -13,13 +13,15 @@
         }
     ],
     "require": {
-        "php": "^5.6 || ^7.0 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "ext-mbstring": "*",
         "ext-gd": "*",
         "tecnickcom/tcpdf": "^6.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^8.5",
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpcompatibility/php-compatibility": "dev-develop"
     },
     "suggest": {
         "fagundes/zff-html2pdf": "if you need to integrate Html2Pdf with Zend Framework 2 (zf2)",
@@ -29,5 +31,13 @@
         "psr-4": {
             "Spipu\\Html2Pdf\\": "src/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false
+        }
+    },
+    "scripts": {
+        "sniffer:php82": "phpcs -p . --ignore=vendor/*,examples/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --extensions=php --report-full=PHPCompatibilityReport.txt --runtime-set testVersion 8.2"
     }
 }

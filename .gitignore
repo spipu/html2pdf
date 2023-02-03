@@ -17,3 +17,5 @@
 /bin/
 /vendor/
 /composer.lock
+
+/PHPCompatibilityReport.txt

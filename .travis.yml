@@ -1,12 +1,14 @@
+dist: focal
+
 language: php
 
 php:
-  - 7.2
-  - 7.3
   - 7.4
-  - 8.0
   - 8.1
+  - 8.2
 
 before_script:
+  - sudo apt-get install libonig5
   - composer selfupdate
   - composer install --dev --prefer-dist
+  - composer sniffer:php82
