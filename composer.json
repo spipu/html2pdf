@@ -5,6 +5,7 @@
     "keywords": ["html", "pdf", "html2pdf"],
     "homepage": "http://html2pdf.fr/",
     "license": "OSL-3.0",
+    "version": "1.0.1",
     "authors": [
         {
             "name": "Spipu",
@@ -16,7 +17,7 @@
         "php": "^5.6 || ^7.0 || ^8.0",
         "ext-mbstring": "*",
         "ext-gd": "*",
-        "funcional-health/tcpdf": "1.0.0"
+        "funcional-health/tcpdf": "1.0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.0 || ^9.0"
