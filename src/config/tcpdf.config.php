@@ -74,7 +74,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
     );
     foreach ($vendorFolders as $vendorFolder) {
         if (file_exists($vendorFolder.'autoload.php')) {
-            $k_path_main = $vendorFolder . 'tecnickcom/tcpdf/';
+            $k_path_main = $vendorFolder . 'funcional-health/tcpdf/';
 
             break;
         }
