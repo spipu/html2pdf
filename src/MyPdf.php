@@ -27,10 +27,6 @@ class MyPdf extends TCPDF
 
     // nb of segment to build an arc with bezier curv
     const ARC_NB_SEGMENT = 8;
-    /**
-     * @var float|mixed
-     */
-    private $ws;
 
     /**
      * @var float
