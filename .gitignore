@@ -12,8 +12,10 @@
 
 # PhpUnit
 /build/
+/.phpunit.result.cache
 
 # Composer
 /bin/
 /vendor/
 /composer.lock
+/composer.phar
