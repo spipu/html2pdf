@@ -162,6 +162,8 @@ class Html2Pdf
      */
     protected $extensionsLoaded = false;
 
+    protected $_pdfa;
+
     /**
      * class constructor
      *
