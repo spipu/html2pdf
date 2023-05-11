@@ -21,7 +21,6 @@ class MyPdf extends TCPDF
     protected $_transf      = array();
     protected $_myLastPageGroup = null;
     protected $_myLastPageGroupNb = 0;
-    protected $ws;
 
     // used to make a radius with bezier : (4/3 * (sqrt(2) - 1))
     const MY_ARC = 0.5522847498;
