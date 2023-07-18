@@ -45,4 +45,4 @@ For questions and bug reports, please use the GitHub issues page.
 
 This program is distributed under the OSL License. For more information see the [./LICENSE.md](./LICENSE.md) file.
 
-Copyright 2008-2018 by Laurent Minguet
+Copyright 2008-2023 by Laurent Minguet
