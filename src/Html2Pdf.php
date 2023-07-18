@@ -247,7 +247,7 @@ class Html2Pdf
         return array(
             'major'     => 5,
             'minor'     => 2,
-            'revision'  => 7
+            'revision'  => 8
         );
     }
 
