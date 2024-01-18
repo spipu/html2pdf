@@ -1,6 +1,7 @@
 # Html2Pdf
+This is a fork of the spipu/html2pdf repository.
 
-Html2Pdf is a HTML to PDF converter written in PHP, and compatible with PHP **5.6** to **8.2**.
+Html2Pdf is a HTML to PDF converter written in PHP, and compatible with PHP **7.4** to **8.2**.
 
 It allows the conversion of valid HTML in PDF format, to generate documents like invoices, documentation, ...
 
@@ -14,7 +15,7 @@ It uses TCPDF for the PDF part.
 
 ## Requirements
 
-Html2Pdf works with PHP >5.6 and Composer.
+Html2Pdf works with PHP >7.4 and Composer.
 
 You will also need at least the following php extensions:
 
