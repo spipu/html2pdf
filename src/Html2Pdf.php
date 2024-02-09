@@ -27,7 +27,7 @@ use Spipu\Html2Pdf\Tag\TagInterface;
 use Spipu\Html2Pdf\Debug\DebugInterface;
 use Spipu\Html2Pdf\Debug\Debug;
 
-require_once dirname(__FILE__) . '/config/tcpdf.config.php';
+require __DIR__.'/../../tcpdf/tcpdf.php';
 
 class Html2Pdf
 {
