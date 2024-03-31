@@ -19,7 +19,7 @@
         "tecnickcom/tcpdf": "^6.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.0"
+        "phpunit/phpunit": "^5.0 || ^9.0"
     },
     "suggest": {
         "fagundes/zff-html2pdf": "if you need to integrate Html2Pdf with Zend Framework 2 (zf2)",
@@ -28,6 +28,11 @@
     "autoload": {
         "psr-4": {
             "Spipu\\Html2Pdf\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Spipu\\Html2Pdf\\Tests\\": "Tests/"
         }
     }
 }

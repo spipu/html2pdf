@@ -7,14 +7,15 @@
  *
  * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2017 Laurent MINGUET
+ * @copyright 2023 Laurent MINGUET
  */
 
 namespace Spipu\Html2Pdf;
 
 use Spipu\Html2Pdf\Exception\HtmlParsingException;
+use TCPDF;
 
-class MyPdf extends \TCPDF
+class MyPdf extends TCPDF
 {
     protected $_footerParam = array();
     protected $_transf      = array();
@@ -24,8 +25,13 @@ class MyPdf extends \TCPDF
     // used to make a radius with bezier : (4/3 * (sqrt(2) - 1))
     const MY_ARC = 0.5522847498;
 
-    // nb of segment to build a arc with bezier curv
+    // nb of segment to build an arc with bezier curv
     const ARC_NB_SEGMENT = 8;
+
+    /**
+     * @var float
+     */
+    protected $ws = 0.;
 
     /**
      * class constructor
@@ -132,8 +138,8 @@ class MyPdf extends \TCPDF
     }
 
     /**
-     * after cloning a object, we does not want to clone all the front informations
-     * because it take a lot a time and a lot of memory => we use reference
+     * after cloning an object, we do not want to clone all the front information
+     * because it takes a lot a time and a lot of memory => we use reference
      *
      * @param myPdf &$pdf
      * @access public
@@ -155,7 +161,7 @@ class MyPdf extends \TCPDF
      * multiple public accessor for some private attributs
      * used only by cloneFontFrom
      *
-     * @return &array
+     * @return array
      * @access public
      */
     public function &getFonts()
@@ -198,7 +204,7 @@ class MyPdf extends \TCPDF
     /**
      * Verify that a Font is already loaded
      *
-     * @param string Font Key
+     * @param string $fontKey Font Key
      * @return boolean
      * @access public
      */
@@ -229,7 +235,7 @@ class MyPdf extends \TCPDF
     /**
      * set the Word Spacing
      *
-     * @param float word spacing
+     * @param float $ws word spacing
      * @access public
      */
     public function setWordSpacing($ws = 0.)
@@ -534,8 +540,8 @@ class MyPdf extends \TCPDF
     /**
      * add a Translate transformation
      *
-     * @param float $Tx
-     * @param float $Ty
+     * @param $xT
+     * @param $yT
      * @access public
      */
     public function setTranslate($xT, $yT)
@@ -556,8 +562,8 @@ class MyPdf extends \TCPDF
      * add a Rotate transformation
      *
      * @param float $angle
-     * @param float $Cx
-     * @param float $Cy
+     * @param float|null $xC
+     * @param float|null $yC
      * @access public
      */
     public function setRotation($angle, $xC = null, $yC = null)
@@ -653,7 +659,6 @@ class MyPdf extends \TCPDF
     /**
      * multiple public accessor because Html2Pdf need to use TCPDF without being a extend of it
      *
-     * @param  mixed
      * @return mixed
      * @access public
      */
@@ -1065,7 +1070,7 @@ class MyPdf extends \TCPDF
      * @param float $rx
      * @param float $ry
      * @param float $angleBegin in radians
-     * @param float $angleEng in radians
+     * @param float $angleEnd in radians
      * @param boolean $direction
      * @param boolean $drawFirst, true => add the first point
      * @param boolean $trans apply transformation
@@ -1182,7 +1187,7 @@ class MyPdf extends \TCPDF
         // if |vector| is Null, or if |vector| > 2 : impossible to make a arc => Line
         if ($v['D'] == 0 || $v['D']>4) {
             $this->_Line($x2, $y2, $trans);
-            return false;
+            return;
         }
 
         // convert paramters for make a arc with Center, Radius, from angleBegin to angleEnd
@@ -1432,7 +1437,7 @@ class MyPdf extends \TCPDF
 
                 //Filling dots
                 $w=$this->w-$this->lMargin-$this->rMargin-$pageCellSize-($level*8)-($strsize+2);
-                $nb=$w/$this->GetStringWidth('.');
+                $nb = (int) ($w/$this->GetStringWidth('.'));
                 $dots=str_repeat('.', $nb);
                 $this->Cell($w, $this->FontSize+2, $dots, 0, 0, 'R');
 
@@ -1490,7 +1495,7 @@ class MyPdf extends \TCPDF
      * Start a new group of pages
      *
      * @access public
-     * @return integer;
+     * @return void
      * @see tcpdf::startPageGroup
      */
     public function myStartPageGroup()

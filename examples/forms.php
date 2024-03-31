@@ -7,21 +7,13 @@
  *
  * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2017 Laurent MINGUET
+ * @copyright 2023 Laurent MINGUET
  */
 require_once dirname(__FILE__).'/../vendor/autoload.php';
 
 use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
-
-// for display the post information
-if (isset($_POST['test'])) {
-    echo '<pre>';
-    echo htmlentities(print_r($_POST, true));
-    echo '</pre>';
-    exit;
-}
 
 try {
     ob_start();
