@@ -1,14 +1,12 @@
 <?php
 //============================================================+
 // File name   : tcpdf_config.php
-// Begin       : 2004-06-11
-// Last Update : 2013-02-06
 //
 // Description : Configuration file for TCPDF.
 // Author      : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
 // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
 // -------------------------------------------------------------------
-// Copyright (C) 2004-2013  Nicola Asuni - Tecnick.com LTD
+// Copyright (C) Nicola Asuni - Tecnick.com LTD
 //
 // This file is part of TCPDF software library.
 //

@@ -7,7 +7,7 @@
  *
  * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2017 Laurent MINGUET
+ * @copyright 2023 Laurent MINGUET
  */
 require_once dirname(__FILE__).'/../vendor/autoload.php';
 
@@ -15,22 +15,17 @@ use Spipu\Html2Pdf\Html2Pdf;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
-if (isset($_SERVER['REQUEST_URI'])) {
-    $generate = isset($_GET['make_pdf']);
-    $nom = isset($_GET['nom']) ? $_GET['nom'] : 'inconnu';
-    $url = dirname($_SERVER['REQUEST_URI']);
-    if (substr($url, 0, 7)!=='http://') {
-        $url = 'http://'.$_SERVER['HTTP_HOST'].$url;
-    }
-} else {
+$name = 'spipu';
+$generate = false;
+
+if (isset($_GET['nom'])) {
     $generate = true;
-    $nom = 'spipu';
-    $url = 'http://localhost/html2pdf/examples/';
+    $name = $_GET['nom'];
+    $name = preg_replace('/[^a-zA-Z0-9]/isU', '', $name);
+    $name = substr($name, 0, 26);
+} else if (!isset($_SERVER['REQUEST_URI'])) {
+    $generate = true;
 }
-
-$nom = substr(preg_replace('/[^a-zA-Z0-9]/isU', '', $nom), 0, 26);
-$url.= '/res/example09.png.php?px=5&amp;py=20';
-
 
 if ($generate) {
     ob_start();
@@ -49,13 +44,13 @@ if ($generate) {
 <br>
 Ceci est un exemple de génération de PDF via un bouton :)<br>
 <br>
-<img src="<?php echo $url; ?>" alt="image_php" ><br>
+<img src="http://html2pdf-dev.lxd/res/example09.png.php?px=5&amp;py=20" alt="image_php" ><br>
 <br>
 <?php
 if ($generate) {
 ?>
-Bonjour <b><?php echo $nom; ?></b>, ton nom peut s'écrire : <br>
-<barcode type="C39" value="<?php echo strtoupper($nom); ?>" style="color: #770000" ></barcode><hr>
+Bonjour <b><?php echo $name; ?></b>, ton nom peut s'écrire : <br>
+<barcode type="C39" value="<?php echo strtoupper($name); ?>" style="color: #770000" ></barcode><hr>
 <br>
 <?php
 }

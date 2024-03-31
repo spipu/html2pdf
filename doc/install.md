@@ -22,11 +22,11 @@ composer require spipu/html2pdf
 
 If you do not want to use composer, you will need to:
 
-* manually clone the html2pdf repository
+* manually clone the Html2pdf repository
 * manually clone all the repositories of the used dependencies
 * manage manually the PS4 autoload
 
-But it is not the recommaned way to instal Html2Pdf. No help will be provided in this case.
+But it is not the recommended way to install Html2Pdf. No help will be provided in this case.
 
 ### First Test
 
@@ -42,7 +42,7 @@ $html2pdf->writeHTML('<h1>HelloWorld</h1>This is my first test');
 $html2pdf->output();
 ```
 
-Html2Pdf use the PSR-4 autoloader of Composer. You have just to require it. Never require manually the classes, it will not work at all. You must use the Composer functionnalities.
+Html2Pdf use the PSR-4 autoloader of Composer. You have just to require it. Never require manually the classes, it will not work at all. You must use the Composer functionalities.
 
 Then, you have just to use the main class `Spipu\Html2Pdf\Html2Pdf`, with the 2 main methods `writeHTML` and `output`.
 
