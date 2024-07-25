@@ -1845,21 +1845,25 @@ class Html2Pdf
                     $imageIsLandscape = $imageWidth > $imageHeight;
 
                     if ($iSize == 'contain') {
-                        if (($containerIsLandscape && !$imageIsLandscape) || (!$containerIsLandscape && $imageIsLandscape)) {
-                            $imageHeight = $bH;
-                            $imageWidth = $bH * ($imageInfos[0] / $imageInfos[1]);
+                        if (($containerIsLandscape && $imageIsLandscape) || (!$containerIsLandscape && !$imageIsLandscape)) {
+                            // Scale to fit width or height, maintaining aspect ratio
+                            $scale = min($bW / $imageWidth, $bH / $imageHeight);
                         } else {
-                            $imageWidth = $bW;
-                            $imageHeight = $bW * ($imageInfos[1] / $imageInfos[0]);
+                            // Scale to fit height or width, maintaining aspect ratio
+                            $scale = min($bH / $imageHeight, $bW / $imageWidth);
                         }
+                        $imageWidth *= $scale;
+                        $imageHeight *= $scale;
                     } else if ($iSize == 'cover') {
-                        if (($containerIsLandscape && !$imageIsLandscape) || (!$containerIsLandscape && $imageIsLandscape)) {
-                            $imageWidth = $bW;
-                            $imageHeight = $bW * ($imageInfos[1] / $imageInfos[0]);
+                        if (($containerIsLandscape && $imageIsLandscape) || (!$containerIsLandscape && !$imageIsLandscape)) {
+                            // Scale to cover width or height, maintaining aspect ratio
+                            $scale = max($bW / $imageWidth, $bH / $imageHeight);
                         } else {
-                            $imageHeight = $bH;
-                            $imageWidth = $bH * ($imageInfos[0] / $imageInfos[1]);
+                            // Scale to cover height or width, maintaining aspect ratio
+                            $scale = max($bH / $imageHeight, $bW / $imageWidth);
                         }
+                        $imageWidth *= $scale;
+                        $imageHeight *= $scale;
                     }
 
                     $resize = true;
