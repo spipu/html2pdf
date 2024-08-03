@@ -1807,36 +1807,35 @@ class Html2Pdf
             $bH = $h;
 
             if ($border['b']['width']) {
-                $bH-= $border['b']['width'];
+                $bH -= $border['b']['width'];
             }
             if ($border['l']['width']) {
-                $bW-= $border['l']['width'];
-                $bX+= $border['l']['width'];
+                $bW -= $border['l']['width'];
+                $bX += $border['l']['width'];
             }
             if ($border['t']['width']) {
-                $bH-= $border['t']['width'];
-                $bY+= $border['t']['width'];
+                $bH -= $border['t']['width'];
+                $bY += $border['t']['width'];
             }
             if ($border['r']['width']) {
-                $bW-= $border['r']['width'];
+                $bW -= $border['r']['width'];
             }
 
             // get the size of the image
-            // WARNING : if URL, "allow_url_fopen" must turned to "on" in php.ini
-            $imageInfos=@getimagesize($iName);
+            // WARNING : if URL, "allow_url_fopen" must be turned to "on" in php.ini
+            $imageInfos = @getimagesize($iName);
 
-            // if the image can not be loaded
-            if (!is_array($imageInfos) || count($imageInfos)<2) {
+            // if the image cannot be loaded
+            if (!is_array($imageInfos) || count($imageInfos) < 2) {
                 if ($this->_testIsImage) {
-                    $e = new ImageException('Unable to get the size of the image ['.$iName.']');
+                    $e = new ImageException('Unable to get the size of the image [' . $iName . ']');
                     $e->setImage($iName);
                     throw $e;
                 }
             } else {
-                // convert the size of the image from pixel to the unit of the PDF
-                $imageWidth  = 72./96.*$imageInfos[0]/$this->pdf->getK();
-                $imageHeight = 72./96.*$imageInfos[1]/$this->pdf->getK();
-
+                // convert the size of the image from pixels to the unit of the PDF
+                $imageWidth  = 72. / 96. * $imageInfos[0] / $this->pdf->getK();
+                $imageHeight = 72. / 96. * $imageInfos[1] / $this->pdf->getK();
 
                 // prepare for image size "contain" and "cover"
                 $fitbox = false;
@@ -1846,20 +1845,25 @@ class Html2Pdf
                     $imageIsLandscape = $imageWidth > $imageHeight;
 
                     if ($iSize == 'contain') {
-                        $imageWidth = $bW;
-                        $imageHeight = $bH;
-                    }
-                    else if ($iSize == 'cover') {
-                        if ((!$containerIsLandscape && $imageIsLandscape) || ($containerIsLandscape && !$imageIsLandscape)) {
-                            $aspectRatio = $imageWidth / $imageHeight;
-                            $imageWidth = $imageWidth * $aspectRatio;
-                            $imageHeight = $bH;
+                        if (($containerIsLandscape && $imageIsLandscape) || (!$containerIsLandscape && !$imageIsLandscape)) {
+                            // Scale to fit width or height, maintaining aspect ratio
+                            $scale = min($bW / $imageWidth, $bH / $imageHeight);
+                        } else {
+                            // Scale to fit height or width, maintaining aspect ratio
+                            $scale = min($bH / $imageHeight, $bW / $imageWidth);
                         }
-                        else {
-                            $aspectRatio = $imageHeight / $imageWidth;
-                            $imageWidth = $bW;
-                            $imageHeight = $imageHeight * $aspectRatio;
+                        $imageWidth *= $scale;
+                        $imageHeight *= $scale;
+                    } else if ($iSize == 'cover') {
+                        if (($containerIsLandscape && $imageIsLandscape) || (!$containerIsLandscape && !$imageIsLandscape)) {
+                            // Scale to cover width or height, maintaining aspect ratio
+                            $scale = max($bW / $imageWidth, $bH / $imageHeight);
+                        } else {
+                            // Scale to cover height or width, maintaining aspect ratio
+                            $scale = max($bH / $imageHeight, $bW / $imageWidth);
                         }
+                        $imageWidth *= $scale;
+                        $imageHeight *= $scale;
                     }
 
                     $resize = true;
@@ -1870,59 +1874,59 @@ class Html2Pdf
                 if ($iRepeat[0]) {
                     $iPosition[0] = $bX;
                 } elseif (preg_match('/^([-]?[0-9\.]+)%/isU', $iPosition[0], $match)) {
-                    $iPosition[0] = $bX + $match[1]*($bW-$imageWidth)/100;
+                    $iPosition[0] = $bX + $match[1] * ($bW - $imageWidth) / 100;
                 } else {
-                    $iPosition[0] = $bX+$iPosition[0];
+                    $iPosition[0] = $bX + $iPosition[0];
                 }
 
                 if ($iRepeat[1]) {
                     $iPosition[1] = $bY;
                 } elseif (preg_match('/^([-]?[0-9\.]+)%/isU', $iPosition[1], $match)) {
-                    $iPosition[1] = $bY + $match[1]*($bH-$imageHeight)/100;
+                    $iPosition[1] = $bY + $match[1] * ($bH - $imageHeight) / 100;
                 } else {
-                    $iPosition[1] = $bY+$iPosition[1];
+                    $iPosition[1] = $bY + $iPosition[1];
                 }
 
                 $imageXmin = $bX;
-                $imageXmax = $bX+$bW;
+                $imageXmax = $bX + $bW;
                 $imageYmin = $bY;
-                $imageYmax = $bY+$bH;
+                $imageYmax = $bY + $bH;
 
                 if (!$iRepeat[0] && !$iRepeat[1]) {
-                    $imageXmin =     $iPosition[0];
-                    $imageXmax =     $iPosition[0]+$imageWidth;
-                    $imageYmin =     $iPosition[1];
-                    $imageYmax =     $iPosition[1]+$imageHeight;
+                    $imageXmin = $iPosition[0];
+                    $imageXmax = $iPosition[0] + $imageWidth;
+                    $imageYmin = $iPosition[1];
+                    $imageYmax = $iPosition[1] + $imageHeight;
                 } elseif ($iRepeat[0] && !$iRepeat[1]) {
-                    $imageYmin =     $iPosition[1];
-                    $imageYmax =     $iPosition[1]+$imageHeight;
+                    $imageYmin = $iPosition[1];
+                    $imageYmax = $iPosition[1] + $imageHeight;
                 } elseif (!$iRepeat[0] && $iRepeat[1]) {
-                    $imageXmin =     $iPosition[0];
-                    $imageXmax =     $iPosition[0]+$imageWidth;
+                    $imageXmin = $iPosition[0];
+                    $imageXmax = $iPosition[0] + $imageWidth;
                 }
 
                 // build the path to display the image (because of radius)
                 $this->pdf->clippingPathStart($bX, $bY, $bW, $bH, $inTL, $inTR, $inBL, $inBR);
 
                 // repeat the image
-                for ($iY=$imageYmin; $iY<$imageYmax; $iY+=$imageHeight) {
-                    for ($iX=$imageXmin; $iX<$imageXmax; $iX+=$imageWidth) {
+                for ($iY = $imageYmin; $iY < $imageYmax; $iY += $imageHeight) {
+                    for ($iX = $imageXmin; $iX < $imageXmax; $iX += $imageWidth) {
                         $cX = null;
                         $cY = null;
                         $cW = $imageWidth;
                         $cH = $imageHeight;
-                        if ($imageYmax-$iY<$imageHeight) {
+                        if ($imageYmax - $iY < $imageHeight) {
                             $cX = $iX;
                             $cY = $iY;
-                            $cH = $imageYmax-$iY;
+                            $cH = $imageYmax - $iY;
                         }
-                        if ($imageXmax-$iX<$imageWidth) {
+                        if ($imageXmax - $iX < $imageWidth) {
                             $cX = $iX;
                             $cY = $iY;
-                            $cW = $imageXmax-$iX;
+                            $cW = $imageXmax - $iX;
                         }
 
-                        $this->pdf->Image($iName, $iX, $iY, $imageWidth, $imageHeight, '', '', '', $resize, 300, '', false, false, 0, $fitbox);
+                        $this->pdf->Image($iName, $iX, $iY, $cW, $cH, '', '', '', $resize, 300, '', false, false, 0, $fitbox);
                     }
                 }
 
