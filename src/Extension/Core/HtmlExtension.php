@@ -52,6 +52,7 @@ class HtmlExtension extends AbstractExtension
             new Html\Sub(),
             new Html\Sup(),
             new Html\U(),
+            new Html\StrikeTag(),
         );
     }
 }
