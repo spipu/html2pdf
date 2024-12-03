@@ -381,11 +381,11 @@ class Html2Pdf
     /**
      * set the debug mode to On
      *
-     * @param DebugInterface $debugObject
+     * @param DebugInterface|null $debugObject
      *
      * @return Html2Pdf $this
      */
-    public function setModeDebug(DebugInterface $debugObject = null)
+    public function setModeDebug($debugObject = null)
     {
         if (is_null($debugObject)) {
             $this->debug = new Debug();
