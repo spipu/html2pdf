@@ -40,7 +40,7 @@ class MyPdf extends TCPDF
      * @param string  $unit        User measure unit, same as TCPDF
      * @param mixed   $format      The format used for pages, same as TCPDF
      * @param boolean $unicode     TRUE means that the input text is unicode (default = true)
-     * @param String  $encoding    charset encoding; default is UTF-8
+     * @param string  $encoding    charset encoding; default is UTF-8
      * @param boolean $diskcache   if TRUE reduce the RAM memory usage by caching temporary data on filesystem (slower).
      * @param boolean $pdfa        If TRUE set the document to PDF/A mode.
      * @access public
