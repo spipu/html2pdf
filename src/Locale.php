@@ -81,7 +81,7 @@ class Locale
         self::$list = array();
         $handle = fopen($file, 'r');
         while (!feof($handle)) {
-            if (PHP_VERSION >= 80400) {
+            if (PHP_VERSION_ID >= 80400) {
                 // As of PHP 8.4.0, depending on the default value of escape is deprecated.
                 $line = fgetcsv($handle, null, ',', '"', '\\');
             } else {
