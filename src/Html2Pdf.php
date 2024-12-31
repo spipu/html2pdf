@@ -76,7 +76,7 @@ class Html2Pdf
     protected $_unicode          = true;        // means that the input text is unicode (default = true)
 
     /**
-     * @var bool
+     * @var false|int
      */
     protected $_pdfa;
 
@@ -171,7 +171,7 @@ class Html2Pdf
      * @param boolean $unicode     TRUE means that the input text is unicode (default = true)
      * @param string  $encoding    charset encoding; default is UTF-8
      * @param array   $margins     Default margins (left, top, right, bottom)
-     * @param boolean $pdfa        If TRUE set the document to PDF/A mode.
+     * @param false|int $pdfa        If TRUE set the document to PDF/A mode.
      *
      * @return Html2Pdf
      */
@@ -578,7 +578,7 @@ class Html2Pdf
 
         // call the output of TCPDF
         $output = $this->pdf->Output($name, $dest);
-        
+
         // close the pdf and clean up
         $this->clean();
 
