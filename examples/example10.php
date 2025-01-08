@@ -7,7 +7,7 @@
  *
  * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @copyright 2023 Laurent MINGUET
+ * @copyright 2025 Laurent MINGUET
  */
 require_once dirname(__FILE__).'/../vendor/autoload.php';
 
