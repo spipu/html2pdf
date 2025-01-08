@@ -70,6 +70,58 @@ class MyPdf extends TCPDF
         $this->setCellPaddings(0, 0, 0, 0);
         $this->setCellMargins(0, 0, 0, 0);
     }
+	
+	/**
+	 * Default destructor.
+	 * OVERWRITE TCPDF __destruct
+	 * @public
+	 * @since 1.53.0.TC016
+	 */
+	public function __destruct() {
+		// cleanup
+		$this->_destroy(true);
+	}
+	
+	/**
+	 * OVERWRITE TCPDF _destroy
+	 * tcpdf 
+	 */
+	public function _destroy($destroyall=false, $preserve_objcopy=false) {
+		// restore internal encoding
+		if (isset($this->internal_encoding) AND !empty($this->internal_encoding)) {
+			mb_internal_encoding($this->internal_encoding);
+		}
+		$preserve = array(
+			'file_id',
+			'internal_encoding',
+			'state',
+			'bufferlen',
+			'buffer',
+			'cached_files',
+			'sign',
+			'signature_data',
+			'signature_max_length',
+			'byterange_string',
+			'tsa_timestamp',
+			'tsa_data'
+		);
+		foreach (array_keys(get_object_vars($this)) as $val) {
+			if ($destroyall OR !in_array($val, $preserve)) {
+				if ((!$preserve_objcopy OR ($val != 'objcopy')) AND ($val != 'file_id') AND isset($this->$val)) {
+					unset($this->$val);
+				}
+			}
+		}
+	}
+	
+	/**
+     * Get the private variable file_id, for cleaning tmp files
+	 * @access public
+     */
+	public function getFileId()
+	{
+		return $this->file_id;
+	}
 
     /**
      * Set the parameters for the automatic footer
