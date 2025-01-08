@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.3.0](https://github.com/spipu/html2pdf/compare/v5.2.8...v5.3.0) - 2025-01-08
+
+  * bump supported phpversion from **5.6 -> 8.2** to **7.2 -> 8.4**
+  * add html tag "strike" - thanks to @milan-ghevariya
+  * add html tag "figure" - thanks to @fredmatrack
+  * replace Travis with Github actions for CI - thanks to @W0rma
+  * fix casing of parameter type - thanks to @W0rma 
+  * fix bad type hint on setModeDebug function - thanks to @W0rma
+  * fix fgetcsv usage for php 8.4 compatibility - thanks to @W0rma
+  * fix TCPDF::$pdfa argument type as per upstream - thanks to @jankal
+
 ## [5.2.8](https://github.com/spipu/html2pdf/compare/v5.2.7...v5.2.8) - 2023-07-18
 
   * fix XSS vulnerabilities in examples `example9.php` and `forms.php` - thanks to Michał Majchrowicz, Livio Victoriano and Zbigniew Piotrak  from [AFINE  Team](https://www.afine.pl/)

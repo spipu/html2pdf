@@ -87,6 +87,7 @@
         <li>&lt;s&gt; : Texte <s>barré</s></li>
         <li>&lt;small&gt; : Ecrire plus <small>petit</small>.</li>
         <li>&lt;style&gt;</li>
+        <li>&lt;strike&gt; : Exemple <strike>texte barré</strike>.</li>
         <li>&lt;sup&gt; : Exemple<sup>haut</sup>.</li>
         <li>&lt;sub&gt; : Exemple<sub>bas</sub>.</li>
         <li>&lt;u&gt; : Texte <u>souligné</u></li>

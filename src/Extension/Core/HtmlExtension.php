@@ -40,6 +40,7 @@ class HtmlExtension extends AbstractExtension
             new Html\Cite(),
             new Html\Del(),
             new Html\Em(),
+            new Html\Figure(),
             new Html\Font(),
             new Html\I(),
             new Html\Ins(),
@@ -52,7 +53,7 @@ class HtmlExtension extends AbstractExtension
             new Html\Sub(),
             new Html\Sup(),
             new Html\U(),
-            new Html\StrikeTag(),
+            new Html\Strike(),
         );
     }
 }

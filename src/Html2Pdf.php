@@ -246,8 +246,8 @@ class Html2Pdf
     {
         return array(
             'major'     => 5,
-            'minor'     => 2,
-            'revision'  => 8
+            'minor'     => 3,
+            'revision'  => 0
         );
     }
 
@@ -385,7 +385,7 @@ class Html2Pdf
      *
      * @return Html2Pdf $this
      */
-    public function setModeDebug($debugObject = null)
+    public function setModeDebug(?DebugInterface $debugObject = null)
     {
         if (is_null($debugObject)) {
             $this->debug = new Debug();
