@@ -308,6 +308,27 @@ class CssConverter
     }
 
     /**
+     * Parse a background size
+     *
+     * @param  string $css
+     *
+     * @return string|null $value
+     */
+    public function convertBackgroundSize($css)
+    {
+        if ($css === 'auto') {
+            return null;
+        }
+
+        $available = ['contain', 'cover'];
+        if (in_array($css, $available)) {
+            return $css;
+        }
+
+        return null;
+    }
+
+    /**
      * Parse a background position
      *
      * @param  string $css
