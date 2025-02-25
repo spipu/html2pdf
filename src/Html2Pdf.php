@@ -3230,7 +3230,7 @@ class Html2Pdf
                 $this->_tag_open_BR(array());
             }
 
-            if ($h < $maxH && $endY >= $maxY && !$this->_isInOverflow) {
+            if ($h < $maxH && $endY >= $maxY && !$this->_isInOverflow && ((!isset($param['class']) || strpos($param['class'], 'html2pdf-same-page') === false))) {
                 $this->_setNewPage();
             }
 
