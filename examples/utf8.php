@@ -19,7 +19,7 @@ use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 try {
     $html2pdf = new Html2Pdf('P', 'A4', 'fr');
 
-    $content = file_get_contents(K_PATH_MAIN.'examples/data/utf8test.txt');
+    $content = file_get_contents(dirname(__FILE__) . '/res/utf8.txt');
     $content = '<page style="font-family: freeserif"><br />'.nl2br($content).'</page>';
 
     $html2pdf->pdf->SetDisplayMode('real');

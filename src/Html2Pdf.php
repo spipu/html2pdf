@@ -23,6 +23,8 @@ use Spipu\Html2Pdf\Parsing\HtmlLexer;
 use Spipu\Html2Pdf\Parsing\Node;
 use Spipu\Html2Pdf\Parsing\TagParser;
 use Spipu\Html2Pdf\Parsing\TextParser;
+use Spipu\Html2Pdf\Security\Security;
+use Spipu\Html2Pdf\Security\SecurityInterface;
 use Spipu\Html2Pdf\Tag\TagInterface;
 use Spipu\Html2Pdf\Debug\DebugInterface;
 use Spipu\Html2Pdf\Debug\Debug;
@@ -68,6 +70,11 @@ class Html2Pdf
      * @var SvgDrawer
      */
     private $svgDrawer;
+
+    /**
+     * @var SecurityInterface
+     */
+    private $security;
 
     protected $_langue           = 'fr';        // locale of the messages
     protected $_orientation      = 'P';         // page orientation : Portrait ou Landscape
@@ -199,13 +206,18 @@ class Html2Pdf
         // load the Locale
         Locale::load($this->_langue);
 
-        // create the  myPdf object
+        $this->security = new Security();
         $this->pdf = new MyPdf($orientation, 'mm', $format, $unicode, $encoding, false, $pdfa);
 
-        // init the CSS parsing object
         $this->cssConverter = new CssConverter();
         $textParser = new TextParser($encoding);
-        $this->parsingCss = new Parsing\Css($this->pdf, new TagParser($textParser), $this->cssConverter);
+
+        $this->parsingCss = new Parsing\Css(
+            $this->pdf,
+            new TagParser($textParser),
+            $this->cssConverter,
+            $this->security
+        );
         $this->parsingCss->fontSet();
         $this->_defList = array();
 
@@ -247,7 +259,7 @@ class Html2Pdf
         return array(
             'major'     => 5,
             'minor'     => 3,
-            'revision'  => 0
+            'revision'  => 1,
         );
     }
 
@@ -273,6 +285,19 @@ class Html2Pdf
         $this->parsingHtml = clone $this->parsingHtml;
         $this->parsingCss = clone $this->parsingCss;
         $this->parsingCss->setPdfParent($this->pdf);
+    }
+
+    /**
+     * Use a specific security interface
+     * @param SecurityInterface $security
+     * @return $this
+     */
+    public function setSecurityService(SecurityInterface $security): self
+    {
+        $this->security = $security;
+        $this->parsingCss->setSecurityService($security);
+
+        return $this;
     }
 
     /**
@@ -1509,14 +1534,14 @@ class Html2Pdf
     protected function _drawImage($src, $subLi = false)
     {
         // get the size of the image
-        // WARNING : if URL, "allow_url_fopen" must turned to "on" in php.ini
+        // WARNING : if URL, "allow_url_fopen" must turn to "on" in php.ini
 
         if (strpos($src,'data:') === 0) {
             $src = base64_decode( preg_replace('#^data:image/[^;]+;base64,#', '', $src) );
             $infos = @getimagesizefromstring($src);
             $src = "@{$src}";
         } else {
-            $this->parsingCss->checkValidPath($src);
+            $this->security->checkValidPath((string) $src);
             $infos = @getimagesize($src);
         }
 
@@ -5806,13 +5831,15 @@ class Html2Pdf
         }
 
         // set certificate file
-        $certificate = $param['src'];
+        $certificate = (string) $param['src'];
+        $this->security->checkValidPath($certificate);
         if(!file_exists($certificate)) {
             return true;
         }
 
         // Set private key
-        $privkey = $param['privkey'];
+        $privkey = (string) $param['privkey'];
+        $this->security->checkValidPath($privkey);
         if(strlen($privkey)==0 || !file_exists($privkey)) {
             $privkey = $certificate;
         }

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.3.1](https://github.com/spipu/html2pdf/compare/v5.3.0...v5.3.1) - 2025-02-26
+
+  * add new Security service, that can be overridden
+  * add some doc about new Security service
+  * fix security issue on scheme for cert html tag attributes - thanks to [Positive Technologies](https://www.ptsecurity.com)
+  * fix UTF8 example
+
 ## [5.3.0](https://github.com/spipu/html2pdf/compare/v5.2.8...v5.3.0) - 2025-01-08
 
   * bump supported phpversion from **5.6 -> 8.2** to **7.2 -> 8.4**
