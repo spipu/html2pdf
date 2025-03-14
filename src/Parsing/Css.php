@@ -183,7 +183,8 @@ class Css
             'color'    => null,
             'image'    => null,
             'position' => null,
-            'repeat'   => null
+            'repeat'   => null,
+            'size'     => null
         );
         $this->value['border']           = array();
         $this->value['padding']          = array();
@@ -236,7 +237,7 @@ class Css
         $this->value['display']    = null;
         $this->value['rotate']     = null;
         $this->value['overflow']   = 'visible';
-        $this->value['background'] = array('color' => null, 'image' => null, 'position' => null, 'repeat' => null);
+        $this->value['background'] = array('color' => null, 'image' => null, 'position' => null, 'repeat' => null, 'size' => null);
         $this->value['border']     = array(
             't' => $this->readBorder('none'),
             'r' => $this->readBorder('none'),
@@ -1150,6 +1151,11 @@ class Css
                 case 'background-position':
                     $res = null;
                     $this->value['background']['position'] = $this->cssConverter->convertBackgroundPosition($val, $res);
+                    break;
+
+                case 'background-size':
+                    $res = null;
+                    $this->value['background']['size'] = $this->cssConverter->convertBackgroundSize($val, $res);
                     break;
 
                 case 'background-repeat':
