@@ -6051,6 +6051,7 @@ class Html2Pdf
 
         $prop['multiline'] = true;
         $prop['value'] = $level[0]->getParam('txt', '');
+        $prop['readonly'] = $param['readonly'] ?? false;
 
         $this->pdf->TextField($param['name'], $w, $h, $prop, array(), $x, $y);
 
@@ -6159,6 +6160,7 @@ class Html2Pdf
                 }
                 $h = $f*1.3;
                 $prop['value'] = $param['value'];
+                $prop['readonly'] = $param['readonly'] ?? false;
                 $this->pdf->TextField($name, $w, $h, $prop, array(), $x, $y);
                 break;
 
