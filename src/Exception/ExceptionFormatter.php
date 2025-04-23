@@ -121,7 +121,7 @@ class ExceptionFormatter
 
         if (!empty($data)) {
             foreach ($data as $key => $value) {
-                $this->message .= ' '.ucwords($key).': '.trim($value)."\n";
+                $this->message .= ' '.ucwords($key).': '.trim((string) $value)."\n";
             }
         }
     }
@@ -145,7 +145,7 @@ class ExceptionFormatter
 
         if (!empty($data)) {
             foreach ($data as $key => $value) {
-                $this->htmlMessage .= ' '.ucwords($key).': '.trim(htmlentities($value))."<br />\n";
+                $this->htmlMessage .= ' '.ucwords($key).': '.trim(htmlentities((string) $value))."<br />\n";
             }
         }
     }

@@ -62,6 +62,7 @@ if ($generate) {
 
     try {
         $html2pdf = new Html2Pdf('P', 'A4', 'fr');
+        $html2pdf->getSecurityService()->addAllowedHost('html2pdf-dev.lxd');
         $html2pdf->writeHTML($content);
         $html2pdf->output('example09.pdf');
         exit;
