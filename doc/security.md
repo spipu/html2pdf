@@ -9,13 +9,14 @@ It allows :
  * HTTP/HTTPS external files
  * Local Files
 
-It does **not** protect again **Blind SSRF**. This means that the library loads external resources
-without validating the destination address before sending an HTTP request.
+You can add a specific host to be allowed for http/https scheme. By default, the whitelist is empty.
 
-This is not the responsibility of this library.
+```php
+$html2pdf->getSecurityService()->addAllowedHost('www.html2pdf.fr');
+```
 
 You must ensure that the HTML you want to convert is secure, **especially if it is generated from uncontrolled data contributed by users**.
-In such cases, an attacker could send requests to both external servers and restricted-access servers (e.g., within a local network).
+In such cases, an attacker could send requests to both external servers and restricted-access servers (e.g., within a local network) on host that you have added to the whitelist.
 
 If you need additional security, you can implement the [SecurityInterface](../src/Security/SecurityInterface.php),
 and call the method `setSecurityService` on the Html2Pdf object to use it.
