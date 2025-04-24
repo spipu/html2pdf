@@ -54,6 +54,7 @@ class HtmlExtension extends AbstractExtension
             new Html\Sup(),
             new Html\U(),
             new Html\Strike(),
+            new Html\Button(),
         );
     }
 }
