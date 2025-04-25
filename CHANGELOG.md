@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.3.2](https://github.com/spipu/html2pdf/compare/v5.3.1...master) - 2025-xx-xx
+## [5.3.2](https://github.com/spipu/html2pdf/compare/v5.3.1...5.3.2) - 2025-04-25
 
   * add readonly attribute support for input and textarea - thanks to @kkevinchoo
   * improve Security service to be able to allow specific hosts
