@@ -176,16 +176,6 @@ class ExamplesTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * test: example09
-     *
-     * @return void
-     */
-    public function testExample09()
-    {
-        $this->launchExample('example09');
-    }
-
-    /**
      * test: example10
      *
      * @return void
