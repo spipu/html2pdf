@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.3.2](https://github.com/spipu/html2pdf/compare/v5.3.1...v5.3.2) - 2025-04-23
+## [5.3.2](https://github.com/spipu/html2pdf/compare/v5.3.1...master) - 2025-xx-xx
 
   * improve Security service to be able to allow specific hosts
   * update doc about Security service
-  * fix security issue on css background-image validation - thanks to Aleksey Solovev ([Positive Technologies](https://www.ptsecurity.com))
+  * fix security issue on css background-image validation - thanks to Aleksey Solovev and Nikita Sveshnikov ([Positive Technologies](https://www.ptsecurity.com))
   * fix security issue on image src validation - thanks to Aleksey Solovev ([Positive Technologies](https://www.ptsecurity.com))
  
 ## [5.3.1](https://github.com/spipu/html2pdf/compare/v5.3.0...v5.3.1) - 2025-02-26
