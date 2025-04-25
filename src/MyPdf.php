@@ -1405,8 +1405,10 @@ class MyPdf extends TCPDF
         $size=sizeof($this->outlines);
 
         // get the size of the "P. xx" cell
-        $pageCellSize=$this->GetStringWidth('p. '.$this->outlines[$size-1]['p'])+2;
-
+        if ($size > 0) {
+            $pageCellSize=$this->GetStringWidth('p. '.$this->outlines[$size-1]['p'])+2;
+        }
+        
         // Foreach bookmark
         for ($i=0; $i<$size; $i++) {
             // if we need a new page => add a new page
