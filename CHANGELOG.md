@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
   * fix security issue on css background-image validation - thanks to Aleksey Solovev and Nikita Sveshnikov ([Positive Technologies](https://www.ptsecurity.com))
   * fix security issue on image src validation - thanks to Aleksey Solovev ([Positive Technologies](https://www.ptsecurity.com))
   * fix on Index creation if no bookmark - thanks to @rhulha
+  * fix tables getting moved to other pages and breaking styles by using specific class `html2pdf-same-page` on div container - thanks to @macr1408
  
 ## [5.3.1](https://github.com/spipu/html2pdf/compare/v5.3.0...v5.3.1) - 2025-02-26
 
