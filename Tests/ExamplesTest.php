@@ -62,6 +62,7 @@ class ExamplesTest extends PHPUnit_Framework_TestCase
 
         // test
         $this->assertNotEmpty($result);
+        $this->assertStringStartsWith('%PDF-1.7', $result);
     }
 
     /**
@@ -172,6 +173,16 @@ class ExamplesTest extends PHPUnit_Framework_TestCase
     public function testExample08()
     {
         $this->launchExample('example08');
+    }
+
+    /**
+     * test: example09
+     *
+     * @return void
+     */
+    public function testExample09()
+    {
+        $this->launchExample('example09');
     }
 
     /**
