@@ -15,6 +15,18 @@ You can add a specific host to be allowed for http/https scheme. By default, the
 $html2pdf->getSecurityService()->addAllowedHost('www.html2pdf.fr');
 ```
 
+You can reset the list of allowed hosts for http/https scheme.
+
+```php
+$html2pdf->getSecurityService()->resetAllowedHosts();
+```
+
+You can disable the check on the allowed hosts for http/https scheme.
+
+```php
+$html2pdf->getSecurityService()->disableCheckAllowedHosts();
+```
+
 You must ensure that the HTML you want to convert is secure, **especially if it is generated from uncontrolled data contributed by users**.
 In such cases, an attacker could send requests to both external servers and restricted-access servers (e.g., within a local network) on host that you have added to the whitelist.
 

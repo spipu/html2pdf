@@ -27,6 +27,11 @@ class Security implements SecurityInterface
     protected $allowedHosts = [];
 
     /**
+     * @var bool
+     */
+    private $checkAllowedHosts = true;
+
+    /**
      * @param string $path
      * @return void
      * @throws HtmlParsingException
@@ -38,7 +43,7 @@ class Security implements SecurityInterface
             throw new HtmlParsingException('Unauthorized path scheme');
         }
 
-        if (!$this->checkValidPathHost($path)) {
+        if ($this->checkAllowedHosts && !$this->checkValidPathHost($path)) {
             throw new HtmlParsingException('Unauthorized path host on ' . $path . ' => ' . implode('|', $this->allowedHosts));
         }
     }
@@ -95,5 +100,18 @@ class Security implements SecurityInterface
         if (!in_array($host, $this->allowedHosts)) {
             $this->allowedHosts[] = $host;
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function resetAllowedHosts(): void
+    {
+        $this->allowedHosts = [];
+    }
+
+    public function disableCheckAllowedHosts(): void
+    {
+        $this->checkAllowedHosts = false;
     }
 }
