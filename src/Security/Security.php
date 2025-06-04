@@ -110,6 +110,9 @@ class Security implements SecurityInterface
         $this->allowedHosts = [];
     }
 
+    /**
+     * @return void
+     */
     public function disableCheckAllowedHosts(): void
     {
         $this->checkAllowedHosts = false;
