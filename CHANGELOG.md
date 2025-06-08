@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.3.3](https://github.com/spipu/html2pdf/compare/v5.3.2...v5.3.3) - 2025-06-04
+## [5.3.3](https://github.com/spipu/html2pdf/compare/v5.3.2...v5.3.3) - 2025-06-08
 
   * improve the security service
 
