@@ -3807,6 +3807,9 @@ class Html2Pdf
             $w = $this->parsingCss->value['width'];
             $align = 'R';
         }
+        else if ($this->parsingCss->value['text-align'] === 'justify') {
+            $align = 'J';
+        }
 
         // calculate the width of each words, and of all the sentence
         $w = 0;
@@ -3873,7 +3876,7 @@ class Html2Pdf
             }
 
             if (strlen($str[0])) {
-                $this->pdf->SetXY($this->pdf->GetX(), $y+$dh+$dy);
+	            $this->pdf->SetXY($this->pdf->GetX(), $y+$dh+$dy);
                 $this->pdf->Cell($wc, $h, $str[0], 0, 0, $align, $fill, $this->_isInLink);
                 $this->pdf->SetXY($this->pdf->GetX(), $y);
             }
@@ -3947,6 +3950,7 @@ class Html2Pdf
         }
 
         // if we have words after automatic cut, it is because they fit on the line => we write the text
+        // if text should be justified, it will be left-aligned to avoid long spaces between words for shorter texts
         if (count($words)) {
             $txt = '';
             foreach ($words as $k => $word) {
@@ -3954,7 +3958,7 @@ class Html2Pdf
             }
             $w+= $this->pdf->getWordSpacing()*(count($words));
             $this->pdf->SetXY($this->pdf->GetX(), $y+$dh+$dy);
-            $this->pdf->Cell(($align === 'L' ? $w : $this->parsingCss->value['width']), $h, $txt, 0, 0, $align, $fill, $this->_isInLink);
+            $this->pdf->Cell(($align === 'L' ? $w : $this->parsingCss->value['width']), $h, $txt, 0, 0, $align === 'J' ? 'L' : $align, $fill, $this->_isInLink);
             $this->pdf->SetXY($this->pdf->GetX(), $y);
             $this->_maxH = max($this->_maxH, $lh);
             $this->_maxE+= count($words);
