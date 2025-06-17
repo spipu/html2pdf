@@ -149,8 +149,9 @@ class Html2Pdf
     /**
      * @var Html2Pdf
      */
-    static protected $_subobj    = null;        // object html2pdf prepared in order to accelerate the creation of sub html2pdf
-    static protected $_tables    = array();     // static table to prepare the nested html tables
+    static protected $_subobj				= null;		// object html2pdf prepared in order to accelerate the creation of sub html2pdf
+    static protected $_tables				= array();	// static table to prepare the nested html tables
+	static protected $_tmpFilesAreCleaned	= false;	// flag : file cleaning is done
 
     /**
      * list of tag definitions
@@ -248,6 +249,21 @@ class Html2Pdf
 
         return $this;
     }
+	
+	/**
+	 * Default destructor.
+	 * Clean cache files once, at the end of the pdf generation
+	 * @public
+	 */
+	public function __destruct() {
+		if($this->_isSubPart || self::$_tmpFilesAreCleaned) return;
+		// remove all temporary files
+		$tmpfiles = glob(K_PATH_CACHE.'__tcpdf_'.$this->pdf->getFileId().'_*');
+		if (!empty($tmpfiles)) {
+			self::$_tmpFilesAreCleaned = true;
+			array_map('unlink', $tmpfiles);
+		}
+	}
 
     /**
      * Gets the detailed version as array
