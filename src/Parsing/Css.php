@@ -13,8 +13,8 @@
 namespace Spipu\Html2Pdf\Parsing;
 
 use Spipu\Html2Pdf\CssConverter;
-use Spipu\Html2Pdf\Exception\HtmlParsingException;
 use Spipu\Html2Pdf\MyPdf;
+use Spipu\Html2Pdf\Security\SecurityInterface;
 
 class Css
 {
@@ -29,8 +29,11 @@ class Css
     protected $cssConverter;
 
     /**
-     * Reference to the pdf object
-     *
+     * @var SecurityInterface
+     */
+    private $security;
+
+    /**
      * @var MyPdf
      */
     protected $pdf         = null;
@@ -43,21 +46,29 @@ class Css
     public $cssKeys      = array(); // css key, for the execution order
     public $table        = array(); // level history
 
-    protected $authorizedSchemes = ['file', 'http', 'https'];
-
     /**
-     * Constructor
-     *
-     * @param MyPdf        $pdf reference to the PDF $object
-     * @param TagParser    $tagParser
+     * @param MyPdf $pdf
+     * @param TagParser $tagParser
      * @param CssConverter $cssConverter
+     * @param SecurityInterface $security
      */
-    public function __construct(&$pdf, TagParser $tagParser, CssConverter $cssConverter)
-    {
+    public function __construct(
+        MyPdf $pdf,
+        TagParser $tagParser,
+        CssConverter $cssConverter,
+        SecurityInterface $security
+    ) {
+        $this->setSecurityService($security);
         $this->cssConverter = $cssConverter;
         $this->init();
         $this->setPdfParent($pdf);
         $this->tagParser = $tagParser;
+    }
+
+    public function setSecurityService(SecurityInterface $security): self
+    {
+        $this->security = $security;
+        return $this;
     }
 
     /**
@@ -96,7 +107,7 @@ class Css
    /**
     * Define the Default Font to use, if the font does not exist, or if no font asked
     *
-    * @param string  default font-family. If null : Arial for no font asked, and error fot ont does not exist
+    * @param string $default default font-family. If null : Arial for no font asked, and error fot ont does not exist
     *
     * @return string  old default font-family
     */
@@ -1693,10 +1704,10 @@ class Css
             if (isset($tmp['type']) && strtolower($tmp['type']) === 'text/css' && isset($tmp['href'])) {
 
                 // get the href
-                $url = $tmp['href'];
+                $url = (string) $tmp['href'];
 
                 // get the content of the css file
-                $this->checkValidPath($url);
+                $this->security->checkValidPath($url);
                 $content = @file_get_contents($url);
 
                 // if "http://" in the url
@@ -1753,30 +1764,5 @@ class Css
         $nbLines = count(explode("\n", $match[0]))-1;
 
         return str_pad('', $nbLines, "\n");
-    }
-
-    /**
-     * @param string $path
-     * @return void
-     * @throws HtmlParsingException
-     */
-    public function checkValidPath($path)
-    {
-        $path = trim(strtolower($path));
-        $scheme = parse_url($path, PHP_URL_SCHEME);
-
-        if ($scheme === null) {
-            return;
-        }
-
-        if (in_array($scheme, $this->authorizedSchemes)) {
-            return;
-        }
-
-        if (strlen($scheme) === 1 && preg_match('/^[a-z]$/i', $scheme)) {
-            return;
-        }
-
-        throw new HtmlParsingException('Unauthorized path scheme');
     }
 }

@@ -16,10 +16,12 @@
   * [Exceptions](./exception.md)
   * [Useful Methods](./methods.md)
   * [Tcpdf Methods](./tcpdf_methods.md)
+  * [Security / Blind SSRF](./security.md)
 
 ## Recommandations
    
   * It is very important to provide valid HTML 4.01 to the converter, but only what is in the `<body>`.
+  * You have to write specific cleaned HTML code for Html2Pdf. Do not try to convert directly an already existing html page, or HTML code coming from WYSIWYG, no help will be provided in this case.
   * Use the `<page>` tag. Does not use the `<html>` or `<body>` tag.
   * for borders: it is advised that they are like `solid 1mm #000000`
   * for padding, they are applicable only on tags `table`, `th`, `td`, `div`, `li`

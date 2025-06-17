@@ -26,9 +26,10 @@ class Html2PdfTest extends AbstractTest
         $this->assertTrue(true);
     }
 
-    public function testSecurityGood()
+    public function testSecurityGoodImg()
     {
         $object = $this->getObject();
+        $object->getSecurityService()->addAllowedHost('www.spipu.net');
         $object->setTestIsImage(false);
         $object->writeHTML('<div><img src="https://www.spipu.net/res/logo_spipu.gif" alt="" /></div>');
         $object->writeHTML('<div><img src="/temp/test.jpg" alt="" /></div>');
@@ -38,12 +39,33 @@ class Html2PdfTest extends AbstractTest
         $this->assertTrue(true);
     }
 
-    public function testSecurityKo()
+    public function testSecurityGoodBackground()
+    {
+        $object = $this->getObject();
+        $object->getSecurityService()->addAllowedHost('www.spipu.net');
+        $object->setTestIsImage(false);
+        $object->writeHTML('<div><div style="background-image: url(https://www.spipu.net/res/logo_spipu.gif)" /></div>');
+        $object->writeHTML('<div><div style="background-image: url(/temp/test.jpg)" /></div>');
+        $object->writeHTML('<div><div style="background-image: url(c:/temp/test.jpg)" /></div>');
+
+        // Ensures we assert something
+        $this->assertTrue(true);
+    }
+
+    public function testSecurityKoImg()
     {
         $this->expectException(HtmlParsingException::class);
         $this->expectExceptionMessage('Unauthorized path scheme', HtmlParsingException::class);
         $object = $this->getObject();
         $object->writeHTML('<div><img src="phar://test.com/php.phar" alt="" /></div>');
+    }
+
+    public function testSecurityKoBackground()
+    {
+        $this->expectException(HtmlParsingException::class);
+        $this->expectExceptionMessage('Unauthorized path scheme', HtmlParsingException::class);
+        $object = $this->getObject();
+        $object->writeHTML('<div><div style="background-image: url(phar://test.com/php.phar)" /></div>');
     }
 }
 
